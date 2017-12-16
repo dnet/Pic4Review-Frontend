@@ -1,38 +1,71 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
-import Input from 'material-ui/Input';
 import Button from 'material-ui/Button';
+import Dataset from './Dataset';
+import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
 import Grid from 'material-ui/Grid';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
-import { CardMedia } from 'material-ui/Card';
+import Input from 'material-ui/Input';
 import Leaflet from 'leaflet';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
+import Radio, { RadioGroup } from 'material-ui/Radio';
+import Snackbar from 'material-ui/Snackbar';
+import Summary from './Summary';
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import Tabs, { Tab } from 'material-ui/Tabs';
+import Toolbar from 'material-ui/Toolbar';
+import Typography from 'material-ui/Typography';
 
 Leaflet.Icon.Default.imagePath = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/'
 const theme = createMuiTheme({});
 
+/**
+ * Main view is the top-level component handling user interface.
+ */
 class Main extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
-			tabValue: 2,
-			sourceFormatValue: "geojson",
-			fileLoaded: false,
+			tabValue: 0,
 			lat: 48.1,
 			lng: -1.7,
-			zoom: 13
+			zoom: 13,
+			snackOpen: false,
+			snackMessage: "",
+			dataset: null
 		};
+		
+		PubSub.subscribe("UI.MESSAGE.SHOW", (msg, data) => {
+			this.setState({
+				snackOpen: true,
+				snackMessage: data.message
+			});
+		});
+		
+		PubSub.subscribe("UI.TAB.SHOW", (msg, data) => {
+			const corresp = { "dataset": 0, "summary": 1, "review": 2 };
+			this.changeTab(null, corresp[data]);
+		});
+		
+		PubSub.subscribe("DATASET.READY", (msg, data) => {
+			this.setState({ dataset: data });
+		});
 	}
 	
+	/**
+	 * Change the currently shown tab.
+	 * @private
+	 */
 	changeTab(event, value) {
 		this.setState({ tabValue: value });
+	}
+	
+	/**
+	 * Close the snackbar.
+	 */
+	closeSnackbar() {
+		this.setState({ snackOpen: false });
 	}
 
 	render() {
@@ -41,39 +74,11 @@ class Main extends Component {
 		
 		switch(this.state.tabValue) {
 			case 0:
-				content = <div>
-					<FormControl component="sourceselector" required>
-						<FormLabel component="legend">{I18n.t("Source format")}</FormLabel>
-						<RadioGroup
-							aria-label="sourceformat"
-							name="format"
-							value={this.state.sourceFormatValue}
-							row
-						>
-							<FormControlLabel value="geojson" disabled control={<Radio />} label={I18n.t("GeoJSON")} />
-						</RadioGroup>
-						
-						<FormLabel component="legend">{I18n.t("Source file")}</FormLabel>
-						<Input name="sourcefile" type="file" />
-						
-						<Button raised color="primary">{I18n.t("Upload file")}</Button>
-					</FormControl>
-				</div>;
+				content = <Dataset />;
 				break;
 			
 			case 1:
-				content = <div>
-					<Button raised color="primary">{I18n.t("Start review")}</Button>
-					<Button raised color="accent">{I18n.t("Clear review")}</Button>
-					<Map id="p4r-summary-map" center={position} zoom={this.state.zoom}>
-						<TileLayer
-							attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-						/>
-						<Marker position={position}>
-						</Marker>
-					</Map>
-				</div>;
+				content = <Summary dataset={this.state.dataset} />;
 				break;
 			
 			case 2:
@@ -160,10 +165,20 @@ class Main extends Component {
 						<Tab label={I18n.t("Dataset")} />
 						<Tab label={I18n.t("Summary")} />
 						<Tab label={I18n.t("Review")} />
-						<Tab label={I18n.t("Parameters")} />
 					</Tabs>
 					
 					{content}
+					
+					<Snackbar
+						anchorOrigin={{
+							vertical: 'bottom',
+							horizontal: 'center',
+						}}
+						open={this.state.snackOpen}
+						autoHideDuration={3000}
+						onRequestClose={this.closeSnackbar.bind(this)}
+						message={this.state.snackMessage}
+					/>
 				</div>
 			</MuiThemeProvider>
 		);
