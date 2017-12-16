@@ -1,0 +1,31 @@
+image: node:7
+
+before_script:
+  - node --version
+  - npm --version
+  - npm install
+  - apt-get update -qq && apt-get install -y -qq ncftp zip
+
+cache:
+  paths:
+    - node_modules/
+
+deploy:client:develop:
+  stage: deploy
+  only:
+    - develop
+  script:
+    - npm run build
+    - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/dev/ ./build/*
+    - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/builds/ ./Pic4Review_latest.zip
+
+deploy:client:tags:
+  stage: deploy
+  only:
+    - tags
+  script:
+    - npm run build
+    - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/ ./build/*
+    - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/builds/ ./Pic4Review_latest.zip
+    - mv ./Pic4Review_latest.zip ./Pic4Review_$(git tag -l --points-at HEAD).zip
+    - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/builds/ ./Pic4Review_$(git tag -l --points-at HEAD).zip

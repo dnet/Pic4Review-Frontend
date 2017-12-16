@@ -1,0 +1,53 @@
+{
+  "name": "pic4review",
+  "version": "0.0.0",
+  "description": "Tool for reviewing geo-dataset using open-licensed pictures around your features.",
+  "repository": {
+    "type": "git",
+    "url": "https://framagit.org/Pic4Carto/Pic4Review.git"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
+    "build": "npm run build:js && npm run zip",
+    "build:js": "webpack --config webpack-production.config.js --progress --colors",
+    "i18n:build": "i18nline export",
+    "i18n:init": "tx init --token=<API_TOKEN>",
+    "i18n:add": "tx set --auto-local -r pic4review.ui 'src/config/locales/<lang>.json' --source-lang en --type KEYVALUEJSON",
+    "i18n:upload": "tx push -s",
+    "i18n:status": "tx status",
+    "i18n:download": "tx pull -a --mode reviewed --minimum-perc=75 && node fix_i18n_files.js",
+    "i18n:clean": "find ./src/config/locales -type f -not -name 'en.json' -delete",
+    "zip": "zip -9 -r Pic4Review_latest.zip build/",
+    "clean": "rm -rf build/"
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-direct-import": "^0.5.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "i18nline": "^1.5.0",
+    "request": "^2.82.0",
+    "transfer-webpack-plugin": "^0.1.4",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.2"
+  },
+  "dependencies": {
+    "leaflet": "^1.2.0",
+    "material-ui": "next",
+    "mdi-material-ui": "^3.0.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-leaflet": "^1.7.8",
+    "react-responsive": "^1.3.4",
+    "react-tap-event-plugin": "^2.0.1",
+    "ulog": "^1.0.3"
+  },
+  "i18n": {
+    "outputFile": "src/config/locales/en.json",
+    "directories": [
+      "src/app"
+    ]
+  }
+}
