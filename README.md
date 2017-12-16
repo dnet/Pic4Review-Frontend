@@ -4,6 +4,8 @@ __Pic4Review__ is a tool for helping you review a geo-dataset for a given task (
 
 You can try it out at [pic4review.pavie.info](https://pic4review.pavie.info/) (or [develop instance](http://pic4review.pavie.info/dev/)).
 
+[![pipeline status](https://framagit.org/Pic4Carto/Pic4Review/badges/master/pipeline.svg)](https://framagit.org/Pic4Carto/Pic4Review/commits/master)
+
 [![Help making this possible](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/PanierAvide/donate)
 
 ## Purpose

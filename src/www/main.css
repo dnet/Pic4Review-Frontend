@@ -8,7 +8,12 @@ body {
 	margin: 0;
 }
 
-#p4r-review-map {
+#p4r-summary-map {
 	width: 100%;
 	height: 400px;
+}
+
+#p4r-review-map {
+	width: 100%;
+	height: 200px;
 }
