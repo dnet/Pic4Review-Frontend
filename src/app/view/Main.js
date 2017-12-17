@@ -1,23 +1,14 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
-import Button from 'material-ui/Button';
 import Dataset from './Dataset';
-import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
-import Grid from 'material-ui/Grid';
-import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
-import Input from 'material-ui/Input';
-import Leaflet from 'leaflet';
-import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
-import Radio, { RadioGroup } from 'material-ui/Radio';
+import Review from './Review';
 import Snackbar from 'material-ui/Snackbar';
 import Summary from './Summary';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 
-Leaflet.Icon.Default.imagePath = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/images/'
 const theme = createMuiTheme({});
 
 /**
@@ -33,7 +24,8 @@ class Main extends Component {
 			zoom: 13,
 			snackOpen: false,
 			snackMessage: "",
-			dataset: null
+			dataset: null,
+			featureId: null
 		};
 		
 		PubSub.subscribe("UI.MESSAGE.SHOW", (msg, data) => {
@@ -45,7 +37,24 @@ class Main extends Component {
 		
 		PubSub.subscribe("UI.TAB.SHOW", (msg, data) => {
 			const corresp = { "dataset": 0, "summary": 1, "review": 2 };
-			this.changeTab(null, corresp[data]);
+			
+			//TODO
+			if(data === "review" || data === "summary") {
+				if(this.state.dataset !== null) {
+					if(this.state.featureId === null) {
+						this.setState({ featureId: 0 });
+					}
+					
+					this.changeTab(null, corresp[data]);
+				}
+				else {
+					PubSub.publish("UI.TAB.SHOW", "summary");
+					PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("You need first to load a dataset") });
+				}
+			}
+			else {
+				this.changeTab(null, corresp[data]);
+			}
 		});
 		
 		PubSub.subscribe("DATASET.READY", (msg, data) => {
@@ -82,66 +91,8 @@ class Main extends Component {
 				break;
 			
 			case 2:
-				content = <div>
-					<Grid container style={{width: "100%"}}>
-						<Grid item xs="3">
-							<Typography type="subheading">{I18n.t("Details")}</Typography>
-							<Map id="p4r-review-map" center={position} zoom={this.state.zoom}>
-								<TileLayer
-								attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-								/>
-								<Marker position={position}>
-								</Marker>
-							</Map>
-							<Grid container>
-								<Grid item xs="6">
-									<Button raised color="primary">{I18n.t("Done")}</Button>
-								</Grid>
-								<Grid item xs="6">
-									<Button raised color="default">{I18n.t("Skip")}</Button>
-								</Grid>
-							</Grid>
-							<Table>
-								<TableHead>
-									<TableRow>
-										<TableCell>Key</TableCell>
-										<TableCell>Value</TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									<TableRow>
-										<TableCell>Key</TableCell>
-										<TableCell>Value</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>Key</TableCell>
-										<TableCell>Value</TableCell>
-									</TableRow>
-									<TableRow>
-										<TableCell>Key</TableCell>
-										<TableCell>Value</TableCell>
-									</TableRow>
-								</TableBody>
-							</Table>
-						</Grid>
-						<Grid item xs="9" style={{paddingRight: 0}}>
-							<Typography type="subheading">{I18n.t("Pictures")}</Typography>
-							<GridList cols={4} cellHeight={100} style={{flexWrap: "nowrap"}}>
-								<GridListTile><img src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" /></GridListTile>
-								<GridListTile><img src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" /></GridListTile>
-								<GridListTile><img src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" /></GridListTile>
-								<GridListTile><img src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" /></GridListTile>
-								<GridListTile><img src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" /></GridListTile>
-							</GridList>
-							<Grid container>
-								<Grid item xs="12">
-									<img style={{ width: "100%" }} src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" />
-								</Grid>
-							</Grid>
-						</Grid>
-					</Grid>
-				</div>;
+				const feature = (this.state.dataset && this.state.featureId) ? this.state.dataset.features[this.state.featureId] : null;
+				content = (this.state.dataset && this.state.featureId) ? <Review feature={feature} /> : null;
 				break;
 		}
 		

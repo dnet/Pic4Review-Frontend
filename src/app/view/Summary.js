@@ -25,21 +25,54 @@ class Summary extends Component {
 	}
 	
 	render() {
-		const position = [this.state.lat, this.state.lng];
+		let position = [this.state.lat, this.state.lng];
+		let zoom = this.state.zoom;
 		let datalayer = null;
 		
 		if(this.state.geojson) {
-			datalayer = <GeoJSON data={this.state.geojson} />;
+			datalayer = <GeoJSON ref="geojson" data={this.state.geojson} pointToLayer={this._pointToLayer} />;
 		}
 		
 		return <div>
-			<Button raised color="primary">{I18n.t("Start review")}</Button>
+			<Button raised color="primary" onClick={this.startClicked}>{I18n.t("Start review")}</Button>
 			<Button raised color="accent">{I18n.t("Clear review")}</Button>
-			<Map id="p4r-summary-map" center={position} zoom={this.state.zoom}>
+			<Map ref="map" id="p4r-summary-map" center={position} zoom={zoom}>
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 				{datalayer}
 			</Map>
 		</div>;
+	}
+	
+	componentDidMount() {
+		if(this.state.geojson) {
+			this._geojsonBounds();
+		}
+	}
+	
+	startClicked() {
+		PubSub.publish("UI.TAB.SHOW", "review");
+	}
+	
+	_geojsonBounds() {
+		if(this.refs.map && this.refs.geojson) {
+			this.refs.map.leafletElement.fitBounds(this.refs.geojson.leafletElement.getBounds());
+		}
+		else {
+			setTimeout(this._geojsonBounds.bind(this), 100);
+		}
+	}
+	
+	_pointToLayer(geojson, latlng) {
+		let color = 'gray';
+		switch(geojson.properties.pr4status) {
+			case "done":
+				color = 'green';
+				break;
+			case "skip":
+				color = 'orange';
+				break;
+		}
+		return Leaflet.circleMarker(latlng, { radius: 5, stroke: false, fill: true, fillColor: color, fillOpacity: 1 });
 	}
 }
 
