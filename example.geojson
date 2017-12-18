@@ -1,0 +1,49 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "amenity": "toilets", "wheelchair": "yes", "access": "public" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.921875,
+          48.45835188280866
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "toilets", "wheelchair": "yes", "fee": "no" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.8125,
+          46.558860303117164
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "restaurant", "toilets:wheelchair": "yes", "wheelchair": "yes" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.21875,
+          41.244772343082076
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "amenity": "cafe", "name": "Le café du coin", "addr:housenumber": "15", "addr:street": "Rue du Café" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.953125,
+          48.69096039092549
+        ]
+      }
+    }
+  ]
+}

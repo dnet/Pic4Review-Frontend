@@ -15,6 +15,7 @@ class App {
 	constructor() {
 		//Init controllers
 		this.datasetManager = new DatasetManager();
+		this.dataset = null;
 		
 		//Init various systems
 		this.initI18n();
@@ -47,8 +48,9 @@ class App {
 			if(data.format == "geojson") {
 				this.datasetManager
 				.readGeoJSON(data.file)
-				.then(geojson => {
-					PubSub.publish("DATASET.READY", { type: "geojson", data: geojson });
+				.then(dataset => {
+					this.dataset = dataset;
+					PubSub.publish("DATASET.READY", this.dataset);
 				})
 				.catch(e => {
 					PubSub.publish("UI.MESSAGE.SHOW", { type: "error", message: e.message });
@@ -56,8 +58,15 @@ class App {
 			}
 		});
 		
-		PubSub.subscribe("DATASET.READY", (msg, data) => {
-			PubSub.publish("UI.TAB.SHOW", "summary");
+		PubSub.subscribe("DATASET.FEATURE", (msg, id) => {
+			const msgToStatus = { "DATASET.FEATURE.SKIP": "skip", "DATASET.FEATURE.DONE": "done" };
+			this.dataset = this.datasetManager.updateReview(this.dataset, id, msgToStatus[msg]);
+			PubSub.publish("DATASET.UPDATED", this.dataset);
+		});
+		
+		PubSub.subscribe("DATASET.CLEAR", (msg, id) => {
+			this.dataset = this.datasetManager.clearReview(this.dataset);
+			PubSub.publish("DATASET.UPDATED", this.dataset);
 		});
 	}
 	
