@@ -50,7 +50,6 @@ class Main extends Component {
 		
 		PubSub.subscribe("DATASET.UPDATED", (msg, data) => {
 			this.setState({ dataset: data });
-			this.forceUpdate();
 		});
 		
 		PubSub.subscribe("UI.FEATURE.DONE", (msg, data) => {
@@ -120,7 +119,7 @@ class Main extends Component {
 	 * Handler for when clear review has been confirmed
 	 */
 	clearReviewClicked() {
-		this.setState({ clearDialogOpen: false, featureId: 0 });
+		this.setState({ clearDialogOpen: false, featureId: 0, dataset: null });
 		PubSub.publish("DATASET.CLEAR");
 	}
 	

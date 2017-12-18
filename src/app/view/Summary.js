@@ -52,24 +52,19 @@ class Summary extends Component {
 		return Leaflet.circleMarker(latlng, { radius: 5, stroke: false, fill: true, fillColor: color, fillOpacity: 1 });
 	}
 	
+	_clearDataLayers() {
+		if(this.refs && this.refs.map && this.refs.geojson) {
+			if(this.refs.map.leafletElement.hasLayer(this.refs.geojson.leafletElement)) {
+				this.refs.map.leafletElement.removeLayer(this.refs.geojson.leafletElement);
+				delete this.refs.geojson;
+			}
+		}
+	}
+	
 	render() {
 		let position = [this.state.lat, this.state.lng];
 		let zoom = this.state.zoom;
 		let datalayer = null;
-		
-		//Clear previous dataset
-		console.log(this.refs);
-		if(this.refs.geojson) {
-			console.log("map", this.refs.geojson.map);
-			console.log("elem", this.refs.geojson.leafletElement);
-			console.log("has", this.refs.geojson.map && this.refs.geojson.map.hasLayer(this.refs.geojson.leafletElement));
-			if(this.refs.geojson.map && this.refs.geojson.map.hasLayer(this.refs.geojson.leafletElement)) {
-				console.log("delete");
-				this.refs.geojson.map.removeLayer(this.refs.geojson.leafletElement);
-			}
-			
-			delete this.refs.geojson;
-		}
 		
 		if(this.props.dataset) {
 			if(this.props.dataset.type === "geojson") {
@@ -91,6 +86,10 @@ class Summary extends Component {
 		if(!this.state.datasetShown) {
 			this._geojsonBounds();
 		}
+	}
+	
+	componentWillUnmount() {
+		this._clearDataLayers();
 	}
 }
 

@@ -39,7 +39,7 @@ class Review extends Component {
 		});
 		
 		return <div>
-			<Grid container style={{width: "100%"}}>
+			<Grid container style={{width: "100%", flexGrow: "1"}}>
 				<Grid item xs={3}>
 					<Typography type="subheading">{I18n.t("Details")}</Typography>
 					<Map id="p4r-review-map" center={position} zoom={this.state.zoom}>
@@ -47,11 +47,17 @@ class Review extends Component {
 						<Marker position={position} />
 					</Map>
 					<Grid container>
-						<Grid item xs={6}>
+						<Grid item xs>
+							<Button raised color="default">{I18n.t("Edit in JOSM")}</Button>
+						</Grid>
+						<Grid item xs>
+							<Button raised color="default">{I18n.t("Edit in iD")}</Button>
+						</Grid>
+						<Grid item xs>
 							<Button raised color="primary" onClick={this.doneClicked}>{I18n.t("Done")}</Button>
 						</Grid>
-						<Grid item xs={6}>
-							<Button raised color="default" onClick={this.skipClicked}>{I18n.t("Skip")}</Button>
+						<Grid item xs>
+							<Button raised color="accent" onClick={this.skipClicked}>{I18n.t("Skip")}</Button>
 						</Grid>
 					</Grid>
 					<Table>
@@ -76,8 +82,8 @@ class Review extends Component {
 						<GridListTile><img src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" /></GridListTile>
 					</GridList>
 					<Grid container>
-						<Grid item xs={12}>
-							<img style={{ width: "100%" }} src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" />
+						<Grid item xs={12} style={{textAlign: "center"}}>
+							<img style={{ maxWidth: "100%", maxHeight: "70%" }} src="https://d1cuyjsrcm0gby.cloudfront.net/qWShq9KX3I4U8Aprgo_95g/thumb-2048.jpg" />
 						</Grid>
 					</Grid>
 				</Grid>
