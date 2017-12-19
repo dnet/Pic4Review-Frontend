@@ -4,6 +4,7 @@ import AppBar from 'material-ui/AppBar';
 import Button from 'material-ui/Button';
 import Dataset from './Dataset';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
+import Hidden from 'material-ui/Hidden';
 import Review from './Review';
 import Snackbar from 'material-ui/Snackbar';
 import Summary from './Summary';
@@ -181,9 +182,14 @@ class Main extends Component {
 			<MuiThemeProvider theme={theme}>
 				<div>
 					<AppBar position="static">
-						<Toolbar>
-							<Typography type="title" gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
-							<Typography type="subheading" style={{marginLeft: 10}} gutterBottom color="inherit">{I18n.t("Alpha release")}</Typography>
+						<Toolbar style={{display: "flex", justifyContent: "space-between"}}>
+							<div>
+								<Typography type="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
+								<Typography type="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Alpha release")}</Typography>
+							</div>
+							<Hidden only="xs">
+								<Typography type="subheading" style={{right: 10}} gutterBottom color="inherit">{I18n.t("Review geo-datasets easily using pictures")}</Typography>
+							</Hidden>
 						</Toolbar>
 					</AppBar>
 					
