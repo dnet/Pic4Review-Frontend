@@ -45,7 +45,23 @@ class Main extends Component {
 		});
 		
 		PubSub.subscribe("DATASET.READY", (msg, data) => {
-			this.setState({ dataset: data, featureId: 0 });
+			//Check if dataset already has reviewed data
+			let featureId = 0;
+			if(data.review.indexOf("done") >= 0 || data.review.indexOf("skip") >= 0) {
+				featureId = data.review.indexOf("new");
+				
+				//If no new features remaining
+				if(featureId === -1) {
+					featureId = data.review.indexOf("skip");
+					
+					//If no skipped features also, reset to 0
+					if(featureId === -1) {
+						featureId = 0;
+					}
+				}
+			}
+			
+			this.setState({ dataset: data, featureId: featureId });
 			this.changeTab(null, 1);
 		});
 		
