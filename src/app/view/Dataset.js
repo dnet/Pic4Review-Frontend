@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
 import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
+import Grid from 'material-ui/Grid';
 import Input from 'material-ui/Input';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 
@@ -38,32 +39,42 @@ class Dataset extends Component {
 	}
 	
 	render() {
-		return <div>
-			<FormControl required>
-				<FormLabel component="legend">{I18n.t("Source format")}</FormLabel>
-				<RadioGroup
-					aria-label="sourceformat"
-					name="format"
-					value={this.state.sourceFormatValue}
-					row
-				>
-					<FormControlLabel value="geojson" disabled control={<Radio />} label={I18n.t("GeoJSON")} />
-				</RadioGroup>
+		const styleContainer = Object.assign({}, this.props.style, {textAlign: "center"});
+		const styleGroups = {marginBottom: 20};
+		
+		return <div style={styleContainer}>
+			<FormControl required style={{width: "100%"}}>
+				<div style={styleGroups}>
+					<FormLabel component="legend">{I18n.t("Source format")}</FormLabel>
+					<RadioGroup
+						aria-label="sourceformat"
+						name="format"
+						value={this.state.sourceFormatValue}
+						row
+						style={{justifyContent: "space-evenly"}}
+					>
+						<FormControlLabel value="geojson" disabled control={<Radio />} label={I18n.t("GeoJSON")} />
+					</RadioGroup>
+				</div>
 				
-				<FormLabel component="legend">{I18n.t("Source file")}</FormLabel>
-				<Input
-					name="sourcefile"
-					type="file"
-					onChange={this.sourceFileChanged.bind(this)}
-				/>
+				<div style={styleGroups}>
+					<FormLabel component="legend">{I18n.t("Source file")}</FormLabel>
+					<Input
+						name="sourcefile"
+						type="file"
+						onChange={this.sourceFileChanged.bind(this)}
+					/>
+				</div>
 				
-				<Button
-					raised
-					color="primary"
-					onClick={this.uploadClick.bind(this)}
-				>
-					{I18n.t("Upload file")}
-				</Button>
+				<div style={{textAlign: "center"}}>
+					<Button
+						raised
+						color="primary"
+						onClick={this.uploadClick.bind(this)}
+					>
+						{I18n.t("Upload file")}
+					</Button>
+				</div>
 			</FormControl>
 		</div>;
 	}

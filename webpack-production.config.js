@@ -22,9 +22,30 @@ const config = {
 				'NODE_ENV': JSON.stringify('production')
 			}
 		}),
+		new webpack.optimize.AggressiveMergingPlugin(),
+		new webpack.optimize.OccurrenceOrderPlugin(),
 		// Minify the bundle
 		new webpack.optimize.UglifyJsPlugin({
-			sourceMap: true,
+			mangle: true,
+			compress: {
+				warnings: false, // Suppress uglification warnings
+				pure_getters: true,
+				unsafe: true,
+				unsafe_comps: true,
+				screw_ie8: true,
+				conditionals: true,
+				unused: true,
+				comparisons: true,
+				sequences: true,
+				dead_code: true,
+				evaluate: true,
+				if_return: true,
+				join_vars: true
+			},
+			output: {
+				comments: false,
+			},
+			exclude: [/\.min\.js$/gi]
 		}),
 		// Transfer Files
 		new TransferWebpackPlugin([
@@ -40,9 +61,27 @@ const config = {
 				query: {
 					cacheDirectory: true,
 				},
+			},
+			{
+				test: /\.css$/,
+				loader: 'style-loader!css-loader'
+			},
+			{
+				test: /\.(png|jpg|svg)$/,
+				loader: "file-loader?name=images/[name].[ext]"
 			}
 		],
 	},
+	resolve: {
+		modules: ['node_modules', path.resolve('/src')],
+		extensions: ['.js'],
+		alias: {
+			leaflet_css: path.resolve(__dirname, "node_modules/leaflet/dist/leaflet.css"),
+			leaflet_marker: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-icon.png"),
+			leaflet_marker_2x: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-icon-2x.png"),
+			leaflet_marker_shadow: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-shadow.png"),
+		}
+	}
 };
 
 module.exports = config;

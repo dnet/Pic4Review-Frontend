@@ -2,1202 +2,255 @@
   "type": "FeatureCollection",
   "generator": "overpass-ide",
   "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
-  "timestamp": "2017-12-19T17:20:03Z",
+  "timestamp": "2017-12-20T08:53:02Z",
   "features": [
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/33059854",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6509709,
-          48.1280318
-        ]
-      },
-      "id": "node/33059854"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/43998736",
-        "access": "permissive",
-        "amenity": "toilets",
-        "building": "yes",
-        "fee": "yes",
-        "opening_hours": "24/7",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre;mise à jour : 2008",
-        "toilets:disposal": "flush",
-        "unisex": "yes",
-        "wheelchair": "yes",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6803864,
-          48.1100172
-        ]
-      },
-      "id": "way/43998736"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/48995690",
-        "amenity": "toilets",
-        "building": "yes",
-        "note": "Horaires : 6h à 23h",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "toilets:disposal": "flush",
-        "toilets:wheelchair": "yes",
-        "unisex": "yes",
-        "wheelchair": "limited",
-        "wheelchair:description": "Porte trop lourde",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6728566,
-          48.1043362
-        ]
-      },
-      "id": "way/48995690"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80199637",
-        "amenity": "toilets",
-        "building": "yes",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6597437,
-          48.1302705
-        ]
-      },
-      "id": "way/80199637"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80263588",
-        "amenity": "toilets",
-        "building": "yes",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7027694,
-          48.1316734
-        ]
-      },
-      "id": "way/80263588"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80884011",
-        "amenity": "toilets",
-        "building": "yes",
-        "fee": "no",
-        "note": "Horaires : 6h à 23h",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010 / and local knowledge",
-        "wall": "no",
-        "wheelchair": "yes",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6599204,
-          48.1235336
-        ]
-      },
-      "id": "way/80884011"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80917531",
-        "access": "public",
-        "amenity": "toilets",
-        "building": "yes",
-        "fee": "no",
-        "opening_hours": "Mo-Su 06:00-23:00",
-        "operator": "Ville de Rennes",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "toilets:disposal": "flush",
-        "unisex": "yes",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6934617,
-          48.1078378
-        ]
-      },
-      "id": "way/80917531"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80921646",
-        "amenity": "toilets",
-        "building": "public",
-        "building:levels": "1",
-        "fee": "no",
-        "opening_hours": "sunrise-sunset",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "supervised": "no",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6901772,
-          48.1130676
-        ]
-      },
-      "id": "way/80921646"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80938921",
-        "access": "permissive",
-        "amenity": "toilets",
-        "building": "yes",
-        "opening_hours": "Mo-Su 06:00-23:00",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "toilets:disposal": "flush",
-        "unisex": "yes",
-        "wall": "no",
-        "wheelchair": "yes",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6546714,
-          48.1203405
-        ]
-      },
-      "id": "way/80938921"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80952349",
-        "access": "public",
-        "amenity": "toilets",
-        "building": "yes",
-        "fee": "no",
-        "name": "Parc Oberthür",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6588753,
-          48.1126829
-        ]
-      },
-      "id": "way/80952349"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/80989191",
-        "amenity": "toilets",
-        "building": "yes",
-        "fee": "no",
-        "name": "Robidou",
-        "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "wall": "no",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6589094,
-          48.1078091
-        ]
-      },
-      "id": "way/80989191"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/245384990",
+        "@id": "way/78519200",
         "access": "yes",
         "amenity": "toilets",
-        "fee": "no",
-        "name": "Thabor Duchesse Anne",
-        "wheelchair": "designated"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6663179,
-          48.1138769
-        ]
-      },
-      "id": "node/245384990"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/245384991",
-        "amenity": "toilets",
-        "fee": "no",
-        "name": "Thabor Grignan"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6715856,
-          48.1154819
-        ]
-      },
-      "id": "node/245384991"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/270632718",
-        "access": "public",
-        "amenity": "toilets",
-        "fee": "no",
-        "name": "Toullier",
-        "note": "Horaires : 6h à 23h",
-        "toilets:disposal": "flush",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6752502,
-          48.1092929
-        ]
-      },
-      "id": "way/270632718"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/271755094",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6631204,
-          48.1088536
-        ]
-      },
-      "id": "node/271755094"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/301764066",
-        "amenity": "toilets",
-        "fee": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.678588,
-          48.1110123
-        ]
-      },
-      "id": "node/301764066"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/302871330",
-        "amenity": "toilets",
-        "fee": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6779546,
-          48.1145815
-        ]
-      },
-      "id": "node/302871330"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/398308191",
-        "access": "yes",
-        "amenity": "toilets",
-        "building": "yes",
-        "toilets:disposal": "flush",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.683841,
-          48.1090765
-        ]
-      },
-      "id": "way/398308191"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "way/431587168",
-        "amenity": "toilets",
-        "building": "yes",
-        "@geometry": "center"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6985792,
-          48.1296653
-        ]
-      },
-      "id": "way/431587168"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/944365510",
-        "access": "permissive",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "Mairie de Rennes",
+        "building": "civic",
+        "fee": "yes",
+        "operator": "Mairie d'Orange",
         "source": "cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010",
-        "toilets:disposal": "flush",
-        "unisex": "yes",
-        "wheelchair": "yes"
+        "wheelchair": "no",
+        "@geometry": "center"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.7075173,
-          48.1193102
+          4.7986989,
+          44.1349938
         ]
       },
-      "id": "node/944365510"
+      "id": "way/78519200"
     },
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1179097831",
+        "@id": "way/518337436",
+        "access": "private",
         "amenity": "toilets",
-        "indoor": "room",
-        "wheelchair": "yes"
+        "building": "bungalow",
+        "female": "yes",
+        "male": "no",
+        "name": "Sanitaires",
+        "source": "CCPRO 2017",
+        "@geometry": "center"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.7063728,
-          48.1135118
+          4.8010928,
+          44.1400677
         ]
       },
-      "id": "node/1179097831"
+      "id": "way/518337436"
     },
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/1591458635",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6544135,
-          48.1220613
-        ]
-      },
-      "id": "node/1591458635"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1600942067",
-        "amenity": "toilets",
-        "fee": "no",
-        "toilets:disposal": "flush",
-        "toilets:position": "seated;urinal",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6813458,
-          48.1209785
-        ]
-      },
-      "id": "node/1600942067"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1617615566",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6554013,
-          48.1244285
-        ]
-      },
-      "id": "node/1617615566"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1691997969",
-        "access": "public",
-        "amenity": "toilets",
-        "fee": "no",
-        "name": "Thabor Paris",
-        "toilets:disposal": "flush",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6708828,
-          48.1122833
-        ]
-      },
-      "id": "node/1691997969"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1747498281",
-        "amenity": "toilets",
-        "indoor": "room"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7064233,
-          48.1135116
-        ]
-      },
-      "id": "node/1747498281"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1773292240",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6953431,
-          48.1068615
-        ]
-      },
-      "id": "node/1773292240"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1868475251",
-        "access": "public",
-        "amenity": "toilets",
-        "note": "Horaires : 6h à 23h",
-        "toilets:disposal": "flush",
-        "unisex": "yes",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6774395,
-          48.1065471
-        ]
-      },
-      "id": "node/1868475251"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1968629485",
-        "amenity": "toilets",
-        "fee": "no",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7077465,
-          48.1090671
-        ]
-      },
-      "id": "node/1968629485"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/1986193317",
-        "access": "public",
-        "amenity": "toilets",
-        "fee": "no",
-        "name": "Juillet",
-        "note": "Horaires : 6h à 23h",
-        "toilets:disposal": "flush",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6844338,
-          48.1123216
-        ]
-      },
-      "id": "node/1986193317"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2316904473",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 25 1er étage",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7110984,
-          48.1146137
-        ]
-      },
-      "id": "node/2316904473"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2316904482",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 25 1er étage",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7111195,
-          48.1146438
-        ]
-      },
-      "id": "node/2316904482"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318275146",
-        "amenity": "toilets",
-        "fee": "no",
-        "indoor": "room",
-        "level": "1",
-        "operator": "bâtiment 11 (1er étage)",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7060928,
-          48.1134373
-        ]
-      },
-      "id": "node/2318275146"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318275147",
-        "amenity": "toilets",
-        "fee": "no",
-        "indoor": "room",
-        "level": "2",
-        "operator": "Bâtiment 11 (2eme étage)",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7061133,
-          48.1134674
-        ]
-      },
-      "id": "node/2318275147"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318275148",
-        "amenity": "toilets",
-        "fee": "no",
-        "indoor": "room",
-        "operator": "Bâtiment 11 (1er étage)",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7064577,
-          48.113647
-        ]
-      },
-      "id": "node/2318275148"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318275149",
-        "amenity": "toilets",
-        "fee": "no",
-        "indoor": "room",
-        "operator": "Bâtiment 11 (2eme étage)",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7064293,
-          48.1136729
-        ]
-      },
-      "id": "node/2318275149"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318275150",
-        "amenity": "toilets",
-        "fee": "no",
-        "indoor": "room",
-        "operator": "Bâtiment 16",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7078511,
-          48.1138208
-        ]
-      },
-      "id": "node/2318275150"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318285425",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 24",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7101793,
-          48.1140008
-        ]
-      },
-      "id": "node/2318285425"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318285432",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 24",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7110232,
-          48.1140329
-        ]
-      },
-      "id": "node/2318285432"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318285462",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 24",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.710965,
-          48.1140685
-        ]
-      },
-      "id": "node/2318285462"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318285470",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 24",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7100818,
-          48.1141922
-        ]
-      },
-      "id": "node/2318285470"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318285478",
-        "amenity": "toilets",
-        "fee": "no",
-        "indoor": "room",
-        "opening_hours": "week 2-52/2 Th 23:00-24:00, Fr 00:00-04:00",
-        "operator": "ACO Étable",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7075726,
-          48.1144759
-        ]
-      },
-      "id": "node/2318285478"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318285489",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 25 RDC",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7110971,
-          48.1146056
-        ]
-      },
-      "id": "node/2318285489"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2318285494",
-        "amenity": "toilets",
-        "fee": "no",
-        "operator": "ACO batiment 25 RDC",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.711135,
-          48.1146413
-        ]
-      },
-      "id": "node/2318285494"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2685777523",
-        "access": "permissive",
-        "amenity": "toilets",
-        "fee": "no",
-        "note": "Horaires : du L au V 8h30 à 17h, le S de 9h30 à 12h",
-        "toilets:disposal": "flush",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.67991,
-          48.1116169
-        ]
-      },
-      "id": "node/2685777523"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2685777526",
-        "amenity": "toilets",
-        "fee": "yes",
-        "name": "Opéra",
-        "note": "Horaires : du Lundi au Samedi 8h à 19h40",
-        "opening_hours": "Mo-Sa 8:00-19:40",
-        "toilets:disposal": "flush",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6786685,
-          48.1111933
-        ]
-      },
-      "id": "node/2685777526"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2685777531",
-        "access": "public",
-        "amenity": "toilets",
-        "fee": "yes",
-        "name": "Les Lices",
-        "toilets:disposal": "flush",
-        "unisex": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6827222,
-          48.1130989
-        ]
-      },
-      "id": "node/2685777531"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2685777534",
-        "amenity": "toilets",
-        "fee": "no",
-        "name": "Hoche"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6770655,
-          48.1152006
-        ]
-      },
-      "id": "node/2685777534"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2685777537",
-        "access": "public",
-        "amenity": "toilets",
-        "opening_hours": "Mo-Sa 07:00-19:00",
-        "toilets:disposal": "flush",
-        "wheelchair": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6796344,
-          48.1077856
-        ]
-      },
-      "id": "node/2685777537"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2685777542",
-        "amenity": "toilets",
-        "name": "Charles de Gaulle"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6771072,
-          48.1057249
-        ]
-      },
-      "id": "node/2685777542"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/2685777545",
+        "@id": "node/861724615",
         "access": "yes",
-        "addr:city": "Rennes",
-        "addr:housenumber": "8",
-        "addr:postcode": "35000",
-        "addr:street": "Place de Bretagne",
         "amenity": "toilets",
-        "name": "Place de Bretagne",
-        "note": "Horaires : 6h à 23h",
-        "source:addr": "Rennes Métropole",
-        "source:addr:housenumber:ref": "59654",
-        "source:addr:version": "2016-04-01",
-        "toilets:disposal": "flush",
-        "unisex": "yes",
+        "fee": "yes",
+        "outdoor": "yes",
+        "source": "Mairie d'Orange 2014",
+        "wheelchair": "limited"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8121347,
+          44.1352485
+        ]
+      },
+      "id": "node/861724615"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1272418761",
+        "access": "yes",
+        "amenity": "toilets",
+        "fee": "yes",
+        "needs_repair": "yes",
+        "operator": "Mairie d'Orange",
+        "outdoor": "yes",
+        "source": "survey 2014",
         "wheelchair": "yes"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.6838533,
-          48.1088182
+          4.803775,
+          44.1365507
         ]
       },
-      "id": "node/2685777545"
+      "id": "node/1272418761"
     },
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/2685797880",
+        "@id": "node/1272419358",
+        "access": "yes",
         "amenity": "toilets",
-        "fee": "no",
-        "name": "Duchesse Anne"
+        "operator": "Ville d'Orange",
+        "outdoor": "yes",
+        "source": "Mairie d'Orange 2014",
+        "wheelchair": "yes"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.6661036,
-          48.1127351
+          4.8108115,
+          44.1379288
         ]
       },
-      "id": "node/2685797880"
+      "id": "node/1272419358"
     },
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/2685797891",
+        "@id": "node/1290293030",
+        "access": "yes",
+        "amenity": "toilets",
+        "fee": "yes",
+        "operator": "Ville d'Orange",
+        "outdoor": "yes",
+        "source": "survey 2014",
+        "wheelchair": "no"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8059527,
+          44.1350351
+        ]
+      },
+      "id": "node/1290293030"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1435126008",
+        "amenity": "toilets"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8108117,
+          44.1379298
+        ]
+      },
+      "id": "node/1435126008"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1482347378",
         "access": "permissive",
         "amenity": "toilets",
         "fee": "no",
-        "unisex": "yes"
+        "operator": "Culturespaces",
+        "wheelchair": "no"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.6735789,
-          48.1107538
+          4.8093769,
+          44.1356648
         ]
       },
-      "id": "node/2685797891"
+      "id": "node/1482347378"
     },
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/2779479344",
-        "access": "public",
+        "@id": "node/1742579522",
+        "access": "permissive",
         "amenity": "toilets",
-        "level": "-1",
-        "opening_hours": "Tu 12:00-21:00; We-Fr 12:00-19:00; Sa-Su 14:00-19:00",
-        "toilets:disposal": "flush"
+        "created_by": "iLOE 1.9",
+        "wheelchair": "limited"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.6743837,
-          48.105142
+          4.798906,
+          44.1344
         ]
       },
-      "id": "node/2779479344"
+      "id": "node/1742579522"
     },
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/2779479354",
+        "@id": "node/1865516550",
         "amenity": "toilets"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.6751558,
-          48.1048718
+          4.800639,
+          44.1372846
         ]
       },
-      "id": "node/2779479354"
+      "id": "node/1865516550"
     },
     {
       "type": "Feature",
       "properties": {
-        "@id": "node/3299152076",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6723852,
-          48.1077781
-        ]
-      },
-      "id": "node/3299152076"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3299152077",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6746735,
-          48.11164
-        ]
-      },
-      "id": "node/3299152077"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3300008075",
-        "access": "public",
+        "@id": "node/2281170418",
         "amenity": "toilets",
-        "fee": "no",
-        "note": "Horaires : 6h à 23h",
-        "toilets:disposal": "flush",
+        "level": "0",
+        "operator": "SNCF",
+        "source": "survey 2013"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8193118,
+          44.1374523
+        ]
+      },
+      "id": "node/2281170418"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2810804406",
+        "amenity": "toilets",
+        "source": "survey 2014"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.8043014,
+          44.1320384
+        ]
+      },
+      "id": "node/2810804406"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3048772411",
+        "access": "yes",
+        "amenity": "toilets",
+        "fee": "yes",
+        "operator": "Mairie d'Orange",
+        "source": "survey 2014",
         "wheelchair": "yes"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.656363,
-          48.1166198
+          4.8057472,
+          44.1416856
         ]
       },
-      "id": "node/3300008075"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3342093012",
-        "access": "public",
-        "amenity": "toilets",
-        "toilets:disposal": "flush",
-        "toilets:wheelchair": "yes",
-        "wheelchair": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7093962,
-          48.1185962
-        ]
-      },
-      "id": "node/3342093012"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3713764264",
-        "amenity": "toilets",
-        "fee": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.7109071,
-          48.1216397
-        ]
-      },
-      "id": "node/3713764264"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3763382349",
-        "amenity": "toilets"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6736282,
-          48.1146186
-        ]
-      },
-      "id": "node/3763382349"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3900432465",
-        "access": "public",
-        "amenity": "toilets",
-        "fee": "no",
-        "name": "Mail François Mitterand",
-        "note": "Horaires : 6h à 23h",
-        "toilets:disposal": "flush",
-        "unisex": "yes"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.688004,
-          48.1099276
-        ]
-      },
-      "id": "node/3900432465"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3964798124",
-        "amenity": "toilets",
-        "fee": "no"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6814028,
-          48.1246253
-        ]
-      },
-      "id": "node/3964798124"
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "@id": "node/3983657495",
-        "amenity": "toilets",
-        "fee": "no",
-        "name": "Thabor Notre-Dame"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -1.6716507,
-          48.1144501
-        ]
-      },
-      "id": "node/3983657495"
+      "id": "node/3048772411"
     }
   ]
 }

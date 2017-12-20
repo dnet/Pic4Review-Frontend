@@ -1,10 +1,17 @@
+require("leaflet_css");
+require("leaflet_marker");
+require("leaflet_marker_2x");
+require("leaflet_marker_shadow");
 import React, { Component } from 'react';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import createMuiTheme from 'material-ui/styles/createMuiTheme';
+import { indigo, red } from 'material-ui/colors';
 import AppBar from 'material-ui/AppBar';
 import Button from 'material-ui/Button';
 import Dataset from './Dataset';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import Hidden from 'material-ui/Hidden';
+import IconButton from 'material-ui/IconButton';
 import Review from './Review';
 import Snackbar from 'material-ui/Snackbar';
 import Summary from './Summary';
@@ -12,7 +19,12 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 
-const theme = createMuiTheme({});
+const theme = createMuiTheme({
+	palette: {
+		primary: indigo,
+		secondary: red
+	}
+});
 
 /**
  * Main view is the top-level component handling user interface.
@@ -29,7 +41,8 @@ class Main extends Component {
 			snackMessage: "",
 			dataset: null,
 			featureId: null,
-			clearDialogOpen: false
+			clearDialogOpen: false,
+			drawerOpen: false
 		};
 		
 		PubSub.subscribe("UI.MESSAGE.SHOW", (msg, data) => {
@@ -140,6 +153,10 @@ class Main extends Component {
 		PubSub.publish("DATASET.CLEAR");
 	}
 	
+	toggleDrawer() {
+		this.setState({ drawerOpen: !this.state.drawerOpen });
+	}
+	
 	/**
 	 * Amount of features available in dataset
 	 */
@@ -178,19 +195,20 @@ class Main extends Component {
 	render() {
 		let content = null;
 		const position = [this.state.lat, this.state.lng];
+		const styleTabContent = { margin: "15px 20px" };
 		
 		switch(this.state.tabValue) {
 			case 0:
-				content = <Dataset />;
+				content = <Dataset style={styleTabContent} />;
 				break;
 			
 			case 1:
-				content = <Summary dataset={this.state.dataset} />;
+				content = <Summary dataset={this.state.dataset} style={styleTabContent} />;
 				break;
 			
 			case 2:
 				const feature = this._findFeatureInDataset();
-				content = feature ? <Review feature={feature} /> : null;
+				content = feature ? <Review feature={feature} style={styleTabContent} /> : null;
 				break;
 		}
 		

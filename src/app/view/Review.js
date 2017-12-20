@@ -4,15 +4,25 @@ import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
-import { GridList, GridListTile } from 'material-ui/GridList';
+import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Hash from 'object-hash';
+import IconButton from 'material-ui/IconButton';
+import { Information } from 'mdi-material-ui';
 import Leaflet from 'leaflet';
+import LeafletMarker from './MarkerRotate';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import P4C from 'pic4carto';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
+Leaflet.Marker = LeafletMarker;
+
+const picIcon = Leaflet.icon({
+	iconUrl: 'images/marker_directed_transparent.png',
+	iconSize: [22.6, 21.6], //Original 68,65
+	iconAnchor: [11.3, 16.3] //Original 34,49
+});
 
 /**
  * Review component allows to review dataset features one by one.
@@ -21,7 +31,7 @@ class Review extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
-			zoom: 16,
+			zoom: 19,
 			radius: 20,
 			pictures: null,
 			lastStatus: null,
@@ -111,7 +121,7 @@ class Review extends Component {
 				new P4C.LatLng(this.props.feature.geometry.coordinates[1], this.props.feature.geometry.coordinates[0]),
 				this.state.radius,
 				{
-					towardsCenter: true
+					towardscenter: true
 				}
 			)
 			.then(pictures => {
@@ -139,13 +149,29 @@ class Review extends Component {
 		
 		let picGallery = null;
 		let currentPic = null;
+		let markers = null;
+		
 		if(this.state.pictures) {
 			const pics = [];
+			markers = [];
+			
 			for(let i in this.state.pictures) {
 				const p = this.state.pictures[i];
-				pics.push(<GridListTile key={p.pictureUrl}><img src={p.pictureUrl} onClick={() => {this.setCurrentPic(i); }} /></GridListTile>);
+				pics.push(
+					<GridListTile key={p.pictureUrl}>
+						<img src={p.pictureUrl} onClick={() => {this.setCurrentPic(i); }} style={{cursor:"pointer"}} />
+						<GridListTileBar titlePosition="top" style={{background: "none"}} actionIcon={
+							<IconButton href={p.detailsUrl} target="_blank">
+								<Information style={{color:"white"}} />
+							</IconButton>
+						} />
+					</GridListTile>);
+				
+				markers.push(<Marker key={p.pictureUrl} position={p.coordinates} icon={picIcon} iconAngle={p.direction} onClick={() => {this.setCurrentPic(i); }} />);
 			}
+			
 			picGallery = <GridList cols={4} cellHeight={200}>{pics}</GridList>;
+			
 			currentPic =
 				<Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose.bind(this)} maxWidth="md">
 					<img onClick={this.handleDialogClose.bind(this)} src={this.state.pictures[this.state.picId].pictureUrl} />
@@ -161,13 +187,13 @@ class Review extends Component {
 			picGallery = <Grid container><Grid item xs style={{textAlign: "center"}}><CircularProgress size={100} /></Grid></Grid>;
 		}
 		
-		return <div>
+		return <div style={this.props.style}>
 			<Grid container style={{width: "100%"}}>
 				<Grid item xs={3}>
-					<Typography type="subheading">{I18n.t("Details")}</Typography>
-					<Map id="p4r-review-map" center={position} zoom={this.state.zoom} ref="map">
+					<Map ref="map" center={position} zoom={this.state.zoom} style={{width:"100%", height:"200px"}}>
 						<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 						<Marker position={position} />
+						{markers}
 					</Map>
 					<Grid container>
 						<Grid item xs>
@@ -196,7 +222,6 @@ class Review extends Component {
 					</Table>
 				</Grid>
 				<Grid item xs={9} style={{paddingRight: 0}}>
-					<Typography type="subheading">{I18n.t("Pictures")}</Typography>
 					{picGallery}
 				</Grid>
 			</Grid>

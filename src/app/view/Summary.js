@@ -72,10 +72,10 @@ class Summary extends Component {
 			}
 		}
 		
-		return <div>
+		return <div style={this.props.style}>
 			<Button raised color="primary" onClick={this.startClicked}>{I18n.t("Start review")}</Button>
 			<Button raised color="accent" onClick={this.clearClicked}>{I18n.t("Clear review")}</Button>
-			<Map ref="map" id="p4r-summary-map" center={position} zoom={zoom}>
+			<Map ref="map" center={position} zoom={zoom} style={{width:"100%", height:"400px"}}>
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 				{datalayer}
 			</Map>
