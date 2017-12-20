@@ -6,7 +6,7 @@ import Main from './view/Main';
 import I18n from 'i18nline/lib/i18n';
 import PubSub from 'pubsub-js';
 
-const LOCALES = [ "en" ];
+const LOCALES = [ "en", "fr" ];
 
 /**
  * Application main launcher
