@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import CONSTS from '../constants';
 import Button from 'material-ui/Button';
+import { CircularProgress } from 'material-ui/Progress';
+import Dialog, { DialogTitle } from 'material-ui/Dialog';
 import Grid from 'material-ui/Grid';
 import { GridList, GridListTile } from 'material-ui/GridList';
 import Hash from 'object-hash';
@@ -24,7 +26,8 @@ class Review extends Component {
 			pictures: null,
 			lastStatus: null,
 			updatePictures: true,
-			picId: null
+			picId: null,
+			dialogOpen: false
 		};
 		
 		this.picMan = new P4C.PicturesManager();
@@ -91,7 +94,11 @@ class Review extends Component {
 	 * Change ID of picture to display
 	 */
 	setCurrentPic(id) {
-		this.setState({ picId: id });
+		this.setState({ picId: id, dialogOpen: true });
+	}
+	
+	handleDialogClose() {
+		this.setState({ dialogOpen: false });
 	}
 	
 	/**
@@ -99,9 +106,7 @@ class Review extends Component {
 	 * @private
 	 */
 	_updatePictures() {
-		console.log("update pics", this.props.feature, this.state.updatePictures);
 		if(this.props.feature && this.state.updatePictures) {
-			console.log("start dl");
 			this.picMan.startPicsRetrievalAround(
 				new P4C.LatLng(this.props.feature.geometry.coordinates[1], this.props.feature.geometry.coordinates[0]),
 				this.state.radius,
@@ -110,19 +115,15 @@ class Review extends Component {
 				}
 			)
 			.then(pictures => {
-				console.log("dl done");
 				if(pictures.length > 0) {
 					this.setState({ pictures: pictures, lastStatus: "ok", updatePictures: false, picId: 0 });
 				}
 				else {
 					this.setState({ pictures: null, lastStatus: "ok", updatePictures: false, picId: null });
-					PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("No images available for this feature") });
 				}
 			})
 			.catch(e => {
-				console.log("dl failed");
 				this.setState({ pictures: null, lastStatus: "fail", updatePictures: false, picId: null });
-				PubSub.publish("UI.MESSAGE.SHOW", { type: "error", message: I18n.t("Can't get images for this feature") });
 			});
 		}
 	}
@@ -144,8 +145,20 @@ class Review extends Component {
 				const p = this.state.pictures[i];
 				pics.push(<GridListTile key={p.pictureUrl}><img src={p.pictureUrl} onClick={() => {this.setCurrentPic(i); }} /></GridListTile>);
 			}
-			picGallery = <GridList cols={4} cellHeight={100} style={{flexWrap: "nowrap"}}>{pics}</GridList>;
-			currentPic = <img style={{ maxWidth: "100%", maxHeight: "70%" }} src={this.state.pictures[this.state.picId].pictureUrl} />
+			picGallery = <GridList cols={4} cellHeight={200}>{pics}</GridList>;
+			currentPic =
+				<Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose.bind(this)} maxWidth="md">
+					<img onClick={this.handleDialogClose.bind(this)} src={this.state.pictures[this.state.picId].pictureUrl} />
+				</Dialog>;
+		}
+		else if(this.state.pictures === null && this.state.lastStatus === "ok") {
+			picGallery = <Typography type="body1" align="center">{I18n.t("No pictures available around this feature")}</Typography>;
+		}
+		else if(this.state.pictures === null && this.state.lastStatus === "fail") {
+			picGallery = <Typography type="body1" align="center">{I18n.t("Images are temporarily unavailable for this feature")}</Typography>;
+		}
+		else {
+			picGallery = <Grid container><Grid item xs style={{textAlign: "center"}}><CircularProgress size={100} /></Grid></Grid>;
 		}
 		
 		return <div>
@@ -185,23 +198,19 @@ class Review extends Component {
 				<Grid item xs={9} style={{paddingRight: 0}}>
 					<Typography type="subheading">{I18n.t("Pictures")}</Typography>
 					{picGallery}
-					<Grid container>
-						<Grid item xs={12} style={{textAlign: "center"}}>
-							{currentPic}
-						</Grid>
-					</Grid>
 				</Grid>
 			</Grid>
+			{currentPic}
 		</div>;
 	}
 	
 	componentWillReceiveProps(nextProps, nextState) {
 		//Check if pictures should be downloaded
 		if(this.state.pictures === null && nextProps.feature && this.lastStatus === null) {
-			this.setState({ updatePictures: true });
+			this.setState({ updatePictures: true, pictures: null, lastStatus: null, picId: null });
 		}
 		else if(this.props.feature && nextProps.feature && Hash(this.props.feature) !== Hash(nextProps.feature)) {
-			this.setState({ updatePictures: true });
+			this.setState({ updatePictures: true, pictures: null, lastStatus: null, picId: null });
 		}
 		else {
 			this.setState({ updatePictures: false });
