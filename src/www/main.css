@@ -11,3 +11,15 @@ body {
 input[type=file] {
 	height: auto !important;
 }
+
+span.p4r-legend {
+	display: inline-block;
+	margin-right: 20px;
+}
+
+span.p4r-legend > span {
+	display: inline-block;
+	width: 30px;
+	height: 12px;
+	margin-right: 5px;
+}

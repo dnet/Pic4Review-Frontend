@@ -92,6 +92,10 @@ class Main extends Component {
 			this.nextFeature();
 		});
 		
+		PubSub.subscribe("UI.FEATURE.SHOW", (msg, data) => {
+			this.setState({ tabValue: 2, featureId: parseInt(data) });
+		});
+		
 		PubSub.subscribe("UI.ASK.CLEAR", (msg, data) => {
 			this.setState({ clearDialogOpen: true });
 		});
@@ -218,8 +222,11 @@ class Main extends Component {
 					<AppBar position="static">
 						<Toolbar style={{display: "flex", justifyContent: "space-between"}}>
 							<div>
-								<Typography type="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
-								<Typography type="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Alpha release")}</Typography>
+								<img src="images/logo.512.png" style={{height: 50, marginRight: 20, verticalAlign: "middle"}}/>
+								<div style={{display: "inline-block", verticalAlign: "middle"}}>
+									<Typography type="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
+									<Typography type="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Alpha release")}</Typography>
+								</div>
 							</div>
 							<Hidden only="xs">
 								<Typography type="subheading" style={{right: 10}} gutterBottom color="inherit">{I18n.t("Review geo-datasets easily using pictures")}</Typography>

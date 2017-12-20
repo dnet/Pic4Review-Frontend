@@ -7,13 +7,14 @@ import Grid from 'material-ui/Grid';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Hash from 'object-hash';
 import IconButton from 'material-ui/IconButton';
-import { Information } from 'mdi-material-ui';
+import { Information, Pencil, Check, SkipForward } from 'mdi-material-ui';
 import Leaflet from 'leaflet';
 import LeafletMarker from './MarkerRotate';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 import P4C from 'pic4carto';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
+import withWidth from 'material-ui/utils/withWidth';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
 Leaflet.Marker = LeafletMarker;
@@ -23,6 +24,9 @@ const picIcon = Leaflet.icon({
 	iconSize: [22.6, 21.6], //Original 68,65
 	iconAnchor: [11.3, 16.3] //Original 34,49
 });
+
+const IMG_COLS = { "xs": 1, "sm": 2, "md": 3, "lg": 4, "xl": 5 };
+const IMG_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 
 /**
  * Review component allows to review dataset features one by one.
@@ -139,6 +143,8 @@ class Review extends Component {
 	}
 	
 	render() {
+		const styleBtn = { width: "100%", height: "100%" };
+		
 		const position = [ this.props.feature.geometry.coordinates[1], this.props.feature.geometry.coordinates[0] ];
 		const tags = Object.keys(this.props.feature.properties).filter(k => k !== "p4rid").map(k => {
 			return <TableRow key={k}>
@@ -170,11 +176,11 @@ class Review extends Component {
 				markers.push(<Marker key={p.pictureUrl} position={p.coordinates} icon={picIcon} iconAngle={p.direction} onClick={() => {this.setCurrentPic(i); }} />);
 			}
 			
-			picGallery = <GridList cols={4} cellHeight={200}>{pics}</GridList>;
+			picGallery = <GridList cols={IMG_COLS[this.props.width]} cellHeight={IMG_HEIGHT[this.props.width]}>{pics}</GridList>;
 			
 			currentPic =
 				<Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose.bind(this)} maxWidth="md">
-					<img onClick={this.handleDialogClose.bind(this)} src={this.state.pictures[this.state.picId].pictureUrl} />
+					<img onClick={this.handleDialogClose.bind(this)} src={this.state.pictures[this.state.picId].pictureUrl} style={{maxWidth: "100%", objectFit: "cover"}} />
 				</Dialog>;
 		}
 		else if(this.state.pictures === null && this.state.lastStatus === "ok") {
@@ -189,27 +195,39 @@ class Review extends Component {
 		
 		return <div style={this.props.style}>
 			<Grid container style={{width: "100%"}}>
-				<Grid item xs={3}>
+				<Grid item xs={12} sm={4} lg={3}>
 					<Map ref="map" center={position} zoom={this.state.zoom} style={{width:"100%", height:"200px"}}>
 						<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 						<Marker position={position} />
 						{markers}
 					</Map>
-					<Grid container>
-						<Grid item xs>
-							<Button raised color="default" onClick={this.editJOSM.bind(this)}>{I18n.t("Edit in JOSM")}</Button>
+					<Grid container style={{marginTop: 5}}>
+						<Grid item xs={6} md={6} xl={3}>
+							<Button raised color="default" onClick={this.editJOSM.bind(this)} style={styleBtn}>
+								<Pencil />
+								{I18n.t("JOSM")}
+							</Button>
 						</Grid>
-						<Grid item xs>
-							<Button raised color="default" onClick={this.editId.bind(this)}>{I18n.t("Edit in iD")}</Button>
+						<Grid item xs={6} md={6} xl={3}>
+							<Button raised color="default" onClick={this.editId.bind(this)} style={styleBtn}>
+								<Pencil />
+								{I18n.t("iD")}
+							</Button>
 						</Grid>
-						<Grid item xs>
-							<Button raised color="primary" onClick={this.doneClicked}>{I18n.t("Done")}</Button>
+						<Grid item xs={6} md={6} xl={3}>
+							<Button raised color="primary" onClick={this.doneClicked} style={styleBtn}>
+								<Check />
+								{I18n.t("Done")}
+							</Button>
 						</Grid>
-						<Grid item xs>
-							<Button raised color="accent" onClick={this.skipClicked}>{I18n.t("Skip")}</Button>
+						<Grid item xs={6} md={6} xl={3}>
+							<Button raised color="accent" onClick={this.skipClicked} style={styleBtn}>
+								<SkipForward />
+								{I18n.t("Skip")}
+							</Button>
 						</Grid>
 					</Grid>
-					<Table>
+					<Table style={{marginTop: 10, border: "1px solid lightgray", borderCollapse: "unset"}}>
 						<TableHead>
 							<TableRow>
 								<TableCell>{I18n.t("Key")}</TableCell>
@@ -221,7 +239,7 @@ class Review extends Component {
 						</TableBody>
 					</Table>
 				</Grid>
-				<Grid item xs={9} style={{paddingRight: 0}}>
+				<Grid item xs={12} sm={8} lg={9} style={{paddingRight: 0}}>
 					{picGallery}
 				</Grid>
 			</Grid>
@@ -251,4 +269,4 @@ class Review extends Component {
 	}
 }
 
-export default Review;
+export default withWidth()(Review);
