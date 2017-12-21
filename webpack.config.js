@@ -45,12 +45,7 @@ else {
 	plugins.push(new webpack.HotModuleReplacementPlugin());
 }
 
-plugins.push(
-	// Transfer Files
-	new TransferWebpackPlugin([
-		{from: 'www'},
-	], path.resolve(__dirname, 'src')),
-);
+plugins.push(new TransferWebpackPlugin([ {from: 'www'} ], path.resolve(__dirname, 'src'));
 
 const config = {
 	entry: {
