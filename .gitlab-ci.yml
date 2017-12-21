@@ -10,6 +10,10 @@ cache:
   paths:
     - node_modules/
 
+test:
+  script:
+    - npm run doc:js:check
+
 deploy:client:develop:
   stage: deploy
   only:
@@ -29,3 +33,5 @@ deploy:client:tags:
     - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/builds/ ./Pic4Review_latest.zip
     - mv ./Pic4Review_latest.zip ./Pic4Review_$(git tag -l --points-at HEAD).zip
     - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/builds/ ./Pic4Review_$(git tag -l --points-at HEAD).zip
+    - npm run doc
+    - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/doc/ ./doc/*

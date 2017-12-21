@@ -31,6 +31,16 @@ npm run start
 If no errors appears, a web server at `http://localhost:3000` is ready to browse.
 
 
+## Documentation
+
+This project has a maintained documentation for its JS classes and methods. You can [read it online here](https://pic4review.pavie.info/doc/) (for latest stable version), or locally by generating it (for latest develop version):
+```sh
+npm run doc
+```
+
+Then, it will be available in `doc/` folder. If you are developing new features for this project, we highly recommend you to write appropriate documentation. We follow the [JSDoc](http://usejsdoc.org/about-getting-started.html) documentation format, and make use of [documentation.js](http://documentation.js.org/) for generating it.
+
+
 ## Pull requests
 
 As this project is open source, pull requests are welcome. If you want to improve project, or add a new tool, please create a new branch based on __develop__ (not master).

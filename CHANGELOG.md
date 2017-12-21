@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Documentation for contributing/develop
+- Documentation for JS classes/methods
 
 
 ## 0.1.0 - 2017-12-20
