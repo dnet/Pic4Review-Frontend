@@ -7,9 +7,10 @@
     "url": "https://framagit.org/Pic4Carto/Pic4Review.git"
   },
   "scripts": {
-    "start": "webpack-dev-server --config webpack-dev-server.config.js --progress --inline --colors",
+    "start": "NODE_ENV=develop webpack-dev-server --progress --inline --colors",
     "build": "npm run build:js && npm run zip",
-    "build:js": "webpack --config webpack-production.config.js --progress --colors",
+    "build:js": "NODE_ENV=production webpack --progress --colors",
+    "test": "NODE_ENV=test mocha-webpack --recursive test/",
     "doc": "npm run doc:js:check && npm run doc:js",
     "doc:js": "documentation build ./src/**/* -f html -o doc/",
     "doc:js:check": "documentation lint ./src/**/*",
@@ -34,6 +35,8 @@
     "documentation": "^5.3.5",
     "file-loader": "^1.1.6",
     "i18nline": "^1.5.0",
+    "mocha": "^4.0.1",
+    "mocha-webpack": "^1.0.1",
     "request": "^2.82.0",
     "style-loader": "^0.19.1",
     "transfer-webpack-plugin": "^0.1.4",

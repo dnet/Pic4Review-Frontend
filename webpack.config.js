@@ -2,16 +2,62 @@ const webpack = require('webpack');
 const path = require('path');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
 
+const devtool = process.env.NODE_ENV === "production" ? "source-map" : "eval";
+const target = process.env.NODE_ENV === "test" ? 'node' : 'web';
+let plugins = [];
+
+if(process.env.NODE_ENV === "production") {
+	plugins = plugins.concat([
+		// Define production build to allow React to strip out unnecessary checks
+		new webpack.DefinePlugin({
+			'process.env':{
+				'NODE_ENV': JSON.stringify('production')
+			}
+		}),
+		new webpack.optimize.AggressiveMergingPlugin(),
+		new webpack.optimize.OccurrenceOrderPlugin(),
+		// Minify the bundle
+		new webpack.optimize.UglifyJsPlugin({
+			mangle: true,
+			compress: {
+				warnings: false, // Suppress uglification warnings
+				pure_getters: true,
+				unsafe: true,
+				unsafe_comps: true,
+				screw_ie8: true,
+				conditionals: true,
+				unused: true,
+				comparisons: true,
+				sequences: true,
+				dead_code: true,
+				evaluate: true,
+				if_return: true,
+				join_vars: true
+			},
+			output: {
+				comments: false,
+			},
+			exclude: [/\.min\.js$/gi]
+		})
+	]);
+}
+else {
+	plugins.push(new webpack.HotModuleReplacementPlugin());
+}
+
+plugins.push(
+	// Transfer Files
+	new TransferWebpackPlugin([
+		{from: 'www'},
+	], path.resolve(__dirname, 'src')),
+);
+
 const config = {
-	// Entry points to the project
 	entry: {
 		main: [
-			// only- means to only hot reload for successful updates
-			'webpack/hot/only-dev-server',
 			'./src/app/app.js',
 		]
 	},
-	// Server Configuration options
 	devServer: {
 		contentBase: 'src/www', // Relative directory for base of server
 		hot: true, // Live-reload
@@ -19,19 +65,13 @@ const config = {
 		port: 3000, // Port Number
 		host: 'localhost', // Change to '0.0.0.0' for external facing server
 	},
-	devtool: 'eval',
+	devtool: devtool,
+	target: target,
 	output: {
 		path: path.resolve(__dirname, 'build'), // Path of output file
-		filename: '[name].js',
+		filename: '[name].js', // Name of output file
 	},
-	plugins: [
-		// Enables Hot Modules Replacement
-		new webpack.HotModuleReplacementPlugin(),
-		// Moves files
-		new TransferWebpackPlugin([
-			{from: 'www'},
-		], path.resolve(__dirname, 'src')),
-	],
+	plugins: plugins,
 	module: {
 		rules: [
 			{

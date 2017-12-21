@@ -7,6 +7,7 @@ import Radio, { RadioGroup } from 'material-ui/Radio';
 
 /**
  * Dataset view handles source format and file selection for user.
+ * @name DatasetComponent
  */
 class Dataset extends Component {
 	constructor(props, context) {
@@ -19,6 +20,8 @@ class Dataset extends Component {
 	
 	/**
 	 * Handler for input file change event.
+	 * @memberof DatasetComponent
+	 * @instance
 	 */
 	sourceFileChanged(event) {
 		this.setState({ sourceFile: event.target.files[0] });
@@ -26,6 +29,8 @@ class Dataset extends Component {
 	
 	/**
 	 * Upload button clicked.
+	 * @memberof DatasetComponent
+	 * @instance
 	 */
 	uploadClick(event) {
 		if(!this.state.sourceFile || !this.state.sourceFormatValue) {
