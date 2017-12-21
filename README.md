@@ -4,13 +4,11 @@ __Pic4Review__ is a tool for helping you review a geo-dataset for a given task (
 
 You can try it out at [pic4review.pavie.info](https://pic4review.pavie.info/) (or [develop instance](http://pic4review.pavie.info/dev/)).
 
-[![pipeline status](https://framagit.org/Pic4Carto/Pic4Review/badges/master/pipeline.svg)](https://framagit.org/Pic4Carto/Pic4Review/commits/master)
-
 [![Help making this possible](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/PanierAvide/donate)
 
 ## Purpose
 
-TODO
+The goal of this tool is to make use of pictures taken by community on various platforms (Mapillary, OpenStreetCam, Wikimedia Commons or Flickr) in order to improve geographic data. As pictures provide a high-level of detail, they are really useful to add qualitative data over existing features. This tool makes these improvements easier for everyone by automating pictures retrieval and association with features to review.
 
 
 ## Contributing
