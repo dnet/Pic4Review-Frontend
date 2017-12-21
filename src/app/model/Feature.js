@@ -1,3 +1,6 @@
+import Hash from 'object-hash';
+import P4C from 'pic4carto';
+
 const STATUSES = [ "new", "skipped", "nopics", "reviewed" ];
 
 /**
@@ -30,6 +33,7 @@ class Feature {
 		
 		this.lastRadius = null;
 		this.pictures = null;
+		this.picsShown = {};
 	}
 
 
@@ -49,7 +53,39 @@ class Feature {
 	 * @return {Promise} A promise resolving on pictures array.
 	 */
 	getPictures(radius) {
-		//TODO
+		if(this.pictures !== null && this.lastRadius === radius) {
+			return new Promise(resolve => {
+				resolve(this.pictures);
+			});
+		}
+		else {
+			const picman = new P4C.PicturesManager();
+			return picman.startPicsRetrievalAround(
+				new P4C.LatLng(this.coordinates[0], this.coordinates[1]),
+				radius,
+				{ towardscenter: true }
+			)
+			.then(p => {
+				this.pictures = p;
+				this.lastRadius = radius;
+				return p;
+			});
+		}
+	}
+	
+	/**
+	 * Is the feature visible on given picture ?
+	 * This information is based on previous seenOnPicture calls.
+	 * @param {int} picId The picture ID (index in getPictures array)
+	 * @return {boolean} True if feature was set as shown on picture
+	 */
+	isShownOnPicture(picId) {
+		if(!this.pictures || picId >= this.pictures.length) {
+			throw new TypeError("Invalid picture ID");
+		}
+		else {
+			return this.picsShown[Hash(this.pictures[picId])] === true;
+		}
 	}
 
 
@@ -73,8 +109,18 @@ class Feature {
 	 * @param {int} picId The picture ID (index in getPictures array)
 	 * @param {boolean} [seen] Was the feature seen in the given picture ? (defaults to true)
 	 */
-	seenInPicture(picId, seen) {
-		//TODO
+	seenOnPicture(picId, seen) {
+		if(!this.pictures || picId >= this.pictures.length) {
+			throw new TypeError("Invalid picture ID");
+		}
+		else {
+			if(seen === true || seen === null || seen === undefined) {
+				this.picsShown[Hash(this.pictures[picId])] = true;
+			}
+			else {
+				delete this.picsShown[Hash(this.pictures[picId])];
+			}
+		}
 	}
 
 
@@ -85,7 +131,29 @@ class Feature {
 	 * @return {Object} The GeoJSON representation of this feature.
 	 */
 	asGeoJSON() {
-		//TODO
+		const props = Object.assign({}, this.properties);
+		
+		if(this.pictures) {
+			props.pictures = [];
+			this.pictures.forEach(p => {
+				props.pictures.push({
+					url: p.pictureUrl,
+					details: p.detailsUrl,
+					date: (new Date(p.date)).toISOString()
+				});
+			});
+		}
+		
+		const geojson = {
+			type: "Feature",
+			geometry: {
+				type: "Point",
+				coordinates: [ this.coordinates[1], this.coordinates[0] ]
+			},
+			properties: props
+		};
+		
+		return geojson;
 	}
 }
 

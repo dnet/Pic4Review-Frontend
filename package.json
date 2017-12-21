@@ -41,14 +41,15 @@
     "style-loader": "^0.19.1",
     "transfer-webpack-plugin": "^0.1.4",
     "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.4.2"
+    "webpack-dev-server": "^2.4.2",
+    "xmlhttprequest": "^1.8.0"
   },
   "dependencies": {
     "leaflet": "^1.2.0",
     "material-ui": "next",
     "mdi-material-ui": "^3.0.0",
     "object-hash": "^1.2.0",
-    "pic4carto": "^2.0.3",
+    "pic4carto": "^2.0.5",
     "pubsub-js": "^1.5.7",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
