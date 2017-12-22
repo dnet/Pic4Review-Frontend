@@ -49,7 +49,7 @@
     "material-ui": "next",
     "mdi-material-ui": "^3.0.0",
     "object-hash": "^1.2.0",
-    "pic4carto": "^2.0.5",
+    "pic4carto": "^2.0.6",
     "pubsub-js": "^1.5.7",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",

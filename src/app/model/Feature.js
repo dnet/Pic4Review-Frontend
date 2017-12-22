@@ -53,7 +53,10 @@ class Feature {
 	 * @return {Promise} A promise resolving on pictures array.
 	 */
 	getPictures(radius) {
-		if(this.pictures !== null && this.lastRadius === radius) {
+		if(!radius || isNaN(radius)) {
+			throw new TypeError("Given radius is invalid, must be an integer (meters)");
+		}
+		else if(this.pictures !== null && this.lastRadius === radius) {
 			return new Promise(resolve => {
 				resolve(this.pictures);
 			});

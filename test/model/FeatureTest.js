@@ -65,6 +65,13 @@ describe("Model > Feature", () => {
 	});
 	
 	describe("getPictures", () => {
+		it("fails if no radius is given", () => {
+			assert.throws(() => {
+				const f1 = new Feature(1, [ 48.1294, -1.6760 ], { "t1": "v1" });
+				f1.getPictures();
+			}, TypeError);
+		});
+		
 		it("returns pictures around feature", (done) => {
 			const f1 = new Feature(1, [ 48.1294, -1.6760 ], { "t1": "v1" });
 			f1.getPictures(30)
