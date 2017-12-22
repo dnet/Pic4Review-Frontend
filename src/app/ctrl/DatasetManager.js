@@ -1,32 +1,35 @@
+import Feature from '../model/Feature';
+import GeoJSON from '../model/dataset/GeoJSON';
 import Hash from 'object-hash';
 
-const STATUS = { "0": "new", "1": "done", "2": "skip" };
-const STATUS_TO_ID = { "new": "0", "done": "1", "skip": "2" };
-
 /**
- * DatasetManager is an utility class to handle datasets.
+ * DatasetManager is an utility class to handle {@link Dataset|datasets}.
  * It allows to read data from files, store metadata...
+ * 
+ * @param {boolean} [skipChecks] Set to true to not run browser compatibility checks.
  */
 class DatasetManager {
-	constructor() {
-		if(window.File && window.FileReader && window.FileList && window.Blob) {
-			this.reader = new FileReader();
-		}
-		else {
-			throw new Error(I18n.t("No support of File API, please use a recent web browser"));
-		}
-		
-		if(!window.localStorage) {
-			throw new Error(I18n.t("No support of local storage, please use a recent web browser"));
+	constructor(skipChecks) {
+		if(skipChecks === null || skipChecks === undefined || skipChecks === false) {
+			if(window.File && window.FileReader && window.FileList && window.Blob) {
+				this.reader = new FileReader();
+			}
+			else {
+				throw new Error(I18n.t("No support of File API, please use a recent web browser"));
+			}
+			
+			if(!window.localStorage) {
+				throw new Error(I18n.t("No support of local storage, please use a recent web browser"));
+			}
 		}
 	}
 	
 	/**
 	 * Reads a GeoJSON from file.
 	 * @param {Object} file The input file
-	 * @return {Promise} Resolves on GeoJSON object
+	 * @return {Promise} Resolves on {@link GeoJSONDataset|GeoJSON dataset}
 	 */
-	readGeoJSON(file) {
+	loadGeoJSON(file) {
 		return new Promise((resolve, reject) => {
 			if(!file) {
 				reject(new Error(I18n.t("No GeoJSON file given")));
@@ -34,13 +37,11 @@ class DatasetManager {
 			else {
 				this.reader.onload = e => {
 					try {
-						const geojson = JSON.parse(e.target.result);
-						for(let i in geojson.features) {
-							geojson.features[i].properties.p4rid = i;
-						}
-						resolve(this.readReview({ type: "geojson", data: geojson }));
+						const dataset = new GeoJSON(e.target.result);
+						resolve(this.loadReview(dataset));
 					}
 					catch(e) {
+						console.error(e);
 						reject(new Error(I18n.t("Given GeoJSON seems invalid")));
 					}
 				};
@@ -52,59 +53,49 @@ class DatasetManager {
 	
 	/**
 	 * Read previous review from local storage for a given dataset
-	 * @param {Object} dataset The dataset
-	 * @return {Object} The dataset with review status for each feature
+	 * @param {Dataset} dataset The dataset
+	 * @return {Dataset} The dataset with review status for each feature
 	 */
-	readReview(dataset) {
-		const hash = dataset.type + Hash(dataset.data);
-		let review = localStorage.getItem(hash);
+	loadReview(dataset) {
+		let review = localStorage.getItem(dataset.getId());
+		const features = dataset.getAllFeatures();
 		
 		if(review !== null) {
-			dataset.review = review.split(';').map(id => STATUS[id]);
+			review = review.split(';').map(id => Feature.STATUSES[id]);
+			
+			if(review.length === features.length) {
+				for(let i in features) {
+					features[i].status = review[i];
+				}
+			}
+			else {
+				localStorage.removeItem(dataset.getId());
+			}
 		}
-		else {
-			dataset.review = Array.apply(null, Array(dataset.data.features.length)).map(() => "new");
-		}
-		
-		//console.log("read", dataset.review);
 		
 		return dataset;
 	}
 	
 	/**
 	 * Updates the status of a given feature in the dataset, and saves it in localStorage.
-	 * @param {Object} dataset The dataset
-	 * @param {int} featureId The feature ID in the dataset
-	 * @param {string} status The feature new status (new, done, skip)
-	 * @return {Object} The updated dataset
+	 * @param {Dataset} dataset The dataset
 	 */
-	updateReview(dataset, featureId, status) {
-		const hash = dataset.type + Hash(dataset.data);
-		
-		//Update
-		dataset.review[featureId] = status;
-		const newItem = dataset.review.map(s => STATUS_TO_ID[s]).join(';');
-		localStorage.setItem(hash, newItem);
-		
-		//console.log("update", dataset.review);
-		
-		return dataset;
+	saveReview(dataset) {
+		const newItem = dataset.getAllFeatures().map(f => Feature.STATUSES.indexOf(f.status)).join(';');
+		localStorage.setItem(dataset.getId(), newItem);
 	}
 	
 	/**
 	 * Clear all the reviews of a given dataset.
-	 * @param {Object} dataset The dataset
-	 * @return {Object} The updated dataset
+	 * @param {Dataset} dataset The dataset
+	 * @return {Dataset} The updated dataset
 	 */
 	clearReview(dataset) {
-		const hash = dataset.type + Hash(dataset.data);
+		localStorage.removeItem(dataset.getId());
 		
-		//Update
-		dataset.review = dataset.review.map(s => "new");
-		const newItem = dataset.review.map(s => STATUS_TO_ID[s]).join(';');
-		localStorage.setItem(hash, newItem);
-		
-		//console.log("clear", dataset.review, newItem);
+		dataset.getAllFeatures().forEach(f => {
+			f.status = "new";
+		});
 		
 		return dataset;
 	}

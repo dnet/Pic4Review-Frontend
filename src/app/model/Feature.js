@@ -160,4 +160,6 @@ class Feature {
 	}
 }
 
+Feature.STATUSES = STATUSES;
+
 export default Feature;

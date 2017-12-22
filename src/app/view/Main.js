@@ -58,23 +58,7 @@ class Main extends Component {
 		});
 		
 		PubSub.subscribe("DATASET.READY", (msg, data) => {
-			//Check if dataset already has reviewed data
-			let featureId = 0;
-			if(data.review.indexOf("done") >= 0 || data.review.indexOf("skip") >= 0) {
-				featureId = data.review.indexOf("new");
-				
-				//If no new features remaining
-				if(featureId === -1) {
-					featureId = data.review.indexOf("skip");
-					
-					//If no skipped features also, reset to 0
-					if(featureId === -1) {
-						featureId = 0;
-					}
-				}
-			}
-			
-			this.setState({ dataset: data, featureId: featureId });
+			this.setState({ dataset: data });
 			this.changeTab(null, 1);
 		});
 		
@@ -82,13 +66,14 @@ class Main extends Component {
 			this.setState({ dataset: data });
 		});
 		
-		PubSub.subscribe("UI.FEATURE.DONE", (msg, data) => {
-			PubSub.publish("DATASET.FEATURE.DONE", this.state.featureId);
-			this.nextFeature();
-		});
-		
-		PubSub.subscribe("UI.FEATURE.SKIP", (msg, data) => {
-			PubSub.publish("DATASET.FEATURE.SKIP", this.state.featureId);
+		PubSub.subscribe("UI.FEATURE.CHANGED", (msg, data) => {
+			/**
+			 * Event sent when a feature in a dataset has changed
+			 * @event DATASET.FEATURE.CHANGED
+			 * @type {Dataset} The dataset
+			 * @memberof PubSub
+			 */
+			PubSub.publish("DATASET.FEATURE.CHANGED", this.state.dataset);
 			this.nextFeature();
 		});
 		
@@ -132,14 +117,17 @@ class Main extends Component {
 	 * Go review next feature
 	 */
 	nextFeature() {
-		const newFeatureId = this.state.featureId + 1;
-		if(newFeatureId < this._findDatasetFeatureLength()) {
-			this.setState({ featureId: this.state.featureId + 1 });
-		}
-		else {
-			PubSub.publish("UI.MESSAGE.SHOW", { type: "info", message: I18n.t("Congratulations ! You have reviewed all your features.") });
-			PubSub.publish("UI.TAB.SHOW", "summary");
-		}
+		this.state.dataset
+		.getNextFeature()
+		.then(f => {
+			if(f !== null) {
+				this.setState({ featureId: this.state.dataset.currentFeatureId });
+			}
+			else {
+				PubSub.publish("UI.MESSAGE.SHOW", { type: "info", message: I18n.t("Congratulations ! You have reviewed all your features.") });
+				PubSub.publish("UI.TAB.SHOW", "summary");
+			}
+		});
 	}
 	
 	/**
@@ -155,45 +143,6 @@ class Main extends Component {
 	clearReviewClicked() {
 		this.setState({ clearDialogOpen: false, featureId: 0, dataset: null });
 		PubSub.publish("DATASET.CLEAR");
-	}
-	
-	toggleDrawer() {
-		this.setState({ drawerOpen: !this.state.drawerOpen });
-	}
-	
-	/**
-	 * Amount of features available in dataset
-	 */
-	_findDatasetFeatureLength() {
-		let length = 0;
-		
-		if(this.state.dataset !== null) {
-			switch(this.state.dataset.type) {
-				case "geojson":
-					length = this.state.dataset.data.features.length;
-					break;
-			}
-		}
-		
-		return length;
-	}
-	
-	/**
-	 * Find current feature in dataset
-	 * @private
-	 */
-	_findFeatureInDataset() {
-		let feature = null;
-		
-		if(this.state.dataset !== null && this.state.featureId !== null) {
-			switch(this.state.dataset.type) {
-				case "geojson":
-					feature = this.state.dataset.data.features[this.state.featureId];
-					break;
-			}
-		}
-		
-		return feature;
 	}
 
 	render() {
@@ -211,7 +160,7 @@ class Main extends Component {
 				break;
 			
 			case 2:
-				const feature = this._findFeatureInDataset();
+				const feature = this.state.dataset.getAllFeatures()[this.state.featureId];
 				content = feature ? <Review feature={feature} style={styleTabContent} /> : null;
 				break;
 		}

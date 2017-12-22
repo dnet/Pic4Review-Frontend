@@ -42,12 +42,17 @@ class App {
 	 * Initializes publisher/subscriber system
 	 */
 	initPubSub() {
+		/**
+		 * PubSub is a system for communicating between objects.
+		 * You can publish events and subscribe to listen to other objects events.
+		 * @name PubSub
+		 */
 		window.PubSub = PubSub;
 		
 		PubSub.subscribe("DATASET.FILE.UPLOADED", (msg, data) => {
 			if(data.format == "geojson") {
 				this.datasetManager
-				.readGeoJSON(data.file)
+				.loadGeoJSON(data.file)
 				.then(dataset => {
 					this.dataset = dataset;
 					PubSub.publish("DATASET.READY", this.dataset);
@@ -59,9 +64,8 @@ class App {
 		});
 		
 		PubSub.subscribe("DATASET.FEATURE", (msg, id) => {
-			const msgToStatus = { "DATASET.FEATURE.SKIP": "skip", "DATASET.FEATURE.DONE": "done" };
-			this.dataset = this.datasetManager.updateReview(this.dataset, id, msgToStatus[msg]);
-			PubSub.publish("DATASET.UPDATED", this.dataset);
+			const msgToStatus = { "DATASET.FEATURE.SKIP": "skip", "DATASET.FEATURE.DONE": "reviewed" };
+			this.dataset = this.datasetManager.saveReview(this.dataset);
 		});
 		
 		PubSub.subscribe("DATASET.CLEAR", (msg, id) => {

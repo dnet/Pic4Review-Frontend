@@ -1,5 +1,6 @@
 import Dataset from '../Dataset';
 import Feature from '../Feature';
+import Hash from 'object-hash';
 
 /**
  * A GeoJSON {@link Dataset} is a set of features read from a GeoJSON string.
@@ -16,6 +17,7 @@ class GeoJSON extends Dataset {
 			throw new TypeError("You should provide a valid GeoJSON string");
 		}
 		
+		this.id = Hash(geojson);
 		const g = JSON.parse(geojson);
 		
 		if(g.type !== "FeatureCollection") {
@@ -39,6 +41,15 @@ class GeoJSON extends Dataset {
 				));
 			}
 		}
+	}
+	
+	/**
+	 * Implementation of {@link Dataset#getId}
+	 * @memberof GeoJSONDataset
+	 * @instance
+	 */
+	getId() {
+		return this.id;
 	}
 	
 	/**

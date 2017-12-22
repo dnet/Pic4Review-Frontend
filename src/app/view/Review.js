@@ -48,11 +48,20 @@ class Review extends Component {
 	}
 	
 	doneClicked() {
-		PubSub.publish("UI.FEATURE.DONE");
+		this.props.feature.status = "reviewed";
+		
+		/**
+		 * Event sent when feature was edited
+		 * @event UI.FEATURE.CHANGED
+		 * @type {Feature} The feature
+		 * @memberof PubSub
+		 */
+		PubSub.publish("UI.FEATURE.CHANGED", this.props.feature);
 	}
 	
 	skipClicked() {
-		PubSub.publish("UI.FEATURE.SKIP");
+		this.props.feature.status = "skipped";
+		PubSub.publish("UI.FEATURE.CHANGED", this.props.feature);
 	}
 	
 	/**
@@ -60,10 +69,7 @@ class Review extends Component {
 	 */
 	editJOSM() {
 		let circle = Leaflet.circle(
-			[
-				this.props.feature.geometry.coordinates[1],
-				this.props.feature.geometry.coordinates[0]
-			],
+			this.props.feature.coordinates,
 			{ radius: 50 }
 		).addTo(this.refs.map.leafletElement);
 		
@@ -97,9 +103,7 @@ class Review extends Component {
 	editId() {
 		window.open(
 			CONSTS.ID_URL+"19/"
-				+this.props.feature.geometry.coordinates[1]
-				+"/"
-				+this.props.feature.geometry.coordinates[0],
+				+this.props.feature.coordinates.join("/"),
 			"_blank"
 		).focus();
 	}
@@ -122,7 +126,7 @@ class Review extends Component {
 	_updatePictures() {
 		if(this.props.feature && this.state.updatePictures) {
 			this.picMan.startPicsRetrievalAround(
-				new P4C.LatLng(this.props.feature.geometry.coordinates[1], this.props.feature.geometry.coordinates[0]),
+				new P4C.LatLng(this.props.feature.coordinates),
 				this.state.radius,
 				{
 					towardscenter: true
@@ -145,8 +149,8 @@ class Review extends Component {
 	render() {
 		const styleBtn = { width: "100%", height: "100%" };
 		
-		const position = [ this.props.feature.geometry.coordinates[1], this.props.feature.geometry.coordinates[0] ];
-		const tags = Object.keys(this.props.feature.properties).filter(k => k !== "p4rid").map(k => {
+		const position = this.props.feature.coordinates;
+		const tags = Object.keys(this.props.feature.properties).map(k => {
 			return <TableRow key={k}>
 				<TableCell>{k}</TableCell>
 				<TableCell>{this.props.feature.properties[k]}</TableCell>

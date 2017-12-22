@@ -20,6 +20,10 @@ class Datatest1 extends Dataset {
 		});
 	}
 	
+	getId() {
+		return "42";
+	}
+	
 	getNextFeature() {
 		return new Promise(resolve => {
 			const nextFtId = this.currentFeatureId === null ? 0 : this.currentFeatureId + 1;
@@ -68,6 +72,20 @@ describe("Model > Dataset", () => {
 			assert.equal(d1.features.length, 3);
 			assert.equal(d1.lastFeatureId, null);
 			assert.equal(d1.currentFeatureId, null);
+		});
+	});
+	
+	describe("getId", () => {
+		it("can't be called directly", () => {
+			assert.throws(() => {
+				const d1 = new Datatest2();
+				d1.getId();
+			}, TypeError);
+		});
+		
+		it("works for subclass", () => {
+			const d1 = new Datatest1();
+			assert.equal(d1.getId(), "42");
 		});
 	});
 	

@@ -18,6 +18,15 @@ class Dataset {
 	}
 	
 	/**
+	 * Get the unique identifier of this dataset.
+	 * This can be used to identify this dataset in local storage.
+	 * @return {string} The unique ID
+	 */
+	getId() {
+		throw new TypeError("This method should be overidden");
+	}
+	
+	/**
 	 * Retrieve the next feature to review.
 	 * @param {int} [radius] The radius for pictures search (in meters). Defaults to 20m.
 	 * @return {Promise} A promise resolving on the next {@link Feature} to review, or null if no more feature is available.

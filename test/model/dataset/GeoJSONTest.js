@@ -47,6 +47,13 @@ describe("Model > Dataset > GeoJSON", () => {
 		});
 	});
 	
+	describe("getId", () => {
+		it("returns ID", () => {
+			const g1 = new GeoJSON(GJ1);
+			assert.ok(g1.getId().length > 0);
+		});
+	});
+	
 	describe("getNextFeature", () => {
 		it("returns first feature having pictures", done => {
 			const g1 = new GeoJSON(GJ1);

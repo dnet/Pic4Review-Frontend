@@ -7,7 +7,7 @@ import Leaflet from 'leaflet';
 import { Map, TileLayer, GeoJSON } from 'react-leaflet';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
-const STATUS_COLOR = { "new": "grey", "ok": "green", "skip": "orange" };
+const STATUS_COLOR = { "new": "grey", "reviewed": "green", "skipped": "orange", "nopics": "blue" };
 
 /**
  * Summary view allows to display dataset main statistics and features to user.
@@ -58,7 +58,7 @@ class Summary extends Component {
 	}
 	
 	render() {
-		const statusNames = { "new": I18n.t("To review"), "ok": I18n.t("Reviewed"), "skip": I18n.t("Skipped") };
+		const statusNames = { "new": I18n.t("To review"), "reviewed": I18n.t("Reviewed"), "skipped": I18n.t("Skipped"), "nopics": I18n.t("No pictures") };
 		const legend = Object.keys(statusNames).map(s => {
 			return <span className="p4r-legend" key={s}>
 				<span style={{backgroundColor: STATUS_COLOR[s]}}> </span>
@@ -71,9 +71,8 @@ class Summary extends Component {
 		let datalayer = null;
 		
 		if(this.props.dataset) {
-			if(this.props.dataset.type === "geojson") {
-				datalayer = <GeoJSON ref="geojson" data={this.props.dataset.data} pointToLayer={this._pointToLayer.bind(this)} />;
-			}
+			const data = this.props.dataset.asGeoJSON();
+			datalayer = <GeoJSON ref="geojson" data={data} pointToLayer={this._pointToLayer.bind(this)} />;
 		}
 		
 		return <div style={this.props.style}>
