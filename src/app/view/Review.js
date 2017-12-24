@@ -116,6 +116,23 @@ class Review extends Component {
 		this.setState({ dialogOpen: false });
 	}
 	
+	/**
+	 * Update pictures in state
+	 * @private
+	 */
+	_updatePictures() {
+		this.props.feature
+		.getPictures(this.props.radius)
+		.then(pics => {
+			this.setState({ pictures: pics });
+		})
+		.catch(e => {
+			PubSub.publish("UI.MESSAGE.SHOW", { type: "error", message: I18n.t("Can't retrieve pictures around this feature") });
+			console.error(e);
+			this.setState({ pictures: [] });
+		});
+	}
+	
 	render() {
 		const styleBtn = { width: "100%", height: "100%" };
 		
@@ -188,13 +205,13 @@ class Review extends Component {
 							</Button>
 						</Grid>
 						<Grid item xs={6} md={6} xl={3}>
-							<Button raised color="primary" onClick={this.doneClicked} style={styleBtn}>
+							<Button raised color="primary" onClick={this.doneClicked.bind(this)} style={styleBtn}>
 								<Check />
 								{I18n.t("Done")}
 							</Button>
 						</Grid>
 						<Grid item xs={6} md={6} xl={3}>
-							<Button raised color="accent" onClick={this.skipClicked} style={styleBtn}>
+							<Button raised color="accent" onClick={this.skipClicked.bind(this)} style={styleBtn}>
 								<SkipForward />
 								{I18n.t("Skip")}
 							</Button>
@@ -220,17 +237,10 @@ class Review extends Component {
 		</div>;
 	}
 	
-	componentDidMount() {
-		this.props.feature
-		.getPictures(this.props.radius)
-		.then(pics => {
-			this.setState({ pictures: pics });
-		})
-		.catch(e => {
-			PubSub.publish("UI.MESSAGE.SHOW", { type: "error", message: I18n.t("Can't retrieve pictures around this feature") });
-			console.error(e);
-			this.setState({ pictures: [] });
-		});
+	componentWillReceiveProps(nextProps) {
+		if(this.props.feature !== nextProps.feature) {
+			this._updatePictures();
+		}
 	}
 }
 

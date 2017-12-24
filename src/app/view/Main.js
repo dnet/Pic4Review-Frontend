@@ -43,7 +43,8 @@ class Main extends Component {
 			featureId: null,
 			clearDialogOpen: false,
 			drawerOpen: false,
-			radiusPics: 20
+			radiusPics: 20,
+			waitingDialogOpen: false
 		};
 		
 		PubSub.subscribe("UI.MESSAGE.SHOW", (msg, data) => {
@@ -137,13 +138,15 @@ class Main extends Component {
 	 * Go review next feature
 	 */
 	nextFeature() {
+		this.setState({ waitingDialogOpen: true });
 		this.state.dataset
 		.getNextFeature(this.state.radiusPics)
 		.then(f => {
 			if(f !== null) {
-				this.setState({ tabValue: 2, featureId: this.state.dataset.currentFeatureId });
+				this.setState({ tabValue: 2, featureId: this.state.dataset.currentFeatureId, waitingDialogOpen: false });
 			}
 			else {
+				this.setState({ waitingDialogOpen: false });
 				PubSub.publish("UI.MESSAGE.SHOW", { type: "info", message: I18n.t("Congratulations ! You have reviewed all your features.") });
 				PubSub.publish("UI.TAB.SHOW", "summary");
 			}
@@ -246,6 +249,14 @@ class Main extends Component {
 						<Button onClick={this.closeClearDialog.bind(this)} color="primary">{I18n.t("No, I want to keep my work")}</Button>
 						<Button onClick={this.clearReviewClicked.bind(this)} color="accent">{I18n.t("Yes, delete everything !")}</Button>
 						</DialogActions>
+					</Dialog>
+					
+					<Dialog
+						ignoreBackdropClick
+						ignoreEscapeKeyUp
+						open={this.state.waitingDialogOpen}
+					>
+						<DialogContent>{I18n.t("Looking for next feature having pictures...")}</DialogContent>
 					</Dialog>
 				</div>
 			</MuiThemeProvider>
