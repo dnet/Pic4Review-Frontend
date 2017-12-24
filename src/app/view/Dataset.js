@@ -37,6 +37,14 @@ class Dataset extends Component {
 			PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("No file or format selected") });
 		}
 		
+		/**
+		 * Event sent when a new dataset file was uploaded
+		 * @event DATASET.FILE.UPLOADED
+		 * @type {Object} Event data
+		 * @property {File} file The source file
+		 * @property {string} format The source file format (geojson)
+		 * @memberof PubSub
+		 */
 		PubSub.publish("DATASET.FILE.UPLOADED", {
 			file: this.state.sourceFile,
 			format: this.state.sourceFormatValue

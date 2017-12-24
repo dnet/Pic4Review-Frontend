@@ -63,8 +63,7 @@ class App {
 			}
 		});
 		
-		PubSub.subscribe("DATASET.FEATURE", (msg, id) => {
-			const msgToStatus = { "DATASET.FEATURE.SKIP": "skip", "DATASET.FEATURE.DONE": "reviewed" };
+		PubSub.subscribe("DATASET.FEATURE.CHANGED", (msg, id) => {
 			this.dataset = this.datasetManager.saveReview(this.dataset);
 		});
 		

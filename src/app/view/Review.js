@@ -11,7 +11,6 @@ import { Information, Pencil, Check, SkipForward } from 'mdi-material-ui';
 import Leaflet from 'leaflet';
 import LeafletMarker from './MarkerRotate';
 import { Map, Marker, TileLayer } from 'react-leaflet';
-import P4C from 'pic4carto';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
 import withWidth from 'material-ui/utils/withWidth';
@@ -36,15 +35,10 @@ class Review extends Component {
 		super(props, context);
 		this.state = {
 			zoom: 19,
-			radius: 20,
-			pictures: null,
-			lastStatus: null,
-			updatePictures: true,
 			picId: null,
-			dialogOpen: false
+			dialogOpen: false,
+			pictures: null
 		};
-		
-		this.picMan = new P4C.PicturesManager();
 	}
 	
 	doneClicked() {
@@ -115,35 +109,11 @@ class Review extends Component {
 		this.setState({ picId: id, dialogOpen: true });
 	}
 	
+	/**
+	 * Handler for closing of picture dialog.
+	 */
 	handleDialogClose() {
 		this.setState({ dialogOpen: false });
-	}
-	
-	/**
-	 * Update pictures shown in gallery
-	 * @private
-	 */
-	_updatePictures() {
-		if(this.props.feature && this.state.updatePictures) {
-			this.picMan.startPicsRetrievalAround(
-				new P4C.LatLng(this.props.feature.coordinates),
-				this.state.radius,
-				{
-					towardscenter: true
-				}
-			)
-			.then(pictures => {
-				if(pictures.length > 0) {
-					this.setState({ pictures: pictures, lastStatus: "ok", updatePictures: false, picId: 0 });
-				}
-				else {
-					this.setState({ pictures: null, lastStatus: "ok", updatePictures: false, picId: null });
-				}
-			})
-			.catch(e => {
-				this.setState({ pictures: null, lastStatus: "fail", updatePictures: false, picId: null });
-			});
-		}
 	}
 	
 	render() {
@@ -161,7 +131,7 @@ class Review extends Component {
 		let currentPic = null;
 		let markers = null;
 		
-		if(this.state.pictures) {
+		if(this.state.pictures !== null && this.state.pictures.length > 0) {
 			const pics = [];
 			markers = [];
 			
@@ -169,7 +139,7 @@ class Review extends Component {
 				const p = this.state.pictures[i];
 				pics.push(
 					<GridListTile key={p.pictureUrl}>
-						<img src={p.pictureUrl} onClick={() => {this.setCurrentPic(i); }} style={{cursor:"pointer"}} />
+						<img src={p.pictureUrl} onClick={() => { this.setCurrentPic(i); }} style={{cursor:"pointer"}} />
 						<GridListTileBar titlePosition="top" style={{background: "none"}} actionIcon={
 							<IconButton href={p.detailsUrl} target="_blank">
 								<Information style={{color:"white"}} />
@@ -182,16 +152,15 @@ class Review extends Component {
 			
 			picGallery = <GridList cols={IMG_COLS[this.props.width]} cellHeight={IMG_HEIGHT[this.props.width]}>{pics}</GridList>;
 			
-			currentPic =
-				<Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose.bind(this)} maxWidth="md">
-					<img onClick={this.handleDialogClose.bind(this)} src={this.state.pictures[this.state.picId].pictureUrl} style={{maxWidth: "100%", objectFit: "cover"}} />
-				</Dialog>;
+			if(this.state.picId) {
+				currentPic =
+					<Dialog open={this.state.dialogOpen} onClose={this.handleDialogClose.bind(this)} maxWidth="md">
+						<img onClick={this.handleDialogClose.bind(this)} src={this.state.pictures[this.state.picId].pictureUrl} style={{maxWidth: "100%", objectFit: "cover"}} />
+					</Dialog>;
+			}
 		}
-		else if(this.state.pictures === null && this.state.lastStatus === "ok") {
+		else if(this.state.pictures !== null) {
 			picGallery = <Typography type="body1" align="center">{I18n.t("No pictures available around this feature")}</Typography>;
-		}
-		else if(this.state.pictures === null && this.state.lastStatus === "fail") {
-			picGallery = <Typography type="body1" align="center">{I18n.t("Images are temporarily unavailable for this feature")}</Typography>;
 		}
 		else {
 			picGallery = <Grid container><Grid item xs style={{textAlign: "center"}}><CircularProgress size={100} /></Grid></Grid>;
@@ -251,25 +220,17 @@ class Review extends Component {
 		</div>;
 	}
 	
-	componentWillReceiveProps(nextProps, nextState) {
-		//Check if pictures should be downloaded
-		if(this.state.pictures === null && nextProps.feature && this.lastStatus === null) {
-			this.setState({ updatePictures: true, pictures: null, lastStatus: null, picId: null });
-		}
-		else if(this.props.feature && nextProps.feature && Hash(this.props.feature) !== Hash(nextProps.feature)) {
-			this.setState({ updatePictures: true, pictures: null, lastStatus: null, picId: null });
-		}
-		else {
-			this.setState({ updatePictures: false });
-		}
-	}
-	
-	componentDidUpdate() {
-		this._updatePictures();
-	}
-	
 	componentDidMount() {
-		this._updatePictures();
+		this.props.feature
+		.getPictures(this.props.radius)
+		.then(pics => {
+			this.setState({ pictures: pics });
+		})
+		.catch(e => {
+			PubSub.publish("UI.MESSAGE.SHOW", { type: "error", message: I18n.t("Can't retrieve pictures around this feature") });
+			console.error(e);
+			this.setState({ pictures: [] });
+		});
 	}
 }
 

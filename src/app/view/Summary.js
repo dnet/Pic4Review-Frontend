@@ -4,7 +4,7 @@ import CONSTS from '../constants';
 import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
 import Leaflet from 'leaflet';
-import { Map, TileLayer, GeoJSON } from 'react-leaflet';
+import { Map, TileLayer, FeatureGroup, CircleMarker } from 'react-leaflet';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
 const STATUS_COLOR = { "new": "grey", "reviewed": "green", "skipped": "orange", "nopics": "blue" };
@@ -23,41 +23,58 @@ class Summary extends Component {
 		};
 	}
 	
+	/**
+	 * Handler for click event on "Start review" button.
+	 */
 	startClicked() {
 		PubSub.publish("UI.TAB.SHOW", "review");
 	}
 	
+	/**
+	 * Handler for click event on "Clear review" button.
+	 */
 	clearClicked() {
+		/**
+		 * Event sent when UI was clicked to ask for dataset review clearing
+		 * @event UI.ASK.CLEAR
+		 * @memberof PubSub
+		 */
 		PubSub.publish("UI.ASK.CLEAR");
 	}
 	
-	_geojsonBounds() {
-		if(this.refs.map && this.refs.geojson) {
-			this.refs.map.leafletElement.fitBounds(this.refs.geojson.leafletElement.getBounds());
+	/**
+	 * Set map view around feature layer bounds.
+	 * @private
+	 */
+	_featureLayerBounds() {
+		if(this.refs.map && this.refs.featureslayer) {
+			this.refs.map.leafletElement.fitBounds(this.refs.featureslayer.leafletElement.getBounds());
 			this.setState({ datasetShown: true });
 		}
 		else {
-			setTimeout(this._geojsonBounds.bind(this), 100);
+			setTimeout(this._featureLayerBounds.bind(this), 100);
 		}
 	}
 	
-	_pointToLayer(geojson, latlng) {
-		let color = STATUS_COLOR[this.props.dataset.review[geojson.properties.p4rid]] || STATUS_COLOR.new;
-		return Leaflet.circleMarker(latlng, { radius: 7, stroke: false, fill: true, fillColor: color, fillOpacity: 1 }).on("click", () => {
-			PubSub.publish("UI.FEATURE.SHOW", geojson.properties.p4rid);
-		});
-	}
-	
+	/**
+	 * Removes feature layers from map.
+	 * @private
+	 */
 	_clearDataLayers() {
-		if(this.refs && this.refs.map && this.refs.geojson) {
-			if(this.refs.map.leafletElement.hasLayer(this.refs.geojson.leafletElement)) {
-				this.refs.map.leafletElement.removeLayer(this.refs.geojson.leafletElement);
-				delete this.refs.geojson;
+		if(this.refs && this.refs.map && this.refs.featureslayer) {
+			if(this.refs.map.leafletElement.hasLayer(this.refs.featureslayer.leafletElement)) {
+				this.refs.map.leafletElement.removeLayer(this.refs.featureslayer.leafletElement);
+				delete this.refs.featureslayer;
 			}
 		}
 	}
 	
 	render() {
+		let position = [this.state.lat, this.state.lng];
+		let zoom = this.state.zoom;
+		let datalayer = null;
+		
+		//Legend
 		const statusNames = { "new": I18n.t("To review"), "reviewed": I18n.t("Reviewed"), "skipped": I18n.t("Skipped"), "nopics": I18n.t("No pictures") };
 		const legend = Object.keys(statusNames).map(s => {
 			return <span className="p4r-legend" key={s}>
@@ -66,13 +83,25 @@ class Summary extends Component {
 			</span>;
 		});
 		
-		let position = [this.state.lat, this.state.lng];
-		let zoom = this.state.zoom;
-		let datalayer = null;
-		
+		//Render features
 		if(this.props.dataset) {
-			const data = this.props.dataset.asGeoJSON();
-			datalayer = <GeoJSON ref="geojson" data={data} pointToLayer={this._pointToLayer.bind(this)} />;
+			const features = this.props.dataset.getAllFeatures();
+			const featurelayers = features.map(f => {
+				const color = STATUS_COLOR[f.status] || STATUS_COLOR.new;
+				const click = () => {
+					/**
+					 * Event sent when a feature should be shown in review tab
+					 * @event UI.FEATURE.SHOW
+					 * @type {string} The feature ID
+					 * @memberof PubSub
+					 */
+					PubSub.publish("UI.FEATURE.SHOW", f.id);
+				};
+				
+				return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} onClick={click}></CircleMarker>
+			});
+			
+			datalayer = <FeatureGroup ref="featureslayer">{featurelayers}</FeatureGroup>;
 		}
 		
 		return <div style={this.props.style}>
@@ -98,7 +127,7 @@ class Summary extends Component {
 	
 	componentDidMount() {
 		if(!this.state.datasetShown) {
-			this._geojsonBounds();
+			this._featureLayerBounds();
 		}
 	}
 	

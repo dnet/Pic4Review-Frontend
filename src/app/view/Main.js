@@ -42,7 +42,8 @@ class Main extends Component {
 			dataset: null,
 			featureId: null,
 			clearDialogOpen: false,
-			drawerOpen: false
+			drawerOpen: false,
+			radiusPics: 20
 		};
 		
 		PubSub.subscribe("UI.MESSAGE.SHOW", (msg, data) => {
@@ -93,11 +94,30 @@ class Main extends Component {
 	changeTab(event, value) {
 		//Check if data is ready for dataset-related tabs
 		if(value === 1 || value === 2) {
-			if(this.state.dataset !== null && this.state.featureId !== null) {
-				this.setState({ tabValue: value });
+			if(this.state.dataset !== null) {
+				if(value === 2) {
+					if(this.state.featureId !== null) {
+						this.setState({ tabValue: value });
+					}
+					else {
+						this.nextFeature();
+					}
+				}
+				else {
+					this.setState({ tabValue: value });
+				}
 			}
 			else {
 				this.setState({ tabValue: 0 });
+				
+				/**
+				 * Event sent when UI should display a message to user
+				 * @event UI.MESSAGE.SHOW
+				 * @type {Object} Event data
+				 * @property {string} type The kind of message (error, alert, info)
+				 * @property {string} message The message text
+				 * @memberof PubSub
+				 */
 				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("You need first to load a dataset") });
 			}
 		}
@@ -118,10 +138,10 @@ class Main extends Component {
 	 */
 	nextFeature() {
 		this.state.dataset
-		.getNextFeature()
+		.getNextFeature(this.state.radiusPics)
 		.then(f => {
 			if(f !== null) {
-				this.setState({ featureId: this.state.dataset.currentFeatureId });
+				this.setState({ tabValue: 2, featureId: this.state.dataset.currentFeatureId });
 			}
 			else {
 				PubSub.publish("UI.MESSAGE.SHOW", { type: "info", message: I18n.t("Congratulations ! You have reviewed all your features.") });
@@ -141,7 +161,13 @@ class Main extends Component {
 	 * Handler for when clear review has been confirmed
 	 */
 	clearReviewClicked() {
-		this.setState({ clearDialogOpen: false, featureId: 0, dataset: null });
+		this.setState({ clearDialogOpen: false, featureId: null, dataset: null });
+		
+		/**
+		 * Event sent when a dataset should be cleared of its review status
+		 * @event DATASET.CLEAR
+		 * @memberof PubSub
+		 */
 		PubSub.publish("DATASET.CLEAR");
 	}
 
@@ -161,7 +187,7 @@ class Main extends Component {
 			
 			case 2:
 				const feature = this.state.dataset.getAllFeatures()[this.state.featureId];
-				content = feature ? <Review feature={feature} style={styleTabContent} /> : null;
+				content = feature ? <Review feature={feature} style={styleTabContent} radius={this.state.radiusPics} /> : null;
 				break;
 		}
 		
