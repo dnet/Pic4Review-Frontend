@@ -85,7 +85,7 @@ class Dataset extends Component {
 						color="primary"
 						onClick={this.uploadClick.bind(this)}
 					>
-						{I18n.t("Upload file")}
+						{I18n.t("Start")}
 					</Button>
 				</div>
 			</FormControl>

@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/createMuiTheme';
 import { indigo, red } from 'material-ui/colors';
+import About from './About';
 import AppBar from 'material-ui/AppBar';
 import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
@@ -28,7 +29,7 @@ const theme = createMuiTheme({
 	}
 });
 
-const TABS = [ "dataset", "summary", "review" ];
+const TABS = [ "about", "dataset", "summary", "review" ];
 
 /**
  * Main view is the top-level component handling user interface.
@@ -86,7 +87,7 @@ class Main extends Component {
 					}
 				}
 				else {
-					this.setState({ tabValue: 0 });
+					PubSub.publish("UI.TAB.SHOW", "dataset");
 					
 					/**
 					 * Event sent when UI should display a message to user
@@ -125,7 +126,8 @@ class Main extends Component {
 		});
 		
 		PubSub.subscribe("UI.FEATURE.SHOW", (msg, data) => {
-			this.setState({ tabValue: 2, featureId: parseInt(data) });
+			PubSub.publish("UI.TAB.SHOW", "review");
+			this.setState({ featureId: parseInt(data) });
 		});
 		
 		PubSub.subscribe("UI.ASK.CLEAR", (msg, data) => {
@@ -151,7 +153,8 @@ class Main extends Component {
 		.getNextFeature(this.state.radiusPics)
 		.then(f => {
 			if(f !== null) {
-				this.setState({ tabValue: 2, featureId: this.state.dataset.currentFeatureId, waitingDialogOpen: false });
+				this.setState({ featureId: this.state.dataset.currentFeatureId, waitingDialogOpen: false });
+				PubSub.publish("UI.TAB.SHOW", "review");
 			}
 			else {
 				this.setState({ waitingDialogOpen: false });
@@ -206,12 +209,12 @@ class Main extends Component {
 				break;
 			
 			case "review":
-				const feature = this.state.featureId ? this.state.dataset.getAllFeatures()[this.state.featureId] : null;
+				const feature = this.state.featureId !== null ? this.state.dataset.getAllFeatures()[this.state.featureId] : null;
 				content = feature ? <Review feature={feature} style={styleTabContent} radius={this.state.radiusPics} /> : null;
 				break;
 			
 			case "about":
-				content = <span>BONJOURE</span>;
+				content = <About style={styleTabContent} />;
 				break;
 		}
 		
@@ -240,6 +243,7 @@ class Main extends Component {
 						textColor="primary"
 						centered
 					>
+						<Tab label={I18n.t("About")} />
 						<Tab label={I18n.t("Dataset")} />
 						<Tab label={I18n.t("Summary")} />
 						<Tab label={I18n.t("Review")} />
