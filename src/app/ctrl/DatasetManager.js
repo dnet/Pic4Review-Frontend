@@ -79,10 +79,12 @@ class DatasetManager {
 	/**
 	 * Updates the status of a given feature in the dataset, and saves it in localStorage.
 	 * @param {Dataset} dataset The dataset
+	 * @return {Dataset} The updated dataset
 	 */
 	saveReview(dataset) {
 		const newItem = dataset.getAllFeatures().map(f => Feature.STATUSES.indexOf(f.status)).join(';');
 		localStorage.setItem(dataset.getId(), newItem);
+		return dataset;
 	}
 	
 	/**

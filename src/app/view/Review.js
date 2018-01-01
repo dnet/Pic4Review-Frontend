@@ -237,6 +237,10 @@ class Review extends Component {
 		</div>;
 	}
 	
+	componentWillMount() {
+		this._updatePictures();
+	}
+	
 	componentWillReceiveProps(nextProps) {
 		if(this.props.feature !== nextProps.feature) {
 			this._updatePictures();

@@ -8,8 +8,10 @@ import createMuiTheme from 'material-ui/styles/createMuiTheme';
 import { indigo, red } from 'material-ui/colors';
 import AppBar from 'material-ui/AppBar';
 import Button from 'material-ui/Button';
+import { CircularProgress } from 'material-ui/Progress';
 import Dataset from './Dataset';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
+import Grid from 'material-ui/Grid';
 import Hidden from 'material-ui/Hidden';
 import IconButton from 'material-ui/IconButton';
 import Review from './Review';
@@ -25,6 +27,8 @@ const theme = createMuiTheme({
 		secondary: red
 	}
 });
+
+const TABS = [ "dataset", "summary", "review" ];
 
 /**
  * Main view is the top-level component handling user interface.
@@ -55,13 +59,53 @@ class Main extends Component {
 		});
 		
 		PubSub.subscribe("UI.TAB.SHOW", (msg, data) => {
-			const corresp = { "dataset": 0, "summary": 1, "review": 2 };
-			this.changeTab(null, corresp[data]);
+			let id = null;
+			
+			if(!isNaN(parseInt(data))) {
+				id = parseInt(data);
+				data = TABS[id];
+			}
+			else {
+				id = TABS.indexOf(data);
+			}
+			
+			//Check if data is ready for dataset-related tabs
+			if(data === "summary" || data === "review") {
+				if(this.state.dataset !== null) {
+					if(data === "review") {
+						if(this.state.featureId !== null) {
+							this.setState({ tabValue: id });
+						}
+						else {
+							this.nextFeature();
+						}
+					}
+					else {
+						this.setState({ tabValue: id });
+					}
+				}
+				else {
+					this.setState({ tabValue: 0 });
+					
+					/**
+					 * Event sent when UI should display a message to user
+					 * @event UI.MESSAGE.SHOW
+					 * @type {Object} Event data
+					 * @property {string} type The kind of message (error, alert, info)
+					 * @property {string} message The message text
+					 * @memberof PubSub
+					 */
+					PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("You need first to load a dataset") });
+				}
+			}
+			else {
+				this.setState({ tabValue: id });
+			}
 		});
 		
 		PubSub.subscribe("DATASET.READY", (msg, data) => {
 			this.setState({ dataset: data });
-			this.changeTab(null, 1);
+			PubSub.publish("UI.TAB.SHOW", "summary");
 		});
 		
 		PubSub.subscribe("DATASET.UPDATED", (msg, data) => {
@@ -89,45 +133,6 @@ class Main extends Component {
 	}
 	
 	/**
-	 * Change the currently shown tab.
-	 * @private
-	 */
-	changeTab(event, value) {
-		//Check if data is ready for dataset-related tabs
-		if(value === 1 || value === 2) {
-			if(this.state.dataset !== null) {
-				if(value === 2) {
-					if(this.state.featureId !== null) {
-						this.setState({ tabValue: value });
-					}
-					else {
-						this.nextFeature();
-					}
-				}
-				else {
-					this.setState({ tabValue: value });
-				}
-			}
-			else {
-				this.setState({ tabValue: 0 });
-				
-				/**
-				 * Event sent when UI should display a message to user
-				 * @event UI.MESSAGE.SHOW
-				 * @type {Object} Event data
-				 * @property {string} type The kind of message (error, alert, info)
-				 * @property {string} message The message text
-				 * @memberof PubSub
-				 */
-				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("You need first to load a dataset") });
-			}
-		}
-		else {
-			this.setState({ tabValue: value });
-		}
-	}
-	
-	/**
 	 * Close the snackbar.
 	 */
 	closeSnackbar() {
@@ -138,7 +143,7 @@ class Main extends Component {
 	 * Go review next feature
 	 */
 	nextFeature() {
-		this.setState({ waitingDialogOpen: true });
+		this.setState({ waitingDialogOpen: true, featureId: null });
 		this.state.dataset
 		.getNextFeature(this.state.radiusPics)
 		.then(f => {
@@ -148,6 +153,13 @@ class Main extends Component {
 			else {
 				this.setState({ waitingDialogOpen: false });
 				PubSub.publish("UI.MESSAGE.SHOW", { type: "info", message: I18n.t("Congratulations ! You have reviewed all your features.") });
+				
+				/**
+				 * Event sent when UI should show a given tab
+				 * @event UI.TAB.SHOW
+				 * @type {String} The tab name (dataset, summary, review)
+				 * @memberof PubSub
+				 */
 				PubSub.publish("UI.TAB.SHOW", "summary");
 			}
 		});
@@ -189,7 +201,7 @@ class Main extends Component {
 				break;
 			
 			case 2:
-				const feature = this.state.dataset.getAllFeatures()[this.state.featureId];
+				const feature = this.state.featureId ? this.state.dataset.getAllFeatures()[this.state.featureId] : null;
 				content = feature ? <Review feature={feature} style={styleTabContent} radius={this.state.radiusPics} /> : null;
 				break;
 		}
@@ -207,14 +219,14 @@ class Main extends Component {
 								</div>
 							</div>
 							<Hidden only="xs">
-								<Typography type="subheading" style={{right: 10}} gutterBottom color="inherit">{I18n.t("Review geo-datasets easily using pictures")}</Typography>
+								<Typography type="subheading" style={{right: 10}} gutterBottom color="inherit">{I18n.t("Improve OpenStreetMap using pictures !")}</Typography>
 							</Hidden>
 						</Toolbar>
 					</AppBar>
 					
 					<Tabs
 						value={this.state.tabValue}
-						onChange={this.changeTab.bind(this)}
+						onChange={(e, v) => { PubSub.publish("UI.TAB.SHOW", v); }}
 						indicatorColor="primary"
 						textColor="primary"
 						centered
@@ -246,8 +258,8 @@ class Main extends Component {
 						<DialogTitle>Clear review ?</DialogTitle>
 						<DialogContent>{I18n.t("Clearing the review will reset all your feature status. This means you will loose information which feature was reviewed or not. Are you sure you want to clear review ?")}</DialogContent>
 						<DialogActions>
-						<Button onClick={this.closeClearDialog.bind(this)} color="primary">{I18n.t("No, I want to keep my work")}</Button>
-						<Button onClick={this.clearReviewClicked.bind(this)} color="accent">{I18n.t("Yes, delete everything !")}</Button>
+							<Button onClick={this.closeClearDialog.bind(this)} color="primary">{I18n.t("No, I want to keep my work")}</Button>
+							<Button onClick={this.clearReviewClicked.bind(this)} color="accent">{I18n.t("Yes, delete everything !")}</Button>
 						</DialogActions>
 					</Dialog>
 					
@@ -256,7 +268,16 @@ class Main extends Component {
 						ignoreEscapeKeyUp
 						open={this.state.waitingDialogOpen}
 					>
-						<DialogContent>{I18n.t("Looking for next feature having pictures...")}</DialogContent>
+						<DialogContent>
+							<Grid container alignItems="center" justify="space-between">
+								<Grid item xs={3}>
+									<CircularProgress />
+								</Grid>
+								<Grid item xs={9}>
+									{I18n.t("Searching pictures around the feature...")}
+								</Grid>
+							</Grid>
+						</DialogContent>
 					</Dialog>
 				</div>
 			</MuiThemeProvider>
