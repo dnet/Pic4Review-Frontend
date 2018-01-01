@@ -11,6 +11,7 @@ const STATUS_COLOR = { "new": "grey", "reviewed": "green", "skipped": "orange", 
 
 /**
  * Summary view allows to display dataset main statistics and features to user.
+ * @name SummaryComponent
  */
 class Summary extends Component {
 	constructor(props, context) {
@@ -25,6 +26,7 @@ class Summary extends Component {
 	
 	/**
 	 * Handler for click event on "Start review" button.
+	 * @memberof SummaryComponent
 	 */
 	startClicked() {
 		PubSub.publish("UI.TAB.SHOW", "review");
@@ -32,6 +34,7 @@ class Summary extends Component {
 	
 	/**
 	 * Handler for click event on "Clear review" button.
+	 * @memberof SummaryComponent
 	 */
 	clearClicked() {
 		/**
@@ -44,6 +47,7 @@ class Summary extends Component {
 	
 	/**
 	 * Set map view around feature layer bounds.
+	 * @memberof SummaryComponent
 	 * @private
 	 */
 	_featureLayerBounds() {
@@ -58,6 +62,7 @@ class Summary extends Component {
 	
 	/**
 	 * Removes feature layers from map.
+	 * @memberof SummaryComponent
 	 * @private
 	 */
 	_clearDataLayers() {

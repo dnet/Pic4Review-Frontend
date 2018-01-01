@@ -32,6 +32,7 @@ const TABS = [ "dataset", "summary", "review" ];
 
 /**
  * Main view is the top-level component handling user interface.
+ * @name MainComponent
  */
 class Main extends Component {
 	constructor(props, context) {
@@ -134,13 +135,15 @@ class Main extends Component {
 	
 	/**
 	 * Close the snackbar.
+	 * @memberof MainComponent
 	 */
 	closeSnackbar() {
 		this.setState({ snackOpen: false });
 	}
 	
 	/**
-	 * Go review next feature
+	 * Go review next feature.
+	 * @memberof MainComponent
 	 */
 	nextFeature() {
 		this.setState({ waitingDialogOpen: true, featureId: null });
@@ -157,7 +160,7 @@ class Main extends Component {
 				/**
 				 * Event sent when UI should show a given tab
 				 * @event UI.TAB.SHOW
-				 * @type {String} The tab name (dataset, summary, review)
+				 * @type {string} The tab name (dataset, summary, review)
 				 * @memberof PubSub
 				 */
 				PubSub.publish("UI.TAB.SHOW", "summary");
@@ -166,14 +169,16 @@ class Main extends Component {
 	}
 	
 	/**
-	 * Close dialog asking for clearing review
+	 * Close dialog asking for clearing review.
+	 * @memberof MainComponent
 	 */
 	closeClearDialog() {
 		this.setState({ clearDialogOpen: false });
 	}
 	
 	/**
-	 * Handler for when clear review has been confirmed
+	 * Handler for when clear review has been confirmed.
+	 * @memberof MainComponent
 	 */
 	clearReviewClicked() {
 		this.setState({ clearDialogOpen: false, featureId: null, dataset: null });
@@ -191,18 +196,22 @@ class Main extends Component {
 		const position = [this.state.lat, this.state.lng];
 		const styleTabContent = { margin: "15px 20px" };
 		
-		switch(this.state.tabValue) {
-			case 0:
+		switch(TABS[this.state.tabValue]) {
+			case "dataset":
 				content = <Dataset style={styleTabContent} />;
 				break;
 			
-			case 1:
+			case "summary":
 				content = <Summary dataset={this.state.dataset} style={styleTabContent} />;
 				break;
 			
-			case 2:
+			case "review":
 				const feature = this.state.featureId ? this.state.dataset.getAllFeatures()[this.state.featureId] : null;
 				content = feature ? <Review feature={feature} style={styleTabContent} radius={this.state.radiusPics} /> : null;
+				break;
+			
+			case "about":
+				content = <span>BONJOURE</span>;
 				break;
 		}
 		

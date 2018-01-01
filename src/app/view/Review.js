@@ -29,6 +29,7 @@ const IMG_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 
 /**
  * Review component allows to review dataset features one by one.
+ * @name ReviewComponent
  */
 class Review extends Component {
 	constructor(props, context) {
@@ -41,6 +42,10 @@ class Review extends Component {
 		};
 	}
 	
+	/**
+	 * Handler for done button click.
+	 * @memberof ReviewComponent
+	 */
 	doneClicked() {
 		this.props.feature.status = "reviewed";
 		
@@ -53,13 +58,18 @@ class Review extends Component {
 		PubSub.publish("UI.FEATURE.CHANGED", this.props.feature);
 	}
 	
+	/**
+	 * Handler for skip button click.
+	 * @memberof ReviewComponent
+	 */
 	skipClicked() {
 		this.props.feature.status = "skipped";
 		PubSub.publish("UI.FEATURE.CHANGED", this.props.feature);
 	}
 	
 	/**
-	 * Opens and zoom in JOSM on current picture area
+	 * Opens and zoom in JOSM on current picture area.
+	 * @memberof ReviewComponent
 	 */
 	editJOSM() {
 		let circle = Leaflet.circle(
@@ -92,7 +102,8 @@ class Review extends Component {
 	}
 	
 	/**
-	 * Opens ID editor on current picture area
+	 * Opens ID editor on current picture area.
+	 * @memberof ReviewComponent
 	 */
 	editId() {
 		window.open(
@@ -103,7 +114,8 @@ class Review extends Component {
 	}
 	
 	/**
-	 * Change ID of picture to display
+	 * Change ID of picture to display.
+	 * @memberof ReviewComponent
 	 */
 	setCurrentPic(id) {
 		this.setState({ picId: id, dialogOpen: true });
@@ -111,6 +123,7 @@ class Review extends Component {
 	
 	/**
 	 * Handler for closing of picture dialog.
+	 * @memberof ReviewComponent
 	 */
 	handleDialogClose() {
 		this.setState({ dialogOpen: false });
@@ -118,6 +131,7 @@ class Review extends Component {
 	
 	/**
 	 * Update pictures in state
+	 * @memberof ReviewComponent
 	 * @private
 	 */
 	_updatePictures() {

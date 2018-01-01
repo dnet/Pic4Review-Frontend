@@ -1,4 +1,4 @@
-/**
+/*
  * MarkerRotate is adapted from https://github.com/shramov/leaflet-plugins/blob/master/layer/Marker.Rotate.js
  */
 
