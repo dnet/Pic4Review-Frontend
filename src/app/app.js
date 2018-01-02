@@ -2,8 +2,9 @@ import React from 'react';
 import {render} from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import DatasetManager from './ctrl/DatasetManager';
-import Main from './view/Main';
 import I18n from 'i18nline/lib/i18n';
+import Main from './view/Main';
+import Osmose from './model/dataset/Osmose';
 import PubSub from 'pubsub-js';
 
 const LOCALES = [ "en", "fr" ];
@@ -60,6 +61,16 @@ class App {
 				.catch(e => {
 					PubSub.publish("UI.MESSAGE.SHOW", { type: "error", message: e.message });
 				});
+			}
+		});
+		
+		PubSub.subscribe("DATASET.DYNAMIC.DEFINED", (msg, data) => {
+			if(data.type === "osmose") {
+				const itemclass = data.options.itemclass.split("-");
+				const item = itemclass[0];
+				
+				this.dataset = new Osmose(item, data.options.time * 1.5);
+				PubSub.publish("DATASET.READY", this.dataset);
 			}
 		});
 		

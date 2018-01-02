@@ -6,6 +6,7 @@ import Input from 'material-ui/Input';
 import MenuItem from 'material-ui/Menu/MenuItem';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import TextField from 'material-ui/TextField';
+import Typography from 'material-ui/Typography';
 
 /**
  * Dataset view handles source format and file selection for user.
@@ -18,7 +19,8 @@ class Dataset extends Component {
 			sourceFormatValue: "osmose",
 			sourceFile: null,
 			sourceOsmoseType: "8180",
-			sourceOsmoseTime: "10"
+			sourceOsmoseTime: "10",
+			sourceOsmosePlace: ""
 		};
 	}
 	
@@ -38,18 +40,18 @@ class Dataset extends Component {
 	 */
 	uploadClick(event) {
 		if(this.state.sourceFormatValue === "geojson") {
-			if(!this.state.sourceFile || !this.state.sourceFormatValue) {
-				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("No file or format selected") });
+			if(!this.state.sourceFile) {
+				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("No file selected") });
 			}
 			else {
 				/**
-				* Event sent when a new dataset file was uploaded
-				* @event DATASET.FILE.UPLOADED
-				* @type {Object} Event data
-				* @property {File} file The source file
-				* @property {string} format The source file format (geojson)
-				* @memberof PubSub
-				*/
+				 * Event sent when a new dataset file was uploaded
+				 * @event DATASET.FILE.UPLOADED
+				 * @type {Object} Event data
+				 * @property {File} file The source file
+				 * @property {string} format The source file format (geojson)
+				 * @memberof PubSub
+				 */
 				PubSub.publish("DATASET.FILE.UPLOADED", {
 					file: this.state.sourceFile,
 					format: this.state.sourceFormatValue
@@ -57,7 +59,32 @@ class Dataset extends Component {
 			}
 		}
 		else if(this.state.sourceFormatValue === "osmose") {
-			//TODO
+			if(!this.state.sourceOsmoseType || isNaN(parseInt(this.state.sourceOsmoseType))) {
+				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("Please select an Osmose theme") });
+			}
+			else if(!this.state.sourceOsmoseTime || isNaN(parseInt(this.state.sourceOsmoseTime))) {
+				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("Please select the time you have to contribute") });
+			}
+			else {
+				/**
+				 * Event sent when a new dynamic dataset was defined
+				 * @event DATASET.DYNAMIC.DEFINED
+				 * @type {Object} Event data
+				 * @property {string} type The kind of dataset (osmose)
+				 * @property {Object} options The options to pass for dataset creation
+				 * @memberof PubSub
+				 */
+				PubSub.publish("DATASET.DYNAMIC.DEFINED", {
+					type: this.state.sourceFormatValue,
+					options: {
+						itemclass: this.state.sourceOsmoseType,
+						time: parseInt(this.state.sourceOsmoseTime)
+					}
+				});
+			}
+		}
+		else {
+			PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("No dataset selected") });
 		}
 	}
 	
@@ -77,7 +104,8 @@ class Dataset extends Component {
 			
 			case "osmose":
 				const types = [
-					{ label: I18n.t("Missing toilets"), value: "8180" }
+					{ label: I18n.t("Missing toilets"), description: I18n.t("Given toilets are known from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8180" },
+					{ label: I18n.t("Recycling container"), description: I18n.t("Given containers might have an invalid description. Check what's wrong (see \"title\" in feature properties) and fix it if possible."), value: "3230" }
 				];
 				fields = <div>
 					<FormLabel component="legend">{I18n.t("Available time")}</FormLabel>
@@ -107,6 +135,19 @@ class Dataset extends Component {
 						</MenuItem>
 					))}
 					</TextField>
+					
+					<Typography type="caption">
+						{types.filter(t => t.value == this.state.sourceOsmoseType)[0].description}
+					</Typography>
+					
+					<TextField
+						id="place"
+						label={I18n.t("Place")}
+						value={this.state.sourceOsmosePlace}
+						onChange={e => this.setState({sourceOsmosePlace: e.target.value})}
+						margin="normal"
+						helperText={I18n.t("City or country (empty for whole world)")}
+					/>
 				</div>;
 				break;
 		}

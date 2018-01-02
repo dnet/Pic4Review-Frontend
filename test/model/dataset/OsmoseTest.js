@@ -6,6 +6,7 @@ import assert from 'assert';
 import Osmose from '../../../src/app/model/dataset/Osmose';
 
 const TIMEOUT = 10000;
+global.PubSub = null;
 
 describe("Model > Dataset > Osmose", () => {
 	describe("Constructor", () => {
@@ -43,7 +44,6 @@ describe("Model > Dataset > Osmose", () => {
 				assert.ok(f !== null);
 				assert.ok(!isNaN(f.coordinates[0]));
 				assert.ok(!isNaN(f.coordinates[1]));
-				assert.equal(f.properties.item, 3230);
 				done();
 			})
 			.catch(e => {

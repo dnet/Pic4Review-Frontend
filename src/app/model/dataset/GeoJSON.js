@@ -84,6 +84,8 @@ class GeoJSON extends Dataset {
 				}
 				else {
 					f.status = "nopics";
+					if(PubSub) { PubSub.publish("DATASET.FEATURE.NOPICS"); }
+					
 					return this.getNextFeature(radius);
 				}
 			});

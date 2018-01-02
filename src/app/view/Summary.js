@@ -27,6 +27,7 @@ class Summary extends Component {
 	/**
 	 * Handler for click event on "Start review" button.
 	 * @memberof SummaryComponent
+	 * @instance
 	 */
 	startClicked() {
 		PubSub.publish("UI.TAB.SHOW", "review");
@@ -35,6 +36,7 @@ class Summary extends Component {
 	/**
 	 * Handler for click event on "Clear review" button.
 	 * @memberof SummaryComponent
+	 * @instance
 	 */
 	clearClicked() {
 		/**
@@ -48,6 +50,7 @@ class Summary extends Component {
 	/**
 	 * Set map view around feature layer bounds.
 	 * @memberof SummaryComponent
+	 * @instance
 	 * @private
 	 */
 	_featureLayerBounds() {
@@ -63,6 +66,7 @@ class Summary extends Component {
 	/**
 	 * Removes feature layers from map.
 	 * @memberof SummaryComponent
+	 * @instance
 	 * @private
 	 */
 	_clearDataLayers() {
@@ -91,22 +95,25 @@ class Summary extends Component {
 		//Render features
 		if(this.props.dataset) {
 			const features = this.props.dataset.getAllFeatures();
-			const featurelayers = features.map(f => {
-				const color = STATUS_COLOR[f.status] || STATUS_COLOR.new;
-				const click = () => {
-					/**
-					 * Event sent when a feature should be shown in review tab
-					 * @event UI.FEATURE.SHOW
-					 * @type {string} The feature ID
-					 * @memberof PubSub
-					 */
-					PubSub.publish("UI.FEATURE.SHOW", f.id);
-				};
-				
-				return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} onClick={click}></CircleMarker>
-			});
 			
-			datalayer = <FeatureGroup ref="featureslayer">{featurelayers}</FeatureGroup>;
+			if(features && features.length > 0) {
+				const featurelayers = features.map(f => {
+					const color = STATUS_COLOR[f.status] || STATUS_COLOR.new;
+					const click = () => {
+						/**
+						* Event sent when a feature should be shown in review tab
+						* @event UI.FEATURE.SHOW
+						* @type {string} The feature ID
+						* @memberof PubSub
+						*/
+						PubSub.publish("UI.FEATURE.SHOW", f.id);
+					};
+					
+					return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} onClick={click}></CircleMarker>
+				});
+				
+				datalayer = <FeatureGroup ref="featureslayer">{featurelayers}</FeatureGroup>;
+			}
 		}
 		
 		return <div style={this.props.style}>

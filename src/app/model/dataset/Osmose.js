@@ -55,11 +55,20 @@ class Osmose extends Dataset {
 				.fetchErrors(this.searchOptions)
 				.then(result => {
 					this.features = [];
+					const ignoreProps = [ "lat", "lon", "item", "class", "level" ];
 					
 					for(const i in result) {
 						const f = result[i];
 						
-						this.features.push(new Feature(i, [ f.lat, f.lon ], f));
+						//Filter properties to only display what's useful
+						const props = {};
+						for(const k in f) {
+							if(ignoreProps.indexOf(k) < 0) {
+								props[k] = f[k];
+							}
+						}
+						
+						this.features.push(new Feature(i, [ parseFloat(f.lat), parseFloat(f.lon) ], props));
 					}
 					
 					return this.getNextFeature(radius);
@@ -90,6 +99,8 @@ class Osmose extends Dataset {
 					}
 					else {
 						f.status = "nopics";
+						if(PubSub) { PubSub.publish("DATASET.FEATURE.NOPICS"); }
+						
 						return this.getNextFeature(radius);
 					}
 				});

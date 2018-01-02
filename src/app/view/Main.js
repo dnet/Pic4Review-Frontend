@@ -50,7 +50,8 @@ class Main extends Component {
 			clearDialogOpen: false,
 			drawerOpen: false,
 			radiusPics: 20,
-			waitingDialogOpen: false
+			waitingDialogOpen: false,
+			skippedFeatures: 0
 		};
 		
 		PubSub.subscribe("UI.MESSAGE.SHOW", (msg, data) => {
@@ -107,11 +108,21 @@ class Main extends Component {
 		
 		PubSub.subscribe("DATASET.READY", (msg, data) => {
 			this.setState({ dataset: data });
-			PubSub.publish("UI.TAB.SHOW", "summary");
+			
+			if(data.isDynamic()) {
+				PubSub.publish("UI.TAB.SHOW", "review");
+			}
+			else {
+				PubSub.publish("UI.TAB.SHOW", "summary");
+			}
 		});
 		
 		PubSub.subscribe("DATASET.UPDATED", (msg, data) => {
 			this.setState({ dataset: data });
+		});
+		
+		PubSub.subscribe("DATASET.FEATURE.NOPICS", (msg, data) => {
+			this.setState({ skippedFeatures: this.state.skippedFeatures + 1 });
 		});
 		
 		PubSub.subscribe("UI.FEATURE.CHANGED", (msg, data) => {
@@ -138,6 +149,7 @@ class Main extends Component {
 	/**
 	 * Close the snackbar.
 	 * @memberof MainComponent
+	 * @instance
 	 */
 	closeSnackbar() {
 		this.setState({ snackOpen: false });
@@ -146,9 +158,10 @@ class Main extends Component {
 	/**
 	 * Go review next feature.
 	 * @memberof MainComponent
+	 * @instance
 	 */
 	nextFeature() {
-		this.setState({ waitingDialogOpen: true, featureId: null });
+		this.setState({ waitingDialogOpen: true, featureId: null, skippedFeatures: 0 });
 		this.state.dataset
 		.getNextFeature(this.state.radiusPics)
 		.then(f => {
@@ -168,12 +181,19 @@ class Main extends Component {
 				 */
 				PubSub.publish("UI.TAB.SHOW", "summary");
 			}
+		})
+		.catch(e => {
+			console.error(e);
+			this.setState({ waitingDialogOpen: false });
+			PubSub.publish("UI.TAB.SHOW", "summary");
+			PubSub.publish("UI.MESSAGE.SHOW", { type: "error", message: I18n.t("Oops ! Can't download some images, please retry.") });
 		});
 	}
 	
 	/**
 	 * Close dialog asking for clearing review.
 	 * @memberof MainComponent
+	 * @instance
 	 */
 	closeClearDialog() {
 		this.setState({ clearDialogOpen: false });
@@ -182,6 +202,7 @@ class Main extends Component {
 	/**
 	 * Handler for when clear review has been confirmed.
 	 * @memberof MainComponent
+	 * @instance
 	 */
 	clearReviewClicked() {
 		this.setState({ clearDialogOpen: false, featureId: null, dataset: null });
@@ -209,13 +230,19 @@ class Main extends Component {
 				break;
 			
 			case "review":
-				const feature = this.state.featureId !== null ? this.state.dataset.getAllFeatures()[this.state.featureId] : null;
+				const features = this.state.dataset.getAllFeatures();
+				const feature = (this.state.featureId !== null && this.state.featureId < features.length) ? features[this.state.featureId] : null;
 				content = feature ? <Review feature={feature} style={styleTabContent} radius={this.state.radiusPics} /> : null;
 				break;
 			
 			case "about":
 				content = <About style={styleTabContent} />;
 				break;
+		}
+		
+		let skipMsg = null;
+		if(this.state.skippedFeatures) {
+			skipMsg = <span><br />{I18n.t({one: "Skipped one feature without pictures", other: "Skipped %{count} features without pictures"}, {count: this.state.skippedFeatures })}</span>;
 		}
 		
 		return (
@@ -263,8 +290,8 @@ class Main extends Component {
 					/>
 					
 					<Dialog
-						ignoreBackdropClick
-						ignoreEscapeKeyUp
+						disableBackdropClick
+						disableEscapeKeyDown
 						maxWidth="xs"
 						open={this.state.clearDialogOpen}
 					>
@@ -277,8 +304,8 @@ class Main extends Component {
 					</Dialog>
 					
 					<Dialog
-						ignoreBackdropClick
-						ignoreEscapeKeyUp
+						disableBackdropClick
+						disableEscapeKeyDown
 						open={this.state.waitingDialogOpen}
 					>
 						<DialogContent>
@@ -287,7 +314,8 @@ class Main extends Component {
 									<CircularProgress />
 								</Grid>
 								<Grid item xs={9}>
-									{I18n.t("Searching pictures around the feature...")}
+									{I18n.t("Searching pictures around the next feature...")}
+									{skipMsg}
 								</Grid>
 							</Grid>
 						</DialogContent>

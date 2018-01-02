@@ -7,6 +7,7 @@ import Feature from '../../../src/app/model/Feature';
 import GeoJSON from '../../../src/app/model/dataset/GeoJSON';
 
 const TIMEOUT = 10000;
+global.PubSub = null;
 const GJ1 = '{ "type": "FeatureCollection", "features": [ { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -13.9526 , 47.9016 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6832758, 48.12771 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6831709, 48.1277262 ] } } ] }';
 
 describe("Model > Dataset > GeoJSON", () => {

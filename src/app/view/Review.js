@@ -45,6 +45,7 @@ class Review extends Component {
 	/**
 	 * Handler for done button click.
 	 * @memberof ReviewComponent
+	 * @instance
 	 */
 	doneClicked() {
 		this.props.feature.status = "reviewed";
@@ -61,6 +62,7 @@ class Review extends Component {
 	/**
 	 * Handler for skip button click.
 	 * @memberof ReviewComponent
+	 * @instance
 	 */
 	skipClicked() {
 		this.props.feature.status = "skipped";
@@ -70,6 +72,7 @@ class Review extends Component {
 	/**
 	 * Opens and zoom in JOSM on current picture area.
 	 * @memberof ReviewComponent
+	 * @instance
 	 */
 	editJOSM() {
 		let circle = Leaflet.circle(
@@ -104,6 +107,7 @@ class Review extends Component {
 	/**
 	 * Opens ID editor on current picture area.
 	 * @memberof ReviewComponent
+	 * @instance
 	 */
 	editId() {
 		window.open(
@@ -116,6 +120,7 @@ class Review extends Component {
 	/**
 	 * Change ID of picture to display.
 	 * @memberof ReviewComponent
+	 * @instance
 	 */
 	setCurrentPic(id) {
 		this.setState({ picId: id, dialogOpen: true });
@@ -124,6 +129,7 @@ class Review extends Component {
 	/**
 	 * Handler for closing of picture dialog.
 	 * @memberof ReviewComponent
+	 * @instance
 	 */
 	handleDialogClose() {
 		this.setState({ dialogOpen: false });
@@ -132,6 +138,7 @@ class Review extends Component {
 	/**
 	 * Update pictures in state
 	 * @memberof ReviewComponent
+	 * @instance
 	 * @private
 	 */
 	_updatePictures() {
