@@ -35,6 +35,7 @@ class Osmose extends Dataset {
 		
 		//Handle geocoding
 		if(this.options.area && this.options.area.trim().length > 0) {
+			delete this.searchOptions.area;
 			this.isGeocoding = true;
 			Nominatim.geocode({
 				q: this.options.area,
@@ -53,8 +54,46 @@ class Osmose extends Dataset {
 			})
 			.finally(() => {
 				this.isGeocoding = false;
+				this._loadData();
 			});
 		}
+		else {
+			this._loadData();
+		}
+	}
+	
+	/**
+	 * Download data from Osmose API
+	 * @memberof OsmoseDataset
+	 * @instance
+	 * @private
+	 */
+	_loadData() {
+		this.isDownloading = true;
+		
+		this.osmose
+		.fetchErrors(this.searchOptions)
+		.then(result => {
+			this.features = [];
+			const ignoreProps = [ "lat", "lon", "item", "class", "level", "source", "elems", "subclass" ];
+			
+			for(const i in result) {
+				const f = result[i];
+				
+				//Filter properties to only display what's useful
+				const props = {};
+				for(const k in f) {
+					if(ignoreProps.indexOf(k) < 0) {
+						props[k] = f[k];
+					}
+				}
+				
+				this.features.push(new Feature(f.error_id, [ parseFloat(f.lat), parseFloat(f.lon) ], props));
+			}
+		})
+		.finally(() => {
+			this.isDownloading = false;
+		});
 	}
 	
 	/**
@@ -74,41 +113,16 @@ class Osmose extends Dataset {
 	getNextFeature(radius) {
 		radius = radius || this._getDefaultRadius();
 		
-		//First run = fetch errors from API
-		if(this.features === null) {
-			if(this.isGeocoding) {
-				//Delay execution
-				return (new Promise(resolve => {
-					setTimeout(() => {
-						resolve(this.getNextFeature(radius));
-					}, 100);
-				}));
-			}
-			else {
-				return this.osmose
-					.fetchErrors(this.searchOptions)
-					.then(result => {
-						this.features = [];
-						const ignoreProps = [ "lat", "lon", "item", "class", "level", "source", "elems", "subclass" ];
-						
-						for(const i in result) {
-							const f = result[i];
-							
-							//Filter properties to only display what's useful
-							const props = {};
-							for(const k in f) {
-								if(ignoreProps.indexOf(k) < 0) {
-									props[k] = f[k];
-								}
-							}
-							
-							this.features.push(new Feature(i, [ parseFloat(f.lat), parseFloat(f.lon) ], props));
-						}
-						
-						return this.getNextFeature(radius);
-					});
-			}
+		//Wait for data to be ready
+		if(this.isGeocoding || this.isDownloading) {
+			//Delay execution
+			return (new Promise(resolve => {
+				setTimeout(() => {
+					resolve(this.getNextFeature(radius));
+				}, 100);
+			}));
 		}
+		//Look for feature
 		else {
 			let nextFid = -1;
 			let f = null;

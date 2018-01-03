@@ -8,13 +8,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.2.0 - 2018-01-03
+
 ### Added
 - Documentation for contributing/develop
 - Documentation for JS classes/methods
 - Unit test framework Mocha
+- Osmose dataset for thematic reviews
+- Previous and can't see buttons in review component
+- About tab, explains project purpose
 
 ### Changed
 - Merged webpack configuration files into a single one
+- French translation files
+- Generic dataset model introduced, controllers and views adapted
 
 
 ## 0.1.0 - 2017-12-20

@@ -61,15 +61,21 @@ class DatasetManager {
 		const features = dataset.getAllFeatures();
 		
 		if(review !== null) {
-			review = review.split(';').map(id => Feature.STATUSES[id]);
-			
-			if(review.length === features.length) {
-				for(let i in features) {
-					features[i].status = review[i];
+			const reviewData = {};
+			review.split(';').forEach(st => {
+				try {
+					const d = st.split('=');
+					reviewData[d[0]] = Feature.STATUSES[d[1]];
 				}
-			}
-			else {
-				localStorage.removeItem(dataset.getId());
+				catch(e) {
+					console.warn("Can't read status");
+				}
+			});
+			
+			for(let i in features) {
+				if(reviewData[features[i].id]) {
+					features[i].status = reviewData[features[i].id];
+				}
 			}
 		}
 		
@@ -82,8 +88,23 @@ class DatasetManager {
 	 * @return {Dataset} The updated dataset
 	 */
 	saveReview(dataset) {
-		const newItem = dataset.getAllFeatures().map(f => Feature.STATUSES.indexOf(f.status)).join(';');
-		localStorage.setItem(dataset.getId(), newItem);
+		const newItem = dataset.getAllFeatures().map(f => f.id+"="+Feature.STATUSES.indexOf(f.status)).join(';');
+		try {
+			localStorage.setItem(dataset.getId(), newItem);
+		}
+		catch(e) {
+			console.warn(e);
+			
+			//Try again after clearing localstorage
+			localStorage.clear();
+			
+			try {
+				localStorage.setItem(dataset.getId(), newItem);
+			}
+			catch(e) {
+				console.error("Can't write into localstorage", e);
+			}
+		}
 		return dataset;
 	}
 	

@@ -70,6 +70,16 @@ class App {
 				const item = itemclass[0];
 				
 				this.dataset = new Osmose(item, data.options.amount, { area: data.options.area });
+				this.timerOsmoseReview = setInterval(() => {
+					if(!this.dataset.isDownloading && !this.dataset.isGeocoding) {
+						this.dataset = this.datasetManager.loadReview(this.dataset);
+						PubSub.publish("DATASET.FEATURE.CHANGED", this.dataset);
+						
+						//Stop watching
+						clearInterval(this.timerOsmoseReview);
+						delete this.timerOsmoseReview;
+					}
+				}, 100);
 				PubSub.publish("DATASET.READY", this.dataset);
 			}
 		});

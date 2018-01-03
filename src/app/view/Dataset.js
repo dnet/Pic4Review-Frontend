@@ -28,7 +28,7 @@ class Dataset extends Component {
 		};
 		
 		this.osmoseTypes = [
-			{ label: I18n.t("Missing toilets"), description: I18n.t("Given toilets are known from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8180", icon: <EmoticonPoop /> },
+			{ label: I18n.t("Missing toilet"), description: I18n.t("Given toilets are known from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8180", icon: <EmoticonPoop /> },
 			{ label: I18n.t("Recycling container"), description: I18n.t("Given containers might have an invalid description. Check what's wrong (see \"title\" in feature properties) and fix it if possible."), value: "3230", icon: <Recycle /> }
 		];
 	}
@@ -182,7 +182,7 @@ class Dataset extends Component {
 						onChange={(e, v) => this.setState({ sourceFormatValue: v })}
 						style={{justifyContent: "space-evenly"}}
 					>
-						<FormControlLabel value="osmose" control={<Radio />} label={I18n.t("Osmose")} />
+						<FormControlLabel value="osmose" control={<Radio />} label={I18n.t("Existing theme")} />
 						<FormControlLabel value="geojson" control={<Radio />} label={I18n.t("GeoJSON")} />
 					</RadioGroup>
 				</div>
