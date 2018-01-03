@@ -90,8 +90,11 @@ class Osmose extends Dataset {
 				
 				this.features.push(new Feature(f.error_id, [ parseFloat(f.lat), parseFloat(f.lon) ], props));
 			}
+			
+			this.isDownloading = false;
 		})
-		.finally(() => {
+		.catch(e => {
+			console.error(e);
 			this.isDownloading = false;
 		});
 	}

@@ -160,7 +160,7 @@ class Dataset extends Component {
 						
 						<TextField
 							id="osmoseamount"
-							label="Amount of features to review"
+							label={I18n.t("Amount of features to review")}
 							value={this.state.sourceOsmoseAmount}
 							onChange={e => this.setState({sourceOsmoseAmount: e.target.value})}
 							type="number"

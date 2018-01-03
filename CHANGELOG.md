@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.2.1 - 2018-01-03
+
+## Fixed
+- Exception in Firefox for Osmose dataset
+- Missing label in I18n
+
+
 ## 0.2.0 - 2018-01-03
 
 ### Added
