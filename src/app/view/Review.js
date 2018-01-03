@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CONSTS from '../constants';
+import { Information, Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { CircularProgress } from 'material-ui/Progress';
 import Dialog, { DialogTitle } from 'material-ui/Dialog';
@@ -7,7 +8,6 @@ import Grid from 'material-ui/Grid';
 import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Hash from 'object-hash';
 import IconButton from 'material-ui/IconButton';
-import { Information, Pencil, Check, SkipForward } from 'mdi-material-ui';
 import Leaflet from 'leaflet';
 import LeafletMarker from './MarkerRotate';
 import { Map, Marker, TileLayer } from 'react-leaflet';
@@ -48,15 +48,15 @@ class Review extends Component {
 	 * @instance
 	 */
 	doneClicked() {
-		this.props.feature.status = "reviewed";
-		
 		/**
 		 * Event sent when feature was edited
 		 * @event UI.FEATURE.CHANGED
-		 * @type {Feature} The feature
+		 * @type {Object} Event data
+		 * @property {Feature} feature The concerned feature
+		 * @property {string} status The new status
 		 * @memberof PubSub
 		 */
-		PubSub.publish("UI.FEATURE.CHANGED", this.props.feature);
+		PubSub.publish("UI.FEATURE.CHANGED", { feature: this.props.feature, status: "reviewed" });
 	}
 	
 	/**
@@ -65,8 +65,16 @@ class Review extends Component {
 	 * @instance
 	 */
 	skipClicked() {
-		this.props.feature.status = "skipped";
-		PubSub.publish("UI.FEATURE.CHANGED", this.props.feature);
+		PubSub.publish("UI.FEATURE.CHANGED", { feature: this.props.feature, status: "skipped" });
+	}
+	
+	/**
+	 * Handler for "Can't see" button click.
+	 * @memberof ReviewComponent
+	 * @instance
+	 */
+	cantSeeClicked() {
+		PubSub.publish("UI.FEATURE.CHANGED", { feature: this.props.feature, status: "cantsee" });
 	}
 	
 	/**
@@ -141,9 +149,10 @@ class Review extends Component {
 	 * @instance
 	 * @private
 	 */
-	_updatePictures() {
-		this.props.feature
-		.getPictures(this.props.radius)
+	_updatePictures(props) {
+		props = props || this.props;
+		props.feature
+		.getPictures(props.radius)
 		.then(pics => {
 			this.setState({ pictures: pics });
 		})
@@ -198,6 +207,10 @@ class Review extends Component {
 			}
 		}
 		else if(this.state.pictures !== null) {
+			if(this.props.feature.status !== "nopics") {
+				this.props.feature.status = "nopics";
+				PubSub.publish("DATASET.FEATURE.CHANGED");
+			}
 			picGallery = <Typography type="body1" align="center">{I18n.t("No pictures available around this feature")}</Typography>;
 		}
 		else {
@@ -213,26 +226,38 @@ class Review extends Component {
 						{markers}
 					</Map>
 					<Grid container style={{marginTop: 5}}>
-						<Grid item xs={6} md={6} xl={3}>
+						<Grid item xs={6}>
 							<Button raised color="default" onClick={this.editJOSM.bind(this)} style={styleBtn}>
 								<Pencil />
 								{I18n.t("JOSM")}
 							</Button>
 						</Grid>
-						<Grid item xs={6} md={6} xl={3}>
+						<Grid item xs={6}>
 							<Button raised color="default" onClick={this.editId.bind(this)} style={styleBtn}>
 								<Pencil />
 								{I18n.t("iD")}
 							</Button>
 						</Grid>
-						<Grid item xs={6} md={6} xl={3}>
+						<Grid item xs={6} xl={3}>
 							<Button raised color="primary" onClick={this.doneClicked.bind(this)} style={styleBtn}>
 								<Check />
 								{I18n.t("Done")}
 							</Button>
 						</Grid>
-						<Grid item xs={6} md={6} xl={3}>
-							<Button raised color="accent" onClick={this.skipClicked.bind(this)} style={styleBtn}>
+						<Grid item xs={6} xl={3}>
+							<Button raised color="accent" onClick={this.cantSeeClicked.bind(this)} style={styleBtn}>
+								<EyeOff />
+								{I18n.t("Can't see")}
+							</Button>
+						</Grid>
+						<Grid item xs={6} xl={3}>
+							<Button raised color="default" onClick={() => PubSub.publish("UI.FEATURE.PREVIOUS")} style={styleBtn}>
+								<SkipPrevious />
+								{I18n.t("Previous")}
+							</Button>
+						</Grid>
+						<Grid item xs={6} xl={3}>
+							<Button raised color="default" onClick={this.skipClicked.bind(this)} style={styleBtn}>
 								<SkipForward />
 								{I18n.t("Skip")}
 							</Button>
@@ -264,7 +289,7 @@ class Review extends Component {
 	
 	componentWillReceiveProps(nextProps) {
 		if(this.props.feature !== nextProps.feature) {
-			this._updatePictures();
+			this._updatePictures(nextProps);
 		}
 	}
 }

@@ -48,7 +48,6 @@ class Main extends Component {
 			dataset: null,
 			featureId: null,
 			clearDialogOpen: false,
-			drawerOpen: false,
 			radiusPics: 20,
 			waitingDialogOpen: false,
 			skippedFeatures: 0
@@ -107,7 +106,7 @@ class Main extends Component {
 		});
 		
 		PubSub.subscribe("DATASET.READY", (msg, data) => {
-			this.setState({ dataset: data });
+			this.setState({ dataset: data, featureId: null, skippedFeatures: 0 });
 			
 			if(data.isDynamic()) {
 				PubSub.publish("UI.TAB.SHOW", "review");
@@ -126,6 +125,8 @@ class Main extends Component {
 		});
 		
 		PubSub.subscribe("UI.FEATURE.CHANGED", (msg, data) => {
+			this.state.dataset.updateCurrentFeature(data.status);
+			
 			/**
 			 * Event sent when a feature in a dataset has changed
 			 * @event DATASET.FEATURE.CHANGED
@@ -137,12 +138,27 @@ class Main extends Component {
 		});
 		
 		PubSub.subscribe("UI.FEATURE.SHOW", (msg, data) => {
-			PubSub.publish("UI.TAB.SHOW", "review");
 			this.setState({ featureId: parseInt(data) });
+			PubSub.publish("UI.TAB.SHOW", "review");
 		});
 		
 		PubSub.subscribe("UI.ASK.CLEAR", (msg, data) => {
 			this.setState({ clearDialogOpen: true });
+		});
+		
+		/**
+		 * Event sent when user wants to see previous feature
+		 * @event UI.FEATURE.PREVIOUS
+		 * @memberof PubSub
+		 */
+		PubSub.subscribe("UI.FEATURE.PREVIOUS", (msg, data) => {
+			const prev = this.state.dataset.getPreviousFeature();
+			if(prev !== null) {
+				PubSub.publish("UI.FEATURE.SHOW", prev.id);
+			}
+			else {
+				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("You can't go back anymore") });
+			}
 		});
 	}
 	
@@ -231,7 +247,7 @@ class Main extends Component {
 			
 			case "review":
 				const features = this.state.dataset.getAllFeatures();
-				const feature = (this.state.featureId !== null && this.state.featureId < features.length) ? features[this.state.featureId] : null;
+				const feature = (this.state.featureId !== null && features && this.state.featureId < features.length) ? features[this.state.featureId] : null;
 				content = feature ? <Review feature={feature} style={styleTabContent} radius={this.state.radiusPics} /> : null;
 				break;
 			
@@ -268,7 +284,10 @@ class Main extends Component {
 						onChange={(e, v) => { PubSub.publish("UI.TAB.SHOW", v); }}
 						indicatorColor="primary"
 						textColor="primary"
+						scrollable
+						scrollButtons="auto"
 						centered
+						fullWidth
 					>
 						<Tab label={I18n.t("About")} />
 						<Tab label={I18n.t("Dataset")} />

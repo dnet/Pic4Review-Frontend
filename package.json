@@ -45,9 +45,11 @@
     "xmlhttprequest": "^1.8.0"
   },
   "dependencies": {
+    "browser-request": "^0.3.3",
     "leaflet": "^1.2.0",
     "material-ui": "next",
     "mdi-material-ui": "^3.0.0",
+    "nominatim-browser": "^2.0.2",
     "object-hash": "^1.2.0",
     "osmose-request": "^1.0.0",
     "pic4carto": "^2.0.6",

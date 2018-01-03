@@ -7,7 +7,6 @@ import Leaflet from 'leaflet';
 import { Map, TileLayer, FeatureGroup, CircleMarker } from 'react-leaflet';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
-const STATUS_COLOR = { "new": "grey", "reviewed": "green", "skipped": "orange", "nopics": "blue" };
 
 /**
  * Summary view allows to display dataset main statistics and features to user.
@@ -22,6 +21,9 @@ class Summary extends Component {
 			zoom: 1,
 			datasetShown: false
 		};
+		
+		this.statusColor = { "new": "grey", "reviewed": "green", "skipped": "orange", "nopics": "blue", "cantsee": "red" };
+		this.statusNames = { "new": I18n.t("To review"), "reviewed": I18n.t("Reviewed"), "skipped": I18n.t("Skipped"), "nopics": I18n.t("No pictures"), "cantsee": I18n.t("Can't see") };
 	}
 	
 	/**
@@ -84,11 +86,10 @@ class Summary extends Component {
 		let datalayer = null;
 		
 		//Legend
-		const statusNames = { "new": I18n.t("To review"), "reviewed": I18n.t("Reviewed"), "skipped": I18n.t("Skipped"), "nopics": I18n.t("No pictures") };
-		const legend = Object.keys(statusNames).map(s => {
+		const legend = Object.keys(this.statusNames).map(s => {
 			return <span className="p4r-legend" key={s}>
-				<span style={{backgroundColor: STATUS_COLOR[s]}}> </span>
-				{statusNames[s]}
+				<span style={{backgroundColor: this.statusColor[s]}}> </span>
+				{this.statusNames[s]}
 			</span>;
 		});
 		
@@ -98,7 +99,7 @@ class Summary extends Component {
 			
 			if(features && features.length > 0) {
 				const featurelayers = features.map(f => {
-					const color = STATUS_COLOR[f.status] || STATUS_COLOR.new;
+					const color = this.statusColor[f.status] || this.statusColor.new;
 					const click = () => {
 						/**
 						* Event sent when a feature should be shown in review tab

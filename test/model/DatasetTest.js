@@ -145,6 +145,8 @@ describe("Model > Dataset", () => {
 			.then(f2 => {
 				const pf = d1.getPreviousFeature();
 				assert.equal(pf.id, 1);
+				assert.equal(d1.lastFeatureId, null);
+				assert.equal(d1.currentFeatureId, 0);
 				done();
 			})
 			.catch(e => {

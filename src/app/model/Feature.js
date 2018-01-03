@@ -1,7 +1,7 @@
 import Hash from 'object-hash';
 import P4C from 'pic4carto';
 
-const STATUSES = [ "new", "skipped", "nopics", "reviewed" ];
+const STATUSES = [ "new", "skipped", "nopics", "reviewed", "cantsee" ];
 
 /**
  * A feature is a geolocated object, which has to reviewed using pictures.

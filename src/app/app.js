@@ -69,7 +69,7 @@ class App {
 				const itemclass = data.options.itemclass.split("-");
 				const item = itemclass[0];
 				
-				this.dataset = new Osmose(item, data.options.time * 1.5);
+				this.dataset = new Osmose(item, data.options.amount, { area: data.options.area });
 				PubSub.publish("DATASET.READY", this.dataset);
 			}
 		});

@@ -44,12 +44,15 @@ class Dataset {
 	}
 	
 	/**
-	 * Retrieve the last reviewed feature.
+	 * Retrieve the last reviewed feature, and sets it as current one.
 	 * @return {Feature} The last reviewed feature, or null if no previous feature is available.
 	 */
 	getPreviousFeature() {
 		if(this.lastFeatureId !== null && this.features[this.lastFeatureId]) {
-			return this.features[this.lastFeatureId];
+			const prev = this.features[this.lastFeatureId]
+			this.currentFeatureId = this.lastFeatureId;
+			this.lastFeatureId = null;
+			return prev;
 		}
 		else {
 			return null;

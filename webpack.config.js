@@ -43,6 +43,9 @@ if(process.env.NODE_ENV === "production") {
 }
 else {
 	plugins.push(new webpack.HotModuleReplacementPlugin());
+	
+	global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+	global.XMLHttpRequest.DONE = 4;
 }
 
 plugins.push(new TransferWebpackPlugin([ {from: 'www'} ], path.resolve(__dirname, 'src')));

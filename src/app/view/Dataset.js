@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import { EmoticonPoop, HelpCircle, Recycle } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
 import Grid from 'material-ui/Grid';
 import Input from 'material-ui/Input';
-import MenuItem from 'material-ui/Menu/MenuItem';
+import List, { ListItem, ListItemText, ListItemIcon } from 'material-ui/List';
+import Menu, { MenuItem } from 'material-ui/Menu';
+import Paper from 'material-ui/Paper';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
@@ -18,10 +21,16 @@ class Dataset extends Component {
 		this.state = {
 			sourceFormatValue: "osmose",
 			sourceFile: null,
-			sourceOsmoseType: "8180",
-			sourceOsmoseTime: "10",
-			sourceOsmosePlace: ""
+			sourceOsmoseThemeId: 0,
+			sourceOsmoseAmount: 30,
+			sourceOsmosePlace: "",
+			sourceOsmoseThemeOpen: false
 		};
+		
+		this.osmoseTypes = [
+			{ label: I18n.t("Missing toilets"), description: I18n.t("Given toilets are known from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8180", icon: <EmoticonPoop /> },
+			{ label: I18n.t("Recycling container"), description: I18n.t("Given containers might have an invalid description. Check what's wrong (see \"title\" in feature properties) and fix it if possible."), value: "3230", icon: <Recycle /> }
+		];
 	}
 	
 	/**
@@ -59,11 +68,11 @@ class Dataset extends Component {
 			}
 		}
 		else if(this.state.sourceFormatValue === "osmose") {
-			if(!this.state.sourceOsmoseType || isNaN(parseInt(this.state.sourceOsmoseType))) {
+			if(this.state.sourceOsmoseThemeId === null || isNaN(parseInt(this.state.sourceOsmoseThemeId))) {
 				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("Please select an Osmose theme") });
 			}
-			else if(!this.state.sourceOsmoseTime || isNaN(parseInt(this.state.sourceOsmoseTime))) {
-				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("Please select the time you have to contribute") });
+			else if(!this.state.sourceOsmoseAmount || isNaN(parseInt(this.state.sourceOsmoseAmount))) {
+				PubSub.publish("UI.MESSAGE.SHOW", { type: "alert", message: I18n.t("Please select the amount of features you want to review") });
 			}
 			else {
 				/**
@@ -77,8 +86,9 @@ class Dataset extends Component {
 				PubSub.publish("DATASET.DYNAMIC.DEFINED", {
 					type: this.state.sourceFormatValue,
 					options: {
-						itemclass: this.state.sourceOsmoseType,
-						time: parseInt(this.state.sourceOsmoseTime)
+						itemclass: this.osmoseTypes[this.state.sourceOsmoseThemeId].value,
+						amount: parseInt(this.state.sourceOsmoseAmount),
+						area: this.state.sourceOsmosePlace.trim().length > 0 ? this.state.sourceOsmosePlace : null
 					}
 				});
 			}
@@ -103,52 +113,61 @@ class Dataset extends Component {
 				break;
 			
 			case "osmose":
-				const types = [
-					{ label: I18n.t("Missing toilets"), description: I18n.t("Given toilets are known from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8180" },
-					{ label: I18n.t("Recycling container"), description: I18n.t("Given containers might have an invalid description. Check what's wrong (see \"title\" in feature properties) and fix it if possible."), value: "3230" }
-				];
-				fields = <div>
-					<FormLabel component="legend">{I18n.t("Available time")}</FormLabel>
-					<RadioGroup
-						name="time"
-						value={this.state.sourceOsmoseTime}
-						row
-						onChange={(e, v) => this.setState({ sourceOsmoseTime: v })}
-						style={{justifyContent: "space-evenly"}}
-					>
-						<FormControlLabel value="10" control={<Radio />} label={I18n.t("10 minutes")} />
-						<FormControlLabel value="30" control={<Radio />} label={I18n.t("30 minutes")} />
-						<FormControlLabel value="60" control={<Radio />} label={I18n.t("1 hour")} />
-					</RadioGroup>
-					
-					<TextField
-						id="osmosetype"
-						select
-						label={I18n.t("Theme")}
-						value={this.state.sourceOsmoseType}
-						onChange={e => this.setState({sourceOsmoseType: e.target.value})}
-						margin="normal"
-					>
-					{types.map(opt => (
-						<MenuItem key={opt.value} value={opt.value}>
-							{opt.label}
-						</MenuItem>
-					))}
-					</TextField>
-					
-					<Typography type="caption">
-						{types.filter(t => t.value == this.state.sourceOsmoseType)[0].description}
-					</Typography>
-					
-					<TextField
-						id="place"
-						label={I18n.t("Place")}
-						value={this.state.sourceOsmosePlace}
-						onChange={e => this.setState({sourceOsmosePlace: e.target.value})}
-						margin="normal"
-						helperText={I18n.t("City or country (empty for whole world)")}
-					/>
-				</div>;
+				fields = <Grid container>
+					<Grid item hidden={{only: "xs"}} sm={2} md={3} lg={4}></Grid>
+					<Grid item xs={12} sm={8} md={6} lg={4} style={{display: "flex", flexFlow: "column"}}>
+						<FormLabel component="legend">{I18n.t("Theme")}</FormLabel>
+						<Paper style={{marginTop: 20}}>
+							<List>
+								<ListItem
+									button
+									onClick={e => this.setState({ sourceOsmoseThemeOpen: true, sourceOsmoseAnchorEl: e.currentTarget })}
+								>
+									<ListItemIcon>{this.osmoseTypes[this.state.sourceOsmoseThemeId].icon || <HelpCircle />}</ListItemIcon>
+									<ListItemText
+										primary={this.osmoseTypes[this.state.sourceOsmoseThemeId].label}
+										secondary={this.osmoseTypes[this.state.sourceOsmoseThemeId].description}
+									/>
+								</ListItem>
+							</List>
+						</Paper>
+						<Menu
+							id="osmosetype"
+							anchorEl={this.state.sourceOsmoseAnchorEl}
+							open={this.state.sourceOsmoseThemeOpen}
+							onClose={e => this.setState({ sourceOsmoseThemeOpen: false })}
+						>
+						{this.osmoseTypes.map((opt, id) => (
+							<MenuItem
+								key={opt.value}
+								selected={id === this.state.sourceOsmoseThemeId}
+								onClick={e => this.setState({ sourceOsmoseThemeId: id, sourceOsmoseThemeOpen: false })}
+							>
+								<ListItemIcon>{opt.icon || <HelpCircle />}</ListItemIcon>
+								<ListItemText inset primary={opt.label} />
+							</MenuItem>
+						))}
+						</Menu>
+						
+						<TextField
+							id="place"
+							label={I18n.t("Place")}
+							value={this.state.sourceOsmosePlace}
+							onChange={e => this.setState({sourceOsmosePlace: e.target.value})}
+							margin="normal"
+							helperText={I18n.t("City or country (empty for whole world)")}
+						/>
+						
+						<TextField
+							id="osmoseamount"
+							label="Amount of features to review"
+							value={this.state.sourceOsmoseAmount}
+							onChange={e => this.setState({sourceOsmoseAmount: e.target.value})}
+							type="number"
+							margin="normal"
+						/>
+					</Grid>
+				</Grid>;
 				break;
 		}
 		

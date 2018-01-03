@@ -1,7 +1,9 @@
 import Dataset from '../Dataset';
 import Feature from '../Feature';
 import Hash from 'object-hash';
+import Nominatim from 'nominatim-browser';
 import OsmoseRequest from 'osmose-request';
+import request from 'browser-request';
 
 /**
  * An Osmose {@link Dataset} is a set of features retrieved from {@link http://osmose.openstreetmap.fr|Osmose API}.
@@ -30,6 +32,29 @@ class Osmose extends Dataset {
 		this.osmose = new OsmoseRequest();
 		this.searchOptions = Object.assign({ item: itemId, limit: amount, status: "open", full: true }, this.options);
 		this.features = null;
+		
+		//Handle geocoding
+		if(this.options.area && this.options.area.trim().length > 0) {
+			this.isGeocoding = true;
+			Nominatim.geocode({
+				q: this.options.area,
+				limit: 1
+			})
+			.then(res => {
+				if(res && res.length === 1) {
+					this.searchOptions.bbox = res[0].boundingbox[2]+","+res[0].boundingbox[0]+","+res[0].boundingbox[3]+","+res[0].boundingbox[1];
+				}
+				else {
+					console.warn("Invalid geocoding result:", res);
+				}
+			})
+			.catch(e => {
+				console.error(e);
+			})
+			.finally(() => {
+				this.isGeocoding = false;
+			});
+		}
 	}
 	
 	/**
@@ -51,28 +76,38 @@ class Osmose extends Dataset {
 		
 		//First run = fetch errors from API
 		if(this.features === null) {
-			return this.osmose
-				.fetchErrors(this.searchOptions)
-				.then(result => {
-					this.features = [];
-					const ignoreProps = [ "lat", "lon", "item", "class", "level" ];
-					
-					for(const i in result) {
-						const f = result[i];
+			if(this.isGeocoding) {
+				//Delay execution
+				return (new Promise(resolve => {
+					setTimeout(() => {
+						resolve(this.getNextFeature(radius));
+					}, 100);
+				}));
+			}
+			else {
+				return this.osmose
+					.fetchErrors(this.searchOptions)
+					.then(result => {
+						this.features = [];
+						const ignoreProps = [ "lat", "lon", "item", "class", "level", "source", "elems", "subclass" ];
 						
-						//Filter properties to only display what's useful
-						const props = {};
-						for(const k in f) {
-							if(ignoreProps.indexOf(k) < 0) {
-								props[k] = f[k];
+						for(const i in result) {
+							const f = result[i];
+							
+							//Filter properties to only display what's useful
+							const props = {};
+							for(const k in f) {
+								if(ignoreProps.indexOf(k) < 0) {
+									props[k] = f[k];
+								}
 							}
+							
+							this.features.push(new Feature(i, [ parseFloat(f.lat), parseFloat(f.lon) ], props));
 						}
 						
-						this.features.push(new Feature(i, [ parseFloat(f.lat), parseFloat(f.lon) ], props));
-					}
-					
-					return this.getNextFeature(radius);
-				});
+						return this.getNextFeature(radius);
+					});
+			}
 		}
 		else {
 			let nextFid = -1;
@@ -93,7 +128,7 @@ class Osmose extends Dataset {
 			if(nextFid !== -1) {
 				return f.getPictures(radius)
 				.then(pics => {
-					if(pics.length > 0) {
+					if(pics && pics.length > 0) {
 						this.currentFeatureId = nextFid;
 						return f;
 					}
@@ -136,6 +171,15 @@ class Osmose extends Dataset {
 	 * @instance
 	 */
 	updateCurrentFeature(status, seenOnPictures) {
+		//Set error as fixed in Osmose
+		if(status === "reviewed") {
+			request('http://osmose.openstreetmap.fr/fr/api/0.2/error/'+this.features[this.currentFeatureId].properties.error_id+'/done', (error, response, body) => {
+				if(error) {
+					console.error(error);
+				}
+			});
+		}
+		
 		return this._updateCurrentFeatureNotDynamic(status, seenOnPictures);
 	}
 }

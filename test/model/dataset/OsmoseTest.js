@@ -51,6 +51,26 @@ describe("Model > Dataset > Osmose", () => {
 				done();
 			});
 		}).timeout(TIMEOUT*3);
+		
+		it.skip("returns first feature having pictures when searching in given area", done => {
+			const d1 = new Osmose(3230, 10, { area: "rennes, france" });
+			d1.getNextFeature()
+			.then(f => {
+				assert.ok(f !== null);
+				assert.ok(!isNaN(f.coordinates[0]));
+				assert.ok(!isNaN(f.coordinates[1]));
+				
+				assert.ok(f.coordinates[0] >= 48.0769155);
+				assert.ok(f.coordinates[0] <= 48.1549705);
+				assert.ok(f.coordinates[1] >= -1.7525876);
+				assert.ok(f.coordinates[1] <= -1.6244045);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT*3);
 	});
 	
 	describe("isDynamic", () => {
