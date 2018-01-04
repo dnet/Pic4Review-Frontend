@@ -1,6 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import BodyComponent from './view/BodyComponent';
 import DatasetManager from './ctrl/DatasetManager';
 import I18n from 'i18nline/lib/i18n';
 import Main from './view/Main';
@@ -47,6 +48,11 @@ class App {
 		 * PubSub is a system for communicating between objects.
 		 * You can publish events and subscribe to listen to other objects events.
 		 * @name PubSub
+		 */
+		/**
+		 * Every component of the application is able to send or listen to events through a publish/subscribe system (PubSub).
+		 * Available events are documented here.
+		 * @name Events
 		 */
 		window.PubSub = PubSub;
 		
@@ -100,6 +106,9 @@ class App {
 	initDomRendering() {
 		injectTapEventPlugin();
 		render(<Main />, document.getElementById('app'));
+		//render(<BodyComponent />, document.getElementById('app'));
+		
+		//setTimeout(() => { PubSub.publish("UI.MESSAGE.WAIT", { message: "Some long message to display to user to let him know thats waiting" }); }, 1000);
 	}
 }
 
