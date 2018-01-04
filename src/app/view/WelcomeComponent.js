@@ -5,10 +5,9 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 
 /**
- * About view shows a synthetic description of what this tool is about.
- * @name AboutComponent
+ * Welcome component shows a synthetic description of what this tool is about.
  */
-class About extends Component {
+class WelcomeComponent extends Component {
 	render() {
 		const styleContainer = Object.assign({}, this.props.style, {textAlign: "center"});
 		const stylePics = { height: 128, width: 128 };
@@ -32,7 +31,7 @@ class About extends Component {
 					<Typography type="body1">
 						{I18n.t("First, choose a dataset (a file of yours or an online source), then start reviewing features one by one, looking for the information you want to contribute on.")}
 					</Typography>
-					<Button raised color="primary" style={{marginTop: 10}} onClick={() => PubSub.publish("UI.TAB.SHOW", "dataset")}>
+					<Button raised color="primary" style={{marginTop: 10}} onClick={() => PubSub.publish("UI.PAGE.SHOW", { page: "missions" })}>
 						{I18n.t("Start now")}
 					</Button>
 				</Grid>
@@ -50,4 +49,4 @@ class About extends Component {
 	}
 }
 
-export default About;
+export default WelcomeComponent;

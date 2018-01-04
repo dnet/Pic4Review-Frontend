@@ -4,7 +4,6 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import BodyComponent from './view/BodyComponent';
 import DatasetManager from './ctrl/DatasetManager';
 import I18n from 'i18nline/lib/i18n';
-import Main from './view/Main';
 import Osmose from './model/dataset/Osmose';
 import PubSub from 'pubsub-js';
 
@@ -105,10 +104,7 @@ class App {
 	 */
 	initDomRendering() {
 		injectTapEventPlugin();
-		render(<Main />, document.getElementById('app'));
-		//render(<BodyComponent />, document.getElementById('app'));
-		
-		//setTimeout(() => { PubSub.publish("UI.MESSAGE.WAIT", { message: "Some long message to display to user to let him know thats waiting" }); }, 1000);
+		render(<BodyComponent />, document.getElementById('app'));
 	}
 }
 

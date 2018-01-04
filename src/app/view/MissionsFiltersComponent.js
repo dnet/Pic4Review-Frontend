@@ -1,0 +1,80 @@
+import React, { Component } from 'react';
+import { FormControl } from 'material-ui/Form';
+import Hash from 'object-hash';
+import Input, { InputLabel } from 'material-ui/Input';
+import Select from 'material-ui/Select';
+
+/**
+ * Missions filters component allows user to restrict the amount of missions to display.
+ * @param {Object} [props.values] The values to restore in select fields (type, theme)
+ */
+class MissionsFiltersComponent extends Component {
+	constructor() {
+		super();
+		
+		this.state = {
+			theme: null,
+			type: null
+		};
+	}
+	
+	/**
+	 * Converts a third-party object into a list of filters
+	 * @private
+	 */
+	_toFilters(o) {
+		return { type: o.type || "", theme: o.theme || "" };
+	}
+	
+	render() {
+		const styleControl = { width: "100%", marginBottom: 20 };
+		
+		return <div>
+			<FormControl style={styleControl}>
+				<InputLabel htmlFor="missions-filters-theme">{I18n.t("Theme")}</InputLabel>
+				<Select
+					native
+					value={this.state.theme !== null ? this.state.theme : this.props.values.theme}
+					onChange={e => this.setState({ theme: e.target.value })}
+					input={<Input id="missions-filters-theme" />}
+				>
+					<option value="" />
+					<option value="toilets">Toilets</option>
+				</Select>
+			</FormControl>
+			
+			<FormControl style={styleControl}>
+				<InputLabel htmlFor="missions-filters-type">{I18n.t("Type")}</InputLabel>
+				<Select
+					native
+					value={this.state.type !== null ? this.state.type : this.props.values.type}
+					onChange={e => this.setState({ type: e.target.value })}
+					input={<Input id="missions-filters-type" />}
+				>
+					<option value="" />
+					<option value="improve">Improve</option>
+				</Select>
+			</FormControl>
+		</div>;
+	}
+	
+	componentDidUpdate(prevProps, prevState) {
+		const newFilters = this._toFilters(this.state);
+		const prevFilters = this._toFilters(prevState);
+		
+		if(Hash(newFilters) !== Hash(prevFilters)) {
+			PubSub.publish("UI.MISSIONS.FILTER", newFilters);
+		}
+	}
+}
+
+export default MissionsFiltersComponent;
+
+/**
+ * Event sent when missions filters have changed.
+ * @event UI.MISSIONS.FILTER
+ * @type {Object} Event data
+ * @property {string} type The kind of missions to keep
+ * @property {string} theme The theme of missions to keep
+ * @memberof Events
+ */
