@@ -20,15 +20,7 @@ class MissionsComponent extends Component {
 			missions: null
 		};
 		
-		PubSub.subscribe("UI.MISSIONS.FILTER", (msg, data) => {
-			this.setState({ currentFilters: data });
-		});
-		
-		PubSub.subscribe("MISSIONS.READY", (msg, data) => {
-			this.setState({ missions: data.missions });
-		});
-		
-		PubSub.publish("UI.MISSIONS.WANTS");
+		this.psTokens = {};
 	}
 	
 	render() {
@@ -53,6 +45,23 @@ class MissionsComponent extends Component {
 				</Grid>
 			</Grid>
 		</div>;
+	}
+	
+	componentWillMount() {
+		this.psTokens.filter = PubSub.subscribe("UI.MISSIONS.FILTER", (msg, data) => {
+			this.setState({ currentFilters: data });
+		});
+		
+		this.psTokens.ready = PubSub.subscribe("MISSIONS.READY", (msg, data) => {
+			this.setState({ missions: data.missions });
+		});
+		
+		PubSub.publish("UI.MISSIONS.WANTS");
+	}
+	
+	componentWillUnmount() {
+		PubSub.unsubscribe(this.psTokens.filter);
+		PubSub.unsubscribe(this.psTokens.ready);
 	}
 }
 

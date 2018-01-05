@@ -32,7 +32,8 @@ class MissionManager {
 					"integrate",
 					"amenity",
 					new Osmose(8180, 100, { class: 2 }),
-					areaRennes
+					areaRennes,
+					{ short: "Missing toilets", full: "These toilets are known from an official source, but are missing in OpenStreetMap. Please add them using one of the editors (iD or JOSM), following [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dtoilets), if you are able to see them in pictures." }
 				));
 				
 				//Recycling containers in Rennes, France
@@ -40,7 +41,8 @@ class MissionManager {
 					"fix",
 					"amenity",
 					new Osmose(3230, 500, { class: 2, bbox: areaRennes.bbox }),
-					areaRennes
+					areaRennes,
+					{ short: "Bad recycling containers", full: "These recycling containers are probably badly described. Please check the kind of waste which can be recycled there using pictures. You can have a clue of the error looking to \"title\" property of features. For help, check [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drecycling)." }
 				));
 				
 				resolve(this.missions);

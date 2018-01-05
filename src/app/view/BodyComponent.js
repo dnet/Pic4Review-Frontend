@@ -9,6 +9,7 @@ import { indigo, red } from 'material-ui/colors';
 import Alert from './AlertComponent';
 import Header from './HeaderComponent';
 import LoginDialog from './LoginDialogComponent';
+import Mission from './MissionComponent';
 import Missions from './MissionsComponent';
 import WaitDialog from './WaitDialogComponent';
 import Welcome from './WelcomeComponent';
@@ -21,7 +22,8 @@ class BodyComponent extends Component {
 		super();
 		
 		this.state = {
-			page: "welcome"
+			page: "welcome",
+			pageData: null
 		};
 		
 		this.theme = createMuiTheme({
@@ -32,7 +34,7 @@ class BodyComponent extends Component {
 		});
 		
 		PubSub.subscribe("UI.PAGE.SHOW", (msg, data) => {
-			this.setState({ page: data.page });
+			this.setState({ page: data.page, pageData: data });
 		});
 	}
 	
@@ -43,6 +45,10 @@ class BodyComponent extends Component {
 		switch(this.state.page) {
 			case "missions":
 				page = <Missions style={styleContent} />;
+				break;
+			
+			case "mission":
+				page = <Mission style={styleContent} mission={this.state.pageData.mission} />;
 				break;
 			
 			case "welcome":

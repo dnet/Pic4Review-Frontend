@@ -18,7 +18,7 @@ class MissionsFiltersComponent extends Component {
 		};
 		
 		this.themes = { "amenity": I18n.t("Amenity") };
-		this.types = { "fix": I18n.t("Fix existing data"), "improve": I18n.t("Improve existing data"), "integrate": I18n.t("Integrate new data") };
+		this.types = { "fix": I18n.t("Fix existing data"), "improve": I18n.t("Augment existing data"), "integrate": I18n.t("Integrate new data") };
 	}
 	
 	/**

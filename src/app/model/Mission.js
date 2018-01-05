@@ -14,6 +14,10 @@ const THEMES = [ "amenity" ];
  * @param {Object} area The mission area
  * @param {string} area.name The area name (for example "Rennes, France, Europe")
  * @param {LatLngBounds} area.bbox The area bounding box (see {@link https://framagit.org/Pic4Carto/Pic4Carto.js/blob/master/doc/API.md#latlngbounds|LatLngBounds in Pic4Carto documentation})
+ * @param {Object} description The mission details
+ * @param {string} description.short The mission goal in a few words
+ * @param {string} [description.full] The mission goal detailled (what to do, how...)
+ * @param {Object} [options] Mission options
  * 
  * @property {string} type The kind of mission (one of improve, fix, integrate)
  * @property {string} theme The mission theme (one of amenity)
@@ -23,7 +27,7 @@ const THEMES = [ "amenity" ];
  * @property {LatLngBounds} area.bbox The area bounding box
  */
 class Mission {
-	constructor(type, theme, dataset, area) {
+	constructor(type, theme, dataset, area, description, options) {
 		if(type === null || type === undefined || TYPES.indexOf(type) < 0) {
 			throw new TypeError("type parameter must be one of "+TYPES.join(", "));
 		}
@@ -36,11 +40,15 @@ class Mission {
 		else if(!area || !area.name || !(area.bbox instanceof P4C.LatLngBounds)) {
 			throw new TypeError("area parameter should be an object like { name: string, bbox: LatLngBounds }");
 		}
+		else if(!description || !description.short || description.short.trim().length < 15) {
+			throw new TypeError("description parameters must be an object like { short: string, full: string }. Short description is mandatory.");
+		}
 		
 		this._type = type;
 		this._theme = theme;
 		this._dataset = dataset;
 		this._area = area;
+		this._description = description;
 	}
 
 //ACCESSORS
@@ -58,6 +66,10 @@ class Mission {
 	
 	get area() {
 		return this._area;
+	}
+	
+	get description() {
+		return this._description;
 	}
 
 //OTHER METHODS
