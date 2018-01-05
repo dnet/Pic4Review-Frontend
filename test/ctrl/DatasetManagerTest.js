@@ -1,5 +1,5 @@
 /*
- * Test script for model/Dataset.js
+ * Test script for ctrl/DatasetManager.js
  */
 
 import assert from 'assert';

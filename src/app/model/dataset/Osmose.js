@@ -14,6 +14,8 @@ import request from 'browser-request';
  * @param {int} itemId The Osmose item ID
  * @param {int} amount The amount of errors to review
  * @param {Object} [options] Options for data retrieval
+ * @param {int} [options.class] Osmose class for a given item
+ * @param {LatLngBounds} [options.bbox] Bounding box for limiting search area
  */
 class Osmose extends Dataset {
 	constructor(itemId, amount, options) {
@@ -32,6 +34,11 @@ class Osmose extends Dataset {
 		this.osmose = new OsmoseRequest();
 		this.searchOptions = Object.assign({ item: itemId, limit: amount, status: "open", full: true }, this.options);
 		this.features = null;
+		
+		//Convert bbox
+		if(this.options.bbox) {
+			this.searchOptions.bbox = this.options.bbox.getWest()+","+this.options.bbox.getSouth()+","+this.options.bbox.getEast()+","+this.options.bbox.getNorth();
+		}
 		
 		//Handle geocoding
 		if(this.options.area && this.options.area.trim().length > 0) {

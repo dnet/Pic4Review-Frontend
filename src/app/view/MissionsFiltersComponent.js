@@ -6,7 +6,7 @@ import Select from 'material-ui/Select';
 
 /**
  * Missions filters component allows user to restrict the amount of missions to display.
- * @param {Object} [props.values] The values to restore in select fields (type, theme)
+ * Component properties: values = The values to restore in select fields (type, theme)
  */
 class MissionsFiltersComponent extends Component {
 	constructor() {
@@ -16,6 +16,9 @@ class MissionsFiltersComponent extends Component {
 			theme: null,
 			type: null
 		};
+		
+		this.themes = { "amenity": I18n.t("Amenity") };
+		this.types = { "fix": I18n.t("Fix existing data"), "improve": I18n.t("Improve existing data"), "integrate": I18n.t("Integrate new data") };
 	}
 	
 	/**
@@ -39,7 +42,9 @@ class MissionsFiltersComponent extends Component {
 					input={<Input id="missions-filters-theme" />}
 				>
 					<option value="" />
-					<option value="toilets">Toilets</option>
+					{Object.entries(this.themes).map(e =>
+						<option key={e[0]} value={e[0]}>{e[1]}</option>
+					)}
 				</Select>
 			</FormControl>
 			
@@ -52,7 +57,9 @@ class MissionsFiltersComponent extends Component {
 					input={<Input id="missions-filters-type" />}
 				>
 					<option value="" />
-					<option value="improve">Improve</option>
+					{Object.entries(this.types).map(e =>
+						<option key={e[0]} value={e[0]}>{e[1]}</option>
+					)}
 				</Select>
 			</FormControl>
 		</div>;

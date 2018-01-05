@@ -4,6 +4,7 @@
 
 import assert from 'assert';
 import Osmose from '../../../src/app/model/dataset/Osmose';
+import { LatLng, LatLngBounds } from 'pic4carto';
 
 const TIMEOUT = 10000;
 global.PubSub = null;
@@ -27,6 +28,11 @@ describe("Model > Dataset > Osmose", () => {
 				new Osmose(1070);
 			}, TypeError);
 		});
+		
+		it("reads correctly bbox option", () => {
+			const d1 = new Osmose(1070, 10, { bbox: new LatLngBounds(new LatLng(1.1,2.2), new LatLng(3.3,4.4)) });
+			assert.equal(d1.searchOptions.bbox, "2.2,1.1,4.4,3.3");
+		});
 	});
 	
 	describe("getId", () => {
@@ -38,7 +44,7 @@ describe("Model > Dataset > Osmose", () => {
 	
 	describe("getNextFeature", () => {
 		it("returns first feature having pictures", done => {
-			const d1 = new Osmose(3230, 10, { bbox: "2.2556,48.8141,2.4184,48.9022" });
+			const d1 = new Osmose(3230, 10, { bbox: new LatLngBounds(new LatLng(48.8141, 2.2556), new LatLng(48.9022, 2.4184)) });
 			d1.getNextFeature()
 			.then(f => {
 				assert.ok(f !== null);
