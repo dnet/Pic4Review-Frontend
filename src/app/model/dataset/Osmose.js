@@ -65,6 +65,7 @@ class Osmose extends Dataset {
 			});
 		}
 		else {
+			this.isGeocoding = false;
 			this._loadData();
 		}
 	}
@@ -178,6 +179,25 @@ class Osmose extends Dataset {
 	 */
 	getProgress() {
 		return this._getProgressNotDynamic();
+	}
+	
+	/**
+	 * Override of {@link Dataset#getAllFeatures}
+	 * @memberof OsmoseDataset
+	 * @instance
+	 */
+	getAllFeatures() {
+		if(this.isGeocoding || this.isDownloading) {
+			//Delay execution
+			return (new Promise(resolve => {
+				setTimeout(() => {
+					resolve(this.getAllFeatures());
+				}, 100);
+			}));
+		}
+		else {
+			return new Promise(resolve => resolve(this.features));
+		}
 	}
 	
 	/**

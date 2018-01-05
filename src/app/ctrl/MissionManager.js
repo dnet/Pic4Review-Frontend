@@ -40,7 +40,7 @@ class MissionManager {
 				this.missions.push(new Mission(
 					"fix",
 					"amenity",
-					new Osmose(3230, 500, { class: 2, bbox: areaRennes.bbox }),
+					new Osmose(3230, 500, { bbox: areaRennes.bbox }),
 					areaRennes,
 					{ short: "Bad recycling containers", full: "These recycling containers are probably badly described. Please check the kind of waste which can be recycled there using pictures. You can have a clue of the error looking to \"title\" property of features. For help, check [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drecycling)." }
 				));

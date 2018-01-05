@@ -185,12 +185,19 @@ describe("Model > Dataset", () => {
 	});
 	
 	describe("getAllFeatures", () => {
-		it("works for subclass", () => {
+		it("works for subclass", done => {
 			const d1 = new Datatest1();
-			const res = d1.getAllFeatures();
-			assert.equal(res[0].id, 1);
-			assert.equal(res[1].id, 2);
-			assert.equal(res[2].id, 3);
+			d1.getAllFeatures()
+			.then(res => {
+				assert.equal(res[0].id, 1);
+				assert.equal(res[1].id, 2);
+				assert.equal(res[2].id, 3);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
 		});
 	});
 	

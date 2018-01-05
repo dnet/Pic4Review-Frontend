@@ -77,11 +77,10 @@ class Dataset {
 	
 	/**
 	 * Get the whole set of features.
-	 * For dynamic datasets, only already loaded features will be given.
-	 * @return {Object} The {@link Feature|features}, as ID -> feature
+	 * @return {Promise} A promise solving on the array of {@link Feature|features}
 	 */
 	getAllFeatures() {
-		return this.features;
+		return new Promise(resolve => { resolve(this.features); });
 	}
 	
 	/**

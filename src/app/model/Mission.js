@@ -1,4 +1,5 @@
 import Dataset from './Dataset';
+import Hash from 'object-hash';
 import P4C from 'pic4carto';
 
 const TYPES = [ "improve", "fix", "integrate" ];
@@ -19,6 +20,7 @@ const THEMES = [ "amenity" ];
  * @param {string} [description.full] The mission goal detailled (what to do, how...)
  * @param {Object} [options] Mission options
  * 
+ * @property {string} id An unique ID representing this mission
  * @property {string} type The kind of mission (one of improve, fix, integrate)
  * @property {string} theme The mission theme (one of amenity)
  * @property {Dataset} dataset The mission source of data
@@ -52,6 +54,10 @@ class Mission {
 	}
 
 //ACCESSORS
+	get id() {
+		return Hash(this._type+this._theme+this._area.bbox.toString()+this._description.short);
+	}
+	
 	get type() {
 		return this._type;
 	}

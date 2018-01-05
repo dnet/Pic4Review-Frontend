@@ -19,9 +19,9 @@ class MissionSummaryComponent extends Component {
 	
 	render() {
 		return <div>
-			<Typography type="headline">
+			<Typography type="headline" style={{verticalAlign: "middle"}}>
 				{this.props.mission.description.short}
-				<span style={{float: "right", color: grey[500]}}>
+				<span style={{verticalAlign: "middle", color: grey[500], marginLeft: 10}}>
 					<Tooltip title={this.types[this.props.mission.type]}>
 						{this.typeIcons[this.props.mission.type]}
 					</Tooltip>

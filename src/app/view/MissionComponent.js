@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
-import { withStyles } from 'material-ui/styles';
-import { Play } from 'mdi-material-ui';
-import Button from 'material-ui/Button';
-import MissionSummary from './MissionSummaryComponent';
-import ReactMarkdown from 'react-markdown';
-
-const styles = theme => ({
-	root: theme.typography.body1
-});
+import MissionDescription from './MissionDescriptionComponent';
+import MissionReview from './MissionReviewComponent';
+import Tabs, { Tab } from 'material-ui/Tabs';
 
 /**
  * Mission component allows to show details about a given {@link Mission}.
@@ -15,18 +9,39 @@ const styles = theme => ({
 class MissionComponent extends Component {
 	constructor() {
 		super();
+		
+		this.state = {
+			tab: 0
+		};
 	}
 	
 	render() {
-		return <div style={this.props.style}>
-			<MissionSummary mission={this.props.mission} />
-			<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
-			<Button raised color="primary">
-				<Play />
-				{I18n.t("Start review")}
-			</Button>
+		let content = null;
+		
+		switch(this.state.tab) {
+			case 0:
+				content = <MissionDescription mission={this.props.mission} style={this.props.style} />;
+				break;
+			
+			case 1:
+				content = <MissionReview mission={this.props.mission} style={this.props.style} />;
+				break;
+		}
+		
+		return <div>
+			<Tabs
+				value={this.state.tab}
+				onChange={(e,v) => this.setState({ tab: v })}
+				indicatorColor="primary"
+				textColor="primary"
+			>
+				<Tab label={I18n.t("Summary")} />
+				<Tab label={I18n.t("Review")} />
+				<Tab label={I18n.t("Statistics")} />
+			</Tabs>
+			{content}
 		</div>;
 	}
 }
 
-export default withStyles(styles)(MissionComponent);
+export default MissionComponent;
