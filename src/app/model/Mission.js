@@ -42,7 +42,7 @@ class Mission {
 		else if(!area || !area.name || !(area.bbox instanceof P4C.LatLngBounds)) {
 			throw new TypeError("area parameter should be an object like { name: string, bbox: LatLngBounds }");
 		}
-		else if(!description || !description.short || description.short.trim().length < 15) {
+		else if(!description || !description.short || description.short.trim().length < 10) {
 			throw new TypeError("description parameters must be an object like { short: string, full: string }. Short description is mandatory.");
 		}
 		

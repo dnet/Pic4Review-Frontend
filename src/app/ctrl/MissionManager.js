@@ -1,4 +1,5 @@
 import Mission from '../model/Mission';
+import GeoJSON from '../model/dataset/GeoJSON';
 import Osmose from '../model/dataset/Osmose';
 import { LatLng, LatLngBounds } from 'pic4carto';
 
@@ -26,6 +27,15 @@ class MissionManager {
 				//Temporary hard-coded implementation
 				//TODO Use an API call to get missions dynamically
 				const areaRennes = { name: "Rennes, France, Europe", bbox: new LatLngBounds(new LatLng(48.0769155, -1.7525876), new LatLng(48.1549705, -1.6244045)) };
+				
+				//Debug mission
+				this.missions.push(new Mission(
+					"improve",
+					"amenity",
+					new GeoJSON('{ "type": "FeatureCollection", "features": [ { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -13.9526 , 47.9016 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6832758, 48.12771 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6831709, 48.1277262 ] } } ] }'),
+					areaRennes,
+					{ short: "Debug mission", full: "These toilets are known from an official source, but are missing in OpenStreetMap. Please add them using one of the editors (iD or JOSM), following [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dtoilets), if you are able to see them in pictures." }
+				));
 				
 				//OD Toilets in Rennes, France
 				this.missions.push(new Mission(
