@@ -110,7 +110,12 @@ class MissionDescriptionComponent extends Component {
 					{legend}
 				</Grid>
 				<Grid item xs={12} sm={4} md={3}>
-					<Button raised color="primary" style={{width: "100%"}}>
+					<Button
+						raised
+						color="primary"
+						style={{width: "100%"}}
+						onClick={() => PubSub.publish("UI.MISSION.TAB", { tab: "review" })}
+					>
 						<Play />
 						{I18n.t("Start review")}
 					</Button>

@@ -13,6 +13,11 @@ class MissionComponent extends Component {
 		this.state = {
 			tab: 0
 		};
+		
+		PubSub.subscribe("UI.MISSION.TAB", (msg, data) => {
+			const tabs = { "summary": 0, "review": 1, "statistics": 2 };
+			this.setState({ tab: tabs[data.tab] });
+		});
 	}
 	
 	render() {
@@ -45,3 +50,11 @@ class MissionComponent extends Component {
 }
 
 export default MissionComponent;
+
+/**
+ * Event sent when mission component should switch tab
+ * @event UI.MISSION.TAB
+ * @type {Object} Event data
+ * @property {string} tab The tab name (summary, review, statistics)
+ * @memberof Events
+ */

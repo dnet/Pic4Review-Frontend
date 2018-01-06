@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Information, Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
+import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import CONSTS from '../constants';
+import Gallery from './MissionReviewGalleryComponent';
 import Grid from 'material-ui/Grid';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
@@ -28,31 +29,66 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_next() {
+		this.setState({ feature: null, pictures: null });
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
 		this.props.mission.dataset.getNextFeature()
 		.then(f => {
-			this.setState({ feature: f, pictures: null });
-			
-			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Looking for feature's pictures") });
-			
-			f.getPictures(this.state.radius)
-			.then(p => {
-				this.setState({ pictures: p });
+			if(f !== null) {
+				this.setState({ feature: f });
+				
+				PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Looking for feature's pictures") });
+				
+				f.getPictures(this.state.radius)
+				.then(p => {
+					this.setState({ pictures: p });
+					PubSub.publish("UI.MESSAGE.WAITDONE");
+				})
+				.catch(e => {
+					console.error(e);
+					PubSub.publish("UI.MESSAGE.WAITDONE");
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get pictures for this feature.") });
+				});
+			}
+			else {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-			})
-			.catch(e => {
-				console.error(e);
-				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get pictures for this feature.") });
-			});
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("You have done reviewing all features !") });
+				PubSub.publish("UI.MISSION.TAB", { tab: "summary" });
+			}
 		})
 		.catch(e => {
 			console.error(e);
-			this.setState({ feature: null, pictures: null });
 			PubSub.publish("UI.MESSAGE.WAITDONE");
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't retrieve next feature to review.") });
 		});
+	}
+	
+	/**
+	 * Go back to previous feature
+	 * @private
+	 */
+	_prev() {
+		const prev = this.props.mission.dataset.getPreviousFeature();
+		
+		if(prev !== null) {
+			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading previous feature") });
+			this.setState({ feature: null, pictures: null });
+			
+			prev.getPictures(this.state.radius)
+			.then(p => {
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+				this.setState({ feature: prev, pictures: p });
+			})
+			.catch(e => {
+				console.error(e);
+				this.setState({ feature: null, pictures: null });
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get pictures for this feature.") });
+			});
+		}
+		else {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("You can't go back anymore") });
+		}
 	}
 	
 	/**
@@ -100,8 +136,8 @@ class MissionReviewComponent extends Component {
 		}
 		else {
 			const buttons = [
-				{ icon: <SkipPrevious />, label: I18n.t("Previous"), click: () => {} },
-				{ icon: <SkipForward />, label: I18n.t("Skip"), click: () => {} },
+				{ icon: <SkipPrevious />, label: I18n.t("Previous"), click: this._prev.bind(this) },
+				{ icon: <SkipForward />, label: I18n.t("Skip"), click: () => { this.state.feature.status = "skipped"; this._next(); } },
 				{ icon: <Pencil />, label: I18n.t("JOSM"), click: this._editJOSM.bind(this) },
 				{ icon: <Pencil />, label: I18n.t("iD"), click: this._editId.bind(this) },
 				{ color: "primary", icon: <Check />, label: I18n.t("Done"), click: () => {} },
@@ -126,7 +162,7 @@ class MissionReviewComponent extends Component {
 							})}
 						</Grid>
 						
-						<div>Gallerie</div>
+						<Gallery pictures={this.state.pictures} />
 						<div>Image</div>
 					</Grid>
 				</Grid>
