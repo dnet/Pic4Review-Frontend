@@ -79,7 +79,7 @@ describe("Model > Dataset > Osmose", () => {
 		}).timeout(TIMEOUT*3);
 	});
 	
-	describe.only("getAllFeatures", () => {
+	describe("getAllFeatures", () => {
 		it("returns retrieved features", done => {
 			const d1 = new Osmose(3230, 10, { bbox: new LatLngBounds(new LatLng(48.8141, 2.2556), new LatLng(48.9022, 2.4184)) });
 			d1.getAllFeatures()

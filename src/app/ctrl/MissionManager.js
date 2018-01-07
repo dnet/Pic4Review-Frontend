@@ -1,7 +1,8 @@
-import Mission from '../model/Mission';
+import DatasetManager from './DatasetManager';
 import GeoJSON from '../model/dataset/GeoJSON';
-import Osmose from '../model/dataset/Osmose';
 import { LatLng, LatLngBounds } from 'pic4carto';
+import Mission from '../model/Mission';
+import Osmose from '../model/dataset/Osmose';
 
 /**
  * Mission manager handles retrieval and saving of {@link Mission|Missions}.
@@ -9,6 +10,7 @@ import { LatLng, LatLngBounds } from 'pic4carto';
 class MissionManager {
 	constructor() {
 		this.missions = null;
+		this.datasetManager = new DatasetManager();
 	}
 	
 	/**
@@ -32,7 +34,7 @@ class MissionManager {
 				this.missions.push(new Mission(
 					"improve",
 					"amenity",
-					new GeoJSON('{ "type": "FeatureCollection", "features": [ { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -13.9526 , 47.9016 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6832758, 48.12771 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6831709, 48.1277262 ] } } ] }'),
+					this.datasetManager.loadReview(new GeoJSON('{ "type": "FeatureCollection", "features": [ { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -13.9526 , 47.9016 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6832758, 48.12771 ] } }, { "type": "Feature", "properties": { "highway": "traffic_signals" }, "geometry": { "type": "Point", "coordinates": [ -1.6831709, 48.1277262 ] } } ] }')),
 					areaRennes,
 					{ short: "Debug mission", full: "These toilets are known from an official source, but are missing in OpenStreetMap. Please add them using one of the editors (iD or JOSM), following [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dtoilets), if you are able to see them in pictures." }
 				));
@@ -41,7 +43,7 @@ class MissionManager {
 				this.missions.push(new Mission(
 					"integrate",
 					"amenity",
-					new Osmose(8180, 100, { class: 2 }),
+					this.datasetManager.loadReview(new Osmose(8180, 100, { class: 2 })),
 					areaRennes,
 					{ short: "Missing toilets", full: "These toilets are known from an official source, but are missing in OpenStreetMap. Please add them using one of the editors (iD or JOSM), following [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dtoilets), if you are able to see them in pictures." }
 				));
@@ -50,7 +52,7 @@ class MissionManager {
 				this.missions.push(new Mission(
 					"fix",
 					"amenity",
-					new Osmose(3230, 500, { bbox: areaRennes.bbox }),
+					this.datasetManager.loadReview(new Osmose(3230, 500, { bbox: areaRennes.bbox })),
 					areaRennes,
 					{ short: "Bad recycling containers", full: "These recycling containers are probably badly described. Please check the kind of waste which can be recycled there using pictures. You can have a clue of the error looking to \"title\" property of features. For help, check [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drecycling)." }
 				));
@@ -59,7 +61,7 @@ class MissionManager {
 				this.missions.push(new Mission(
 					"integrate",
 					"amenity",
-					new Osmose(8025, 500, { bbox: areaRennes.bbox }),
+					this.datasetManager.loadReview(new Osmose(8025, 500, { bbox: areaRennes.bbox })),
 					areaRennes,
 					{ short: "Missing post box", full: "These post boxes are known from an official source, but missing in OpenStreetMap. Please add them if you can them on the given pictures. For more information about tagging of post boxes, please see [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dpost_box)." }
 				));
