@@ -31,7 +31,9 @@ class MissionsListComponent extends Component {
 							</Button>
 							<Button
 								color="accent"
-								onClick={() => PubSub.publish("UI.PAGE.SHOW", { page: "review", mission: m })}
+								onClick={() => {
+									PubSub.publish("UI.PAGE.SHOW", { page: "mission", mission: m, tab: "review" });
+								}}
 							>
 								<Play />
 								{I18n.t("Start")}

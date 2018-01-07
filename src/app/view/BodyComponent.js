@@ -48,7 +48,7 @@ class BodyComponent extends Component {
 				break;
 			
 			case "mission":
-				page = <Mission style={styleContent} mission={this.state.pageData.mission} />;
+				page = <Mission style={styleContent} mission={this.state.pageData.mission} tab={this.state.pageData.tab} />;
 				break;
 			
 			case "welcome":

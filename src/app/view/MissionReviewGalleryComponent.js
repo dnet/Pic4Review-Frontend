@@ -13,7 +13,9 @@ class MissionReviewGalleryComponent extends Component {
 	
 	render() {
 		if(this.props.pictures && this.props.pictures.length > 0) {
-			return <GridList cols={this.props.cols} cellHeight={this.props.height} style={{flexWrap: "nowrap"}}>
+			const style = Object.assign({}, this.props.style, {flexWrap: "nowrap"});
+			
+			return <GridList cols={this.props.cols} cellHeight={this.props.height} style={style}>
 			{this.props.pictures.map((p, i) => {
 				return <GridListTile
 					key={p.pictureUrl}

@@ -138,3 +138,9 @@ class Dataset {
 }
 
 export default Dataset;
+
+/**
+ * Event sent when a feature has been skipped during getNextFeature call because of pictures unavailability.
+ * @event DATASET.FEATURE.NOPICS
+ * @memberof Events
+ */

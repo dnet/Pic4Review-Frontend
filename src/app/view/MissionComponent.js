@@ -47,6 +47,12 @@ class MissionComponent extends Component {
 			{content}
 		</div>;
 	}
+	
+	componentWillMount() {
+		if(this.props.tab) {
+			PubSub.publish("UI.MISSION.TAB", { tab: this.props.tab });
+		}
+	}
 }
 
 export default MissionComponent;

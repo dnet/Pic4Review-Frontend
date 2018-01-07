@@ -173,7 +173,7 @@ class MissionReviewComponent extends Component {
 							})}
 						</Grid>
 						
-						<Gallery pictures={this.state.pictures} cols={IMG_COLS[this.props.width]} height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)} />
+						<Gallery pictures={this.state.pictures} cols={IMG_COLS[this.props.width]} height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)} style={{marginBottom: 10}} />
 						{this.state.pictures && this.state.currentPictureId !== null ? <Picture picture={this.state.pictures[this.state.currentPictureId]} /> : null}
 					</Grid>
 				</Grid>
