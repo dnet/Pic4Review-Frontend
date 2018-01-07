@@ -13,7 +13,7 @@ class UserButtonComponent extends Component {
 		super();
 		this.state = {
 			connected: false,
-			user: "<Username>",
+			user: null,
 			menuOpen: false,
 			menuAnchor: null
 		};
@@ -34,6 +34,7 @@ class UserButtonComponent extends Component {
 	_logoutClick() {
 		PubSub.publish("UI.LOGOUT.WANTS");
 		this._closeMenu();
+		this.setState({ connected: false, user: null });
 	}
 	
 	render() {
@@ -86,6 +87,14 @@ export default UserButtonComponent;
 /**
  * Event when the user wants to login.
  * @event UI.LOGIN.WANTS
+ * @memberof Events
+ */
+
+/**
+ * Event when user is logged in.
+ * @event UI.LOGIN.DONE
+ * @type {Object} Event data
+ * @property {string} username The user name
  * @memberof Events
  */
 

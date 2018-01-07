@@ -20,6 +20,15 @@ class LoginDialogComponent extends Component {
 	}
 	
 	/**
+	 * Handler for login button click.
+	 * @private
+	 */
+	_loginClicked() {
+		PubSub.publish("UI.LOGIN.SURE");
+		this._closeDialog();
+	}
+	
+	/**
 	 * Handler for closing dialog
 	 * @private
 	 */
@@ -42,7 +51,7 @@ class LoginDialogComponent extends Component {
 				<Button onClick={this._closeDialog.bind(this)} color="default">
 					{I18n.t("Cancel")}
 				</Button>
-				<Button onClick={this.handleClose} color="primary" autoFocus>
+				<Button onClick={this._loginClicked.bind(this)} color="primary" autoFocus>
 					{I18n.t("Login or create account")}
 				</Button>
 			</DialogActions>
@@ -51,3 +60,9 @@ class LoginDialogComponent extends Component {
 }
 
 export default LoginDialogComponent;
+
+/**
+ * Event when the user wants to login for sure.
+ * @event UI.LOGIN.SURE
+ * @memberof Events
+ */

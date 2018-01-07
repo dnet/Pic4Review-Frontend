@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/createMuiTheme';
 import { indigo, red } from 'material-ui/colors';
+import { Switch, Route } from 'react-router-dom';
 import Alert from './AlertComponent';
 import Header from './HeaderComponent';
 import LoginDialog from './LoginDialogComponent';
@@ -59,7 +60,11 @@ class BodyComponent extends Component {
 		
 		return <MuiThemeProvider theme={this.theme}><div>
 			<Header />
-			{page}
+			
+			<Switch>
+				<Route exact path='/' component={Welcome} />
+				<Route path='/missions' component={Missions} />
+			</Switch>
 			
 			<Alert />
 			<WaitDialog />
