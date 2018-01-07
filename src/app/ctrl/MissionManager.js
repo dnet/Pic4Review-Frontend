@@ -55,6 +55,15 @@ class MissionManager {
 					{ short: "Bad recycling containers", full: "These recycling containers are probably badly described. Please check the kind of waste which can be recycled there using pictures. You can have a clue of the error looking to \"title\" property of features. For help, check [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Drecycling)." }
 				));
 				
+				//Post boxes in Rennes, France
+				this.missions.push(new Mission(
+					"integrate",
+					"amenity",
+					new Osmose(8025, 500, { bbox: areaRennes.bbox }),
+					areaRennes,
+					{ short: "Missing post box", full: "These post boxes are known from an official source, but missing in OpenStreetMap. Please add them if you can them on the given pictures. For more information about tagging of post boxes, please see [documentation](https://wiki.openstreetmap.org/wiki/Tag:amenity%3Dpost_box)." }
+				));
+				
 				resolve(this.missions);
 			}
 		});
