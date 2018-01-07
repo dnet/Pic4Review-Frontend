@@ -15,7 +15,7 @@ class App {
 	constructor() {
 		/**
 		 * Every component of the application is able to send or listen to events through a publish/subscribe system (PubSub).
-		 * Available events are documented here.
+		 * Available events are documented here. For usage of PubSub methods, see {@link https://github.com/mroderick/PubSubJS|official documentation}.
 		 * @name Events
 		 */
 		window.PubSub = PubSub;

@@ -12,21 +12,17 @@ class MissionReviewGalleryComponent extends Component {
 	}
 	
 	render() {
-		if(this.props.pictures) {
-			return <GridList cols={2.5}>
+		if(this.props.pictures && this.props.pictures.length > 0) {
+			return <GridList cols={this.props.cols} cellHeight={this.props.height} style={{flexWrap: "nowrap"}}>
 			{this.props.pictures.map((p, i) => {
-				<GridListTile key={p.pictureUrl}>
-					<img
-						src={p.pictureUrl}
-						onClick={() => PubSub.publish("UI.MISSION.PIC.CLICKED", { id: i})}
-						style={{cursor:"pointer"}}
-					/>
-					<GridListTileBar titlePosition="top" style={{background: "none"}} actionIcon={
-						<IconButton href={p.detailsUrl} target="_blank">
-							<Information style={{color:"white"}} />
-						</IconButton>
-					} />
-				</GridListTile>
+				return <GridListTile
+					key={p.pictureUrl}
+					onClick={() => PubSub.publish("UI.MISSION.PIC.CLICKED", { id: i })}
+					style={{cursor:"pointer"}}
+				>
+					<img src={p.pictureUrl} />
+					<GridListTileBar titlePosition="bottom" subtitle={(new Date(p.date)).toLocaleString()} style={{height: 20}} />
+				</GridListTile>;
 			})}
 			</GridList>;
 		}

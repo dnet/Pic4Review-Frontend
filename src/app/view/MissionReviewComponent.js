@@ -6,8 +6,13 @@ import Gallery from './MissionReviewGalleryComponent';
 import Grid from 'material-ui/Grid';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
+import Picture from './MissionReviewPictureComponent';
 import request from 'browser-request';
 import Tags from './MissionReviewTagsComponent';
+import withWidth from 'material-ui/utils/withWidth';
+
+const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
+const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 
 /**
  * Mission review component allows to review pictures for a given mission.
@@ -20,8 +25,11 @@ class MissionReviewComponent extends Component {
 		this.state = {
 			feature: null,
 			pictures: null,
+			currentPictureId: null,
 			radius: 20
 		};
+		
+		this.psTokens = {};
 	}
 	
 	/**
@@ -29,7 +37,7 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_next() {
-		this.setState({ feature: null, pictures: null });
+		this.setState({ feature: null, pictures: null, currentPictureId: null });
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
 		this.props.mission.dataset.getNextFeature()
@@ -41,8 +49,11 @@ class MissionReviewComponent extends Component {
 				
 				f.getPictures(this.state.radius)
 				.then(p => {
-					this.setState({ pictures: p });
+					this.setState({ pictures: p, currentPictureId: (p.length > 0 ? 0 : null) });
 					PubSub.publish("UI.MESSAGE.WAITDONE");
+					if(p.length === 0) {
+						PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
+					}
 				})
 				.catch(e => {
 					console.error(e);
@@ -72,16 +83,16 @@ class MissionReviewComponent extends Component {
 		
 		if(prev !== null) {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading previous feature") });
-			this.setState({ feature: null, pictures: null });
+			this.setState({ feature: null, pictures: null, currentPictureId: null });
 			
 			prev.getPictures(this.state.radius)
 			.then(p => {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				this.setState({ feature: prev, pictures: p });
+				this.setState({ feature: prev, pictures: p, currentPictureId: 0 });
 			})
 			.catch(e => {
 				console.error(e);
-				this.setState({ feature: null, pictures: null });
+				this.setState({ feature: prev });
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get pictures for this feature.") });
 			});
@@ -147,11 +158,11 @@ class MissionReviewComponent extends Component {
 			return <div style={this.props.style}>
 				<Grid container>
 					<Grid item xs={12} sm={4} lg={3}>
-						<Map ref="map" feature={this.state.feature} pictures={this.state.pictures} style={{ height: 200 }} />
+						<Map ref="map" feature={this.state.feature} pictures={this.state.pictures} style={{ height: BANNER_HEIGHT[this.props.width] }} />
 						<Tags feature={this.state.feature} style={{marginTop: 10}} />
 					</Grid>
 					<Grid item xs={12} sm={8} lg={9}>
-						<Grid container>
+						<Grid container style={{marginBottom: 10}}>
 							{buttons.map((b,i) => {
 								return <Grid item xs={6} sm={4} lg={2} key={i}>
 									<Button raised color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
@@ -162,8 +173,8 @@ class MissionReviewComponent extends Component {
 							})}
 						</Grid>
 						
-						<Gallery pictures={this.state.pictures} />
-						<div>Image</div>
+						<Gallery pictures={this.state.pictures} cols={IMG_COLS[this.props.width]} height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)} />
+						{this.state.pictures && this.state.currentPictureId !== null ? <Picture picture={this.state.pictures[this.state.currentPictureId]} /> : null}
 					</Grid>
 				</Grid>
 			</div>;
@@ -172,10 +183,20 @@ class MissionReviewComponent extends Component {
 	
 	componentWillMount() {
 		this._next();
+		this.psTokens.picClick = PubSub.subscribe("UI.MISSION.PIC.CLICKED", (msg, data) => {
+			this.setState({ currentPictureId: data.id });
+		});
+	}
+	
+	componentWillUnmount() {
+		if(this.psTokens.picClick) {
+			PubSub.unsubscribe(this.psTokens.picClick);
+			delete this.psTokens.picClick;
+		}
 	}
 }
 
-export default MissionReviewComponent;
+export default withWidth()(MissionReviewComponent);
 
 /**
  * Event sent when a picture was selected for the current feature
