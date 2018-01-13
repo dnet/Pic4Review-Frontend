@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { EmoticonPoop, HelpCircle, Recycle } from 'mdi-material-ui';
+import { Bank, EmoticonPoop, FoodForkDrink, HelpCircle, Tent, Recycle } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { FormLabel, FormControl, FormControlLabel, FormHelperText } from 'material-ui/Form';
 import Grid from 'material-ui/Grid';
@@ -22,14 +22,17 @@ class Dataset extends Component {
 			sourceFormatValue: "osmose",
 			sourceFile: null,
 			sourceOsmoseThemeId: 0,
-			sourceOsmoseAmount: 30,
+			sourceOsmoseAmount: 100,
 			sourceOsmosePlace: "",
 			sourceOsmoseThemeOpen: false
 		};
 		
 		this.osmoseTypes = [
+			{ label: I18n.t("Museum/monument"), description: I18n.t("Given museums or monuments are know from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8010", icon: <Bank /> },
 			{ label: I18n.t("Missing toilet"), description: I18n.t("Given toilets are known from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8180", icon: <EmoticonPoop /> },
-			{ label: I18n.t("Recycling container"), description: I18n.t("Given containers might have an invalid description. Check what's wrong (see \"title\" in feature properties) and fix it if possible."), value: "3230", icon: <Recycle /> }
+			{ label: I18n.t("Recycling container"), description: I18n.t("Given containers might have an invalid description. Check what's wrong (see \"title\" in feature properties) and fix it if possible."), value: "3230", icon: <Recycle /> },
+			{ label: I18n.t("Camp site"), description: I18n.t("Given camp sites are know from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8140", icon: <Tent /> },
+			{ label: I18n.t("Restaurant"), description: I18n.t("Given restaurants are know from official source, but not present in OpenStreetMap. Please add them if you see it on pictures."), value: "8240", icon: <FoodForkDrink /> }
 		];
 	}
 	

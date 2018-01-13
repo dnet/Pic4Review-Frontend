@@ -66,7 +66,7 @@ class Feature {
 			return picman.startPicsRetrievalAround(
 				new P4C.LatLng(this.coordinates[0], this.coordinates[1]),
 				radius,
-				{ towardscenter: true }
+			{ towardscenter: true, mindate: Date.now() - 365*24*60*60*1000 }
 			)
 			.then(p => {
 				this.pictures = p;
