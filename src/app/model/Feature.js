@@ -36,6 +36,21 @@ class Feature {
 		this._pictures = (pictures && pictures.length > 0) ? pictures : null;
 		this.picsShown = {};
 	}
+	
+	/**
+	 * Create feature according to API response
+	 * @param {Object} options The API response data
+	 * @return {Feature} The feature object
+	 */
+	static CreateFromAPI(options) {
+		return new Feature(
+			options.id,
+			[ options.geom.coordinates[1], options.geom.coordinates[0] ],
+			options.pictures,
+			options.properties,
+			options.status
+		);
+	}
 
 
 //ACCESSORS

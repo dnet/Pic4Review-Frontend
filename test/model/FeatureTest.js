@@ -152,4 +152,37 @@ describe("Model > Feature", () => {
 			assert.equal(res.properties.pictures[0].date, (new Date(pic1.date)).toISOString());
 		});
 	});
+	
+	describe("CreateFromAPI", () => {
+		it("works with synthetic data", () => {
+			const res = Feature.CreateFromAPI({"id":"1","status":"new","geom":{"type":"Point","coordinates":[-1.7525876,48.0769155]}});
+			
+			assert.equal(res.id, "1");
+			assert.equal(res.status, "new");
+			assert.equal(res.coordinates[0], 48.0769155);
+			assert.equal(res.coordinates[1], -1.7525876);
+			assert.equal(res.pictures, null);
+			assert.equal(res.properties, null);
+		});
+		
+		it("works with complete data", () => {
+			const res = Feature.CreateFromAPI({
+				"id":"137",
+				"properties":{"error_id":"15200134978","subtitle":"verre, Rue de la Pelleterie","title":"NM glass recycling not integrated","update":"2018-01-14 10:39:02+01:00","username":""},
+				"status":"new",
+				"pictures":[
+					{"pictureUrl":"https://d1cuyjsrcm0gby.cloudfront.net/6z2QHfmsF8GdMuIo8P8t5g/thumb-2048.jpg","date":1515749013000,"coordinates":{"lat":47.226091388888904,"lng":-1.5683463888889264},"provider":"Mapillary","author":"panieravide","license":"CC By-SA 4.0","detailsUrl":"https://www.mapillary.com/app/?pKey=6z2QHfmsF8GdMuIo8P8t5g&lat=47.226091388888904&lng=-1.5683463888889264&focus=photo","direction":241.60000000000002},
+					{"pictureUrl":"https://d1cuyjsrcm0gby.cloudfront.net/KGWjYbaSoCVdTxfEKgUKFg/thumb-2048.jpg","date":1515749012000,"coordinates":{"lat":47.22610805555553,"lng":-1.5683197222222134},"provider":"Mapillary","author":"panieravide","license":"CC By-SA 4.0","detailsUrl":"https://www.mapillary.com/app/?pKey=KGWjYbaSoCVdTxfEKgUKFg&lat=47.22610805555553&lng=-1.5683197222222134&focus=photo","direction":243.78999999999996}
+				],
+				"geom":{"type":"Point","coordinates":[-1.5685,47.2260558]}
+			});
+			
+			assert.equal(res.id, "137");
+			assert.equal(res.properties.error_id, "15200134978");
+			assert.equal(res.status, "new");
+			assert.equal(res.pictures[1].pictureUrl, "https://d1cuyjsrcm0gby.cloudfront.net/KGWjYbaSoCVdTxfEKgUKFg/thumb-2048.jpg");
+			assert.equal(res.coordinates[0], 47.2260558);
+			assert.equal(res.coordinates[1], -1.5685);
+		});
+	});
 });
