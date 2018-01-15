@@ -1,5 +1,4 @@
 import Hash from 'object-hash';
-import P4C from 'pic4carto';
 
 const STATUSES = [ "new", "skipped", "nopics", "reviewed", "cantsee" ];
 
@@ -10,14 +9,16 @@ const STATUSES = [ "new", "skipped", "nopics", "reviewed", "cantsee" ];
  * @param {string} id An unique ID between all features of a given {@link Dataset}
  * @param {float[]} coordinates The feature center coordinates, as [ lat, lng ] in WGS84
  * @param {Object} properties A list of key->value properties from data source
+ * @param {Picture[]} [pictures] The feature pictures, as described in {@link https://framagit.org/Pic4Carto/Pic4Carto.js/blob/master/doc/API.md#picture|Pic4Carto.js doc}
  * @param {string} [status] The feature review status, one of [new, skipped, nopics, reviewed]. Defaults to "new".
  * 
  * @property {string} id The feature unique ID
  * @property {float[]} coordinates The feature coordinates as [lat, lng] in WGS84
  * @property {Object} properties The feature properties, as a set of key -> value
+ * @property {Picture[]} pictures The feature pictures, as described in {@link https://framagit.org/Pic4Carto/Pic4Carto.js/blob/master/doc/API.md#picture|Pic4Carto.js doc}
  */
 class Feature {
-	constructor(id, coordinates, properties, status) {
+	constructor(id, coordinates, pictures, properties, status) {
 		if(id == null || id === "") {
 			throw new TypeError("ID must be a valid string");
 		}
@@ -32,7 +33,7 @@ class Feature {
 		this.status = status || "new";
 		
 		this.lastRadius = null;
-		this.pictures = null;
+		this._pictures = (pictures && pictures.length > 0) ? pictures : null;
 		this.picsShown = {};
 	}
 
@@ -49,31 +50,10 @@ class Feature {
 	
 	/**
 	 * Get the pictures around the feature.
-	 * @param {int} radius The max distance of pictures around the feature (in meters)
-	 * @return {Promise} A promise resolving on pictures array.
+	 * @return {Picture[]} The list of pictures
 	 */
-	getPictures(radius) {
-		if(!radius || isNaN(radius)) {
-			throw new TypeError("Given radius is invalid, must be an integer (meters)");
-		}
-		else if(this.pictures !== null && this.lastRadius === radius) {
-			return new Promise(resolve => {
-				resolve(this.pictures);
-			});
-		}
-		else {
-			const picman = new P4C.PicturesManager();
-			return picman.startPicsRetrievalAround(
-				new P4C.LatLng(this.coordinates[0], this.coordinates[1]),
-				radius,
-				{ towardscenter: true }
-			)
-			.then(p => {
-				this.pictures = p;
-				this.lastRadius = radius;
-				return p;
-			});
-		}
+	get pictures() {
+		return this._pictures;
 	}
 	
 	/**
@@ -83,11 +63,11 @@ class Feature {
 	 * @return {boolean} True if feature was set as shown on picture
 	 */
 	isShownOnPicture(picId) {
-		if(!this.pictures || picId >= this.pictures.length) {
+		if(!this._pictures || picId >= this._pictures.length) {
 			throw new TypeError("Invalid picture ID");
 		}
 		else {
-			return this.picsShown[Hash(this.pictures[picId])] === true;
+			return this.picsShown[Hash(this._pictures[picId])] === true;
 		}
 	}
 
@@ -113,15 +93,15 @@ class Feature {
 	 * @param {boolean} [seen] Was the feature seen in the given picture ? (defaults to true)
 	 */
 	seenOnPicture(picId, seen) {
-		if(!this.pictures || picId >= this.pictures.length) {
+		if(!this._pictures || picId >= this._pictures.length) {
 			throw new TypeError("Invalid picture ID");
 		}
 		else {
 			if(seen === true || seen === null || seen === undefined) {
-				this.picsShown[Hash(this.pictures[picId])] = true;
+				this.picsShown[Hash(this._pictures[picId])] = true;
 			}
 			else {
-				delete this.picsShown[Hash(this.pictures[picId])];
+				delete this.picsShown[Hash(this._pictures[picId])];
 			}
 		}
 	}
@@ -136,9 +116,9 @@ class Feature {
 	asGeoJSON() {
 		const props = Object.assign({}, this.properties);
 		
-		if(this.pictures) {
+		if(this._pictures) {
 			props.pictures = [];
-			this.pictures.forEach(p => {
+			this._pictures.forEach(p => {
 				props.pictures.push({
 					url: p.pictureUrl,
 					details: p.detailsUrl,

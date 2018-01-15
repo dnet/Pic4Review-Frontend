@@ -102,4 +102,8 @@ const config = {
 	}
 };
 
+if(process.env.NODE_ENV === "test") {
+	config.resolve.alias["browser-request"] = "request";
+}
+
 module.exports = config;
