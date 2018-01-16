@@ -10,8 +10,8 @@ import { Switch, Route } from 'react-router-dom';
 import Alert from './AlertComponent';
 import Header from './HeaderComponent';
 import LoginDialog from './LoginDialogComponent';
-import Mission from './MissionComponent';
-import Missions from './MissionsComponent';
+import Mission from './mission/MissionComponent';
+import Missions from './mission/MissionsComponent';
 import WaitDialog from './WaitDialogComponent';
 import Welcome from './WelcomeComponent';
 
@@ -22,11 +22,6 @@ class BodyComponent extends Component {
 	constructor() {
 		super();
 		
-		this.state = {
-			page: "welcome",
-			pageData: null
-		};
-		
 		this.theme = createMuiTheme({
 			palette: {
 				primary: {
@@ -36,46 +31,28 @@ class BodyComponent extends Component {
 					contrastText: grey[50]
 				},
 				secondary: {
-					light: red[300],
-					main: red[500],
-					dark: red[700],
+					light: red[400],
+					main: red[600],
+					dark: red[900],
 					contrastText: grey[50]
 				},
 				error: red[400]
 			}
 		});
-		
-		PubSub.subscribe("UI.PAGE.SHOW", (msg, data) => {
-			this.setState({ page: data.page, pageData: data });
-		});
 	}
 	
 	render() {
-		const styleContent = { margin: "15px 20px" };
-		let page = null;
-		
-		switch(this.state.page) {
-			case "missions":
-				page = <Missions style={styleContent} />;
-				break;
-			
-			case "mission":
-				page = <Mission style={styleContent} mission={this.state.pageData.mission} tab={this.state.pageData.tab} />;
-				break;
-			
-			case "welcome":
-			default:
-				page = <Welcome style={styleContent} />;
-				break;
-		}
-		
 		return <MuiThemeProvider theme={this.theme}><div>
 			<Header />
 			
-			<Switch>
-				<Route exact path='/' component={Welcome} />
-				<Route path='/missions' component={Missions} />
-			</Switch>
+			<div style={{margin: "15px 20px"}}>
+				<Switch>
+					<Route exact path='/' component={Welcome} />
+					<Route path='/missions' component={Missions} />
+					<Route exact path='/mission/:mid' component={Mission} />
+					<Route exact path='/mission/:mid/:page' component={Mission} />
+				</Switch>
+			</div>
 			
 			<Alert />
 			<WaitDialog />
@@ -85,11 +62,3 @@ class BodyComponent extends Component {
 }
 
 export default BodyComponent;
-
-/**
- * Event sent when some page should be shown to user.
- * @event UI.PAGE.SHOW
- * @type {Object} Event data
- * @property {string} page The page ID (welcome, missions, mission, commonstats, userstats)
- * @memberof Events
- */

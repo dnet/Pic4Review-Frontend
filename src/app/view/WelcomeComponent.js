@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { HelpCircle, MapMarkerRadius } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
@@ -31,7 +32,7 @@ class WelcomeComponent extends Component {
 					<Typography type="body1">
 						{I18n.t("First, choose a dataset (a file of yours or an online source), then start reviewing features one by one, looking for the information you want to contribute on.")}
 					</Typography>
-					<Button raised color="primary" style={{marginTop: 10}} onClick={() => PubSub.publish("UI.PAGE.SHOW", { page: "missions" })}>
+					<Button raised color="primary" style={{marginTop: 10}} component={Link} to='/missions'>
 						{I18n.t("Start now")}
 					</Button>
 				</Grid>

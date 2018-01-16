@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ChartPie, ViewGrid } from 'mdi-material-ui';
+import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import Toolbar from 'material-ui/Toolbar';
@@ -20,26 +21,35 @@ class HeaderComponent extends Component {
 		return <AppBar position="static">
 			<Toolbar style={{display: "flex", justifyContent: "space-between"}}>
 				<div>
-					<img
-						src="images/logo.512.png"
-						style={{height: 50, marginRight: 20, verticalAlign: "middle", cursor: "pointer"}}
-						onClick={() => PubSub.publish("UI.PAGE.SHOW", { page: "welcome" })}
-					/>
+					<Link to='/'>
+						<img
+							src="images/logo.512.png"
+							style={{height: 50, marginRight: 20, verticalAlign: "middle", cursor: "pointer"}}
+						/>
+					</Link>
 					<div style={{display: "inline-block", verticalAlign: "middle"}}>
 						<Typography type="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
 						<Typography type="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Beta release")}</Typography>
 					</div>
 				</div>
 				<div>
-					<Tooltip
-						title={I18n.t("Missions")}
-						placement="bottom"
-						onClick={() => PubSub.publish("UI.PAGE.SHOW", { page: "missions" })}
-					>
-						<IconButton color="contrast"><ViewGrid /></IconButton>
+					<Tooltip title={I18n.t("Missions")} placement="bottom">
+						<IconButton
+							component={Link}
+							to='/missions'
+							color="contrast"
+						>
+							<ViewGrid />
+						</IconButton>
 					</Tooltip>
 					<Tooltip title={I18n.t("Statistics")} placement="bottom">
-						<IconButton color="contrast"><ChartPie /></IconButton>
+						<IconButton
+							component={Link}
+							to='/statistics'
+							color="contrast"
+						>
+							<ChartPie />
+						</IconButton>
 					</Tooltip>
 					<UserButton />
 				</div>

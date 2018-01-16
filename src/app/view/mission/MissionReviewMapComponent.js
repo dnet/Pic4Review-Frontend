@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import CONSTS from '../constants';
+import CONSTS from '../../constants';
 import Leaflet from 'leaflet';
-import LeafletMarker from './MarkerRotate';
+import LeafletMarker from '../MarkerRotate';
 import { Map, Marker, TileLayer } from 'react-leaflet';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;

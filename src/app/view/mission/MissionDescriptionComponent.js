@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import { Play } from 'mdi-material-ui';
+import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
-import CONSTS from '../constants';
+import CONSTS from '../../constants';
 import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
 import Leaflet from 'leaflet';
 import { Map, TileLayer, FeatureGroup, CircleMarker } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 import MissionSummary from './MissionSummaryComponent';
 import ReactMarkdown from 'react-markdown';
 
@@ -40,7 +42,7 @@ class MissionDescriptionComponent extends Component {
 	 * @private
 	 */
 	_updateFeatures() {
-		this.props.mission.dataset.getAllFeatures()
+		API.GetMissionFeatures(this.props.mission.id)
 		.then(features => {
 			this.setState({ features: features });
 		})
@@ -91,12 +93,12 @@ class MissionDescriptionComponent extends Component {
 		
 		//Features
 		if(this.state.features !== null && this.state.features.length > 0) {
-			const featurelayers = this.state.features.map(f => {
+			let featurelayers = this.state.features.map(f => {
 				const color = this.statusColor[f.status] || this.statusColor.new;
-				const click = () => {};
-				
-				return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} onClick={click}></CircleMarker>
+				return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} />;
 			});
+			
+			if(featurelayers.length === 1) { featurelayers = featurelayers[0]; } //Convert if single item in order to avoid FeatureGroup bug
 			
 			datalayer = <FeatureGroup ref="featureslayer">{featurelayers}</FeatureGroup>;
 		}
@@ -114,7 +116,8 @@ class MissionDescriptionComponent extends Component {
 						raised
 						color="primary"
 						style={{width: "100%"}}
-						onClick={() => PubSub.publish("UI.MISSION.TAB", { tab: "review" })}
+						component={Link}
+						to={'/mission/'+this.props.mission.id+'/review'}
 					>
 						<Play />
 						{I18n.t("Start review")}

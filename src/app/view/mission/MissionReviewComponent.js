@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
+import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
-import CONSTS from '../constants';
+import CONSTS from '../../constants';
 import Gallery from './MissionReviewGalleryComponent';
 import Grid from 'material-ui/Grid';
 import Leaflet from 'leaflet';
@@ -24,9 +26,8 @@ class MissionReviewComponent extends Component {
 		
 		this.state = {
 			feature: null,
-			pictures: null,
 			currentPictureId: null,
-			radius: 20
+			prevFeature: null
 		};
 		
 		this.psTokens = {};
@@ -37,34 +38,24 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_next() {
-		this.setState({ feature: null, pictures: null, currentPictureId: null });
+		this.setState({ feature: null, currentPictureId: null, prevFeature: this.state.feature });
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
-		this.props.mission.dataset.getNextFeature()
+		API.GetMissionNextFeature(this.props.mission.id)
 		.then(f => {
 			if(f !== null) {
-				this.setState({ feature: f });
+				this.setState({ feature: f, currentPictureId: (f.pictures.length > 0 ? 0 : null) });
 				
-				PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Looking for feature's pictures") });
+				PubSub.publish("UI.MESSAGE.WAITDONE");
 				
-				f.getPictures(this.state.radius)
-				.then(p => {
-					this.setState({ pictures: p, currentPictureId: (p.length > 0 ? 0 : null) });
-					PubSub.publish("UI.MESSAGE.WAITDONE");
-					if(p.length === 0) {
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
-					}
-				})
-				.catch(e => {
-					console.error(e);
-					PubSub.publish("UI.MESSAGE.WAITDONE");
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get pictures for this feature.") });
-				});
+				if(f.pictures.length === 0) {
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
+				}
 			}
 			else {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("You have done reviewing all features !") });
-				PubSub.publish("UI.MISSION.TAB", { tab: "summary" });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No more features to review !") });
+				this.props.history.push('/mission/'+this.props.mission.id+'/summary');
 			}
 		})
 		.catch(e => {
@@ -79,22 +70,11 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_prev() {
-		const prev = this.props.mission.dataset.getPreviousFeature();
-		
-		if(prev !== null) {
-			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading previous feature") });
-			this.setState({ feature: null, pictures: null, currentPictureId: null });
-			
-			prev.getPictures(this.state.radius)
-			.then(p => {
-				PubSub.publish("UI.MESSAGE.WAITDONE");
-				this.setState({ feature: prev, pictures: p, currentPictureId: 0 });
-			})
-			.catch(e => {
-				console.error(e);
-				this.setState({ feature: prev });
-				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get pictures for this feature.") });
+		if(this.state.previousFeature) {
+			this.setState({
+				previousFeature: null,
+				feature: this.state.previousFeature,
+				currentPictureId: this.state.previousFeature.pictures.length > 0 ? 0 : null
 			});
 		}
 		else {
@@ -158,7 +138,7 @@ class MissionReviewComponent extends Component {
 			return <div style={this.props.style}>
 				<Grid container>
 					<Grid item xs={12} sm={4} lg={3}>
-						<Map ref="map" feature={this.state.feature} pictures={this.state.pictures} style={{ height: BANNER_HEIGHT[this.props.width] }} />
+						<Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width] }} />
 						<Tags feature={this.state.feature} style={{marginTop: 10}} />
 					</Grid>
 					<Grid item xs={12} sm={8} lg={9}>
@@ -173,8 +153,14 @@ class MissionReviewComponent extends Component {
 							})}
 						</Grid>
 						
-						<Gallery pictures={this.state.pictures} cols={IMG_COLS[this.props.width]} height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)} style={{marginBottom: 10}} />
-						{this.state.pictures && this.state.currentPictureId !== null ? <Picture picture={this.state.pictures[this.state.currentPictureId]} /> : null}
+						<Gallery
+							pictures={this.state.feature.pictures}
+							cols={IMG_COLS[this.props.width]}
+							height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)}
+							style={{marginBottom: 10}}
+						/>
+						
+						{this.state.feature.pictures && this.state.currentPictureId !== null ? <Picture picture={this.state.feature.pictures[this.state.currentPictureId]} /> : null}
 					</Grid>
 				</Grid>
 			</div>;
@@ -196,7 +182,7 @@ class MissionReviewComponent extends Component {
 	}
 }
 
-export default withWidth()(MissionReviewComponent);
+export default withWidth()(withRouter(MissionReviewComponent));
 
 /**
  * Event sent when a picture was selected for the current feature

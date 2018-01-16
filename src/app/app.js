@@ -9,11 +9,42 @@ import PubSub from 'pubsub-js';
 
 const LOCALES = [ "en", "fr" ];
 
+const readURLParams = str => {
+	const u = str.split('?');
+	
+	if(u.length > 1) {
+		const p = u[1].split('#')[0];
+		
+		return p.split('&').filter(function (pair) {
+			return pair !== '';
+		}).reduce(function(obj, pair){
+			var parts = pair.split('=');
+			obj[decodeURIComponent(parts[0])] = (null === parts[1]) ?
+				'' : decodeURIComponent(parts[1]);
+			return obj;
+		}, {});
+	}
+	else {
+		return {};
+	}
+};
+
 /**
  * Application main launcher
  */
 class App {
 	constructor() {
+		/*
+		 * Auth
+		 */
+		const params = readURLParams(window.location.href);
+		
+		if(params.oauth_token && opener) {
+			opener.authComplete(window.location.href);
+			window.close();
+		}
+		
+		
 		/**
 		 * Every component of the application is able to send or listen to events through a publish/subscribe system (PubSub).
 		 * Available events are documented here. For usage of PubSub methods, see {@link https://github.com/mroderick/PubSubJS|official documentation}.
@@ -51,10 +82,23 @@ class App {
 		this.auth = OsmAuth({
 			oauth_consumer_key: 'KHkPq0Llu63IWjdchiKALkAcDfJUwqi6GHKM9IY6',
 			oauth_secret: 'PWXMH1Ko6vOFFI69wvwv2p9yH8y5Af2cJ8nMkXf0',
-			singlepage: true,
-			landing: '/',
-			auto: true
+			landing: '/'
 		});
+		
+		//Check if we receive auth token
+		this.authWait = setInterval(() => {
+			if(this.auth.authenticated()) {
+				clearInterval(this.authWait);
+				
+				//Get user details
+				this.auth.xhr({
+					method: 'GET',
+					path: '/api/0.6/user/details'
+				}, (err, details) => {
+					console.log(err, details);
+				});
+			}
+		}, 1000);
 		
 		PubSub.subscribe("UI.LOGIN.SURE", (msg, data) => {
 			if(!this.auth.authenticated()) {

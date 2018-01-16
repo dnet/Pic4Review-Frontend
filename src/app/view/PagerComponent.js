@@ -17,6 +17,7 @@ class PagerComponent extends Component {
 	
 	render() {
 		return <MobileStepper
+			style={this.props.style}
 			type="text"
 			steps={100}
 			position="static"

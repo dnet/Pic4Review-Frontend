@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Information, Play } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
@@ -24,16 +25,16 @@ class MissionsListComponent extends Component {
 						<CardActions>
 							<Button
 								color="accent"
-								onClick={() => PubSub.publish("UI.PAGE.SHOW", { page: "mission", mission: m })}
+								component={Link}
+								to={'/mission/'+m.id}
 							>
 								<Information />
 								{I18n.t("Details")}
 							</Button>
 							<Button
 								color="accent"
-								onClick={() => {
-									PubSub.publish("UI.PAGE.SHOW", { page: "mission", mission: m, tab: "review" });
-								}}
+								component={Link}
+								to={'/mission/'+m.id+'/review'}
 							>
 								<Play />
 								{I18n.t("Start")}

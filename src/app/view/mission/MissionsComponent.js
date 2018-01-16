@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { CircularProgress } from 'material-ui/Progress';
-import API from '../ctrl/API';
+import API from '../../ctrl/API';
 import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
 import MissionsFilters from './MissionsFiltersComponent';
 import MissionsList from './MissionsListComponent';
-import Pager from './PagerComponent';
+import Pager from '../PagerComponent';
 import Typography from 'material-ui/Typography';
 
 /**
@@ -21,28 +21,43 @@ class MissionsComponent extends Component {
 			missionsDisplay: "list",
 			currentFilters: {},
 			missions: null,
+			nextMissions: null,
 			page: 1
 		};
 		
 		this.psTokens = {};
 	}
 	
-	_fetchMissions() {
-		this.setState({ missions: null });
+	_fetchMissions(state) {
+		this.setState({ missions: null, nextMissions: null });
 		
-		API.GetMissions(this.state.page, this.state.currentFilters.type, this.state.currentFilters.theme)
+		//Current mission
+		API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme)
 		.then(missions => { this.setState({ missions: missions }); })
 		.catch(e => {
 			console.error(e);
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
 		});
+		
+		//Next mission
+		API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme)
+		.then(missions => this.setState({ nextMissions: missions }))
+		.catch(e => console.error(e));
 	}
 	
 	render() {
 		let missionsarea = null;
 		
 		if(this.state.missions) {
-			missionsarea = <MissionsList filters={this.state.currentFilters} missions={this.state.missions} />;
+			missionsarea = <div>
+				<MissionsList filters={this.state.currentFilters} missions={this.state.missions} />
+				<Pager
+					style={{marginTop: 10}}
+					onChange={p => this.setState({ page: p, missions: null, nextMissions: null })}
+					isLast={this.state.nextMissions === null || this.state.nextMissions.length === 0}
+					page={this.state.page}
+				/>
+			</div>;
 		}
 		else {
 			missionsarea = <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
@@ -57,11 +72,6 @@ class MissionsComponent extends Component {
 				<Grid item xs={12} sm={8} md={9} lg={10}>
 					<Typography type="subheading">{I18n.t("Missions")}</Typography>
 					{missionsarea}
-					<Pager
-						onChange={p => this.setState({ page: p, missions: null })}
-						isLast={false}
-						page={this.state.page}
-					/>
 				</Grid>
 			</Grid>
 		</div>;
@@ -72,7 +82,7 @@ class MissionsComponent extends Component {
 			this.setState({ currentFilters: data });
 		});
 		
-		this._fetchMissions();
+		this._fetchMissions(this.state);
 	}
 	
 	componentWillUpdate(nextProps, nextState) {
@@ -80,13 +90,12 @@ class MissionsComponent extends Component {
 			Hash(nextState.currentFilters) !== Hash(this.state.currentFilters)
 			|| this.state.page !== nextState.page
 		) {
-			this._fetchMissions();
+			this._fetchMissions(nextState);
 		}
 	}
 	
 	componentWillUnmount() {
 		PubSub.unsubscribe(this.psTokens.filter);
-		PubSub.unsubscribe(this.psTokens.ready);
 	}
 }
 
