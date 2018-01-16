@@ -12,57 +12,75 @@ const DESC = { short: "Add those toilets in OSM", full: "Add the toilets from of
 describe("Model > Mission", () => {
 	describe("Constructor", () => {
 		it("creates the object", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC, "canceled");
 			assert.equal(m1.type, "integrate");
 			assert.equal(m1.theme, "amenity");
 			assert.equal(m1.area.name, AREA.name);
+			assert.equal(m1.status, "canceled");
 			assert.ok(m1.area.bbox.equals(AREA.bbox));
 		});
 		
 		it("doesn't allow rewrite type", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.throws(() => { m1.type = "test"; }, TypeError);
 		});
 		
 		it("doesn't allow rewrite theme", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.throws(() => { m1.theme = "test"; }, TypeError);
 		});
 		
 		it("doesn't allow rewrite area", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.throws(() => { m1.area = "test"; }, TypeError);
 		});
 		
 		it("allows rewrite features", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.equal(m1.features, null);
 			m1.features = [ "test" ];
 			assert.equal(m1.features.length, 1);
 		});
 		
 		it("fails if no type is defined", () => {
-			assert.throws(() => { new Mission(null, "amenity", AREA, DESC); }, TypeError);
+			assert.throws(() => { new Mission(1, null, "amenity", AREA, DESC); }, TypeError);
 		});
 		
 		it("fails if type is invalid", () => {
-			assert.throws(() => { new Mission("not a valid type", "amenity", AREA, DESC); }, TypeError);
+			assert.throws(() => { new Mission(1, "not a valid type", "amenity", AREA, DESC); }, TypeError);
 		});
 		
 		it("fails if no theme is defined", () => {
-			assert.throws(() => { new Mission("fix", null, AREA, DESC); }, TypeError);
+			assert.throws(() => { new Mission(1, "fix", null, AREA, DESC); }, TypeError);
 		});
 		
 		it("fails if theme is invalid", () => {
-			assert.throws(() => { new Mission("fix", "not a valid theme", AREA, DESC); }, TypeError);
+			assert.throws(() => { new Mission(1, "fix", "not a valid theme", AREA, DESC); }, TypeError);
 		});
 		
 		it("fails if area is invalid", () => {
-			assert.throws(() => { new Mission("fix", "amenity", {}); }, TypeError);
+			assert.throws(() => { new Mission(1, "fix", "amenity", {}); }, TypeError);
 		});
 		
 		it("fails if no short description is defined", () => {
-			assert.throws(() => { new Mission("fix", "amenity", AREA, {}); }, TypeError);
+			assert.throws(() => { new Mission(1, "fix", "amenity", AREA, {}); }, TypeError);
+		});
+		
+		it("allows status rewrite", () => {
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC, "online");
+			assert.equal(m1.status, "online");
+			m1.status = "draft";
+			assert.equal(m1.status, "draft");
+		});
+		
+		it("fails if status is invalid at rewrite", () => {
+			assert.throws(
+				() => {
+					const m1 = new Mission(1, "integrate", "amenity", AREA, DESC, "online");
+					m1.status = "not a proper status";
+				},
+				TypeError
+			);
 		});
 	});
 	
@@ -73,13 +91,16 @@ describe("Model > Mission", () => {
 				"type":"integrate",
 				"theme":"amenity",
 				"areaname":"Rennes, France, Europe",
-				"shortdesc":"Missing toilets"
+				"shortdesc":"Missing toilets",
+				"status": "online"
 			});
 			
+			assert.equal(m1.id, 1);
 			assert.equal(m1.type, "integrate");
 			assert.equal(m1.theme, "amenity");
 			assert.equal(m1.area.name, "Rennes, France, Europe");
 			assert.equal(m1.description.short, "Missing toilets");
+			assert.equal(m1.status, "online");
 		});
 		
 		it("works with full response", () => {
@@ -102,38 +123,40 @@ describe("Model > Mission", () => {
 				}
 			});
 			
+			assert.equal(m1.id, 1);
 			assert.equal(m1.type, "integrate");
 			assert.equal(m1.theme, "amenity");
 			assert.equal(m1.area.name, "Rennes, France, Europe");
 			assert.equal(m1.description.short, "Missing toilets");
 			assert.ok(m1.description.full.startsWith("These toilets"));
 			assert.equal(m1.area.bbox.getSouth(), 48.0769155);
+			assert.equal(m1.status, "draft");
 		});
 	});
 	
 	describe("passFilter", () => {
 		it("works with empty filters", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.ok(m1.passFilter({}));
 		});
 		
 		it("works with empty string filters", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.ok(m1.passFilter({ theme: "" }));
 		});
 		
 		it("works with non empty filters and meets criterias", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.ok(m1.passFilter({ type: "integrate", theme: "amenity" }));
 		});
 		
 		it("works with non empty filters and meets criterias on single filter", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.ok(m1.passFilter({ type: "integrate" }));
 		});
 		
 		it("works with non empty filters and doesnt meet criterias", () => {
-			const m1 = new Mission("integrate", "amenity", AREA, DESC);
+			const m1 = new Mission(1, "integrate", "amenity", AREA, DESC);
 			assert.ok(!m1.passFilter({ type: "fix", theme: "amenity" }));
 		});
 	});

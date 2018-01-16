@@ -104,7 +104,7 @@ describe("Ctrl > API", () => {
 	
 	describe("CreateMission", () => {
 		it("works if properly described", done => {
-			const m = new Mission("fix", "amenity", AREA, DESC);
+			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
 			API.CreateMission(m, "osmose", { item: 8120, amount: 1 }, "user1", 1)
 			.then(mid => {
@@ -118,7 +118,7 @@ describe("Ctrl > API", () => {
 		}).timeout(TIMEOUT * 2);
 		
 		it("fails if some parameter is missing", done => {
-			const m = new Mission("fix", "amenity", AREA, DESC);
+			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
 			API.CreateMission(m, "osmose", { item: 8120 })
 			.then(mid => {
@@ -181,5 +181,93 @@ describe("Ctrl > API", () => {
 				done();
 			});
 		}).timeout(TIMEOUT * 2);
+	});
+	
+	describe("GetMissionStatistics", () => {
+		it("works", done => {
+			API.GetMissionStatistics(1)
+			.then(s => {
+				assert.ok(s.status.nopics > 0);
+				assert.ok(s.users["user1"] > 0);
+				assert.ok(Object.keys(s.days).length > 0);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
+	
+	describe("UpdateMission", () => {
+		it("works", done => {
+			const m = new Mission(-1, "fix", "amenity", AREA, DESC);
+			
+			API.CreateMission(m, "osmose", { item: 8120, amount: 1 }, "user1", 1)
+			.then(mid => {
+				assert.ok(mid > 0);
+				m.id = mid;
+				m.status = "online";
+				
+				API.UpdateMission(m, "user1", 1)
+				.then(() => {
+					done();
+				})
+				.catch(e => {
+					assert.fail(e);
+					done();
+				});
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT * 3);
+	});
+	
+	describe("GetPicturesMissing", () => {
+		it("works", done => {
+			API.GetPicturesMissing()
+			.then(geojson => {
+				assert.equal(geojson.type, "FeatureCollection");
+				assert.ok(geojson.features.length > 0);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
+	
+	describe("GetUserStatistics", () => {
+		it("works", done => {
+			API.GetUserStatistics(1)
+			.then(stats => {
+				assert.ok(stats.featuresEdited > 0);
+				assert.ok(stats.themes.amenity > 0);
+				assert.ok(stats.place > 0);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
+	
+	describe("GetUsersStatistics", () => {
+		it("works", done => {
+			API.GetUsersStatistics()
+			.then(stats => {
+				assert.ok(stats.scores[0].featuresEdited > 0);
+				assert.ok(stats.scores[0].user.length > 0);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
 	});
 });

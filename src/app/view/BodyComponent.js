@@ -5,7 +5,7 @@ require("leaflet_marker_shadow");
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/createMuiTheme';
-import { indigo, red } from 'material-ui/colors';
+import { indigo, red, grey } from 'material-ui/colors';
 import { Switch, Route } from 'react-router-dom';
 import Alert from './AlertComponent';
 import Header from './HeaderComponent';
@@ -29,8 +29,19 @@ class BodyComponent extends Component {
 		
 		this.theme = createMuiTheme({
 			palette: {
-				primary: indigo,
-				secondary: red
+				primary: {
+					light: indigo[300],
+					main: indigo[500],
+					dark: indigo[700],
+					contrastText: grey[50]
+				},
+				secondary: {
+					light: red[300],
+					main: red[500],
+					dark: red[700],
+					contrastText: grey[50]
+				},
+				error: red[400]
 			}
 		});
 		

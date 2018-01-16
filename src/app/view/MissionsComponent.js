@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { CircularProgress } from 'material-ui/Progress';
+import API from '../ctrl/API';
 import Grid from 'material-ui/Grid';
+import Hash from 'object-hash';
 import MissionsFilters from './MissionsFiltersComponent';
 import MissionsList from './MissionsListComponent';
+import Pager from './PagerComponent';
 import Typography from 'material-ui/Typography';
 
 /**
@@ -17,10 +20,22 @@ class MissionsComponent extends Component {
 			showFilters: true,
 			missionsDisplay: "list",
 			currentFilters: {},
-			missions: null
+			missions: null,
+			page: 1
 		};
 		
 		this.psTokens = {};
+	}
+	
+	_fetchMissions() {
+		this.setState({ missions: null });
+		
+		API.GetMissions(this.state.page, this.state.currentFilters.type, this.state.currentFilters.theme)
+		.then(missions => { this.setState({ missions: missions }); })
+		.catch(e => {
+			console.error(e);
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
+		});
 	}
 	
 	render() {
@@ -42,6 +57,11 @@ class MissionsComponent extends Component {
 				<Grid item xs={12} sm={8} md={9} lg={10}>
 					<Typography type="subheading">{I18n.t("Missions")}</Typography>
 					{missionsarea}
+					<Pager
+						onChange={p => this.setState({ page: p, missions: null })}
+						isLast={false}
+						page={this.state.page}
+					/>
 				</Grid>
 			</Grid>
 		</div>;
@@ -52,11 +72,16 @@ class MissionsComponent extends Component {
 			this.setState({ currentFilters: data });
 		});
 		
-		this.psTokens.ready = PubSub.subscribe("MISSIONS.READY", (msg, data) => {
-			this.setState({ missions: data.missions });
-		});
-		
-		PubSub.publish("UI.MISSIONS.WANTS");
+		this._fetchMissions();
+	}
+	
+	componentWillUpdate(nextProps, nextState) {
+		if(
+			Hash(nextState.currentFilters) !== Hash(this.state.currentFilters)
+			|| this.state.page !== nextState.page
+		) {
+			this._fetchMissions();
+		}
 	}
 	
 	componentWillUnmount() {

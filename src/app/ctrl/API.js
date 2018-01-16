@@ -104,7 +104,9 @@ class API {
 							reject(new Error(data.error));
 						}
 						else {
-							const missions = data.missions.map(m => Mission.CreateFromAPI(m));
+							const missions = data.missions
+								.map(m => { m.status = "online"; return m; })
+								.map(m => Mission.CreateFromAPI(m));
 						
 							resolve(missions);
 						}
@@ -207,6 +209,159 @@ class API {
 					}
 				}
 			});
+		});
+	}
+	
+	/**
+	 * Get mission statistics
+	 * @param {int} mid The mission ID
+	 * @return {Promise} A promise resolving on features statistics
+	 */
+	static GetMissionStatistics(mid) {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/missions/' + mid + '/stats', (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
+	 * Get missing pictures
+	 * @return {Promise} A promise resolving on pictures list
+	 */
+	static GetPicturesMissing() {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/pictures/missing', (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
+	 * Get statistics for a particular user
+	 * @param {int} uid The user ID
+	 * @return {Promise} A promise resolving on user statistics
+	 */
+	static GetUserStatistics(uid) {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/users/' + uid + '/stats', (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
+	 * Get statistics for all users
+	 * @return {Promise} A promise resolving on users statistics
+	 */
+	static GetUsersStatistics() {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/users/stats', (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
+	 * Update a mission
+	 * @param {Mission} mission The updated mission
+	 * @param {string} username The user name
+	 * @param {string} userid The user ID
+	 * @return {Promise} Resolves if update was successful
+	 */
+	static UpdateMission(mission, username, userid) {
+		return new Promise((resolve, reject) => {
+			request.put(
+				CONST.P4R_URL + '/missions/' + mission.id + '?username='+username+'&userid='+userid+'&status='+mission.status,
+				(err, res, body) => {
+					if(err) {
+						reject(err);
+					}
+					else {
+						try {
+							const data = typeof body === "string" ? JSON.parse(body) : body;
+							
+							if(data.error) {
+								reject(new Error(data.error));
+							}
+							else {
+								resolve();
+							}
+						}
+						catch(e) {
+							reject(e);
+						}
+					}
+				}
+			);
 		});
 	}
 	

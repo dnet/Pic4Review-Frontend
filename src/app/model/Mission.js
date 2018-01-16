@@ -3,11 +3,13 @@ import P4C from 'pic4carto';
 
 const TYPES = [ "improve", "fix", "integrate" ];
 const THEMES = [ "amenity" ];
+const STATUSES = [ "online", "draft", "canceled" ];
 
 /**
  * A mission is a task on which user can work. It concerns a given set of {@link Feature}, over a given area.
  * A mission is also categorized by its type (improve, fix, integrate) and its theme.
  * 
+ * @param {int} id The mission unique ID
  * @param {string} type The kind of mission (one of improve, fix, integrate)
  * @param {string} theme The mission theme (one of amenity)
  * @param {Object} area The mission area
@@ -16,18 +18,20 @@ const THEMES = [ "amenity" ];
  * @param {Object} description The mission details
  * @param {string} description.short The mission goal in a few words
  * @param {string} [description.full] The mission goal detailled (what to do, how...)
+ * @param {string} [status] The mission status (online, draft, canceled), defaults to draft
  * @param {Feature[]} [features] The list of features (can be set later)
  * @param {Object} [options] Mission options
  * 
- * @property {string} id An unique ID representing this mission
+ * @property {int} id An unique ID representing this mission
  * @property {string} type The kind of mission (one of improve, fix, integrate)
  * @property {string} theme The mission theme (one of amenity)
  * @property {Object} area The mission area
  * @property {string} area.name The area name (for example "Rennes, France, Europe")
  * @property {LatLngBounds} area.bbox The area bounding box
+ * @property {string} status The mission status (online, draft, canceled)
  */
 class Mission {
-	constructor(type, theme, area, description, features, options) {
+	constructor(id, type, theme, area, description, status, features, options) {
 		if(type === null || type === undefined || TYPES.indexOf(type) < 0) {
 			throw new TypeError("type parameter must be one of "+TYPES.join(", "));
 		}
@@ -43,11 +47,16 @@ class Mission {
 		else if(!description || !description.short || description.short.trim().length < 10) {
 			throw new TypeError("description parameters must be an object like { short: string, full: string }. Short description is mandatory.");
 		}
+		else if(status && STATUSES.indexOf(status) < 0) {
+			throw new TypeError("status parameter must be one of "+STATUSES.join(", "));
+		}
 		
+		this.id = id;
 		this._type = type;
 		this._theme = theme;
 		this._area = area;
 		this._description = description;
+		this._status = status || "draft";
 		this.features = features;
 	}
 	
@@ -65,18 +74,16 @@ class Mission {
 		}
 		
 		return new Mission(
+			options.id,
 			options.type,
 			options.theme,
 			{ name: options.areaname, bbox: bbox },
-			{ short: options.shortdesc, full: options.fulldesc }
+			{ short: options.shortdesc, full: options.fulldesc },
+			options.status
 		);
 	}
 
 //ACCESSORS
-	get id() {
-		return Hash(this._type+this._theme+this._area.bbox.toString()+this._description.short);
-	}
-	
 	get type() {
 		return this._type;
 	}
@@ -89,8 +96,22 @@ class Mission {
 		return this._area;
 	}
 	
+	get status() {
+		return this._status;
+	}
+	
 	get description() {
 		return this._description;
+	}
+
+//MODIFIERS
+	set status(s) {
+		if(STATUSES.indexOf(s) >= 0) {
+			this._status = s;
+		}
+		else {
+			throw new TypeError("Invalid status", s);
+		}
 	}
 
 //OTHER METHODS
