@@ -4,6 +4,7 @@ import { CircularProgress } from 'material-ui/Progress';
 import API from '../../ctrl/API';
 import MissionDescription from './MissionDescriptionComponent';
 import MissionReview from './MissionReviewComponent';
+import MissionStatistics from './MissionStatisticsComponent';
 import Tabs, { Tab } from 'material-ui/Tabs';
 
 const PAGES = [ "summary", "review", "statistics" ];
@@ -33,6 +34,10 @@ class MissionComponent extends Component {
 				
 				case 1:
 					content = <MissionReview mission={this.state.mission} style={contentStyle} />;
+					break;
+				
+				case 2:
+					content = <MissionStatistics mission={this.state.mission} style={contentStyle} />;
 					break;
 			}
 		}

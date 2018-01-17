@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { HashRouter } from 'react-router-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import BodyComponent from './view/BodyComponent';
+import CONSTS from './constants';
 import I18n from 'i18nline/lib/i18n';
 import OsmAuth from 'osm-auth';
 import PubSub from 'pubsub-js';
@@ -80,8 +81,8 @@ class App {
 	 */
 	_initAuth() {
 		this.auth = OsmAuth({
-			oauth_consumer_key: 'KHkPq0Llu63IWjdchiKALkAcDfJUwqi6GHKM9IY6',
-			oauth_secret: 'PWXMH1Ko6vOFFI69wvwv2p9yH8y5Af2cJ8nMkXf0',
+			oauth_consumer_key: CONSTS.OAUTH_CONSUMER_KEY,
+			oauth_secret: CONSTS.OAUTH_SECRET,
 			landing: '/'
 		});
 		
