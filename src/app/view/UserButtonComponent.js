@@ -17,6 +17,8 @@ class UserButtonComponent extends Component {
 			menuOpen: false,
 			menuAnchor: null
 		};
+		
+		this.psTokens = {};
 	}
 	
 	/**
@@ -78,6 +80,18 @@ class UserButtonComponent extends Component {
 					<Login />
 				</IconButton>
 			</Tooltip>;
+		}
+	}
+	
+	componentWillMount() {
+		this.psTokens.login = PubSub.subscribe("UI.LOGIN.DONE", (msg, data) => {
+			this.setState({ user: data.username, connected: true });
+		});
+	}
+	
+	componentWillUnmount() {
+		if(this.psTokens.login) {
+			PubSub.unsubscribe(this.psTokens.login);
 		}
 	}
 }

@@ -86,19 +86,8 @@ class App {
 		});
 		
 		//Check if we receive auth token
-		this.authWait = setInterval(() => {
-			if(this.auth.authenticated()) {
-				clearInterval(this.authWait);
-				
-				//Get user details
-				this.auth.xhr({
-					method: 'GET',
-					path: '/api/0.6/user/details'
-				}, (err, details) => {
-					console.log(err, details);
-				});
-			}
-		}, 1000);
+		this._checkAuth();
+		this.authWait = setInterval(this._checkAuth.bind(this), 100);
 		
 		PubSub.subscribe("UI.LOGIN.SURE", (msg, data) => {
 			if(!this.auth.authenticated()) {
@@ -107,7 +96,7 @@ class App {
 						PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when trying to log you in") });
 					}
 					else {
-						console.log(res);
+						this._checkAuth();
 					}
 				});
 			}
@@ -117,6 +106,8 @@ class App {
 			if(this.auth && this.auth.authenticated()) {
 				this.auth.logout();
 			}
+			
+			this.user = null;
 		});
 	}
 	
@@ -127,6 +118,42 @@ class App {
 	_initDomRendering() {
 		injectTapEventPlugin();
 		render(<HashRouter><BodyComponent /></HashRouter>, document.getElementById('app'));
+	}
+	
+	/**
+	 * Check if authentication happened
+	 * @private
+	 */
+	_checkAuth() {
+		if(this.auth.authenticated()) {
+			if(this.authWait) {
+				clearInterval(this.authWait);
+			}
+			
+			//Get user details
+			this.auth.xhr({
+				method: 'GET',
+				path: '/api/0.6/user/details'
+			}, (err, details) => {
+				if(err) {
+					console.log(err);
+				}
+				else {
+					try {
+						this.user = {
+							id: details.firstChild.childNodes[1].attributes.id.value,
+							name: details.firstChild.childNodes[1].attributes.display_name.value
+						};
+						
+						PubSub.publish("UI.LOGIN.DONE", { username: this.user.name });
+					}
+					catch(e) {
+						console.error(e);
+						PubSub.publish("UI.LOGOUT.WANTS");
+					}
+				}
+			});
+		}
 	}
 }
 
