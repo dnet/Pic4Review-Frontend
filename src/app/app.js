@@ -109,6 +109,11 @@ class App {
 			}
 			
 			this.user = null;
+			PubSub.publish("USER.INFO.READY", this.user);
+		});
+		
+		PubSub.subscribe("USER.INFO.WANTS", (msg, data) => {
+			PubSub.publish("USER.INFO.READY", this.user);
 		});
 	}
 	
@@ -159,3 +164,18 @@ class App {
 }
 
 const app = new App();
+
+/**
+ * Event to ask for user data
+ * @event USER.INFO.WANTS
+ * @memberof Events
+ */
+
+/**
+ * Event in response to {@link Events#USER.INFO.WANTS|USER.INFO.WANTS}
+ * @event USER.INFO.READY
+ * @type {Object} Event data
+ * @property {string} name The user name
+ * @property {int} id The user ID
+ * @memberof Events
+ */

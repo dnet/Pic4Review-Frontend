@@ -188,7 +188,7 @@ describe("Ctrl > API", () => {
 			API.GetMissionStatistics(1)
 			.then(s => {
 				assert.ok(s.status.nopics > 0);
-				assert.ok(s.users["user1"] > 0);
+				assert.ok(s.users.length > 0);
 				assert.ok(Object.keys(s.days).length > 0);
 				done();
 			})

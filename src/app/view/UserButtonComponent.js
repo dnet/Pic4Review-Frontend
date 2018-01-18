@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Account, AccountCircle, ChartPie, Login, Logout } from 'mdi-material-ui';
 import IconButton from 'material-ui/IconButton';
+import { Link } from 'react-router-dom';
 import { ListItemIcon, ListItemText } from 'material-ui/List';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import Tooltip from 'material-ui/Tooltip';
@@ -56,7 +57,11 @@ class UserButtonComponent extends Component {
 					onClose={this._closeMenu.bind(this)}
 				>
 					<MenuItem disabled>{this.state.user}</MenuItem>
-					<MenuItem onClick={this._closeMenu.bind(this)}>
+					<MenuItem
+						onClick={this._closeMenu.bind(this)}
+						component={Link}
+						to='/my/statistics'
+					>
 						<ListItemIcon>
 							<ChartPie />
 						</ListItemIcon>

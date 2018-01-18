@@ -12,6 +12,8 @@ import Header from './HeaderComponent';
 import LoginDialog from './LoginDialogComponent';
 import Mission from './mission/MissionComponent';
 import Missions from './mission/MissionsComponent';
+import MyStatistics from './MyStatisticsComponent';
+import Statistics from './StatisticsComponent';
 import WaitDialog from './WaitDialogComponent';
 import Welcome from './WelcomeComponent';
 
@@ -48,9 +50,11 @@ class BodyComponent extends Component {
 			<div style={{margin: "15px 20px"}}>
 				<Switch>
 					<Route exact path='/' component={Welcome} />
-					<Route path='/missions' component={Missions} />
+					<Route exact path='/missions' component={Missions} />
 					<Route exact path='/mission/:mid' component={Mission} />
 					<Route exact path='/mission/:mid/:page' component={Mission} />
+					<Route exact path='/my/statistics' component={MyStatistics} />
+					<Route exact path='/statistics' component={Statistics} />
 				</Switch>
 			</div>
 			

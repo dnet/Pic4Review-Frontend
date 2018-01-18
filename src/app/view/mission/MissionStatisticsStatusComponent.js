@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Doughnut } from 'react-chartjs';
+import { Doughnut } from 'react-chartjs-2';
 import Typography from 'material-ui/Typography';
 
 /**
@@ -10,13 +10,21 @@ class MissionStatisticsStatusComponent extends Component {
 		const statusColor = { "new": "grey", "reviewed": "green", "skipped": "orange", "nopics": "blue", "cantsee": "red" };
 		const statusNames = { "new": I18n.t("To review"), "reviewed": I18n.t("Reviewed"), "skipped": I18n.t("Skipped"), "nopics": I18n.t("No pictures"), "cantsee": I18n.t("Can't see") };
 		
-		const dataset = Object.entries(this.props.data).map(e => {
-			return { value: e[1], label: statusNames[e[0]], color: statusColor[e[0]] };
-		});
+		const statuses = Object.keys(this.props.data);
+		
+		const dataset = {
+			labels: statuses.map(s => statusNames[s]),
+			datasets: [{
+				data: statuses.map(s => this.props.data[s]),
+				backgroundColor: statuses.map(s => statusColor[s])
+			}]
+		};
 		
 		return <div>
 			<Typography type="subheading">{I18n.t("Feature status")}</Typography>
-			<Doughnut data={dataset} width="500" height="250" />
+			<div className="chart-container" style={{position: "relative", width: "100%", height: this.props.height, maxHeight: this.props.height}}>
+				<Doughnut data={dataset} options={{responsive: true, maintainAspectRatio: false, legend: {position: "bottom"}}} />
+			</div>
 		</div>;
 	}
 }
