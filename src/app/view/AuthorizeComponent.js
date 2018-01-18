@@ -16,11 +16,16 @@ class AuthorizeComponent extends Component {
 		this.psTokens = {};
 	}
 	
+	static For(Comp) {
+		return () => {
+			const Auth = withRouter(AuthorizeComponent);
+			return <Auth><Comp /></Auth>;
+		};
+	}
+	
 	render() {
 		//Not logged in
 		if(this.state.user === -1) {
-			this.props.history.push('/');
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You need to be logged in to see this page") });
 			return <div></div>;
 		}
 		//Logged in
@@ -45,6 +50,13 @@ class AuthorizeComponent extends Component {
 		setTimeout(() => PubSub.publish("USER.INFO.WANTS"), 1000);
 	}
 	
+	componentDidUpdate() {
+		if(this.state.user === -1) {
+			this.props.history.goBack();
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You need to be logged in to see this page") });
+		}
+	}
+	
 	componentWillUnmount() {
 		if(this.psTokens.wantUser) {
 			PubSub.unsubscribe(this.psTokens.wantUser);
@@ -52,4 +64,4 @@ class AuthorizeComponent extends Component {
 	}
 }
 
-export default AuthorizeComponent;
+export default withRouter(AuthorizeComponent);

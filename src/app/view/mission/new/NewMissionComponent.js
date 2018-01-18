@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import MapSelection from '../../MapSelectionComponent';
+import Datasource from './NewMissionDatasourceComponent';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 
 /**
@@ -14,6 +16,12 @@ class NewMissionComponent extends Component {
 	}
 	
 	render() {
+		let content = null;
+		
+		if(this.state.step === 0) {
+			content = <Datasource />;
+		}
+		
 		return <div>
 			<Stepper activeStep={this.state.step}>
 				<Step>
@@ -26,6 +34,8 @@ class NewMissionComponent extends Component {
 					<StepLabel>{I18n.t("Publish")}</StepLabel>
 				</Step>
 			</Stepper>
+			
+			{content}
 		</div>;
 	}
 }
