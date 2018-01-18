@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { ChartPie, ViewGrid } from 'mdi-material-ui';
+import { ChartPie, LibraryPlus, ViewGrid } from 'mdi-material-ui';
 import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
+import Hidden from 'material-ui/Hidden';
 import IconButton from 'material-ui/IconButton';
 import Toolbar from 'material-ui/Toolbar';
 import Tooltip from 'material-ui/Tooltip';
@@ -42,15 +43,31 @@ class HeaderComponent extends Component {
 							<ViewGrid />
 						</IconButton>
 					</Tooltip>
-					<Tooltip title={I18n.t("Statistics")} placement="bottom">
-						<IconButton
-							component={Link}
-							to='/statistics'
-							color="contrast"
-						>
-							<ChartPie />
-						</IconButton>
-					</Tooltip>
+					
+					<Hidden only="xs">
+						<Tooltip title={I18n.t("New mission")} placement="bottom">
+							<IconButton
+								component={Link}
+								to='/mission/new'
+								color="contrast"
+							>
+								<LibraryPlus />
+							</IconButton>
+						</Tooltip>
+					</Hidden>
+					
+					<Hidden only="xs">
+						<Tooltip title={I18n.t("Statistics")} placement="bottom">
+							<IconButton
+								component={Link}
+								to='/statistics'
+								color="contrast"
+							>
+								<ChartPie />
+							</IconButton>
+						</Tooltip>
+					</Hidden>
+					
 					<UserButton />
 				</div>
 			</Toolbar>

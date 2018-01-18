@@ -13,7 +13,6 @@ class MyStatisticsComponent extends Component {
 		super();
 		
 		this.state = {
-			user: null,
 			stats: null
 		};
 		
@@ -21,18 +20,14 @@ class MyStatisticsComponent extends Component {
 	}
 	
 	render() {
-		//Not logged in
-		if(this.state.user === -1) {
-			this.props.history.push('/');
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You need to be logged in to see this page") });
-			return <div></div>;
-		}
-		//Logged in and stats ready
-		else if(this.state.user && this.state.stats) {
+		let content = null;
+		
+		//Stats ready
+		if(this.props.user && this.state.stats) {
 			const style={marginTop: 10};
 			
-			return <div>
-				<Typography type="display1">{this.state.user.name}</Typography>
+			content = <div>
+				<Typography type="display1">{this.props.user.name}</Typography>
 				
 				<Typography type="subheading" style={style}>
 					{I18n.t("Position in leaderboard")}
@@ -53,33 +48,23 @@ class MyStatisticsComponent extends Component {
 		}
 		//Wait for login or stats
 		else {
-			return <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
+			content = <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
 		}
-	}
-	
-	componentDidMount() {
-		this.psTokens.wantUser = PubSub.subscribe("USER.INFO.READY", (msg, data) => {
-			this.setState({ user: data ? data : -1 });
-			
-			//Retrieve statistics
-			if(data) {
-				API.GetUserStatistics(data.id)
-				.then(stats => {
-					this.setState({ stats: stats });
-				})
-				.catch(e => {
-					console.error(e);
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get your user statistics") });
-				});
-			}
-		});
 		
-		setTimeout(() => PubSub.publish("USER.INFO.WANTS"), 1000);
+		return content;
 	}
 	
-	componentWillUnmount() {
-		if(this.psTokens.wantUser) {
-			PubSub.unsubscribe(this.psTokens.wantUser);
+	componentWillMount() {
+		if(this.props.user) {
+			//Retrieve statistics
+			API.GetUserStatistics(this.props.user.id)
+			.then(stats => {
+				this.setState({ stats: stats });
+			})
+			.catch(e => {
+				console.error(e);
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get your user statistics") });
+			});
 		}
 	}
 }

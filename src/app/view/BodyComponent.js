@@ -13,6 +13,7 @@ import LoginDialog from './LoginDialogComponent';
 import Mission from './mission/MissionComponent';
 import Missions from './mission/MissionsComponent';
 import MyStatistics from './MyStatisticsComponent';
+import NewMission from './mission/new/NewMissionComponent';
 import Statistics from './StatisticsComponent';
 import WaitDialog from './WaitDialogComponent';
 import Welcome from './WelcomeComponent';
@@ -51,6 +52,7 @@ class BodyComponent extends Component {
 				<Switch>
 					<Route exact path='/' component={Welcome} />
 					<Route exact path='/missions' component={Missions} />
+					<Route exact path='/mission/new' component={NewMission} />
 					<Route exact path='/mission/:mid' component={Mission} />
 					<Route exact path='/mission/:mid/:page' component={Mission} />
 					<Route exact path='/my/statistics' component={MyStatistics} />
