@@ -213,6 +213,49 @@ class API {
 	}
 	
 	/**
+	 * Get mission features preview
+	 * @param {LatLngBounds} area The area of the mission
+	 * @param {string} source The data source
+	 * @param {Object} options The data source options
+	 * @return {Promise} A promise resolving on features with pictures
+	 */
+	static GetMissionPreview(area, source, options) {
+		return new Promise((resolve, reject) => {
+			const p = {
+				minlat: area.getSouth(),
+				maxlat: area.getNorth(),
+				minlon: area.getWest(),
+				maxlon: area.getEast(),
+				datatype: source,
+				dataoptions: encodeURIComponent(JSON.stringify(options))
+			};
+			
+			const url = CONST.P4R_URL + '/missions/preview?' + Object.entries(p).map(e => e[0]+"="+e[1]).join("&");
+			
+			request(url, (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data.features);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
 	 * Get mission statistics
 	 * @param {int} mid The mission ID
 	 * @return {Promise} A promise resolving on features statistics

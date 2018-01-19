@@ -270,4 +270,22 @@ describe("Ctrl > API", () => {
 			});
 		}).timeout(TIMEOUT);
 	});
+	
+	describe("GetMissionPreview", () => {
+		it("works", done => {
+			API.GetMissionPreview(
+				new P4C.LatLngBounds(new P4C.LatLng(48.1006, -1.6936), new P4C.LatLng(48.1265, -1.6678)),
+				"osmose",
+				{ item: 8180 }
+			)
+			.then(features => {
+				assert.ok(features.length > 0);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
 });

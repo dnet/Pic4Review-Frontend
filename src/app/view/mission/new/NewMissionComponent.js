@@ -3,6 +3,7 @@ import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
 import MapSelection from '../../MapSelectionComponent';
 import Datasource from './NewMissionDatasourceComponent';
+import Preview from './NewMissionPreviewComponent';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 
 /**
@@ -14,7 +15,8 @@ class NewMissionComponent extends Component {
 		
 		this.state = {
 			step: 0,
-			datasource: null
+			datasource: null,
+			previewOpen: false
 		};
 	}
 	
@@ -24,27 +26,8 @@ class NewMissionComponent extends Component {
 	 */
 	_next() {
 		if(this.state.step === 0) {
-			//Check input values
-			if(this.state.datasource) {
-				if(this.state.datasource.area && this.state.datasource.area.toBBoxString) {
-					if(this.state.datasource.source) {
-						if(this.state.datasource.options) {
-							this.setState({ step: 1 });
-						}
-						else {
-							PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "Please select required options for the data source" });
-						}
-					}
-					else {
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "Please select a data source" });
-					}
-				}
-				else {
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "Please select an area by using the map" });
-				}
-			}
-			else {
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "You must choose an area and a datasource before going further" });
+			if(this._checkDatasource()) {
+				this.setState({ step: 1 });
 			}
 		}
 		else if(this.state.step === 1) {
@@ -66,11 +49,52 @@ class NewMissionComponent extends Component {
 		this.setState({ step: Math.max(0, this.state.step-1) });
 	}
 	
+	/**
+	 * Preview some source
+	 * @private
+	 */
+	_preview(source) {
+		if(this._checkDatasource()) {
+			this.setState({ previewOpen: true });
+		}
+	}
+	
+	/**
+	 * Check data source parameters
+	 * @private
+	 */
+	_checkDatasource() {
+		//Check input values
+		if(this.state.datasource) {
+			if(this.state.datasource.area && this.state.datasource.area.toBBoxString) {
+				if(this.state.datasource.source) {
+					if(this.state.datasource.options) {
+						return true;
+					}
+					else {
+						PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "Please select required options for the data source" });
+					}
+				}
+				else {
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "Please select a data source" });
+				}
+			}
+			else {
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "Please select an area by using the map" });
+			}
+		}
+		else {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: "You must choose an area and a datasource before going further" });
+		}
+		
+		return false;
+	}
+	
 	render() {
 		let content = null;
 		
 		if(this.state.step === 0) {
-			content = <Datasource data={this.state.datasource} onChange={d => this.setState({ datasource: d })} />;
+			content = <Datasource data={this.state.datasource} onChange={d => this.setState({ datasource: d })} onPreview={this._preview.bind(this)} />;
 		}
 		
 		return <div>
@@ -100,6 +124,12 @@ class NewMissionComponent extends Component {
 					</Button>
 				</Grid>
 			</Grid>
+			
+			<Preview
+				open={this.state.previewOpen}
+				data={this.state.datasource}
+				onClose={() => this.setState({ previewOpen: false })}
+			/>
 		</div>;
 	}
 }

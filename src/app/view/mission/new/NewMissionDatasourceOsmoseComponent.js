@@ -39,7 +39,7 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 					<InputLabel htmlFor="osmose-item">{I18n.t("Kind of error")}</InputLabel>
 					<Select
 						native
-						value={this.state.selectedItem}
+						value={this.state.selectedItem || ""}
 						onChange={e => this._changed("item", e.target.value)}
 						input={<Input id="osmose-item" />}
 					>

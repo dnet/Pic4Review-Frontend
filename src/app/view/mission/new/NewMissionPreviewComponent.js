@@ -1,0 +1,67 @@
+import React, { Component } from 'react';
+import { LinearProgress } from 'material-ui/Progress';
+import API from '../../../ctrl/API';
+import Dialog, { DialogContent } from 'material-ui/Dialog';
+import Hash from 'object-hash';
+import Map from '../MissionMapComponent';
+import Typography from 'material-ui/Typography';
+import withWidth from 'material-ui/utils/withWidth';
+
+const WIDTH = { "xs": 100, "sm": 300, "md": 500, "lg": 500, "xl": 500 };
+
+/**
+ * New mission preview component allows to preview a mission features before its creation.
+ */
+class NewMissionPreviewComponent extends Component {
+	constructor() {
+		super();
+		
+		this.state = {
+			features: null
+		};
+	}
+	
+	render() {
+		let content = null;
+		
+		if(this.state.features) {
+			content = <Map features={this.state.features} />;
+		}
+		else {
+			content = <div>
+				<Typography type="body1" style={{marginBottom: 20, textAlign: "center"}}>{I18n.t("Loading features and their pictures")}<br />{I18n.t("It can take up to few minutes")}</Typography>
+				<LinearProgress />
+			</div>;
+		}
+		
+		return <Dialog
+			onClose={this.props.onClose}
+			open={this.props.open}
+		>
+			<DialogContent style={{width: WIDTH[this.props.width]}}>
+				{content}
+			</DialogContent>
+		</Dialog>;
+	}
+	
+	componentWillUpdate(nextProps, nextState) {
+		if(
+			nextProps.open
+			&& (
+				!this.state.features
+				|| Hash(nextProps.data) !== Hash(this.props.data)
+			)
+		) {
+			API.GetMissionPreview(nextProps.data.area, nextProps.data.source, nextProps.data.options)
+			.then(features => {
+				this.setState({ features: features });
+			})
+			.catch(e => {
+				console.error(e);
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get preview for this mission") });
+			});
+		}
+	}
+}
+
+export default withWidth()(NewMissionPreviewComponent);

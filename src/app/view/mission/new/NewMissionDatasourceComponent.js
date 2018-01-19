@@ -49,14 +49,6 @@ class NewMissionDatasourceComponent extends Component {
 		this.setState(newstate);
 	}
 	
-	/**
-	 * Preview one of the data source
-	 * @private
-	 */
-	_preview(id) {
-		console.log("preview", id);
-	}
-	
 	render() {
 		const sources = [
 			{
@@ -82,7 +74,7 @@ class NewMissionDatasourceComponent extends Component {
 						<ExpansionPanelDetails style={{display: "block"}}>
 							{s.content}
 							<div style={{textAlign: "right", marginTop: 10}}>
-								<Button onClick={() => this._preview(s.id)}>{I18n.t("Preview")}</Button>
+								<Button onClick={() => this.props.onPreview(s.id)}>{I18n.t("Preview")}</Button>
 							</div>
 						</ExpansionPanelDetails>
 					</ExpansionPanel>
