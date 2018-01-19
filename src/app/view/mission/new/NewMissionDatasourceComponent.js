@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ChevronDown } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
+import DataOsmose from './NewMissionDatasourceOsmoseComponent';
 import Grid from 'material-ui/Grid';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import MapSelection from '../../MapSelectionComponent';
@@ -14,7 +15,8 @@ class NewMissionDatasourceComponent extends Component {
 		super();
 		
 		this.state = {
-			source: "osmose"
+			source: "osmose",
+			area: null
 		};
 	}
 	
@@ -23,7 +25,28 @@ class NewMissionDatasourceComponent extends Component {
 	 * @private
 	 */
 	_changeSource(id) {
+		this.props.onChange({ source: id, area: this.state.area, options: this.state["options_"+id] });
 		this.setState({ source: id });
+	}
+	
+	/**
+	 * Change the currently selected area
+	 * @private
+	 */
+	_changeArea(a) {
+		this.props.onChange({ source: this.state.source, area: a, options: this.state["options_"+this.state.source] });
+		this.setState({ area: a });
+	}
+	
+	/**
+	 * Change the current data source options
+	 * @private
+	 */
+	_changeOptions(o) {
+		this.props.onChange({ source: this.state.source, area: this.state.area, options: o });
+		const newstate = {};
+		newstate["options_"+this.state.source] = o;
+		this.setState(newstate);
 	}
 	
 	/**
@@ -39,14 +62,14 @@ class NewMissionDatasourceComponent extends Component {
 			{
 				id: "osmose",
 				name: I18n.t("Osmose"),
-				content: <div>Selectors osmose</div>
+				content: <DataOsmose data={this.state.options_osmose} onChange={d => this._changeOptions(d)} />
 			},
 			{ id: "overpass", name: I18n.t("Overpass"), content: <div>Selectors overpass</div> }
 		];
 		
 		return <Grid container>
 			<Grid item xs={12} sm={6} lg={4}>
-				<MapSelection style={{height: 300}} onChange={e => console.log(e)} />
+				<MapSelection style={{height: 300}} area={this.state.area} onChange={e => this._changeArea(e)} />
 			</Grid>
 			<Grid item xs={12} sm={6} lg={8}>
 				<Typography type="subheading">{I18n.t("Data source")}</Typography>
@@ -58,7 +81,7 @@ class NewMissionDatasourceComponent extends Component {
 						</ExpansionPanelSummary>
 						<ExpansionPanelDetails style={{display: "block"}}>
 							{s.content}
-							<div style={{textAlign: "right"}}>
+							<div style={{textAlign: "right", marginTop: 10}}>
 								<Button onClick={() => this._preview(s.id)}>{I18n.t("Preview")}</Button>
 							</div>
 						</ExpansionPanelDetails>
@@ -66,6 +89,18 @@ class NewMissionDatasourceComponent extends Component {
 				})}
 			</Grid>
 		</Grid>;
+	}
+	
+	componentWillMount() {
+		if(this.props.data) {
+			const newstate = {
+				source: this.props.data.source,
+				area: this.props.data.area
+			};
+			newstate["options_"+this.props.data.source] = this.props.data.options;
+			
+			this.setState(newstate);
+		}
 	}
 }
 

@@ -24,7 +24,7 @@ class MapSelectionComponent extends Component {
 		
 		return <div>
 			<Typography type="subheading">{I18n.t("Area")}</Typography>
-			<Typography type="caption">{I18n.t("Select an area by pressing Ctrl key and dragging over map with left mouse button")}</Typography>
+			<Typography type="caption">{I18n.t("Select an area (for example, a city) by pressing Ctrl key and dragging over map with left mouse button")}</Typography>
 			<Map ref="map" center={[this.state.lat, this.state.lng]} zoom={this.state.zoom} style={style}>
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			</Map>
@@ -32,7 +32,16 @@ class MapSelectionComponent extends Component {
 	}
 	
 	componentDidMount() {
+		//Restore previous area
+		if(this.props.area) {
+			this.lastSelect = Leaflet.rectangle(this.props.area, { color: "red" });
+			this.lastSelect.addTo(this.refs.map.leafletElement);
+		}
+		
+		//Enable select
 		this.refs.map.leafletElement.selectArea.enable();
+		
+		//Show select
 		this.refs.map.leafletElement.on("areaselected", e => {
 			this.props.onChange(e.bounds);
 			
