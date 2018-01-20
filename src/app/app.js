@@ -85,7 +85,7 @@ class App {
 		this.auth = OsmAuth({
 			oauth_consumer_key: CONSTS.OAUTH_CONSUMER_KEY,
 			oauth_secret: CONSTS.OAUTH_SECRET,
-			landing: '/'
+			landing: window.location.pathname
 		});
 		
 		//Check if we receive auth token
