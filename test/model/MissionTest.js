@@ -55,7 +55,7 @@ describe("Model > Mission", () => {
 		});
 		
 		it("fails if theme is invalid", () => {
-			assert.throws(() => { new Mission(1, "fix", "not a valid theme", AREA, DESC); }, TypeError);
+			assert.throws(() => { new Mission(1, "fix", "a", AREA, DESC); }, TypeError);
 		});
 		
 		it("fails if area is invalid", () => {

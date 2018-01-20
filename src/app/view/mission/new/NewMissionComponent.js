@@ -60,7 +60,7 @@ class NewMissionComponent extends Component {
 			}
 		}
 		else if(this.state.step === 2) {
-			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is created") });
+			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is created, it can take a few minutes.") });
 			
 			API.CreateMission(
 				this.state.mission,

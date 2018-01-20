@@ -3,6 +3,7 @@ import Feature from '../model/Feature';
 import Mission from '../model/Mission';
 import request from 'browser-request';
 
+const LONG_TIMEOUT_MS = 300000;
 /**
  * API controller handles communication with the Pic4Review API.
  */
@@ -54,7 +55,8 @@ class API {
 				{
 					method: "POST",
 					url: CONST.P4R_URL + '/missions',
-					json: data
+					json: data,
+					timeout: LONG_TIMEOUT_MS
 				},
 				(err, res, body) => {
 					if(err) {

@@ -1,9 +1,8 @@
 import Hash from 'object-hash';
 import P4C from 'pic4carto';
 
-const TYPES = TYPES ? Object.keys(TYPES) : [ "improve", "fix", "integrate" ];
-const THEMES = THEMES ? Object.keys(THEMES) : [ "amenity" ];
-const STATUSES = STATUSES ? Object.keys(STATUSES) : [ "online", "draft", "canceled" ];
+const TYPES = [ "improve", "fix", "integrate" ];
+const STATUSES = [ "online", "draft", "canceled" ];
 
 /**
  * A mission is a task on which user can work. It concerns a given set of {@link Feature}, over a given area.
@@ -11,7 +10,7 @@ const STATUSES = STATUSES ? Object.keys(STATUSES) : [ "online", "draft", "cancel
  * 
  * @param {int} id The mission unique ID
  * @param {string} type The kind of mission (one of improve, fix, integrate)
- * @param {string} theme The mission theme (one of amenity)
+ * @param {string} theme The mission theme
  * @param {Object} area The mission area
  * @param {string} area.name The area name (for example "Rennes, France, Europe")
  * @param {LatLngBounds} [area.bbox] The area bounding box (see {@link https://framagit.org/Pic4Carto/Pic4Carto.js/blob/master/doc/API.md#latlngbounds|LatLngBounds in Pic4Carto documentation})
@@ -24,7 +23,7 @@ const STATUSES = STATUSES ? Object.keys(STATUSES) : [ "online", "draft", "cancel
  * 
  * @property {int} id An unique ID representing this mission
  * @property {string} type The kind of mission (one of improve, fix, integrate)
- * @property {string} theme The mission theme (one of amenity)
+ * @property {string} theme The mission theme
  * @property {Object} area The mission area
  * @property {string} area.name The area name (for example "Rennes, France, Europe")
  * @property {LatLngBounds} area.bbox The area bounding box
@@ -35,8 +34,8 @@ class Mission {
 		if(type === null || type === undefined || TYPES.indexOf(type) < 0) {
 			throw new TypeError("type parameter must be one of "+TYPES.join(", "));
 		}
-		else if(theme === null || theme === undefined || THEMES.indexOf(theme) < 0) {
-			throw new TypeError("theme parameter must be one of "+THEMES.join(", "));
+		else if(theme === null || theme === undefined || theme.length < 3) {
+			throw new TypeError("theme parameter must be a valid string");
 		}
 		else if(!area || !area.name) {
 			throw new TypeError("area parameter should be an object like { name: string, bbox: LatLngBounds }");
@@ -138,8 +137,5 @@ class Mission {
 		return true;
 	}
 }
-
-Mission.TYPES = TYPES;
-Mission.THEMES = THEMES;
 
 export default Mission;
