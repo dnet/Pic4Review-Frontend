@@ -4,7 +4,8 @@ before_script:
   - node --version
   - npm --version
   - npm install
-  - apt-get update -qq && apt-get install -y -qq ncftp zip
+  - apt-get update -qq && apt-get install -y -qq ncftp zip sed
+  - sed -i 's#http://localhost:28113#https://pic4review.pavie.info/devapi#' src/app/constants.js
 
 cache:
   paths:
@@ -29,6 +30,7 @@ deploy:client:tags:
   only:
     - tags
   script:
+    - sed -i 's#http://localhost:28113#https://pic4review.pavie.info/api#' src/app/constants.js
     - npm run build
     - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/ ./build/*
     - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/builds/ ./Pic4Review_latest.zip
