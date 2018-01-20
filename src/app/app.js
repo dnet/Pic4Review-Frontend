@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { HashRouter } from 'react-router-dom';
-import { CupWater, Download, TagPlus, Wrench } from 'mdi-material-ui';
+import { Car, Cart, Cctv, CupWater, Download, PineTree, TagPlus, Wrench, SubwayVariant, HelpCircle, WheelchairAccessibility } from 'mdi-material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import BodyComponent from './view/BodyComponent';
 import CONSTS from './constants';
@@ -131,15 +131,22 @@ class App {
 		};
 		
 		window.THEMES = {
-			amenity: { name: I18n.t("Amenity"), color: "#F5D76E", icon: <CupWater /> }
+			accessibility: { name: I18n.t("Accessibility"), color: "#1BA39C", icon: <WheelchairAccessibility /> },
+			amenity: { name: I18n.t("Amenity"), color: "#F5D76E", icon: <CupWater /> },
+			equipment: { name: I18n.t("Equipment"), color: "#96281B", icon: <Cctv /> },
+			nature: { name: I18n.t("Nature"), color: "#26A65B", icon: <PineTree /> },
+			shop: { name: I18n.t("Shop"), color: "#674172", icon: <Cart /> },
+			transport: { name: I18n.t("Transport"), color: "#2574A9", icon: <SubwayVariant /> },
+			road: { name: I18n.t("Road"), color: "#22313F", icon: <Car /> },
+			other: { name: I18n.t("Other"), color: "#6C7A89", icon: <HelpCircle /> }
 		};
 		
 		window.STATUSES = {
-			"new": { name: I18n.t("To review"), color: "grey" },
-			reviewed: { name: I18n.t("Reviewed"), color: "green" },
-			skipped: { name: I18n.t("Skipped"), color: "orange" },
-			nopics: { name: I18n.t("No pictures"), color: "blue" },
-			cantsee: { name: I18n.t("Can't see"), color: "red" }
+			"new": { name: I18n.t("To review"), color: "grey", priority: 1 },
+			reviewed: { name: I18n.t("Reviewed"), color: "green", priority: 4 },
+			skipped: { name: I18n.t("Skipped"), color: "orange", priority: 2 },
+			nopics: { name: I18n.t("No pictures"), color: "blue", priority: 0 },
+			cantsee: { name: I18n.t("Can't see"), color: "red", priority: 3 }
 		};
 	}
 	

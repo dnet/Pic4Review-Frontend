@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import API from '../ctrl/API';
 import { CircularProgress } from 'material-ui/Progress';
+import Grid from 'material-ui/Grid';
+import MissingPictures from './MissingPicturesMapComponent';
 import UsersScore from './UsersScoreComponent';
 import Typography from 'material-ui/Typography';
 
@@ -20,7 +22,16 @@ class StatisticsComponent extends Component {
 		if(this.state.stats) {
 			return <div>
 				<Typography type="display1">{I18n.t("Statistics")}</Typography>
-				<UsersScore data={this.state.stats.scores} />
+				
+				<Grid container>
+					<Grid item xs={12} md={6}>
+						<UsersScore data={this.state.stats.scores} />
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<Typography type="subheading">{I18n.t("Last missing/bad pictures")}</Typography>
+						<MissingPictures style={{height: 400}} />
+					</Grid>
+				</Grid>
 			</div>;
 		}
 		else {

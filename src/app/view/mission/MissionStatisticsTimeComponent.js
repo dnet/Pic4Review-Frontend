@@ -49,10 +49,16 @@ class MissionStatisticsTimeComponent extends Component {
 			}]
 		};
 		
+		const opts = {
+			responsive: true,
+			maintainAspectRatio: false,
+			scales: { yAxes: [{ ticks: { min: 0 } }] }
+		};
+		
 		return <div>
 			<Typography type="subheading">{I18n.t("Contributions")}</Typography>
 			<div className="chart-container" style={{position: "relative", width: "100%", height: this.props.height, maxHeight: this.props.height}}>
-				<Line data={dataset} options={{responsive: true, maintainAspectRatio: false}} />
+				<Line data={dataset} options={opts} />
 			</div>
 		</div>;
 	}

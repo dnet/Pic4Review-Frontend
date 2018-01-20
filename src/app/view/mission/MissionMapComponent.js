@@ -4,6 +4,10 @@ import Hash from 'object-hash';
 import Leaflet from 'leaflet';
 import { Map, TileLayer, FeatureGroup, CircleMarker } from 'react-leaflet';
 
+const sortFeatures = (a,b) => {
+	return STATUSES[a.status].priority - STATUSES[b.status].priority;
+};
+
 /**
  * Mission map component shows feature of a mission on a map.
  */
@@ -59,6 +63,7 @@ class MissionMapComponent extends Component {
 		
 		//Features
 		if(this.props.features !== null && this.props.features.length > 0) {
+			this.props.features.sort(sortFeatures);
 			let featurelayers = this.props.features.map(f => {
 				const color = STATUSES[f.status].color || STATUSES["new"].color;
 				return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} />;

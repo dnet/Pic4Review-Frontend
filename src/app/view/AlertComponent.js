@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Twemoji } from 'react-emoji-render';
 import Snackbar from 'material-ui/Snackbar';
 
 /**
@@ -18,7 +19,7 @@ class AlertComponent extends Component {
 		PubSub.subscribe("UI.MESSAGE.BASIC", (msg, data) => {
 			this.setState({
 				message: data.message,
-				duration: data.duration || 3000,
+				duration: data.duration || 4000,
 				type: data.type || "info",
 				open: true
 			});
@@ -30,7 +31,7 @@ class AlertComponent extends Component {
 			open={this.state.open}
 			autoHideDuration={this.state.duration}
 			onClose={() => this.setState({ open: false })}
-			message={this.state.message}
+			message={<Twemoji text={this.state.message} />}
 		/>;
 	}
 }

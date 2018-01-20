@@ -4,6 +4,7 @@ import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-u
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
 import CONSTS from '../../constants';
+import First from './MissionFirstReviewComponent';
 import Gallery from './MissionReviewGalleryComponent';
 import Grid from 'material-ui/Grid';
 import Leaflet from 'leaflet';
@@ -15,6 +16,7 @@ import withWidth from 'material-ui/utils/withWidth';
 
 const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
+const NOT_FIRST_REVIEW = "no1st";
 
 /**
  * Mission review component allows to review pictures for a given mission.
@@ -27,7 +29,9 @@ class MissionReviewComponent extends Component {
 		this.state = {
 			feature: null,
 			currentPictureId: null,
-			prevFeature: null
+			prevFeature: null,
+			count: 0,
+			firstReview: false
 		};
 		
 		this.psTokens = {};
@@ -70,16 +74,39 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_prev() {
-		if(this.state.previousFeature) {
+		if(this.state.prevFeature) {
 			this.setState({
-				previousFeature: null,
-				feature: this.state.previousFeature,
-				currentPictureId: this.state.previousFeature.pictures.length > 0 ? 0 : null
+				prevFeature: null,
+				feature: this.state.prevFeature,
+				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null
 			});
 		}
 		else {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("You can't go back anymore") });
 		}
+	}
+	
+	/**
+	 * Edit the current feature status, and start retrieving next one
+	 * @private
+	 */
+	_review(status) {
+		this.state.feature.status = status;
+		
+		API.UpdateMissionFeature(
+			this.props.mission.id,
+			this.state.feature,
+			this.props.user.name,
+			this.props.user.id
+		)
+		.then(() => {
+			this.setState({ count: this.state.count+1 });
+			this._next();
+		})
+		.catch(e => {
+			console.error(e);
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't update feature, please retry") });
+		});
 	}
 	
 	/**
@@ -120,6 +147,11 @@ class MissionReviewComponent extends Component {
 		).focus();
 	}
 	
+	_closeFirstHelp() {
+		sessionStorage.setItem(NOT_FIRST_REVIEW, "1");
+		this.setState({ firstReview: false });
+	}
+	
 	render() {
 		if(!this.state.feature) {
 			const style = Object.assign({}, this.props.style, { textAlign: "center" });
@@ -128,12 +160,27 @@ class MissionReviewComponent extends Component {
 		else {
 			const buttons = [
 				{ icon: <SkipPrevious />, label: I18n.t("Previous"), click: this._prev.bind(this) },
-				{ icon: <SkipForward />, label: I18n.t("Skip"), click: () => { this.state.feature.status = "skipped"; this._next(); } },
-				{ icon: <Pencil />, label: I18n.t("JOSM"), click: this._editJOSM.bind(this) },
-				{ icon: <Pencil />, label: I18n.t("iD"), click: this._editId.bind(this) },
-				{ color: "primary", icon: <Check />, label: I18n.t("Done"), click: () => {} },
-				{ color: "accent", icon: <EyeOff />, label: I18n.t("Can't see"), click: () => {} }
+				{ icon: <SkipForward />, label: I18n.t("Skip"), click: () => this._next() },
+				{ icon: <Pencil />, label: I18n.t("JOSM"), click: () => this._editJOSM() },
+				{ icon: <Pencil />, label: I18n.t("iD"), click: () => this._editId() },
+				{ color: "primary", icon: <Check />, label: I18n.t("Done"), click: () => this._review("reviewed") },
+				{ color: "accent", icon: <EyeOff />, label: I18n.t("Can't see"), click: () => this._review("cantsee") }
 			];
+			
+			const goMessages = {
+				1: I18n.t("You made you first edit, great ! 😉"),
+				10: I18n.t("10 edits, keep going ! 😃"),
+				30: I18n.t("30 edits, not bad 👍"),
+				42: I18n.t("42 edits, the answer ! 😜"),
+				60: I18n.t("60 edit, you're a star ! ✨"),
+				80: I18n.t("80 edits, not far from 100 !"),
+				100: I18n.t("You did it, 100 edits ! Thank you 😘"),
+				110: I18n.t("Now you're a Pic4Review rock star, I will let you alone (for now 😏). Keep on the good job !")
+			};
+			
+			if(goMessages[this.state.count]) {
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[this.state.count], duration: 6000 });
+			}
 			
 			return <div style={this.props.style}>
 				<Grid container>
@@ -163,6 +210,8 @@ class MissionReviewComponent extends Component {
 						{this.state.feature.pictures && this.state.currentPictureId !== null ? <Picture picture={this.state.feature.pictures[this.state.currentPictureId]} /> : null}
 					</Grid>
 				</Grid>
+				
+				<First open={this.state.firstReview} mid={this.props.mission.id} onClose={() => this._closeFirstHelp()} />
 			</div>;
 		}
 	}
@@ -172,6 +221,10 @@ class MissionReviewComponent extends Component {
 		this.psTokens.picClick = PubSub.subscribe("UI.MISSION.PIC.CLICKED", (msg, data) => {
 			this.setState({ currentPictureId: data.id });
 		});
+		
+		if(sessionStorage.getItem(NOT_FIRST_REVIEW) === null) {
+			this.setState({ firstReview: true });
+		}
 	}
 	
 	componentWillUnmount() {

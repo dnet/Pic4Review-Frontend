@@ -5,6 +5,7 @@ require("leaflet_marker_shadow");
 require("leaflet_geocoder_css");
 require("leaflet_geocoder_throbber");
 require("leaflet_geocoder_icon");
+require("leaflet_cluster_css");
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/createMuiTheme';

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 /**
@@ -10,7 +11,7 @@ class MissionReviewTagsComponent extends Component {
 	}
 	
 	render() {
-		const style = Object.assign({}, this.props.style, {border: "1px solid lightgray", borderCollapse: "unset"});
+		const style = Object.assign({}, this.props.style);
 		
 		const tags = Object.keys(this.props.feature.properties).map(k => {
 			return <TableRow key={k}>
@@ -19,7 +20,7 @@ class MissionReviewTagsComponent extends Component {
 			</TableRow>;
 		});
 		
-		return <Table style={style}>
+		return <Paper><Table style={style}>
 			<TableHead>
 				<TableRow>
 					<TableCell>{I18n.t("Key")}</TableCell>
@@ -29,7 +30,7 @@ class MissionReviewTagsComponent extends Component {
 			<TableBody>
 				{tags}
 			</TableBody>
-		</Table>;
+		</Table></Paper>;
 	}
 }
 
