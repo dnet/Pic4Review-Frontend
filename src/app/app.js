@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { HashRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom';
+import { CupWater, Download, TagPlus, Wrench } from 'mdi-material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import BodyComponent from './view/BodyComponent';
 import CONSTS from './constants';
@@ -56,6 +57,7 @@ class App {
 		//Init various systems
 		this._initI18n();
 		this._initAuth();
+		this._initGlobalVars();
 		this._initDomRendering();
 	}
 	
@@ -115,6 +117,30 @@ class App {
 		PubSub.subscribe("USER.INFO.WANTS", (msg, data) => {
 			PubSub.publish("USER.INFO.READY", this.user);
 		});
+	}
+	
+	/**
+	 * Creates some global variables (needing I18n)
+	 * @private
+	 */
+	_initGlobalVars() {
+		window.TYPES = {
+			integrate: { name: I18n.t("Integrate new data"), icon: <Download /> },
+			fix: { name: I18n.t("Fix existing data"), icon: <Wrench /> },
+			improve: { name: I18n.t("Augment existing data"), icon: <TagPlus /> }
+		};
+		
+		window.THEMES = {
+			amenity: { name: I18n.t("Amenity"), color: "#F5D76E", icon: <CupWater /> }
+		};
+		
+		window.STATUSES = {
+			"new": { name: I18n.t("To review"), color: "grey" },
+			reviewed: { name: I18n.t("Reviewed"), color: "green" },
+			skipped: { name: I18n.t("Skipped"), color: "orange" },
+			nopics: { name: I18n.t("No pictures"), color: "blue" },
+			cantsee: { name: I18n.t("Can't see"), color: "red" }
+		};
 	}
 	
 	/**

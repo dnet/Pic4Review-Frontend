@@ -66,13 +66,13 @@ describe("Ctrl > API", () => {
 		}).timeout(TIMEOUT);
 		
 		it("works with type param", done => {
-			API.GetMissions(1, "fix", null)
+			API.GetMissions(1, "integrate", null)
 			.then(missions => {
 				assert.ok(missions.length > 0);
 				
 				missions.forEach(m => {
 					assert.ok(m instanceof Mission);
-					assert.equal(m.type, "fix");
+					assert.equal(m.type, "integrate");
 				});
 				
 				done();
@@ -106,7 +106,7 @@ describe("Ctrl > API", () => {
 		it("works if properly described", done => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
-			API.CreateMission(m, "osmose", { item: 8120, amount: 1 }, "user1", 1)
+			API.CreateMission(m, "osmose", { item: 8180, amount: 1 }, "user1", 1)
 			.then(mid => {
 				assert.ok(mid > 0);
 				done();
@@ -120,7 +120,7 @@ describe("Ctrl > API", () => {
 		it("fails if some parameter is missing", done => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
-			API.CreateMission(m, "osmose", { item: 8120 })
+			API.CreateMission(m, "osmose", { item: 8180 })
 			.then(mid => {
 				assert.fail("Should not succeed");
 				done();
@@ -203,7 +203,7 @@ describe("Ctrl > API", () => {
 		it("works", done => {
 			const m = new Mission(-1, "fix", "amenity", AREA, DESC);
 			
-			API.CreateMission(m, "osmose", { item: 8120, amount: 1 }, "user1", 1)
+			API.CreateMission(m, "osmose", { item: 8180, amount: 1 }, "user1", 1)
 			.then(mid => {
 				assert.ok(mid > 0);
 				m.id = mid;

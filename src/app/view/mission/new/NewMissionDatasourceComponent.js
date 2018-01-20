@@ -55,8 +55,8 @@ class NewMissionDatasourceComponent extends Component {
 				id: "osmose",
 				name: I18n.t("Osmose"),
 				content: <DataOsmose data={this.state.options_osmose} onChange={d => this._changeOptions(d)} />
-			},
-			{ id: "overpass", name: I18n.t("Overpass"), content: <div>Selectors overpass</div> }
+			}/*,
+			{ id: "overpass", name: I18n.t("Overpass"), content: <div>Selectors overpass</div> }*/
 		];
 		
 		return <Grid container>

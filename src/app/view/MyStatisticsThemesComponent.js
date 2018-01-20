@@ -2,16 +2,6 @@ import React, { Component } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import Typography from 'material-ui/Typography';
 
-const title = s => s.substring(0,1).toUpperCase()+s.substring(1);
-const getRandomColor = () => {
-	const letters = '0123456789ABCDEF';
-	let color = '#';
-	for(let i=0; i < 6; i++) {
-		color += letters[Math.floor(Math.random() * 16)];
-	}
-	return color;
-};
-
 /**
  * My statistics theme component allows to display what are the favourite contribution themes of an user.
  */
@@ -20,10 +10,10 @@ class MyStatisticsThemesComponent extends Component {
 		const themes = Object.keys(this.props.data);
 		
 		const dataset = {
-			labels: themes.map(t => I18n.t(title(t))),
+			labels: themes.map(t => THEMES[t].name),
 			datasets: [{
 				data: themes.map(t => this.props.data[t]),
-				backgroundColor: themes.map(getRandomColor)
+				backgroundColor: themes.map(t => THEMES[t].color)
 			}]
 		};
 		

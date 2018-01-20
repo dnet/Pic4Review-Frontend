@@ -18,7 +18,6 @@ class StatisticsComponent extends Component {
 	
 	render() {
 		if(this.state.stats) {
-			console.log(this.state.stats);
 			return <div>
 				<Typography type="display1">{I18n.t("Statistics")}</Typography>
 				<UsersScore data={this.state.stats.scores} />

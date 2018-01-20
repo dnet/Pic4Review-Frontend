@@ -16,9 +16,6 @@ class MissionsFiltersComponent extends Component {
 			theme: null,
 			type: null
 		};
-		
-		this.themes = { "amenity": I18n.t("Amenity") };
-		this.types = { "fix": I18n.t("Fix existing data"), "improve": I18n.t("Augment existing data"), "integrate": I18n.t("Integrate new data") };
 	}
 	
 	/**
@@ -42,8 +39,8 @@ class MissionsFiltersComponent extends Component {
 					input={<Input id="missions-filters-theme" />}
 				>
 					<option value="" />
-					{Object.entries(this.themes).map(e =>
-						<option key={e[0]} value={e[0]}>{e[1]}</option>
+					{Object.entries(THEMES).map(e =>
+						<option key={e[0]} value={e[0]}>{e[1].name}</option>
 					)}
 				</Select>
 			</FormControl>
@@ -57,8 +54,8 @@ class MissionsFiltersComponent extends Component {
 					input={<Input id="missions-filters-type" />}
 				>
 					<option value="" />
-					{Object.entries(this.types).map(e =>
-						<option key={e[0]} value={e[0]}>{e[1]}</option>
+					{Object.entries(TYPES).map(e =>
+						<option key={e[0]} value={e[0]}>{e[1].name}</option>
 					)}
 				</Select>
 			</FormControl>

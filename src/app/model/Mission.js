@@ -1,9 +1,9 @@
 import Hash from 'object-hash';
 import P4C from 'pic4carto';
 
-const TYPES = [ "improve", "fix", "integrate" ];
-const THEMES = [ "amenity" ];
-const STATUSES = [ "online", "draft", "canceled" ];
+const TYPES = TYPES ? Object.keys(TYPES) : [ "improve", "fix", "integrate" ];
+const THEMES = THEMES ? Object.keys(THEMES) : [ "amenity" ];
+const STATUSES = STATUSES ? Object.keys(STATUSES) : [ "online", "draft", "canceled" ];
 
 /**
  * A mission is a task on which user can work. It concerns a given set of {@link Feature}, over a given area.
@@ -41,7 +41,7 @@ class Mission {
 		else if(!area || !area.name) {
 			throw new TypeError("area parameter should be an object like { name: string, bbox: LatLngBounds }");
 		}
-		else if(area.bbox && !(area.bbox instanceof P4C.LatLngBounds)) {
+		else if(area.bbox && !area.bbox.toBBoxString) {
 			throw new TypeError("area parameter should be an object like { name: string, bbox: LatLngBounds }");
 		}
 		else if(!description || !description.short || description.short.trim().length < 10) {

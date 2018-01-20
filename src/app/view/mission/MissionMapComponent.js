@@ -16,9 +16,6 @@ class MissionMapComponent extends Component {
 			lng: 0,
 			zoom: 0
 		};
-		
-		this.statusColor = { "new": "grey", "reviewed": "green", "skipped": "orange", "nopics": "blue", "cantsee": "red" };
-		this.statusNames = { "new": I18n.t("To review"), "reviewed": I18n.t("Reviewed"), "skipped": I18n.t("Skipped"), "nopics": I18n.t("No pictures"), "cantsee": I18n.t("Can't see") };
 	}
 	
 	/**
@@ -52,18 +49,18 @@ class MissionMapComponent extends Component {
 		let datalayer = null;
 		
 		//Legend
-		const statuses = this.props.features ? Array.from(new Set(this.props.features.map(f => f.status))) : Object.keys(this.statusNames);
+		const statuses = this.props.features ? Array.from(new Set(this.props.features.map(f => f.status))) : Object.keys(STATUSES);
 		const legend = statuses.map(s => {
 			return <span className="p4r-legend" key={s}>
-			<span style={{backgroundColor: this.statusColor[s]}}> </span>
-			{this.statusNames[s]}
+				<span style={{backgroundColor: STATUSES[s].color}}> </span>
+				{STATUSES[s].name}
 			</span>;
 		});
 		
 		//Features
 		if(this.props.features !== null && this.props.features.length > 0) {
 			let featurelayers = this.props.features.map(f => {
-				const color = this.statusColor[f.status] || this.statusColor.new;
+				const color = STATUSES[f.status].color || STATUSES["new"].color;
 				return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} />;
 			});
 			

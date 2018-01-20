@@ -85,7 +85,7 @@ const config = {
 				loader: 'style-loader!css-loader'
 			},
 			{
-				test: /\.(png|jpg|svg)$/,
+				test: /\.(png|jpg|svg|gif)$/,
 				loader: "file-loader?name=images/[name].[ext]"
 			}
 		],
@@ -98,6 +98,9 @@ const config = {
 			leaflet_marker: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-icon.png"),
 			leaflet_marker_2x: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-icon-2x.png"),
 			leaflet_marker_shadow: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-shadow.png"),
+			leaflet_geocoder_css: path.resolve(__dirname, "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css"),
+			leaflet_geocoder_throbber: path.resolve(__dirname, "node_modules/leaflet-control-geocoder/dist/images/throbber.gif"),
+			leaflet_geocoder_icon: path.resolve(__dirname, "node_modules/leaflet-control-geocoder/dist/images/geocoder.png")
 		}
 	}
 };

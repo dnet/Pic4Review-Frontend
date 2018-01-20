@@ -49,6 +49,7 @@ class MissionDescriptionComponent extends Component {
 			<MissionSummary mission={this.props.mission} />
 			<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
 			
+			{!this.props.synthetic && <div>
 			<div style={{textAlign: "right"}}>
 				<Button
 					raised
@@ -62,15 +63,18 @@ class MissionDescriptionComponent extends Component {
 			</div>
 			
 			<MissionMap features={this.state.features} />
+			</div>}
 		</div>;
 	}
 	
 	componentWillMount() {
-		this._updateFeatures();
+		if(!this.props.synthetic) {
+			this._updateFeatures();
+		}
 	}
 	
 	componentWillUpdate(nextProps, nextState) {
-		if(this.props.mission.id !== nextProps.mission.id) {
+		if(!this.props.synthetic && this.props.mission.id !== nextProps.mission.id) {
 			this._updateFeatures();
 		}
 	}

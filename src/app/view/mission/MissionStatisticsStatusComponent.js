@@ -7,16 +7,13 @@ import Typography from 'material-ui/Typography';
  */
 class MissionStatisticsStatusComponent extends Component {
 	render() {
-		const statusColor = { "new": "grey", "reviewed": "green", "skipped": "orange", "nopics": "blue", "cantsee": "red" };
-		const statusNames = { "new": I18n.t("To review"), "reviewed": I18n.t("Reviewed"), "skipped": I18n.t("Skipped"), "nopics": I18n.t("No pictures"), "cantsee": I18n.t("Can't see") };
-		
 		const statuses = Object.keys(this.props.data);
 		
 		const dataset = {
-			labels: statuses.map(s => statusNames[s]),
+			labels: statuses.map(s => STATUSES[s].name),
 			datasets: [{
 				data: statuses.map(s => this.props.data[s]),
-				backgroundColor: statuses.map(s => statusColor[s])
+				backgroundColor: statuses.map(s => STATUSES[s].color)
 			}]
 		};
 		

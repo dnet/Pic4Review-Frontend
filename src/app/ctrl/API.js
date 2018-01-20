@@ -50,9 +50,12 @@ class API {
 			};
 			
 			//Send request
-			request.post(
-				CONST.P4R_URL + '/missions',
-				{ json: data },
+			request(
+				{
+					method: "POST",
+					url: CONST.P4R_URL + '/missions',
+					json: data
+				},
 				(err, res, body) => {
 					if(err) {
 						reject(err);
@@ -418,8 +421,11 @@ class API {
 	 */
 	static UpdateMissionFeature(mid, feature, username, userid) {
 		return new Promise((resolve, reject) => {
-			request.put(
-				CONST.P4R_URL + '/missions/' + mid + '/features/' + feature.id + '?username='+username+'&userid='+userid+'&status='+feature.status,
+			request(
+				{
+					method: "PUT",
+					url: CONST.P4R_URL + '/missions/' + mid + '/features/' + feature.id + '?username='+username+'&userid='+userid+'&status='+feature.status
+				},
 				(err, res, body) => {
 					if(err) {
 						reject(err);
