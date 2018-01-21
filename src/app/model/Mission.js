@@ -57,6 +57,7 @@ class Mission {
 		this._description = description;
 		this._status = status || "draft";
 		this.features = features;
+		this._options = options;
 	}
 	
 	/**
@@ -78,7 +79,9 @@ class Mission {
 			options.theme,
 			{ name: options.areaname, bbox: bbox },
 			{ short: options.shortdesc, full: options.fulldesc },
-			options.status
+			options.status,
+			null,
+			{ stats: { "new": options.new, total: options.total }, date: options.lastedit }
 		);
 	}
 
@@ -101,6 +104,10 @@ class Mission {
 	
 	get description() {
 		return this._description;
+	}
+	
+	get options() {
+		return this._options;
 	}
 
 //MODIFIERS
