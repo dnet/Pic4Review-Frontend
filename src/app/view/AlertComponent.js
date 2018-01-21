@@ -12,6 +12,7 @@ class AlertComponent extends Component {
 		this.state = {
 			duration: 3000,
 			message: "",
+			smiley: null,
 			type: "info",
 			open: false
 		};
@@ -21,17 +22,20 @@ class AlertComponent extends Component {
 				message: data.message,
 				duration: data.duration || 4000,
 				type: data.type || "info",
-				open: true
+				open: true,
+				smiley: data.smiley || null
 			});
 		});
 	}
 	
 	render() {
+		const message = this.state.smiley ? <Twemoji text={this.state.message+" "+this.state.smiley} /> : this.state.message;
+		
 		return <Snackbar
 			open={this.state.open}
 			autoHideDuration={this.state.duration}
 			onClose={() => this.setState({ open: false })}
-			message={<Twemoji text={this.state.message} />}
+			message={message}
 		/>;
 	}
 }

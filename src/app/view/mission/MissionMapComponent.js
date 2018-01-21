@@ -52,12 +52,21 @@ class MissionMapComponent extends Component {
 		let position = [this.state.lat, this.state.lng];
 		let datalayer = null;
 		
+		//Count features per status
+		const amounts = {};
+		if(this.props.features) {
+			this.props.features.forEach(f => {
+				if(!amounts[f.status]) { amounts[f.status] = 1; }
+				else { amounts[f.status] = amounts[f.status] + 1; }
+			});
+		}
+		
 		//Legend
 		const statuses = this.props.features ? Array.from(new Set(this.props.features.map(f => f.status))) : Object.keys(STATUSES);
 		const legend = statuses.map(s => {
 			return <span className="p4r-legend" key={s}>
 				<span style={{backgroundColor: STATUSES[s].color}}> </span>
-				{STATUSES[s].name}
+				{STATUSES[s].name}{amounts[s] ? " ("+amounts[s]+")" : ""}
 			</span>;
 		});
 		

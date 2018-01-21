@@ -25,7 +25,12 @@ class NewMissionPreviewComponent extends Component {
 		let content = null;
 		
 		if(this.state.features) {
-			content = <Map features={this.state.features} />;
+			if(this.state.features.length > 0) {
+				content = <Map features={this.state.features} />;
+			}
+			else {
+				content = <Typography type="body1">{I18n.t("It seems that there is no features for this data source in this area...")}<br />{I18n.t("Please try with another data source or area")}</Typography>;
+			}
 		}
 		else {
 			content = <div>
@@ -44,14 +49,8 @@ class NewMissionPreviewComponent extends Component {
 		</Dialog>;
 	}
 	
-	componentWillUpdate(nextProps, nextState) {
-		if(
-			nextProps.open
-			&& (
-				!this.state.features
-				|| Hash(nextProps.data) !== Hash(this.props.data)
-			)
-		) {
+	componentWillReceiveProps(nextProps) {
+		if(nextProps.open && !this.state.features) {
 			API.GetMissionPreview(nextProps.data.area, nextProps.data.source, nextProps.data.options)
 			.then(features => {
 				this.setState({ features: features });
@@ -60,6 +59,9 @@ class NewMissionPreviewComponent extends Component {
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get preview for this mission") });
 			});
+		}
+		else if(Hash(nextProps.data) !== Hash(this.props.data)) {
+			this.setState({ features: null });
 		}
 	}
 }

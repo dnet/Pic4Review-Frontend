@@ -58,7 +58,12 @@ class MissionReviewComponent extends Component {
 			}
 			else {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No more features to review !") });
+				if(this.state.count > 0) {
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("You just reviewed the last available feature, thank you so much ! You can work on another mission if you want to"), smiley: "😊", duration: 7000 });
+				}
+				else {
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("This mission has already been completed ! But you can check out another mission"), smiley: "😋", duration: 6000 });
+				}
 				this.props.history.push('/mission/'+this.props.mission.id+'/summary');
 			}
 		})
@@ -167,21 +172,6 @@ class MissionReviewComponent extends Component {
 				{ color: "accent", icon: <EyeOff />, label: I18n.t("Can't see"), click: () => this._review("cantsee") }
 			];
 			
-			const goMessages = {
-				1: I18n.t("You made you first edit, great ! 😉"),
-				10: I18n.t("10 edits, keep going ! 😃"),
-				30: I18n.t("30 edits, not bad 👍"),
-				42: I18n.t("42 edits, the answer ! 😜"),
-				60: I18n.t("60 edit, you're a star ! ✨"),
-				80: I18n.t("80 edits, not far from 100 !"),
-				100: I18n.t("You did it, 100 edits ! Thank you 😘"),
-				110: I18n.t("Now you're a Pic4Review rock star, I will let you alone (for now 😏). Keep on the good job !")
-			};
-			
-			if(goMessages[this.state.count]) {
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[this.state.count], duration: 6000 });
-			}
-			
 			return <div style={this.props.style}>
 				<Grid container>
 					<Grid item xs={12} sm={4} lg={3}>
@@ -224,6 +214,23 @@ class MissionReviewComponent extends Component {
 		
 		if(sessionStorage.getItem(NOT_FIRST_REVIEW) === null) {
 			this.setState({ firstReview: true });
+		}
+	}
+	
+	componentWillUpdate(nextProps, nextState) {
+		const goMessages = {
+			1: { msg: I18n.t("You made you first edit, great !"), sml: "😉" },
+			10: { msg: I18n.t("10 edits, keep going !"), sml: "😃" },
+			30: { msg: I18n.t("30 edits, not bad"), sml: "👍" },
+			42: { msg: I18n.t("42 edits, the answer !"), sml: "😜" },
+			60: { msg: I18n.t("60 edit, you're a star !"), sml: "✨" },
+			80: { msg: I18n.t("80 edits, not far from 100 !"), sml: "😃" },
+			100: { msg: I18n.t("You did it, 100 edits ! Thank you"), sml: "😘" },
+			110: { msg: I18n.t("Keep going on ! Now you're a Pic4Review rock star, I will let you alone (for now)"), sml: "😏" }
+		};
+		
+		if(this.state.count < nextState.count && goMessages[this.state.count]) {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[this.state.count].msg, smiley: goMessages[this.state.count].sml, duration: 6000 });
 		}
 	}
 	
