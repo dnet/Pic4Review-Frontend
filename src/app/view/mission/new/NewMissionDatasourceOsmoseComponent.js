@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { FormControl } from 'material-ui/Form';
+import { FormControl, FormHelperText } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
 import OsmoseRequest from 'osmose-request';
 import Select from 'material-ui/Select';
+import Typography from 'material-ui/Typography';
 import Wait from '../../WaitComponent';
 
 /**
@@ -48,6 +49,7 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 							return <option value={i.id} key={i.id}>{i.id} - {i.name[I18n.locale] ? i.name[I18n.locale] : i.name.en}</option>;
 						})}
 					</Select>
+					<FormHelperText><a href="https://wiki.openstreetmap.org/wiki/Osmose/issues" target="_blank">{I18n.t("Documentation of Osmose error types")}</a></FormHelperText>
 				</FormControl>
 			</div>;
 		}

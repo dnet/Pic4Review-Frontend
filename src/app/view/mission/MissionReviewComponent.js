@@ -12,6 +12,7 @@ import Map from './MissionReviewMapComponent';
 import Picture from './MissionReviewPictureComponent';
 import request from 'browser-request';
 import Tags from './MissionReviewTagsComponent';
+import Tooltip from 'material-ui/Tooltip';
 import withWidth from 'material-ui/utils/withWidth';
 
 const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
@@ -164,12 +165,12 @@ class MissionReviewComponent extends Component {
 		}
 		else {
 			const buttons = [
-				{ icon: <SkipPrevious />, label: I18n.t("Previous"), click: this._prev.bind(this) },
-				{ icon: <SkipForward />, label: I18n.t("Skip"), click: () => this._next() },
-				{ icon: <Pencil />, label: I18n.t("JOSM"), click: () => this._editJOSM() },
-				{ icon: <Pencil />, label: I18n.t("iD"), click: () => this._editId() },
-				{ color: "primary", icon: <Check />, label: I18n.t("Done"), click: () => this._review("reviewed") },
-				{ color: "accent", icon: <EyeOff />, label: I18n.t("Can't see"), click: () => this._review("cantsee") }
+				{ icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
+				{ icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next() },
+				{ icon: <Pencil />, label: I18n.t("JOSM"), tip: I18n.t("Open JOSM editor to edit this feature"), click: () => this._editJOSM() },
+				{ icon: <Pencil />, label: I18n.t("iD"), tip: I18n.t("Open iD editor to edit this feature"), click: () => this._editId() },
+				{ color: "primary", icon: <Check />, label: I18n.t("Done"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
+				{ color: "accent", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
 			];
 			
 			return <div style={this.props.style}>
@@ -182,10 +183,12 @@ class MissionReviewComponent extends Component {
 						<Grid container style={{marginBottom: 10}}>
 							{buttons.map((b,i) => {
 								return <Grid item xs={6} sm={4} lg={2} key={i}>
-									<Button raised color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
-										{b.icon}
-										{b.label}
-									</Button>
+									<Tooltip title={b.tip}>
+										<Button raised color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
+											{b.icon}
+											{b.label}
+										</Button>
+									</Tooltip>
 								</Grid>
 							})}
 						</Grid>
