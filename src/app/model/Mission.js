@@ -56,8 +56,8 @@ class Mission {
 		this._area = area;
 		this._description = description;
 		this._status = status || "draft";
-		this.features = features;
-		this._options = options;
+		this.features = features || null;
+		this._options = options || {};
 	}
 	
 	/**
@@ -67,10 +67,19 @@ class Mission {
 	 */
 	static CreateFromAPI(options) {
 		let bbox = null;
+		let opts = {};
 		
 		if(options.geom) {
 			const c = options.geom.coordinates[0];
 			bbox = new P4C.LatLngBounds(new P4C.LatLng(c[0][1], c[0][0]), new P4C.LatLng(c[2][1], c[2][0]));
+		}
+		
+		if(options.new && options.total) {
+			opts.stats = { "new": options.new, total: options.total };
+		}
+		
+		if(options.lastedit) {
+			opts.date = options.lastedit;
 		}
 		
 		return new Mission(
@@ -81,7 +90,7 @@ class Mission {
 			{ short: options.shortdesc, full: options.fulldesc },
 			options.status,
 			null,
-			{ stats: { "new": options.new, total: options.total }, date: options.lastedit }
+			opts
 		);
 	}
 
