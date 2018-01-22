@@ -5,7 +5,9 @@ import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
 import MissionsFilters from './MissionsFiltersComponent';
 import MissionsList from './MissionsListComponent';
+import MissionsMap from './MissionsMapComponent';
 import Pager from '../PagerComponent';
+import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
 
 /**
@@ -18,11 +20,11 @@ class MissionsComponent extends Component {
 		
 		this.state = {
 			showFilters: true,
-			missionsDisplay: "list",
 			currentFilters: {},
 			missions: null,
 			nextMissions: null,
-			page: 1
+			page: 1,
+			tab: 0
 		};
 		
 		this.psTokens = {};
@@ -31,33 +33,48 @@ class MissionsComponent extends Component {
 	_fetchMissions(state) {
 		this.setState({ missions: null, nextMissions: null });
 		
-		//Current mission
-		API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme)
-		.then(missions => { this.setState({ missions: missions }); })
-		.catch(e => {
-			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
-		});
-		
-		//Next mission
-		API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme)
-		.then(missions => this.setState({ nextMissions: missions }))
-		.catch(e => console.error(e));
+		if(state.tab === 0) {
+			//Current mission
+			API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme)
+			.then(missions => { this.setState({ missions: missions }); })
+			.catch(e => {
+				console.error(e);
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
+			});
+			
+			//Next mission
+			API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme)
+			.then(missions => this.setState({ nextMissions: missions }))
+			.catch(e => console.error(e));
+		}
+		else {
+			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme)
+			.then(missions => { this.setState({ missions: missions }); })
+			.catch(e => {
+				console.error(e);
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
+			});
+		}
 	}
 	
 	render() {
 		let missionsarea = null;
 		
 		if(this.state.missions) {
-			missionsarea = <div>
-				<MissionsList filters={this.state.currentFilters} missions={this.state.missions} />
-				<Pager
-					style={{marginTop: 10}}
-					onChange={p => this.setState({ page: p, missions: null, nextMissions: null })}
-					isLast={this.state.nextMissions === null || this.state.nextMissions.length === 0}
-					page={this.state.page}
-				/>
-			</div>;
+			if(this.state.tab === 0) {
+				missionsarea = <div>
+					<MissionsList filters={this.state.currentFilters} missions={this.state.missions} />
+					<Pager
+						style={{marginTop: 10}}
+						onChange={p => this.setState({ page: p, missions: null, nextMissions: null })}
+						isLast={this.state.nextMissions === null || this.state.nextMissions.length === 0}
+						page={this.state.page}
+					/>
+				</div>;
+			}
+			else {
+				missionsarea = <MissionsMap filters={this.state.currentFilters} missions={this.state.missions} style={{height: 400}} />;
+			}
 		}
 		else {
 			missionsarea = <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
@@ -70,7 +87,16 @@ class MissionsComponent extends Component {
 					<MissionsFilters values={this.state.currentFilters} />
 				</Grid>
 				<Grid item xs={12} sm={8} md={9} lg={10}>
-					<Typography type="subheading">{I18n.t("Missions")}</Typography>
+					<Tabs
+						value={this.state.tab}
+						style={{marginBottom: 10}}
+						indicatorColor="primary"
+						textColor="primary"
+						onChange={(e,v) => this.setState({ tab: v }) }
+					>
+						<Tab label={I18n.t("List")} />
+						<Tab label={I18n.t("Map")} />
+					</Tabs>
 					{missionsarea}
 				</Grid>
 			</Grid>
@@ -87,7 +113,8 @@ class MissionsComponent extends Component {
 	
 	componentWillUpdate(nextProps, nextState) {
 		if(
-			Hash(nextState.currentFilters) !== Hash(this.state.currentFilters)
+			this.state.tab !== nextState.tab
+			|| Hash(nextState.currentFilters) !== Hash(this.state.currentFilters)
 			|| this.state.page !== nextState.page
 		) {
 			this._fetchMissions(nextState);

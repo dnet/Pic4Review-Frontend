@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Information, Play } from 'mdi-material-ui';
-import Button from 'material-ui/Button';
+import { withRouter } from 'react-router-dom';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import MissionSummary from './MissionSummaryComponent';
+import MissionSummaryButtons from './MissionSummaryButtonsComponent';
 import Typography from 'material-ui/Typography';
 
 /**
@@ -27,22 +26,7 @@ class MissionsListComponent extends Component {
 								<MissionSummary mission={m} />
 							</CardContent>
 							<CardActions>
-								<Button
-									color="secondary"
-									component={Link}
-									to={'/mission/'+m.id}
-								>
-									<Information />
-									{I18n.t("Details")}
-								</Button>
-								<Button
-									color="secondary"
-									component={Link}
-									to={'/mission/'+m.id+'/review'}
-								>
-									<Play />
-									{I18n.t("Start")}
-								</Button>
+								<MissionSummaryButtons mid={m.id} history={this.props.history} />
 							</CardActions>
 						</Card>
 					</Grid>;
@@ -58,4 +42,4 @@ class MissionsListComponent extends Component {
 	}
 }
 
-export default MissionsListComponent;
+export default withRouter(MissionsListComponent);
