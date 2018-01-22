@@ -8,7 +8,7 @@ const dayOffset = d => {
 	const now = new Date(Date.now());
 	const d1 = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
 	const d2 = Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
-	return Math.floor((d2-d1) / (1000*60*60*24));
+	return Math.floor((d1-d2) / (1000*60*60*24));
 };
 
 /**
@@ -36,7 +36,7 @@ class MissionSummaryComponent extends Component {
 			</Typography>
 			
 			{this.props.mission.options.stats && <Typography type="caption">
-				{I18n.t("%{pct} % complete", { pct: Math.floor(100 - (this.props.mission.options.stats.new / this.props.mission.options.stats.total)*100) })+" ("+this.props.mission.options.stats.new+"/"+this.props.mission.options.stats.total+")"}
+				{I18n.t("%{pct} % complete (%{nb} features)", { pct: Math.floor(100 - (this.props.mission.options.stats.new / this.props.mission.options.stats.total)*100), nb: this.props.mission.options.stats.total })}
 				{this.props.mission.options.date && " - "+I18n.t({ one: "Launched yesterday", other: "Launched %{count} days ago" }, { count: dayOffset(this.props.mission.options.date) })}
 			</Typography>}
 		</div>;
