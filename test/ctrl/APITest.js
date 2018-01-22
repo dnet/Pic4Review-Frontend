@@ -12,7 +12,7 @@ const AREA = { name: "Rennes, France", bbox: new P4C.LatLngBounds(new P4C.LatLng
 const DESC = { short: "Add those toilets in OSM", full: "Add the toilets from official source into OpenStreetMap. Please create a point following wiki doc." };
 const TIMEOUT = 10000;
 
-describe("Ctrl > API", () => {
+describe.skip("Ctrl > API", () => {
 	describe("ParamsString", () => {
 		it("works with 0 param", () => {
 			const p = {};
@@ -215,7 +215,7 @@ describe("Ctrl > API", () => {
 				assert.fail(e);
 				done();
 			});
-		}).timeout(TIMEOUT);
+		}).timeout(TIMEOUT * 3);
 	});
 	
 	describe("UpdateMissionFeature", () => {
