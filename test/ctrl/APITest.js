@@ -102,6 +102,61 @@ describe("Ctrl > API", () => {
 		}).timeout(TIMEOUT);
 	});
 	
+	describe("GetMissionsMap", () => {
+		it("works without params", done => {
+			API.GetMissionsMap()
+			.then(geojson => {
+				assert.ok(geojson.features.length > 0);
+				
+				geojson.features.forEach(f => {
+					assert.equal(f.type, "Feature");
+				});
+				
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+		
+		it("works with type param", done => {
+			API.GetMissionsMap("integrate", null)
+			.then(geojson => {
+				assert.ok(geojson.features.length > 0);
+				
+				geojson.features.forEach(f => {
+					assert.equal(f.type, "Feature");
+					assert.equal(f.properties.type, "integrate");
+				});
+				
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+		
+		it("works with theme param", done => {
+			API.GetMissionsMap(null, "amenity")
+			.then(geojson => {
+				assert.ok(geojson.features.length > 0);
+				
+				geojson.features.forEach(f => {
+					assert.equal(f.type, "Feature");
+					assert.equal(f.properties.theme, "amenity");
+				});
+				
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
+	
 	describe("CreateMission", () => {
 		it("works if properly described", done => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);

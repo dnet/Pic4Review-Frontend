@@ -125,6 +125,42 @@ class API {
 	}
 	
 	/**
+	 * Get missions synthetic list for map rendering
+	 * @param {string} [type] The mission type
+	 * @param {string} [theme] The mission theme
+	 * @return {Promise} A promise resolving on GeoJSON of missions
+	 */
+	static GetMissionsMap(type, theme) {
+		return new Promise((resolve, reject) => {
+			const p = {
+				type: type,
+				theme: theme
+			};
+			
+			request(CONST.P4R_URL + '/missions/map' + this.ParamsString(p), (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data.geojson);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
 	 * Get mission details
 	 * @param {int} mid The mission ID
 	 * @return {Promise} A promise resolving on mission with its full details
