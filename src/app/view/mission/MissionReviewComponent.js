@@ -170,7 +170,7 @@ class MissionReviewComponent extends Component {
 				{ icon: <Pencil />, label: I18n.t("JOSM"), tip: I18n.t("Open JOSM editor to edit this feature"), click: () => this._editJOSM() },
 				{ icon: <Pencil />, label: I18n.t("iD"), tip: I18n.t("Open iD editor to edit this feature"), click: () => this._editId() },
 				{ color: "primary", icon: <Check />, label: I18n.t("Done"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
-				{ color: "accent", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
+				{ color: "secondary", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
 			];
 			
 			return <div style={this.props.style}>

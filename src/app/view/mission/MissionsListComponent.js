@@ -28,7 +28,7 @@ class MissionsListComponent extends Component {
 							</CardContent>
 							<CardActions>
 								<Button
-									color="accent"
+									color="secondary"
 									component={Link}
 									to={'/mission/'+m.id}
 								>
@@ -36,7 +36,7 @@ class MissionsListComponent extends Component {
 									{I18n.t("Details")}
 								</Button>
 								<Button
-									color="accent"
+									color="secondary"
 									component={Link}
 									to={'/mission/'+m.id+'/review'}
 								>

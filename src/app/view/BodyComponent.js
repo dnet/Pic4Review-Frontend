@@ -9,7 +9,6 @@ require("leaflet_cluster_css");
 import React, { Component } from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import createMuiTheme from 'material-ui/styles/createMuiTheme';
-import { indigo, red, grey } from 'material-ui/colors';
 import { Switch, Route } from 'react-router-dom';
 import Alert from './AlertComponent';
 import Authorize from './AuthorizeComponent';
@@ -33,18 +32,17 @@ class BodyComponent extends Component {
 		this.theme = createMuiTheme({
 			palette: {
 				primary: {
-					light: indigo[300],
-					main: indigo[500],
-					dark: indigo[700],
-					contrastText: grey[50]
+					light: '#666ad1',
+					main: '#3849aa',
+					dark: '#001970',
+					contrastText: '#ffffff'
 				},
 				secondary: {
-					light: red[400],
-					main: red[600],
-					dark: red[900],
-					contrastText: grey[50]
-				},
-				error: red[400]
+					light: '#ff6659',
+					main: '#d32f2f',
+					dark: '#9a0007',
+					contrastText: '#ffffff'
+				}
 			}
 		});
 	}

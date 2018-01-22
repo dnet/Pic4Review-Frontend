@@ -45,7 +45,7 @@ class UserButtonComponent extends Component {
 			return <div style={{display: "inline"}}>
 				<Tooltip title={I18n.t("Account")} placement="bottom">
 					<IconButton
-						color="contrast"
+						color="inherit"
 						onClick={e => this.setState({ menuOpen: true, menuAnchor: e.currentTarget })}
 					>
 						<AccountCircle />
@@ -79,7 +79,7 @@ class UserButtonComponent extends Component {
 		else {
 			return <Tooltip title={I18n.t("Login")} placement="bottom">
 				<IconButton
-					color="contrast"
+					color="inherit"
 					onClick={() => PubSub.publish("UI.LOGIN.WANTS")}
 				>
 					<Login />

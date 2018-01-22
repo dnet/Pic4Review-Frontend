@@ -20,7 +20,7 @@ class HeaderComponent extends Component {
 	
 	render() {
 		return <AppBar position="static">
-			<Toolbar style={{display: "flex", justifyContent: "space-between"}}>
+			<Toolbar style={{display: "flex", justifyContent: "space-between", color: "white"}}>
 				<div>
 					<Link to='/'>
 						<img
@@ -38,7 +38,7 @@ class HeaderComponent extends Component {
 						<IconButton
 							component={Link}
 							to='/missions'
-							color="contrast"
+							color="inherit"
 						>
 							<ViewGrid />
 						</IconButton>
@@ -49,7 +49,7 @@ class HeaderComponent extends Component {
 							<IconButton
 								component={Link}
 								to='/mission/new'
-								color="contrast"
+								color="inherit"
 							>
 								<LibraryPlus />
 							</IconButton>
@@ -61,7 +61,7 @@ class HeaderComponent extends Component {
 							<IconButton
 								component={Link}
 								to='/statistics'
-								color="contrast"
+								color="inherit"
 							>
 								<ChartPie />
 							</IconButton>
