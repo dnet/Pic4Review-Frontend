@@ -10,6 +10,7 @@ import Grid from 'material-ui/Grid';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
 import Picture from './MissionReviewPictureComponent';
+import Progress from './MissionReviewProgressComponent';
 import request from 'browser-request';
 import Tags from './MissionReviewTagsComponent';
 import Tooltip from 'material-ui/Tooltip';
@@ -174,7 +175,8 @@ class MissionReviewComponent extends Component {
 			];
 			
 			return <div style={this.props.style}>
-				<Grid container>
+				<Progress mid={this.props.mission.id} />
+				<Grid container style={{marginTop: 10}}>
 					<Grid item xs={12} sm={4} lg={3}>
 						<Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width] }} />
 						<Tags feature={this.state.feature} style={{marginTop: 10}} />
