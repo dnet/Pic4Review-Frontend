@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import CONSTS from '../../constants';
 import Leaflet from 'leaflet';
-import { Map, TileLayer, GeoJSON } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { Map, TileLayer, FeatureGroup, CircleMarker } from 'react-leaflet';
 
 const sortFeatures = (a,b) => {
 	return STATUSES[a.status].priority - STATUSES[b.status].priority;

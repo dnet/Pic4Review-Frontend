@@ -67,18 +67,9 @@ class MissionsFiltersComponent extends Component {
 		const prevFilters = this._toFilters(prevState);
 		
 		if(Hash(newFilters) !== Hash(prevFilters)) {
-			PubSub.publish("UI.MISSIONS.FILTER", newFilters);
+			this.props.onChange(newFilters);
 		}
 	}
 }
 
 export default MissionsFiltersComponent;
-
-/**
- * Event sent when missions filters have changed.
- * @event UI.MISSIONS.FILTER
- * @type {Object} Event data
- * @property {string} type The kind of missions to keep
- * @property {string} theme The theme of missions to keep
- * @memberof Events
- */

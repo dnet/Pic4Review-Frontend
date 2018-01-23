@@ -28,11 +28,13 @@ class MissionsMapComponent extends Component {
 	 * @private
 	 */
 	_featureLayerBounds() {
-		if(this.refs.map && this.refs.featureslayer && this.props.missions.features && this.props.missions.features.length > 0) {
-			this.refs.map.leafletElement.fitBounds(this.refs.featureslayer.leafletElement.getBounds());
-		}
-		else {
-			setTimeout(this._featureLayerBounds.bind(this), 100);
+		if(this.props.missions.features && this.props.missions.features.length > 0) {
+			if(this.refs.map && this.refs.featureslayer) {
+				this.refs.map.leafletElement.fitBounds(this.refs.featureslayer.leafletElement.getBounds());
+			}
+			else {
+				setTimeout(this._featureLayerBounds.bind(this), 100);
+			}
 		}
 	}
 	
@@ -42,8 +44,9 @@ class MissionsMapComponent extends Component {
 		return <Map ref="map" center={[this.state.lat, this.state.lng]} zoom={this.state.zoom} style={style}>
 			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			
+			{this.props.missions.features &&
 			<MarkerClusterGroup ref="featureslayer" options={{maxClusterRadius: 50}}>
-				{this.props.missions.features && this.props.missions.features.map((f,i) => {
+				{this.props.missions.features.map((f,i) => {
 					const m = Mission.CreateFromAPI(f.properties);
 					
 					return <CircleMarker
@@ -62,25 +65,9 @@ class MissionsMapComponent extends Component {
 						</Popup>
 					</CircleMarker>;
 				})}
-			</MarkerClusterGroup>
+			</MarkerClusterGroup>}
 		</Map>;
 	}
-	
-// 	componentWillReceiveProps(nextProps) {
-// 		console.log(nextProps.missions);
-// 		if(!nextProps.missions || nextProps.missions.features.length === 0) {
-// 			if(
-// 				this.refs.map
-// 				&& this.refs.map.leafletElement
-// 				&& this.refs.featureslayer
-// 				&& this.refs.featureslayer.leafletElement
-// 				&& this.refs.map.leafletElement.hasLayer(this.refs.featureslayer.leafletElement)
-// 			) {
-// 				console.log("clean");
-// 				this.refs.map.leafletElement.removeLayer(this.refs.featureslayer.leafletElement);
-// 			}
-// 		}
-// 	}
 	
 	componentDidMount() {
 		this._featureLayerBounds();

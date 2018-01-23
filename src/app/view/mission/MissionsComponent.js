@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { CircularProgress } from 'material-ui/Progress';
+import { Link } from 'react-router-dom';
 import API from '../../ctrl/API';
 import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
@@ -27,8 +28,6 @@ class MissionsComponent extends Component {
 			page: 1,
 			tab: 0
 		};
-		
-		this.psTokens = {};
 	}
 	
 	_fetchMissions(state) {
@@ -62,9 +61,13 @@ class MissionsComponent extends Component {
 	
 	render() {
 		let missionsarea = null;
+		const noMission = <Typography type="body1" style={{textAlign: "center", margin: 20}}>
+			{I18n.t("Oh, there is no mission corresponding to these criterias.")}<br />
+			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
+		</Typography>;
 		
 		if(this.state.tab === 0 && this.state.missions) {
-			missionsarea = <div>
+			missionsarea = this.state.missions.length > 0 ? <div>
 				<MissionsList missions={this.state.missions} />
 				<Pager
 					style={{marginTop: 10}}
@@ -72,10 +75,10 @@ class MissionsComponent extends Component {
 					isLast={this.state.nextMissions === null || this.state.nextMissions.length === 0}
 					page={this.state.page}
 				/>
-			</div>;
+			</div> : noMission;
 		}
 		else if(this.state.tab === 1 && this.state.map) {
-			missionsarea = <MissionsMap missions={this.state.map} style={{height: 400}} />;
+			missionsarea = this.state.map.features.length > 0 ? <MissionsMap missions={this.state.map} style={{height: 400}} /> : noMission;
 		}
 		else {
 			missionsarea = <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
@@ -85,7 +88,7 @@ class MissionsComponent extends Component {
 			<Grid container>
 				<Grid item hidden={{only: "xs"}} sm={4} md={3} lg={2}>
 					<Typography type="subheading">{I18n.t("Filters")}</Typography>
-					<MissionsFilters values={this.state.currentFilters} />
+					<MissionsFilters values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} />
 				</Grid>
 				<Grid item xs={12} sm={8} md={9} lg={10}>
 					<Tabs
@@ -105,10 +108,6 @@ class MissionsComponent extends Component {
 	}
 	
 	componentWillMount() {
-		this.psTokens.filter = PubSub.subscribe("UI.MISSIONS.FILTER", (msg, data) => {
-			this.setState({ currentFilters: data });
-		});
-		
 		this._fetchMissions(this.state);
 	}
 	
@@ -120,10 +119,6 @@ class MissionsComponent extends Component {
 		) {
 			this._fetchMissions(nextState);
 		}
-	}
-	
-	componentWillUnmount() {
-		PubSub.unsubscribe(this.psTokens.filter);
 	}
 }
 
