@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import MissionSummary from './MissionSummaryComponent';
@@ -15,11 +15,9 @@ class MissionsListComponent extends Component {
 	}
 	
 	render() {
-		const filtered = this.props.missions.filter(m => m.passFilter(this.props.filters));
-		
-		if(filtered.length > 0) {
+		if(this.props.missions.length > 0) {
 			return <Grid container>
-				{filtered.map((m, i) => {
+				{this.props.missions.map((m, i) => {
 					return <Grid item key={i} xs={12} md={6} lg={4}>
 						<Card>
 							<CardContent>

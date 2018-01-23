@@ -23,6 +23,7 @@ class MissionsComponent extends Component {
 			currentFilters: {},
 			missions: null,
 			nextMissions: null,
+			map: null,
 			page: 1,
 			tab: 0
 		};
@@ -31,9 +32,9 @@ class MissionsComponent extends Component {
 	}
 	
 	_fetchMissions(state) {
-		this.setState({ missions: null, nextMissions: null });
-		
 		if(state.tab === 0) {
+			this.setState({ missions: null, nextMissions: null });
+			
 			//Current mission
 			API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme)
 			.then(missions => { this.setState({ missions: missions }); })
@@ -48,8 +49,10 @@ class MissionsComponent extends Component {
 			.catch(e => console.error(e));
 		}
 		else {
+			this.setState({ map: null });
+			
 			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme)
-			.then(missions => { this.setState({ missions: missions }); })
+			.then(missions => { this.setState({ map: missions }); })
 			.catch(e => {
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
@@ -60,21 +63,19 @@ class MissionsComponent extends Component {
 	render() {
 		let missionsarea = null;
 		
-		if(this.state.missions) {
-			if(this.state.tab === 0) {
-				missionsarea = <div>
-					<MissionsList filters={this.state.currentFilters} missions={this.state.missions} />
-					<Pager
-						style={{marginTop: 10}}
-						onChange={p => this.setState({ page: p, missions: null, nextMissions: null })}
-						isLast={this.state.nextMissions === null || this.state.nextMissions.length === 0}
-						page={this.state.page}
-					/>
-				</div>;
-			}
-			else {
-				missionsarea = <MissionsMap filters={this.state.currentFilters} missions={this.state.missions} style={{height: 400}} />;
-			}
+		if(this.state.tab === 0 && this.state.missions) {
+			missionsarea = <div>
+				<MissionsList missions={this.state.missions} />
+				<Pager
+					style={{marginTop: 10}}
+					onChange={p => this.setState({ page: p, missions: null, nextMissions: null })}
+					isLast={this.state.nextMissions === null || this.state.nextMissions.length === 0}
+					page={this.state.page}
+				/>
+			</div>;
+		}
+		else if(this.state.tab === 1 && this.state.map) {
+			missionsarea = <MissionsMap missions={this.state.map} style={{height: 400}} />;
 		}
 		else {
 			missionsarea = <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
@@ -127,9 +128,3 @@ class MissionsComponent extends Component {
 }
 
 export default MissionsComponent;
-
-/**
- * Event sent when missions are required for display
- * @event UI.MISSIONS.WANTS
- * @memberof Events
- */
