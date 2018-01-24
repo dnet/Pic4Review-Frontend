@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CONSTS from '../../constants';
+import Hash from 'object-hash';
 import Leaflet from 'leaflet';
 import { Map, TileLayer, FeatureGroup, CircleMarker } from 'react-leaflet';
 

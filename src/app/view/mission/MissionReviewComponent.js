@@ -234,8 +234,8 @@ class MissionReviewComponent extends Component {
 			110: { msg: I18n.t("Keep going on ! Now you're a Pic4Review rock star, I will let you alone (for now)"), sml: "😏" }
 		};
 		
-		if(this.state.count < nextState.count && goMessages[this.state.count]) {
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[this.state.count].msg, smiley: goMessages[this.state.count].sml, duration: 6000 });
+		if(this.state.count < nextState.count && goMessages[nextState.count]) {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[nextState.count].msg, smiley: goMessages[nextState.count].sml, duration: 6000 });
 		}
 	}
 	

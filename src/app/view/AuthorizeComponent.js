@@ -52,8 +52,13 @@ class AuthorizeComponent extends Component {
 	
 	componentDidUpdate() {
 		if(this.state.user === -1) {
-			this.props.history.goBack();
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You need to be logged in to see this page") });
+			if(window.history.length > 2 || document.referrer.length > 0) {
+				this.props.history.goBack();
+			}
+			else {
+				this.props.history.push('/');
+			}
 		}
 	}
 	
