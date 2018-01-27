@@ -1,6 +1,8 @@
 import CONST from '../constants';
 import Feature from '../model/Feature';
 import Mission from '../model/Mission';
+import osmtogeojson from 'osmtogeojson';
+import queryOverpass from '@derhuerst/query-overpass';
 import request from 'browser-request';
 
 const LONG_TIMEOUT_MS = 300000;
@@ -32,54 +34,68 @@ class API {
 	 * @return {Promise} A promise resolving on mission ID
 	 */
 	static CreateMission(mission, source, sourceOptions, username, userid) {
-		return new Promise((resolve, reject) => {
-			//Prepare data
-			const data = {
-				type: mission.type,
-				theme: mission.theme,
-				areaname: mission.area.name,
-				shortdesc: mission.description.short,
-				fulldesc: mission.description.full,
-				datatype: source,
-				dataoptions: sourceOptions,
-				minlat: mission.area.bbox.getSouth(),
-				maxlat: mission.area.bbox.getNorth(),
-				minlon: mission.area.bbox.getWest(),
-				maxlon: mission.area.bbox.getEast(),
-				username: username,
-				userid: userid
-			};
+		if(source === "overpass" && !sourceOptions.geojson) {
+			//Replace {{bbox}} using given area
+			const area = mission.area.bbox;
+			const q = sourceOptions.query.replace(/{{bbox}}/g, area.getSouth()+","+area.getWest()+","+area.getNorth()+","+area.getEast());
 			
-			//Send request
-			request(
-				{
-					method: "POST",
-					url: CONST.P4R_URL + '/missions',
-					json: data,
-					timeout: LONG_TIMEOUT_MS
-				},
-				(err, res, body) => {
-					if(err) {
-						reject(err);
-					}
-					else {
-						try {
-							const data = typeof body === "string" ? JSON.parse(body) : body;
-							
-							if(data.error) {
-								reject(new Error(data.error));
+			return queryOverpass(q)
+			.then(data => {
+				const geojson = osmtogeojson({ elements: data });
+				const opts = Object.assign({}, sourceOptions, { geojson: geojson });
+				return this.CreateMission(mission, source, opts, username, userid);
+			});
+		}
+		else {
+			return new Promise((resolve, reject) => {
+				//Prepare data
+				const data = {
+					type: mission.type,
+					theme: mission.theme,
+					areaname: mission.area.name,
+					shortdesc: mission.description.short,
+					fulldesc: mission.description.full,
+					datatype: source,
+					dataoptions: sourceOptions,
+					minlat: mission.area.bbox.getSouth(),
+					maxlat: mission.area.bbox.getNorth(),
+					minlon: mission.area.bbox.getWest(),
+					maxlon: mission.area.bbox.getEast(),
+					username: username,
+					userid: userid
+				};
+				
+				//Send request
+				request(
+					{
+						method: "POST",
+						url: CONST.P4R_URL + '/missions',
+						json: data,
+						timeout: LONG_TIMEOUT_MS
+					},
+					(err, res, body) => {
+						if(err) {
+							reject(err);
+						}
+						else {
+							try {
+								const data = typeof body === "string" ? JSON.parse(body) : body;
+								
+								if(data.error) {
+									reject(new Error(data.error));
+								}
+								else {
+									resolve(data.id);
+								}
 							}
-							else {
-								resolve(data.id);
+							catch(e) {
+								reject(e);
 							}
 						}
-						catch(e) {
-							reject(e);
-						}
 					}
-				}
-			);
-		});
+				);
+			});
+		}
 	}
 	
 	/**
@@ -261,39 +277,52 @@ class API {
 	 * @return {Promise} A promise resolving on features with pictures
 	 */
 	static GetMissionPreview(area, source, options) {
-		return new Promise((resolve, reject) => {
-			const p = {
-				minlat: area.getSouth(),
-				maxlat: area.getNorth(),
-				minlon: area.getWest(),
-				maxlon: area.getEast(),
-				datatype: source,
-				dataoptions: encodeURIComponent(JSON.stringify(options))
-			};
+		if(source === "overpass" && !options.geojson) {
+			//Replace {{bbox}} using given area
+			const q = options.query.replace(/{{bbox}}/g, area.getSouth()+","+area.getWest()+","+area.getNorth()+","+area.getEast());
 			
-			const url = CONST.P4R_URL + '/missions/preview?' + Object.entries(p).map(e => e[0]+"="+e[1]).join("&");
-			
-			request(url, (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.error));
-						}
-						else {
-							resolve(data.features);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
+			return queryOverpass(q)
+			.then(data => {
+				const geojson = osmtogeojson({ elements: data });
+				const opts = Object.assign({}, options, { geojson: geojson });
+				return this.GetMissionPreview(area, source, opts);
 			});
-		});
+		}
+		else {
+			return new Promise((resolve, reject) => {
+				const p = {
+					minlat: area.getSouth(),
+					maxlat: area.getNorth(),
+					minlon: area.getWest(),
+					maxlon: area.getEast(),
+					datatype: source,
+					dataoptions: encodeURIComponent(JSON.stringify(options))
+				};
+				
+				const url = CONST.P4R_URL + '/missions/preview?' + Object.entries(p).map(e => e[0]+"="+e[1]).join("&");
+				
+				request(url, (err, res, body) => {
+					if(err) {
+						reject(err);
+					}
+					else {
+						try {
+							const data = typeof body === "string" ? JSON.parse(body) : body;
+							
+							if(data.error) {
+								reject(new Error(data.error));
+							}
+							else {
+								resolve(data.features);
+							}
+						}
+						catch(e) {
+							reject(e);
+						}
+					}
+				});
+			});
+		}
 	}
 	
 	/**

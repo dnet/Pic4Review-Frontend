@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ChevronDown } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import DataOsmose from './NewMissionDatasourceOsmoseComponent';
+import DataOverpass from './NewMissionDatasourceOverpassComponent';
 import Grid from 'material-ui/Grid';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import MapSelection from '../../MapSelectionComponent';
@@ -55,8 +56,12 @@ class NewMissionDatasourceComponent extends Component {
 				id: "osmose",
 				name: I18n.t("Osmose"),
 				content: <DataOsmose data={this.state.options_osmose} onChange={d => this._changeOptions(d)} />
-			}/*,
-			{ id: "overpass", name: I18n.t("Overpass"), content: <div>Selectors overpass</div> }*/
+			},
+			{
+				id: "overpass",
+				name: I18n.t("Overpass"),
+				content: <DataOverpass data={this.state.options_overpass} onChange={d => this._changeOptions(d)} />
+			}
 		];
 		
 		return <Grid container>

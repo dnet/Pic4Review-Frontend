@@ -185,6 +185,20 @@ describe.skip("Ctrl > API", () => {
 				done();
 			});
 		}).timeout(TIMEOUT);
+		
+		it("works for overpass", done => {
+			const m = new Mission(1, "fix", "amenity", AREA, DESC);
+			
+			API.CreateMission(m, "overpass", { query: '[out:json][timeout:25];(way["station"="subway"]({{bbox}}););out center;' }, "user1", 1)
+			.then(mid => {
+				assert.ok(mid > 0);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT * 2);
 	});
 	
 	describe("GetMissionFeatures", () => {
@@ -327,11 +341,27 @@ describe.skip("Ctrl > API", () => {
 	});
 	
 	describe("GetMissionPreview", () => {
-		it("works", done => {
+		it("works with osmose", done => {
 			API.GetMissionPreview(
 				new P4C.LatLngBounds(new P4C.LatLng(48.1006, -1.6936), new P4C.LatLng(48.1265, -1.6678)),
 				"osmose",
 				{ item: 8180 }
+			)
+			.then(features => {
+				assert.ok(features.length > 0);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+		
+		it("works with overpass", done => {
+			API.GetMissionPreview(
+				new P4C.LatLngBounds(new P4C.LatLng(48.1006, -1.6936), new P4C.LatLng(48.1265, -1.6678)),
+				"overpass",
+				{ query: '[out:json][timeout:25];(way["station"="subway"]({{bbox}}););out center;' }
 			)
 			.then(features => {
 				assert.ok(features.length > 0);
