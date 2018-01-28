@@ -6,14 +6,13 @@ body {
 	font-size: 13px;
 	line-height: 20px;
 	margin: 0;
-}
-
-input[type=file] {
-	height: auto !important;
+	background: url('images/background.jpg') no-repeat center center fixed;
+	background-size: cover;
 }
 
 span.p4r-legend {
 	display: inline-block;
+	line-height: 40px;
 	margin-right: 20px;
 }
 

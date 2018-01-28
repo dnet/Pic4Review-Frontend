@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const devtool = process.env.NODE_ENV === "production" ? "source-map" : "eval";
 const target = process.env.NODE_ENV === "test" ? 'node' : 'web';
@@ -17,14 +18,14 @@ if(process.env.NODE_ENV === "production") {
 		new webpack.optimize.AggressiveMergingPlugin(),
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		// Minify the bundle
-		new webpack.optimize.UglifyJsPlugin({
+		new UglifyJSPlugin({ uglifyOptions: {
 			mangle: true,
 			compress: {
 				warnings: false, // Suppress uglification warnings
 				pure_getters: true,
 				unsafe: true,
 				unsafe_comps: true,
-				screw_ie8: true,
+				ie8: false,
 				conditionals: true,
 				unused: true,
 				comparisons: true,
@@ -38,7 +39,7 @@ if(process.env.NODE_ENV === "production") {
 				comments: false,
 			},
 			exclude: [/\.min\.js$/gi]
-		})
+		}})
 	]);
 }
 else {
@@ -85,7 +86,7 @@ const config = {
 				loader: 'style-loader!css-loader'
 			},
 			{
-				test: /\.(png|jpg|svg)$/,
+				test: /\.(png|jpg|svg|gif)$/,
 				loader: "file-loader?name=images/[name].[ext]"
 			}
 		],
@@ -98,8 +99,16 @@ const config = {
 			leaflet_marker: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-icon.png"),
 			leaflet_marker_2x: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-icon-2x.png"),
 			leaflet_marker_shadow: path.resolve(__dirname, "node_modules/leaflet/dist/images/marker-shadow.png"),
+			leaflet_geocoder_css: path.resolve(__dirname, "node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css"),
+			leaflet_geocoder_throbber: path.resolve(__dirname, "node_modules/leaflet-control-geocoder/dist/images/throbber.gif"),
+			leaflet_geocoder_icon: path.resolve(__dirname, "node_modules/leaflet-control-geocoder/dist/images/geocoder.png"),
+			leaflet_cluster_css: path.resolve(__dirname, "node_modules/react-leaflet-markercluster/dist/styles.min.css")
 		}
 	}
 };
+
+if(process.env.NODE_ENV === "test") {
+	config.resolve.alias["browser-request"] = "request";
+}
 
 module.exports = config;
