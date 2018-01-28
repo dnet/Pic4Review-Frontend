@@ -295,32 +295,39 @@ class API {
 					maxlat: area.getNorth(),
 					minlon: area.getWest(),
 					maxlon: area.getEast(),
-					datatype: source,
-					dataoptions: encodeURIComponent(JSON.stringify(options))
+					datatype: source
 				};
 				
 				const url = CONST.P4R_URL + '/missions/preview?' + Object.entries(p).map(e => e[0]+"="+e[1]).join("&");
 				
-				request(url, (err, res, body) => {
-					if(err) {
-						reject(err);
-					}
-					else {
-						try {
-							const data = typeof body === "string" ? JSON.parse(body) : body;
-							
-							if(data.error) {
-								reject(new Error(data.error));
+				request(
+					{
+						method: "GET",
+						url: url,
+						json: { dataoptions: options },
+						timeout: LONG_TIMEOUT_MS
+					},
+					(err, res, body) => {
+						if(err) {
+							reject(err);
+						}
+						else {
+							try {
+								const data = typeof body === "string" ? JSON.parse(body) : body;
+								
+								if(data.error) {
+									reject(new Error(data.error));
+								}
+								else {
+									resolve(data.features);
+								}
 							}
-							else {
-								resolve(data.features);
+							catch(e) {
+								reject(e);
 							}
 						}
-						catch(e) {
-							reject(e);
-						}
 					}
-				});
+				);
 			});
 		}
 	}
