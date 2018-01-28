@@ -31,6 +31,8 @@ deploy:client:tags:
     - tags
   script:
     - sed -i 's#http://localhost:28113#https://pic4review.pavie.info/api#' src/app/constants.js
+    - sed -i 's#KHkPq0Llu63IWjdchiKALkAcDfJUwqi6GHKM9IY6#rPsLZF2pqrN7OjOHQLHnmMt7wGJG6qS3Wqfogd2F#' src/app/constants.js
+    - sed -i 's#PWXMH1Ko6vOFFI69wvwv2p9yH8y5Af2cJ8nMkXf0#ok9xgAcHe3OmGq9zZksBvtpWRTaVd8YQod0Tj1SA#' src/app/constants.js
     - npm run build
     - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/ ./build/*
     - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/builds/ ./Pic4Review_latest.zip
