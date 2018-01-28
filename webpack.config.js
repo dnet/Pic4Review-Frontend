@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const TransferWebpackPlugin = require('transfer-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const devtool = process.env.NODE_ENV === "production" ? "source-map" : "eval";
 const target = process.env.NODE_ENV === "test" ? 'node' : 'web';
@@ -17,14 +18,14 @@ if(process.env.NODE_ENV === "production") {
 		new webpack.optimize.AggressiveMergingPlugin(),
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		// Minify the bundle
-		new webpack.optimize.UglifyJsPlugin({
+		new UglifyJSPlugin({ uglifyOptions: {
 			mangle: true,
 			compress: {
 				warnings: false, // Suppress uglification warnings
 				pure_getters: true,
 				unsafe: true,
 				unsafe_comps: true,
-				screw_ie8: true,
+				ie8: false,
 				conditionals: true,
 				unused: true,
 				comparisons: true,
@@ -38,7 +39,7 @@ if(process.env.NODE_ENV === "production") {
 				comments: false,
 			},
 			exclude: [/\.min\.js$/gi]
-		})
+		}})
 	]);
 }
 else {
