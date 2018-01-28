@@ -55,6 +55,8 @@ class MyStatisticsComponent extends Component {
 	}
 	
 	componentWillMount() {
+		PubSub.publish("UI.TITLE.RESET");
+		
 		if(this.props.user) {
 			//Retrieve statistics
 			API.GetUserStatistics(this.props.user.id)

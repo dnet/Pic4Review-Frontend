@@ -16,6 +16,13 @@ import UserButton from './UserButtonComponent';
 class HeaderComponent extends Component {
 	constructor() {
 		super();
+		
+		this.state = {
+			title: null,
+			subtitle: null
+		};
+		
+		this.psTokens = {};
 	}
 	
 	render() {
@@ -33,6 +40,12 @@ class HeaderComponent extends Component {
 						<Typography type="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Beta release")}</Typography>
 					</div>
 				</div>
+				
+				{this.state.title && <Hidden only="xs"><div style={{display: "inline-block", textAlign: "center"}}>
+					<Typography type="title" style={{marginBottom: 0}} color="inherit">{this.state.title}</Typography>
+					<Typography type="caption" style={{marginBottom: 0}} color="inherit">{this.state.subtitle}</Typography>
+				</div></Hidden>}
+				
 				<div>
 					<Tooltip title={I18n.t("Missions")} placement="bottom">
 						<IconButton
@@ -73,6 +86,41 @@ class HeaderComponent extends Component {
 			</Toolbar>
 		</AppBar>;
 	}
+	
+	componentDidMount() {
+		this.psTokens.title = PubSub.subscribe("UI.TITLE.SET", (msg, data) => {
+			this.setState({ title: data.title, subtitle: data.subtitle });
+		});
+		
+		this.psTokens.reset = PubSub.subscribe("UI.TITLE.RESET", (msg, data) => {
+			this.setState({ title: null, subtitle: null });
+		});
+	}
+	
+	componentWillUnmount() {
+		if(this.psTokens.title) {
+			PubSub.unsubscribe(this.psTokens.title);
+		}
+		
+		if(this.psTokens.reset) {
+			PubSub.unsubscribe(this.psTokens.reset);
+		}
+	}
 }
 
 export default HeaderComponent;
+
+/**
+ * Event to display a particular title
+ * @event UI.TITLE.SET
+ * @type {Object} Event data
+ * @property {string} title The page title
+ * @property {string} subtitle The page subtitle
+ * @memberof Events
+ */
+
+/**
+ * Event to remove previous title
+ * @event UI.TITLE.RESET
+ * @memberof Events
+ */

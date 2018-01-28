@@ -30,12 +30,13 @@ class NewMissionDatasourceOverpassComponent extends Component {
 	render() {
 		return <div>
 			<FormControl style={{width: "100%"}}>
+				<Typography type="caption">{I18n.t("Insert the full Overpass query below. Note that your query must only return points, so consider using \"out center;\" command when retrieving ways or relations. {{bbox}} parameter will be replaced by selected area.")}</Typography>
 				<TextField
 					id="oapi-query"
-					label={I18n.t("Full Overpass API query. Should only retrieve points (use \"out center\")")}
+					label={I18n.t("Full Overpass API query")}
 					multiline
 					rows="4"
-					value={this.state.oapiQuery}
+					value={this.state.oapiQuery || ""}
 					onChange={e => this._changed("query", e.target.value)}
 					margin="normal"
 				/>

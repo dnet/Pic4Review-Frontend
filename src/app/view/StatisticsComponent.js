@@ -40,6 +40,8 @@ class StatisticsComponent extends Component {
 	}
 	
 	componentWillMount() {
+		PubSub.publish("UI.TITLE.RESET");
+		
 		API.GetUsersStatistics()
 		.then(stats => {
 			this.setState({ stats: stats });

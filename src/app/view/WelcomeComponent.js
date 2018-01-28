@@ -56,6 +56,10 @@ class WelcomeComponent extends Component {
 			</Typography>
 		</div>;
 	}
+	
+	componentWillMount() {
+		PubSub.publish("UI.TITLE.RESET");
+	}
 }
 
 export default WelcomeComponent;

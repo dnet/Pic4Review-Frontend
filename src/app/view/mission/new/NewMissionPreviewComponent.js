@@ -57,7 +57,8 @@ class NewMissionPreviewComponent extends Component {
 			})
 			.catch(e => {
 				console.error(e);
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get preview for this mission") });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get preview for this mission. Are you sure your parameters are valid ?") });
+				nextProps.onClose();
 			});
 		}
 		else if(Hash(nextProps.data) !== Hash(this.props.data)) {

@@ -108,6 +108,7 @@ class MissionsComponent extends Component {
 	}
 	
 	componentWillMount() {
+		PubSub.publish("UI.TITLE.RESET");
 		this._fetchMissions(this.state);
 	}
 	

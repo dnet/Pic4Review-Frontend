@@ -68,6 +68,15 @@ class MissionComponent extends Component {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: "Oops ! Can't get details of this mission" });
 		});
 	}
+	
+	componentDidUpdate() {
+		if(this.state.mission) {
+			PubSub.publish("UI.TITLE.SET", { title: this.state.mission.description.short, subtitle: this.state.mission.area.name });
+		}
+		else {
+			PubSub.publish("UI.TITLE.RESET");
+		}
+	}
 }
 
 export default withRouter(MissionComponent);

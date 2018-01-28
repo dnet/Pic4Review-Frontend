@@ -255,6 +255,10 @@ class NewMissionComponent extends Component {
 			/>
 		</div>;
 	}
+	
+	componentWillMount() {
+		PubSub.publish("UI.TITLE.RESET");
+	}
 }
 
 export default withRouter(NewMissionComponent);
