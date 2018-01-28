@@ -295,16 +295,17 @@ class API {
 					maxlat: area.getNorth(),
 					minlon: area.getWest(),
 					maxlon: area.getEast(),
-					datatype: source
+					datatype: source,
+					dataoptions: options
 				};
 				
-				const url = CONST.P4R_URL + '/missions/preview?' + Object.entries(p).map(e => e[0]+"="+e[1]).join("&");
+				const url = CONST.P4R_URL + '/missions/preview';
 				
 				request(
 					{
-						method: "GET",
+						method: "POST",
 						url: url,
-						json: { dataoptions: options },
+						json: p,
 						timeout: LONG_TIMEOUT_MS
 					},
 					(err, res, body) => {
