@@ -176,6 +176,7 @@ class App {
 			}, (err, details) => {
 				if(err) {
 					console.log(err);
+					this.auth.logout();
 				}
 				else {
 					try {

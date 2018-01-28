@@ -49,7 +49,7 @@ class MissionDescriptionComponent extends Component {
 			<MissionSummary mission={this.props.mission} />
 			<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
 			
-			{!this.props.synthetic && <div>
+			{this.props.synthetic == false && <div>
 			<div style={{textAlign: "right"}}>
 				<Button
 					raised

@@ -29,7 +29,7 @@ class MissionComponent extends Component {
 		if(this.state.mission) {
 			switch(tab) {
 				case 0:
-					content = <MissionDescription mission={this.state.mission} style={contentStyle} />;
+					content = <MissionDescription mission={this.state.mission} style={contentStyle} synthetic={false} />;
 					break;
 				
 				case 1:
