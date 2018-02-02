@@ -13,6 +13,9 @@ const DESC = { short: "Add those toilets in OSM", full: "Add the toilets from of
 const TIMEOUT = 10000;
 
 describe.skip("Ctrl > API", () => {
+	let pictoken = null;
+	let midNext = null;
+	
 	describe("ParamsString", () => {
 		it("works with 0 param", () => {
 			const p = {};
@@ -162,8 +165,12 @@ describe.skip("Ctrl > API", () => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
 			API.CreateMission(m, "osmose", { item: 8180, amount: 1 }, "user1", 1)
-			.then(mid => {
+			.then(d => {
+				const mid = d.id;
+				pictoken = d.pictoken;
 				assert.ok(mid > 0);
+				assert.ok(pictoken >= 0);
+				midNext = mid;
 				done();
 			})
 			.catch(e => {
@@ -176,7 +183,7 @@ describe.skip("Ctrl > API", () => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
 			API.CreateMission(m, "osmose", { item: 8180 })
-			.then(mid => {
+			.then(d => {
 				assert.fail("Should not succeed");
 				done();
 			})
@@ -190,7 +197,8 @@ describe.skip("Ctrl > API", () => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
 			API.CreateMission(m, "overpass", { query: '[out:json][timeout:25];(way["station"="subway"]({{bbox}}););out center;' }, "user1", 1)
-			.then(mid => {
+			.then(d => {
+				const mid = d.id;
 				assert.ok(mid > 0);
 				done();
 			})
@@ -201,9 +209,24 @@ describe.skip("Ctrl > API", () => {
 		}).timeout(TIMEOUT * 2);
 	});
 	
+	describe("GetMissionLoading", () => {
+		it("works", done => {
+			API.GetMissionLoading(pictoken)
+			.then(loading => {
+				assert.equal(loading, 100);
+				
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
+	
 	describe("GetMissionFeatures", () => {
 		it("works", done => {
-			API.GetMissionFeatures(1)
+			API.GetMissionFeatures(midNext)
 			.then(features => {
 				assert.ok(features.length > 0);
 				features.forEach(f => {
@@ -220,7 +243,7 @@ describe.skip("Ctrl > API", () => {
 	
 	describe("GetMissionNextFeature", () => {
 		it("works", done => {
-			API.GetMissionNextFeature(1)
+			API.GetMissionNextFeature(midNext)
 			.then(f => {
 				assert.ok(f === null || f instanceof Feature);
 				done();
@@ -234,11 +257,11 @@ describe.skip("Ctrl > API", () => {
 	
 	describe("UpdateMissionFeature", () => {
 		it("works", done => {
-			API.GetMissionNextFeature(1)
+			API.GetMissionNextFeature(midNext)
 			.then(f => {
 				f.status = "reviewed";
 				
-				API.UpdateMissionFeature(1, f, "user1", 1)
+				API.UpdateMissionFeature(midNext, f, "user1", 1)
 				.then(done)
 				.catch(e => {
 					assert.fail(e);
@@ -273,7 +296,8 @@ describe.skip("Ctrl > API", () => {
 			const m = new Mission(-1, "fix", "amenity", AREA, DESC);
 			
 			API.CreateMission(m, "osmose", { item: 8180, amount: 1 }, "user1", 1)
-			.then(mid => {
+			.then(d => {
+				const mid = d.id;
 				assert.ok(mid > 0);
 				m.id = mid;
 				m.status = "online";

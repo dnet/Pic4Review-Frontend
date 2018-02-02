@@ -41,10 +41,7 @@ class NewMissionDetailsComponent extends Component {
 	
 	render() {
 		const fieldStyle = {width: "100%"};
-		/*
-		 * Fields:
-		 * fulldesc
-		 */
+		
 		return <div>
 			<Typography type="subheading">{I18n.t("General")}</Typography>
 			<Typography type="caption">{I18n.t("All fields below are mandatory, in order to make your mission easy to understand for contributors.")}</Typography>
@@ -119,7 +116,7 @@ class NewMissionDetailsComponent extends Component {
 				style={{width: "100%", marginBottom: 10}}
 			/>
 			
-			<Button dense onClick={() => this.setState({previewOpen: true})}>{I18n.t("Preview")}</Button>
+			<Button onClick={() => this.setState({previewOpen: true})}>{I18n.t("Preview")}</Button>
 			
 			<Dialog
 				onClose={() => this.setState({previewOpen: false})}

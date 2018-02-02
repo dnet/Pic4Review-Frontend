@@ -23,13 +23,13 @@ class PagerComponent extends Component {
 			position="static"
 			activeStep={this.props.page}
 			nextButton={
-				<Button dense onClick={this._next.bind(this)} disabled={this.props.isLast}>
+				<Button onClick={this._next.bind(this)} disabled={this.props.isLast}>
 					{I18n.t("Next")}
 					<ChevronRight />
 				</Button>
 			}
 			backButton={
-				<Button dense onClick={this._prev.bind(this)} disabled={this.props.page === 1}>
+				<Button onClick={this._prev.bind(this)} disabled={this.props.page === 1}>
 					<ChevronLeft />
 					{I18n.t("Back")}
 				</Button>

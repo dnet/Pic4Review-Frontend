@@ -13,13 +13,15 @@ class WaitDialogComponent extends Component {
 		
 		this.state = {
 			open: false,
-			message: ""
+			message: "",
+			value: -1
 		};
 		
 		PubSub.subscribe("UI.MESSAGE.WAIT", (msg, data) => {
 			this.setState({
 				open: true,
-				message: data.message
+				message: data.message || this.state.message,
+				value: data.progress || -1
 			});
 		});
 		
@@ -36,7 +38,7 @@ class WaitDialogComponent extends Component {
 		>
 			<DialogContent>
 				<Typography type="body1" style={{marginBottom: 20}}>{this.state.message}</Typography>
-				<LinearProgress />
+				{this.state.value >= 0 ? <LinearProgress mode="determinate" value={this.state.value} /> : <LinearProgress />}
 			</DialogContent>
 		</Dialog>;
 	}
@@ -48,7 +50,8 @@ export default WaitDialogComponent;
  * Event for displaying a blocking wait message to user.
  * @event UI.MESSAGE.WAIT
  * @type {Object} Event data
- * @property {string} message The message text.
+ * @property {string} [message] The message text.
+ * @property {int} [progress] The progress in percent (or indeterminate loading if not set)
  * @memberof Events
  */
 

@@ -85,7 +85,7 @@ class API {
 									reject(new Error(data.error));
 								}
 								else {
-									resolve(data.id);
+									resolve(data);
 								}
 							}
 							catch(e) {
@@ -166,6 +166,36 @@ class API {
 						}
 						else {
 							resolve(data.geojson);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
+	 * Get mission loading status
+	 * @param {int} [pictoken] The mission temporary token
+	 * @return {Promise} A promise resolving on loading progress (in percent)
+	 */
+	static GetMissionLoading(pictoken) {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/missions/loading?pictoken=' + pictoken, (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data.loading);
 						}
 					}
 					catch(e) {
