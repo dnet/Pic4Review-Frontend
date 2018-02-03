@@ -153,14 +153,17 @@ class MissionReviewComponent extends Component {
 					<Grid item xs={12} sm={8} lg={9}>
 						<Grid container style={{marginBottom: 10}}>
 							{buttons.map((b,i) => {
-								return <Grid item xs={6} sm={4} lg={2} key={i}>
-									{!b.spacing && <Tooltip title={b.tip}>
-										<Button raised color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
-											{b.icon}
-											{b.label}
-										</Button>
-									</Tooltip>}
-								</Grid>
+								if(b.spacing) { return <Grid item xs={6} sm={4} lg={2} key={i}></Grid>; }
+								else {
+									return <Grid item xs={6} sm={4} lg={2} key={i}>
+										<Tooltip title={b.tip}>
+											<Button raised color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
+												{b.icon}
+												{b.label}
+											</Button>
+										</Tooltip>
+									</Grid>;
+								}
 							})}
 						</Grid>
 						

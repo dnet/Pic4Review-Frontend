@@ -69,15 +69,15 @@ class MissionsComponent extends Component {
 			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
 		</Typography>;
 		
-		const noMoreMission = <Typography type="body1" style={{textAlign: "center", margin: 20}}>
+		const noMoreMission = (this.state.nextMissions === null || this.state.nextMissions.length === 0) ? <Typography type="body1" style={{textAlign: "center", margin: 20}}>
 			{I18n.t("Oh, there is no more missions matching these criterias.")}<br />
 			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
-		</Typography>;
+		</Typography> : null;
 		
 		if(this.state.tab === 0 && this.state.missions) {
 			missionsarea = this.state.missions.length > 0 ? <div>
 				<MissionsList missions={this.state.missions} />
-				{(this.state.nextMissions === null || this.state.nextMissions.length === 0) && noMoreMission}
+				{noMoreMission}
 				<Pager
 					style={{marginTop: 10}}
 					onChange={p => this.setState({ page: p, missions: null, nextMissions: null })}
