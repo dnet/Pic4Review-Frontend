@@ -142,10 +142,10 @@ class App {
 		};
 		
 		window.STATUSES = {
-			"new": { name: I18n.t("To review"), color: "grey", priority: 1 },
+			"new": { name: I18n.t("To review"), color: "blue", priority: 1 },
 			reviewed: { name: I18n.t("Reviewed"), color: "green", priority: 4 },
 			skipped: { name: I18n.t("Skipped"), color: "orange", priority: 2 },
-			nopics: { name: I18n.t("No pictures"), color: "blue", priority: 0 },
+			nopics: { name: I18n.t("No pictures"), color: "grey", priority: 0 },
 			cantsee: { name: I18n.t("Can't see"), color: "red", priority: 3 }
 		};
 	}

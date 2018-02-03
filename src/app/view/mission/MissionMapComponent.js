@@ -73,9 +73,9 @@ class MissionMapComponent extends Component {
 		//Features
 		if(this.props.features !== null && this.props.features.length > 0) {
 			this.props.features.sort(sortFeatures);
-			let featurelayers = this.props.features.map(f => {
+			let featurelayers = this.props.features.map((f,i) => {
 				const color = STATUSES[f.status].color || STATUSES["new"].color;
-				return <CircleMarker center={f.coordinates} key={f.id} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} />;
+				return <CircleMarker center={f.coordinates} key={i} radius={7} stroke={false} fill={true} fillColor={color} fillOpacity={1} />;
 			});
 			
 			if(featurelayers.length === 1) { featurelayers = featurelayers[0]; } //Convert if single item in order to avoid FeatureGroup bug

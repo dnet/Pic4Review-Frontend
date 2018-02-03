@@ -60,7 +60,7 @@ class MapSelectionComponent extends Component {
 		
 		//Add geocoder
 		Leaflet.Control
-		.geocoder({defaultMarkGeocode: false})
+		.geocoder({defaultMarkGeocode: false, collapsed: false, placeholder: I18n.t("Area or city name...")})
 		.on("markgeocode", e => {
 			this._showBounds(e.geocode.bbox);
 		})

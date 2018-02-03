@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import withWidth from 'material-ui/utils/withWidth';
 import { CircularProgress } from 'material-ui/Progress';
 import { Link } from 'react-router-dom';
 import API from '../../ctrl/API';
@@ -10,6 +11,8 @@ import MissionsMap from './MissionsMapComponent';
 import Pager from '../PagerComponent';
 import Tabs, { Tab } from 'material-ui/Tabs';
 import Typography from 'material-ui/Typography';
+
+const MAP_HEIGHT = { "xs": 300, "sm": 400, "md": 500, "lg": 600, "xl": 700 };
 
 /**
  * Missions component is the page displaying list of missions to user.
@@ -66,9 +69,15 @@ class MissionsComponent extends Component {
 			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
 		</Typography>;
 		
+		const noMoreMission = <Typography type="body1" style={{textAlign: "center", margin: 20}}>
+			{I18n.t("Oh, there is no more missions matching these criterias.")}<br />
+			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
+		</Typography>;
+		
 		if(this.state.tab === 0 && this.state.missions) {
 			missionsarea = this.state.missions.length > 0 ? <div>
 				<MissionsList missions={this.state.missions} />
+				{(this.state.nextMissions === null || this.state.nextMissions.length === 0) && noMoreMission}
 				<Pager
 					style={{marginTop: 10}}
 					onChange={p => this.setState({ page: p, missions: null, nextMissions: null })}
@@ -78,7 +87,7 @@ class MissionsComponent extends Component {
 			</div> : noMission;
 		}
 		else if(this.state.tab === 1 && this.state.map) {
-			missionsarea = this.state.map.features.length > 0 ? <MissionsMap missions={this.state.map} style={{height: 400}} /> : noMission;
+			missionsarea = this.state.map.features.length > 0 ? <MissionsMap missions={this.state.map} style={{height: MAP_HEIGHT[this.props.width]}} /> : noMission;
 		}
 		else {
 			missionsarea = <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
@@ -123,4 +132,4 @@ class MissionsComponent extends Component {
 	}
 }
 
-export default MissionsComponent;
+export default withWidth()(MissionsComponent);

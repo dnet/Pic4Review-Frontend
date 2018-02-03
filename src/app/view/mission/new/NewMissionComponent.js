@@ -226,7 +226,7 @@ class NewMissionComponent extends Component {
 				break;
 			
 			case 1:
-				content = <Details data={this.state.details} onChange={d => this.setState({ details: d })} />;
+				content = <Details data={this.state.details} datasource={this.state.datasource} onChange={d => this.setState({ details: d })} />;
 				break;
 			
 			case 2:

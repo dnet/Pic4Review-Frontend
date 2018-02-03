@@ -4,6 +4,7 @@ import Dialog, { DialogContent } from 'material-ui/Dialog';
 import { FormControl } from 'material-ui/Form';
 import Grid from 'material-ui/Grid';
 import Input, { InputLabel } from 'material-ui/Input';
+import Nominatim from 'nominatim-browser';
 import ReactMarkdown from 'react-markdown';
 import Select from 'material-ui/Select';
 import TextField from 'material-ui/TextField';
@@ -132,6 +133,28 @@ class NewMissionDetailsComponent extends Component {
 	componentWillMount() {
 		if(this.props.data) {
 			this.setState(this.props.data);
+		}
+	}
+	
+	componentDidMount() {
+		if(
+			this.state.areaname.length === 0
+			&& this.props.datasource
+			&& this.props.datasource.area
+			&& this.props.datasource.area.getCenter
+		) {
+			Nominatim.reverseGeocode({
+				lat: this.props.datasource.area.getCenter().lat,
+				lon: this.props.datasource.area.getCenter().lng,
+				addressdetails: true
+			})
+			.then(result => {
+				if(this.state.areaname.length === 0) {
+					const res = [ result.address.city, result.address.state, result.address.country ];
+					this._changeVal("areaname", res.join(", "));
+				}
+			})
+			.catch(console.error);
 		}
 	}
 }

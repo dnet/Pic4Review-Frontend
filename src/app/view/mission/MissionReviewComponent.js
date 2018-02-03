@@ -1,24 +1,28 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { withStyles } from 'material-ui/styles';
+import withWidth from 'material-ui/utils/withWidth';
 import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
-import CONSTS from '../../constants';
+import Editors from './MissionReviewEditorsComponent';
 import First from './MissionFirstReviewComponent';
 import Gallery from './MissionReviewGalleryComponent';
 import Grid from 'material-ui/Grid';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
+import Paper from 'material-ui/Paper';
 import Picture from './MissionReviewPictureComponent';
 import Progress from './MissionReviewProgressComponent';
-import request from 'browser-request';
+import Markdown from 'react-markdown';
 import Tags from './MissionReviewTagsComponent';
 import Tooltip from 'material-ui/Tooltip';
-import withWidth from 'material-ui/utils/withWidth';
 
 const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 const NOT_FIRST_REVIEW = "no1st";
+
+const styles = theme => ({ root: theme.typography.caption });
 
 /**
  * Mission review component allows to review pictures for a given mission.
@@ -33,7 +37,9 @@ class MissionReviewComponent extends Component {
 			currentPictureId: null,
 			prevFeature: null,
 			count: 0,
-			firstReview: false
+			firstReview: false,
+			openEditors: false,
+			editorsAnchor: null
 		};
 		
 		this.psTokens = {};
@@ -116,44 +122,6 @@ class MissionReviewComponent extends Component {
 		});
 	}
 	
-	/**
-	 * Opens and zoom in JOSM on current picture area.
-	 * @private
-	 */
-	_editJOSM() {
-		let circle = Leaflet.circle(
-			this.state.feature.coordinates,
-			{ radius: 50 }
-		).addTo(this.refs.map.refs.map.leafletElement);
-		
-		let bbox = circle.getBounds();
-		this.refs.map.refs.map.leafletElement.removeLayer(circle);
-		
-		request(
-			CONSTS.JOSM_URL+"left="+bbox.getWest()+"&right="+bbox.getEast()+"&top="+bbox.getNorth()+"&bottom="+bbox.getSouth(),
-			(error, response, body) => {
-				if(error) {
-					console.error(error);
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't open in JOSM, are you sure remote control is enabled ?") });
-				}
-				else {
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Opened in JOSM") });
-				}
-			}
-		);
-	}
-	
-	/**
-	 * Opens ID editor on current picture area.
-	 * @private
-	 */
-	_editId() {
-		window.open(
-			CONSTS.ID_URL+"19/"+this.state.feature.coordinates.join("/"),
-			"_blank"
-		).focus();
-	}
-	
 	_closeFirstHelp() {
 		sessionStorage.setItem(NOT_FIRST_REVIEW, "1");
 		this.setState({ firstReview: false });
@@ -168,8 +136,8 @@ class MissionReviewComponent extends Component {
 			const buttons = [
 				{ icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
 				{ icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next() },
-				{ icon: <Pencil />, label: I18n.t("JOSM"), tip: I18n.t("Open JOSM editor to edit this feature"), click: () => this._editJOSM() },
-				{ icon: <Pencil />, label: I18n.t("iD"), tip: I18n.t("Open iD editor to edit this feature"), click: () => this._editId() },
+				{ spacing: true },
+				{ icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
 				{ color: "primary", icon: <Check />, label: I18n.t("Done"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
 				{ color: "secondary", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
 			];
@@ -179,18 +147,19 @@ class MissionReviewComponent extends Component {
 				<Grid container style={{marginTop: 10}}>
 					<Grid item xs={12} sm={4} lg={3}>
 						<Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width] }} />
+						<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
 						<Tags feature={this.state.feature} style={{marginTop: 10}} />
 					</Grid>
 					<Grid item xs={12} sm={8} lg={9}>
 						<Grid container style={{marginBottom: 10}}>
 							{buttons.map((b,i) => {
 								return <Grid item xs={6} sm={4} lg={2} key={i}>
-									<Tooltip title={b.tip}>
+									{!b.spacing && <Tooltip title={b.tip}>
 										<Button raised color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
 											{b.icon}
 											{b.label}
 										</Button>
-									</Tooltip>
+									</Tooltip>}
 								</Grid>
 							})}
 						</Grid>
@@ -207,6 +176,13 @@ class MissionReviewComponent extends Component {
 				</Grid>
 				
 				<First open={this.state.firstReview} mid={this.props.mission.id} onClose={() => this._closeFirstHelp()} />
+				
+				<Editors
+					open={this.state.openEditors}
+					feature={this.state.feature}
+					anchor={this.state.editorsAnchor}
+					onClose={() => this.setState({openEditors: false})}
+				/>
 			</div>;
 		}
 	}
@@ -247,7 +223,7 @@ class MissionReviewComponent extends Component {
 	}
 }
 
-export default withWidth()(withRouter(MissionReviewComponent));
+export default withStyles(styles)(withWidth()(withRouter(MissionReviewComponent)));
 
 /**
  * Event sent when a picture was selected for the current feature

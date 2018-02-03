@@ -32,7 +32,7 @@ class WelcomeComponent extends Component {
 					<Typography type="body1">
 						{I18n.t("You can find various missions, for example adding wheelchair accessibility, fix recycling containers, or integrate missing public toilets. If it's not enough, you can also create your own missions !")}
 					</Typography>
-					<Button raised color="primary" style={{marginTop: 10}} component={Link} to='/missions'>
+					<Button raised size="large" color="primary" style={{marginTop: 10}} component={Link} to='/missions'>
 						{I18n.t("Start now")}
 					</Button>
 				</Grid>
