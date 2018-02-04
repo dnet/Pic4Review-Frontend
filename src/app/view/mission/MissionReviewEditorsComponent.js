@@ -85,8 +85,8 @@ class MissionReviewEditorsComponent extends Component {
 	_editGeoURI() {
 		window.open(
 			"geo:"+this.props.feature.coordinates.join(","),
-			"_blank"
-		).focus();
+			"_system"
+		);
 	}
 	
 	_click(editor) {
