@@ -64,12 +64,12 @@ class MissionsComponent extends Component {
 	
 	render() {
 		let missionsarea = null;
-		const noMission = <Typography type="body1" style={{textAlign: "center", margin: 20}}>
+		const noMission = <Typography variant="body1" style={{textAlign: "center", margin: 20}}>
 			{I18n.t("Oh, there is no mission corresponding to these criterias.")}<br />
 			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
 		</Typography>;
 		
-		const noMoreMission = (this.state.nextMissions === null || this.state.nextMissions.length === 0) ? <Typography type="body1" style={{textAlign: "center", margin: 20}}>
+		const noMoreMission = (this.state.nextMissions === null || this.state.nextMissions.length === 0) ? <Typography variant="body1" style={{textAlign: "center", margin: 20}}>
 			{I18n.t("Oh, there is no more missions matching these criterias.")}<br />
 			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
 		</Typography> : null;
@@ -96,7 +96,7 @@ class MissionsComponent extends Component {
 		return <div style={this.props.style}>
 			<Grid container>
 				<Grid item hidden={{only: "xs"}} sm={4} md={3} lg={2}>
-					<Typography type="subheading">{I18n.t("Filters")}</Typography>
+					<Typography variant="subheading">{I18n.t("Filters")}</Typography>
 					<MissionsFilters values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} />
 				</Grid>
 				<Grid item xs={12} sm={8} md={9} lg={10}>

@@ -52,7 +52,7 @@ class MissionDescriptionComponent extends Component {
 			{this.props.synthetic == false && <div>
 			<div style={{textAlign: "right"}}>
 				<Button
-					raised
+					variant="raised"
 					color="primary"
 					component={Link}
 					to={'/mission/'+this.props.mission.id+'/review'}

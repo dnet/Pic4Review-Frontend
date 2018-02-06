@@ -26,7 +26,7 @@ class MyStatisticsThemesComponent extends Component {
 		};
 		
 		return <div style={this.props.style}>
-			<Typography type="subheading">{I18n.t("Contribution themes")}</Typography>
+			<Typography variant="subheading">{I18n.t("Contribution themes")}</Typography>
 			<div className="chart-container" style={{position: "relative", width: "100%", height: this.props.height, maxHeight: this.props.height}}>
 				<Doughnut data={dataset} options={opts} />
 			</div>

@@ -69,12 +69,12 @@ class NewMissionDatasourceComponent extends Component {
 				<MapSelection style={{height: 300}} area={this.state.area} onChange={e => this._changeArea(e)} />
 			</Grid>
 			<Grid item xs={12} sm={6} lg={8}>
-				<Typography type="subheading">{I18n.t("Data source")}</Typography>
-				<Typography type="caption" style={{marginBottom: 10}}>{I18n.t("Select one source of data below for your mission")}</Typography>
+				<Typography variant="subheading">{I18n.t("Data source")}</Typography>
+				<Typography variant="caption" style={{marginBottom: 10}}>{I18n.t("Select one source of data below for your mission")}</Typography>
 				{sources.map(s => {
 					return <ExpansionPanel expanded={this.state.source === s.id} key={s.id} onChange={() => this._changeSource(s.id)}>
 						<ExpansionPanelSummary expandIcon={<ChevronDown />}>
-							<Typography type="body2">{s.name}</Typography>
+							<Typography variant="body2">{s.name}</Typography>
 						</ExpansionPanelSummary>
 						<ExpansionPanelDetails style={{display: "block"}}>
 							{s.content}

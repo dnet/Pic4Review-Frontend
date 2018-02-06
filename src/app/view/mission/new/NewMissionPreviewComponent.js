@@ -28,16 +28,16 @@ class NewMissionPreviewComponent extends Component {
 			if(this.state.features.length > 0) {
 				content = <div>
 					<Map features={this.state.features} />
-					{this.state.features.length === 100 && <Typography type="caption">{I18n.t("As your request contains many points, only first 100 are shown in this preview")}</Typography>}
+					{this.state.features.length === 100 && <Typography variant="caption">{I18n.t("As your request contains many points, only first 100 are shown in this preview")}</Typography>}
 				</div>;
 			}
 			else {
-				content = <Typography type="body1">{I18n.t("It seems that there is no features for this data source in this area...")}<br />{I18n.t("Please try with another data source or area")}</Typography>;
+				content = <Typography variant="body1">{I18n.t("It seems that there is no features for this data source in this area...")}<br />{I18n.t("Please try with another data source or area")}</Typography>;
 			}
 		}
 		else {
 			content = <div>
-				<Typography type="body1" style={{marginBottom: 20, textAlign: "center"}}>{I18n.t("Loading features and their pictures")}<br />{I18n.t("It can take up to few minutes")}</Typography>
+				<Typography variant="body1" style={{marginBottom: 20, textAlign: "center"}}>{I18n.t("Loading features and their pictures")}<br />{I18n.t("It can take up to few minutes")}</Typography>
 				<LinearProgress />
 			</div>;
 		}

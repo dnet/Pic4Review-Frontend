@@ -27,19 +27,19 @@ class MyStatisticsComponent extends Component {
 			const style={marginTop: 10};
 			
 			content = <div>
-				<Typography type="display1">{this.props.user.name}</Typography>
+				<Typography variant="display1">{this.props.user.name}</Typography>
 				
-				<Typography type="subheading" style={style}>
+				<Typography variant="subheading" style={style}>
 					{I18n.t("Position in leaderboard")}
 				</Typography>
-				<Typography type="body1">
+				<Typography variant="body1">
 					{this.state.stats.place ? "#"+this.state.stats.place : I18n.t("Unknown, as you haven't contributed yet")}
 				</Typography>
 				
-				<Typography type="subheading" style={style}>
+				<Typography variant="subheading" style={style}>
 					{I18n.t("Features")}
 				</Typography>
-				<Typography type="body1">
+				<Typography variant="body1">
 					{I18n.t({one: "One object reviewed", other: "%{count} objects reviewed"}, {count: this.state.stats.featuresEdited})}
 				</Typography>
 				

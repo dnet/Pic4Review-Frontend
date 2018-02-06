@@ -157,7 +157,7 @@ class MissionReviewComponent extends Component {
 								else {
 									return <Grid item xs={6} sm={4} lg={2} key={i}>
 										<Tooltip title={b.tip}>
-											<Button raised color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
+											<Button variant="raised" color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
 												{b.icon}
 												{b.label}
 											</Button>

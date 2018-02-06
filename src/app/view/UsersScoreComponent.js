@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography';
 class UsersScoreComponent extends Component {
 	render() {
 		return <div>
-			<Typography type="subheading">{I18n.t("Users contributions")}</Typography>
+			<Typography variant="subheading">{I18n.t("Users contributions")}</Typography>
 			<Paper>
 				<Table>
 					<TableHead>

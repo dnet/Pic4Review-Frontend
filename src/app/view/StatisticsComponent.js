@@ -21,14 +21,14 @@ class StatisticsComponent extends Component {
 	render() {
 		if(this.state.stats) {
 			return <div>
-				<Typography type="display1">{I18n.t("Statistics")}</Typography>
+				<Typography variant="display1">{I18n.t("Statistics")}</Typography>
 				
 				<Grid container>
 					<Grid item xs={12} md={6}>
 						<UsersScore data={this.state.stats.scores} />
 					</Grid>
 					<Grid item xs={12} md={6}>
-						<Typography type="subheading">{I18n.t("Last missing/bad pictures")}</Typography>
+						<Typography variant="subheading">{I18n.t("Last missing/bad pictures")}</Typography>
 						<MissingPictures style={{height: 400}} />
 					</Grid>
 				</Grid>

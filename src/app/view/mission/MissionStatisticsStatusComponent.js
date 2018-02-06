@@ -18,7 +18,7 @@ class MissionStatisticsStatusComponent extends Component {
 		};
 		
 		return <div>
-			<Typography type="subheading">{I18n.t("Feature status")}</Typography>
+			<Typography variant="subheading">{I18n.t("Feature status")}</Typography>
 			<div className="chart-container" style={{position: "relative", width: "100%", height: this.props.height, maxHeight: this.props.height}}>
 				<Doughnut data={dataset} options={{responsive: true, maintainAspectRatio: false, legend: {position: "bottom"}}} />
 			</div>

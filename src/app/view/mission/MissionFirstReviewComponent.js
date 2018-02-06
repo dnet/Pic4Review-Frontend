@@ -13,8 +13,8 @@ class MissionFirstReviewComponent extends Component {
 			onClose={this.props.onClose}
 		>
 			<DialogContent>
-				<Typography type="headline">{I18n.t("Welcome !")}</Typography>
-				<Typography type="body1">
+				<Typography variant="headline">{I18n.t("Welcome !")}</Typography>
+				<Typography variant="body1">
 					{I18n.t("Have we already met ? Anyway, welcome to the review page.")}<br />{I18n.t("Here are some tips for a good start in Pic4Review:")}
 				</Typography>
 				<ul>
@@ -24,7 +24,7 @@ class MissionFirstReviewComponent extends Component {
 					<li>{I18n.t("If you are not sure of what to do, click on \"Next\", someone else will review the feature")}</li>
 					<li>{I18n.t("Every time you edit a feature, you earn one point !")} <a href="https://upload.wikimedia.org/wikipedia/en/6/61/Pok%C3%A9mon_Theme_Song_-_Sample.ogg" target="_blank">Gotta Catch 'Em all</a></li>
 				</ul>
-				<Typography type="body1">
+				<Typography variant="body1">
 					{I18n.t("You're now ready to start ! Good luck 😉")}
 				</Typography>
 			</DialogContent>

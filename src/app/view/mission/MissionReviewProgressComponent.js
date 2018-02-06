@@ -34,7 +34,7 @@ class MissionReviewProgressComponent extends Component {
 			const pct = Math.floor(done / total * 100);
 			
 			return <Tooltip title={I18n.t("Mission done at %{pct}%", { pct: pct})}>
-				<LinearProgress mode="determinate" value={pct} />
+				<LinearProgress variant="determinate" value={pct} />
 			</Tooltip>;
 		}
 		else {

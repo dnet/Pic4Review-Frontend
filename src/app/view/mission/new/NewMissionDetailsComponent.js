@@ -44,8 +44,8 @@ class NewMissionDetailsComponent extends Component {
 		const fieldStyle = {width: "100%"};
 		
 		return <div>
-			<Typography type="subheading">{I18n.t("General")}</Typography>
-			<Typography type="caption">{I18n.t("All fields below are mandatory, in order to make your mission easy to understand for contributors.")}</Typography>
+			<Typography variant="subheading">{I18n.t("General")}</Typography>
+			<Typography variant="caption">{I18n.t("All fields below are mandatory, in order to make your mission easy to understand for contributors.")}</Typography>
 			
 			<Grid container style={{marginBottom: 10}}>
 				<Grid item xs={12} sm={6} md={3}>
@@ -105,8 +105,8 @@ class NewMissionDetailsComponent extends Component {
 				</Grid>
 			</Grid>
 			
-			<Typography type="subheading">{I18n.t("Description")}</Typography>
-			<Typography type="caption">{I18n.t("Please, give as much details as possible. You should explain what the mission is about, what are the requested edits, which tags should be used, and where to find documentation. You can use Markdown syntax for formatting your text.")} <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">{I18n.t("Markdown doc")}</a></Typography>
+			<Typography variant="subheading">{I18n.t("Description")}</Typography>
+			<Typography variant="caption">{I18n.t("Please, give as much details as possible. You should explain what the mission is about, what are the requested edits, which tags should be used, and where to find documentation. You can use Markdown syntax for formatting your text.")} <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet" target="_blank">{I18n.t("Markdown doc")}</a></Typography>
 			
 			<TextField
 				id="mission-new-fulldesc"

@@ -56,7 +56,7 @@ class MissionStatisticsTimeComponent extends Component {
 		};
 		
 		return <div>
-			<Typography type="subheading">{I18n.t("Contributions")}</Typography>
+			<Typography variant="subheading">{I18n.t("Contributions")}</Typography>
 			<div className="chart-container" style={{position: "relative", width: "100%", height: this.props.height, maxHeight: this.props.height}}>
 				<Line data={dataset} options={opts} />
 			</div>

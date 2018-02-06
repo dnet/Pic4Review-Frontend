@@ -16,7 +16,7 @@ class MissionsListComponent extends Component {
 	render() {
 		return <Grid container>
 			{this.props.missions.map((m, i) => {
-				return <Grid item key={i} xs={12} md={6} lg={4}>
+				return <Grid item key={i} xs={12} lg={6}>
 					<Card>
 						<CardContent>
 							<MissionSummary mission={m} />

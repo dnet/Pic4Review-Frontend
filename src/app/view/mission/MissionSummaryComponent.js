@@ -17,7 +17,7 @@ const dayOffset = d => {
 class MissionSummaryComponent extends Component {
 	render() {
 		return <div>
-			<Typography type="headline" style={{verticalAlign: "middle"}}>
+			<Typography variant="headline" style={{verticalAlign: "middle"}}>
 				{this.props.mission.description.short}
 				
 				<span style={{verticalAlign: "middle", color: grey[500], marginLeft: 10}}>
@@ -31,11 +31,11 @@ class MissionSummaryComponent extends Component {
 				</span>
 			</Typography>
 			
-			<Typography type="subheading">
+			<Typography variant="subheading">
 				{this.props.mission.area.name}
 			</Typography>
 			
-			{this.props.mission.options.stats && <Typography type="caption">
+			{this.props.mission.options.stats && <Typography variant="caption">
 				{I18n.t("%{pct} % complete (%{nb} features)", { pct: Math.floor(100 - (this.props.mission.options.stats.new / this.props.mission.options.stats.total)*100), nb: this.props.mission.options.stats.total })}
 				{this.props.mission.options.date && " - "+I18n.t({ zero: "Launched today", one: "Launched yesterday", other: "Launched %{count} days ago" }, { count: dayOffset(this.props.mission.options.date) })}
 			</Typography>}

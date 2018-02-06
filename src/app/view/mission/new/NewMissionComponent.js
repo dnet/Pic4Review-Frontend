@@ -177,7 +177,7 @@ class NewMissionComponent extends Component {
 	_updateCreation(mid, pictoken) {
 		API.GetMissionLoading(pictoken)
 		.then(loading => {
-			if(loading === 100) {
+			if(loading >= 100) {
 				//Get details
 				API.GetMissionDetails(mid)
 				.then(mission => {
@@ -231,8 +231,8 @@ class NewMissionComponent extends Component {
 			
 			case 2:
 				content = <div>
-					<Typography type="subheading">{I18n.t("Summary")}</Typography>
-					<Typography type="caption">
+					<Typography variant="subheading">{I18n.t("Summary")}</Typography>
+					<Typography variant="caption">
 						{I18n.t("Please check if everything is OK with your mission description. If so, you can publish the mission. If not, you can go back and make appropriate changes")}
 					</Typography>
 					<Paper elevation={4} style={{padding: 10, marginTop: 10, marginBottom: 10}}>
@@ -260,12 +260,12 @@ class NewMissionComponent extends Component {
 			
 			<Grid container alignItems="center" direction="row" justify="flex-end">
 				<Grid item>
-					<Button raised disabled={this.state.step === 0} onClick={() => this._prev()}>
+					<Button variant="raised" disabled={this.state.step === 0} onClick={() => this._prev()}>
 						{I18n.t("Back")}
 					</Button>
 				</Grid>
 				<Grid item>
-					<Button raised color="primary" onClick={() => this._next()}>
+					<Button variant="raised" color="primary" onClick={() => this._next()}>
 						{this.state.step === 2 ? I18n.t("Publish") : I18n.t("Next")}
 					</Button>
 				</Grid>

@@ -37,8 +37,8 @@ class WaitDialogComponent extends Component {
 			open={this.state.open}
 		>
 			<DialogContent>
-				<Typography type="body1" style={{marginBottom: 20}}>{this.state.message}</Typography>
-				{this.state.value >= 0 ? <LinearProgress mode="determinate" value={this.state.value} /> : <LinearProgress />}
+				<Typography variant="body1" style={{marginBottom: 20}}>{this.state.message}</Typography>
+				{this.state.value >= 0 ? <LinearProgress variant="determinate" value={this.state.value} /> : <LinearProgress />}
 			</DialogContent>
 		</Dialog>;
 	}

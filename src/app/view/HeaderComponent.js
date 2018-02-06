@@ -36,14 +36,14 @@ class HeaderComponent extends Component {
 						/>
 					</Link>
 					<div style={{display: "inline-block", verticalAlign: "middle"}}>
-						<Typography type="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
-						<Typography type="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Beta release")}</Typography>
+						<Typography variant="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
+						<Typography variant="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Beta release")}</Typography>
 					</div>
 				</div>
 				
 				{this.state.title && <Hidden only="xs"><div style={{display: "inline-block", textAlign: "center"}}>
-					<Typography type="title" style={{marginBottom: 0}} color="inherit">{this.state.title}</Typography>
-					<Typography type="caption" style={{marginBottom: 0}} color="inherit">{this.state.subtitle}</Typography>
+					<Typography variant="title" style={{marginBottom: 0}} color="inherit">{this.state.title}</Typography>
+					<Typography variant="caption" style={{marginBottom: 0}} color="inherit">{this.state.subtitle}</Typography>
 				</div></Hidden>}
 				
 				<div>

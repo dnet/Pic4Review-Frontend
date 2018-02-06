@@ -1,8 +1,7 @@
 import CONST from '../constants';
 import Feature from '../model/Feature';
 import Mission from '../model/Mission';
-import osmtogeojson from 'osmtogeojson';
-import queryOverpass from '@derhuerst/query-overpass';
+import queryOverpass from 'query-overpass';
 import request from 'browser-request';
 
 const LONG_TIMEOUT_MS = 300000;
@@ -25,6 +24,24 @@ class API {
 	}
 	
 	/**
+	 * Runs a query against Overpass API
+	 * @param {string} query The OAPI query
+	 * @return {Promise} A promise resolving on GeoJSON data
+	 */
+	static QueryOverpass(query) {
+		return new Promise((resolve, reject) => {
+			queryOverpass(query, (err, data) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					resolve(data);
+				}
+			});
+		});
+	}
+	
+	/**
 	 * Creates a new mission
 	 * @param {Mission} mission The mission to create on server
 	 * @param {string} source The data source (osmose)
@@ -39,9 +56,8 @@ class API {
 			const area = mission.area.bbox;
 			const q = sourceOptions.query.replace(/{{bbox}}/g, area.getSouth()+","+area.getWest()+","+area.getNorth()+","+area.getEast());
 			
-			return queryOverpass(q)
-			.then(data => {
-				const geojson = osmtogeojson({ elements: data });
+			return this.QueryOverpass(q)
+			.then(geojson => {
 				const opts = Object.assign({}, sourceOptions, { geojson: geojson });
 				return this.CreateMission(mission, source, opts, username, userid);
 			});
@@ -311,9 +327,8 @@ class API {
 			//Replace {{bbox}} using given area
 			const q = options.query.replace(/{{bbox}}/g, area.getSouth()+","+area.getWest()+","+area.getNorth()+","+area.getEast());
 			
-			return queryOverpass(q)
-			.then(data => {
-				const geojson = osmtogeojson({ elements: data });
+			return this.QueryOverpass(q)
+			.then(geojson => {
 				const opts = Object.assign({}, options, { geojson: geojson });
 				return this.GetMissionPreview(area, source, opts);
 			});

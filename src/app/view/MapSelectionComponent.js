@@ -41,8 +41,8 @@ class MapSelectionComponent extends Component {
 		const style = Object.assign({}, this.props.style, { width: "100%", marginTop: 10 });
 		
 		return <div>
-			<Typography type="subheading">{I18n.t("Area")}</Typography>
-			<Typography type="caption">{I18n.t("Select an area (for example, a city) using the search bar, or by pressing Ctrl key and dragging over map with left mouse button")}</Typography>
+			<Typography variant="subheading">{I18n.t("Area")}</Typography>
+			<Typography variant="caption">{I18n.t("Select an area (for example, a city) using the search bar, or by pressing Ctrl key and dragging over map with left mouse button")}</Typography>
 			<Map ref="map" center={[this.state.lat, this.state.lng]} zoom={this.state.zoom} style={style}>
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			</Map>
