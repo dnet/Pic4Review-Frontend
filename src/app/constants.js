@@ -6,5 +6,6 @@ export default {
 	JOSM_URL: 'http://127.0.0.1:8111/load_and_zoom?',
 	P4R_URL: 'http://localhost:28113',
 	OAUTH_CONSUMER_KEY: 'KHkPq0Llu63IWjdchiKALkAcDfJUwqi6GHKM9IY6',
-	OAUTH_SECRET: 'PWXMH1Ko6vOFFI69wvwv2p9yH8y5Af2cJ8nMkXf0'
+	OAUTH_SECRET: 'PWXMH1Ko6vOFFI69wvwv2p9yH8y5Af2cJ8nMkXf0',
+	OAPI_URL: 'https://overpass-api.de/api/interpreter'
 };
