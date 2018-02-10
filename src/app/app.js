@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { HashRouter } from 'react-router-dom';
-import { Car, Cart, Cctv, CupWater, Download, PineTree, TagPlus, Wrench, SubwayVariant, HelpCircle, WheelchairAccessibility } from 'mdi-material-ui';
+import { Car, Cart, Cctv, CupWater, Download, PineTree, Pillar, TagPlus, Wrench, SubwayVariant, HelpCircle, WheelchairAccessibility } from 'mdi-material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import BodyComponent from './view/BodyComponent';
 import CONSTS from './constants';
@@ -125,9 +125,9 @@ class App {
 	 */
 	_initGlobalVars() {
 		window.TYPES = {
-			integrate: { name: I18n.t("Integrate new data"), icon: <Download /> },
+			integrate: { name: I18n.t("Import external data"), icon: <Download /> },
 			fix: { name: I18n.t("Fix existing data"), icon: <Wrench /> },
-			improve: { name: I18n.t("Augment existing data"), icon: <TagPlus /> }
+			improve: { name: I18n.t("Add details on existing data"), icon: <TagPlus /> }
 		};
 		
 		window.THEMES = {
@@ -138,6 +138,7 @@ class App {
 			shop: { name: I18n.t("Shop"), color: "#674172", icon: <Cart /> },
 			transport: { name: I18n.t("Transport"), color: "#2574A9", icon: <SubwayVariant /> },
 			road: { name: I18n.t("Road"), color: "#22313F", icon: <Car /> },
+			culture: { name: I18n.t("Culture"), color: "#9B59B6", icon: <Pillar /> },
 			other: { name: I18n.t("Other"), color: "#6C7A89", icon: <HelpCircle /> }
 		};
 		

@@ -70,7 +70,7 @@ class MissionReviewEditorsComponent extends Component {
 			url += "?" + parts[0] + "=" + parts[1];
 		}
 		
-		url += "#map=19/"+this.props.feature.coordinates.join("/");
+		url += "#map=21/"+this.props.feature.coordinates.join("/");
 		
 		window.open(
 			url,

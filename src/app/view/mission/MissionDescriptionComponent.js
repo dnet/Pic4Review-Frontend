@@ -45,24 +45,26 @@ class MissionDescriptionComponent extends Component {
 	}
 	
 	render() {
+		const percentNoPics = this.state.features ? this.state.features.filter(f => f.status === 'nopics').length / this.state.features.length * 100 : 0;
+		
 		return <div style={this.props.style}>
 			<MissionSummary mission={this.props.mission} />
 			<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
 			
 			{this.props.synthetic == false && <div>
-			<div style={{textAlign: "right"}}>
-				<Button
-					variant="raised"
-					color="primary"
-					component={Link}
-					to={'/mission/'+this.props.mission.id+'/review'}
-				>
-					<Play />
-					{I18n.t("Start review")}
-				</Button>
-			</div>
-			
-			<MissionMap features={this.state.features} />
+				<div style={{textAlign: "right"}}>
+					<Button
+						variant="raised"
+						color="primary"
+						component={Link}
+						to={'/mission/'+this.props.mission.id+'/review'}
+					>
+						<Play />
+						{I18n.t("Start review")}
+					</Button>
+				</div>
+				
+				<MissionMap features={this.state.features} />
 			</div>}
 		</div>;
 	}
