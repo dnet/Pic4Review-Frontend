@@ -37,7 +37,7 @@ class API {
 				else {
 					resolve(data);
 				}
-			}, { overpassUrl: CONST.OAPI_URL });
+			}, { overpassUrl: CONST.OAPI_URL, flatProperties: true });
 		});
 	}
 	
