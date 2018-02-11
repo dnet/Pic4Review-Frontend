@@ -150,7 +150,12 @@ class NewMissionDetailsComponent extends Component {
 			})
 			.then(result => {
 				if(this.state.areaname.length === 0) {
-					const res = [ result.address.city, result.address.state, result.address.country ];
+					const res = [
+						result.address.city,
+						result.address.state,
+						result.address.country
+					].filter(d => d !== null && d !== undefined && d.trim().length > 0);
+					
 					this._changeVal("areaname", res.join(", "));
 				}
 			})
