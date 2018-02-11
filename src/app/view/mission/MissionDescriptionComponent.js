@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import { Play } from 'mdi-material-ui';
+import { CameraOff, Play } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
+import ExportMenu from './MissionDescriptionExportComponent';
+import Grid from 'material-ui/Grid';
 import { Link } from 'react-router-dom';
 import MissionMap from './MissionMapComponent';
 import MissionSummary from './MissionSummaryComponent';
 import ReactMarkdown from 'react-markdown';
+import Typography from 'material-ui/Typography';
 
 const styles = theme => ({
 	root: theme.typography.body1
@@ -24,7 +27,9 @@ class MissionDescriptionComponent extends Component {
 			lat: 0,
 			lng: 0,
 			zoom: 0,
-			features: null
+			features: null,
+			openExport: false,
+			exportAnchor: null
 		};
 	}
 	
@@ -52,19 +57,34 @@ class MissionDescriptionComponent extends Component {
 			<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
 			
 			{this.props.synthetic == false && <div>
-				<div style={{textAlign: "right"}}>
-					<Button
-						variant="raised"
-						color="primary"
-						component={Link}
-						to={'/mission/'+this.props.mission.id+'/review'}
-					>
-						<Play />
-						{I18n.t("Start review")}
-					</Button>
-				</div>
+				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}}>
+					<Grid item>
+						<Button
+							variant="raised"
+							color="primary"
+							component={Link}
+							to={'/mission/'+this.props.mission.id+'/review'}
+						>
+							<Play />
+							{I18n.t("Start review")}
+						</Button>
+					</Grid>
+					
+					<Grid item>
+						<Button variant="raised" onClick={e => this.setState({ openExport: true, exportAnchor: e.currentTarget})}>
+							<CameraOff /> {I18n.t("Export missing pics")}
+						</Button>
+					</Grid>
+				</Grid>
 				
 				<MissionMap features={this.state.features} />
+				
+				<ExportMenu
+					open={this.state.openExport}
+					anchor={this.state.exportAnchor}
+					onSelect={f => window.open(API.GetExportMissingUrl(this.props.mission.id, f))}
+					onClose={() => this.setState({openExport: false})}
+				/>
 			</div>}
 		</div>;
 	}

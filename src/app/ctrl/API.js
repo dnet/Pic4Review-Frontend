@@ -569,6 +569,16 @@ class API {
 			);
 		});
 	}
+	
+	/**
+	 * Get the URL for missing pictures export.
+	 * @param {int} mid The mission ID
+	 * @param {string} format The export format (gpx, geojson, kml)
+	 * @return {string} The URL
+	 */
+	static GetExportMissingUrl(mid, format) {
+		return CONST.P4R_URL + '/missions/' + mid + '/export/missing?format=' + format;
+	}
 }
 
 export default API;
