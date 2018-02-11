@@ -13,9 +13,9 @@ Date.prototype.toP4RString = function() {
 };
 
 /**
- * Mission statistics time component allows to see mission participation through time.
+ * Statistics time component allows to see participation through time.
  */
-class MissionStatisticsTimeComponent extends Component {
+class StatisticsTimeComponent extends Component {
 	render() {
 		const partialDays = Object.keys(this.props.data);
 		partialDays.sort();
@@ -64,4 +64,4 @@ class MissionStatisticsTimeComponent extends Component {
 	}
 }
 
-export default MissionStatisticsTimeComponent;
+export default StatisticsTimeComponent;

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import API from '../ctrl/API';
 import Themes from './MyStatisticsThemesComponent';
+import Time from './StatisticsTimeComponent';
 import { CircularProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
 
@@ -44,6 +45,8 @@ class MyStatisticsComponent extends Component {
 				</Typography>
 				
 				<Themes data={this.state.stats.themes} height={300} style={style} />
+				
+				<Time data={this.state.stats.amountEdits} height={300} />
 			</div>;
 		}
 		//Wait for login or stats

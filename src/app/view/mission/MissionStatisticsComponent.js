@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import API from '../../ctrl/API';
 import { CircularProgress } from 'material-ui/Progress';
 import Grid from 'material-ui/Grid';
-import Time from './MissionStatisticsTimeComponent';
+import Time from '../StatisticsTimeComponent';
 import Score from '../UsersScoreComponent';
 import Status from './MissionStatisticsStatusComponent';
 

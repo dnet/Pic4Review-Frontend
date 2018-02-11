@@ -57,6 +57,11 @@ class MissionDescriptionComponent extends Component {
 			<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
 			
 			{this.props.synthetic == false && <div>
+				{percentNoPics >= 20 &&
+					<Typography variant="body2" style={{marginBottom: 10}}>
+						{I18n.t("Hey ! This mission is missing a lot of pictures (%{cnt}% of the features). If you have some time and live near this area, you should consider going out and take some pictures. You can export the list of features without pictures using the button below.", { cnt: Math.round(percentNoPics) })}
+					</Typography>
+				}
 				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}}>
 					<Grid item>
 						<Button
