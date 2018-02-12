@@ -56,6 +56,7 @@ class BodyComponent extends Component {
 					<Route exact path='/' component={Welcome} />
 					<Route exact path='/missions' component={Missions} />
 					<Route exact path='/mission/new' component={Authorize.For(NewMission)} />
+					<Route exact path='/mission/new/:mid' component={Authorize.For(NewMission)} />
 					<Route exact path='/mission/:mid' component={Mission} />
 					<Route exact path='/mission/:mid/:page' component={Authorize.For(Mission)} />
 					<Route exact path='/my/statistics' component={Authorize.For(MyStatistics)} />

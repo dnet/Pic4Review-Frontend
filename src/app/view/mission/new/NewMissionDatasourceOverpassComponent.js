@@ -16,6 +16,18 @@ class NewMissionDatasourceOverpassComponent extends Component {
 	}
 	
 	/**
+	 * Restore options from props
+	 * @private
+	 */
+	_restore(props) {
+		if(props.data && props.data.query !== this.state.oapiQuery) {
+			this.setState({
+				oapiQuery: props.data.query
+			});
+		}
+	}
+	
+	/**
 	 * Called when a value has changed
 	 * @private
 	 */
@@ -46,11 +58,11 @@ class NewMissionDatasourceOverpassComponent extends Component {
 	}
 	
 	componentWillMount() {
-		if(this.props.data) {
-			this.setState({
-				oapiQuery: this.props.data.query
-			});
-		}
+		this._restore(this.props);
+	}
+	
+	componentWillReceiveProps(nextProps) {
+		this._restore(nextProps);
 	}
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import { CameraOff, Play } from 'mdi-material-ui';
+import { CameraOff, ContentDuplicate, Play } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
 import ExportMenu from './MissionDescriptionExportComponent';
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import MissionMap from './MissionMapComponent';
 import MissionSummary from './MissionSummaryComponent';
 import ReactMarkdown from 'react-markdown';
+import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
 const styles = theme => ({
@@ -76,9 +77,23 @@ class MissionDescriptionComponent extends Component {
 					</Grid>
 					
 					<Grid item>
-						<Button variant="raised" onClick={e => this.setState({ openExport: true, exportAnchor: e.currentTarget})}>
-							<CameraOff /> {I18n.t("Export missing pics")}
-						</Button>
+						<Tooltip title={I18n.t("Download the position of features lacking pictures, in order to take some by yourself")}>
+							<Button variant="raised" onClick={e => this.setState({ openExport: true, exportAnchor: e.currentTarget})}>
+								<CameraOff /> {I18n.t("Export missing pics")}
+							</Button>
+						</Tooltip>
+					</Grid>
+					
+					<Grid item>
+						<Tooltip title={I18n.t("Create a new mission based on this one. Useful for working on same task elsewhere.")}>
+							<Button
+								variant="raised"
+								component={Link}
+								to={'/mission/new/'+this.props.mission.id}
+							>
+								<ContentDuplicate /> {I18n.t("Duplicate mission")}
+							</Button>
+						</Tooltip>
 					</Grid>
 				</Grid>
 				

@@ -281,6 +281,37 @@ class NewMissionComponent extends Component {
 	
 	componentWillMount() {
 		PubSub.publish("UI.TITLE.RESET");
+		
+		//Load parameters from other mission
+		if(this.props.match.params.mid) {
+			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving information from source mission") });
+			
+			API.GetMissionDetails(this.props.match.params.mid)
+			.then(m => {
+				this.setState({
+					details: {
+						type: m.type,
+						theme: m.theme,
+						areaname: m.area.name,
+						fulldesc: m.description.full,
+						shortdesc: m.description.short
+					},
+					datasource: {
+						source: m.options.data.source,
+						options: m.options.data.options,
+						area: m.area.bbox
+					},
+					mission: m
+				});
+				
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+			})
+			.catch(e => {
+				console.error(e);
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission") });
+			});
+		}
 	}
 }
 

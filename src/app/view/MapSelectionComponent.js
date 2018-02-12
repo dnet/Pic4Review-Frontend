@@ -20,6 +20,25 @@ class MapSelectionComponent extends Component {
 		};
 	}
 	
+	/**
+	 * Restore eventual bounds from props
+	 * @private
+	 */
+	_boundsFromProps() {
+		//Restore previous area
+		if(this.props.area) {
+			//We recreate because it might be bounds from P4C
+			let bounds = Leaflet.latLngBounds([
+				this.props.area.getSouth(),
+				this.props.area.getWest() ], [
+				this.props.area.getNorth(),
+				this.props.area.getEast()
+			]);
+			
+			this._showBounds(bounds, false);
+		}
+	}
+	
 	_showBounds(bounds, notify) {
 		notify = notify !== false;
 		
@@ -51,9 +70,7 @@ class MapSelectionComponent extends Component {
 	
 	componentDidMount() {
 		//Restore previous area
-		if(this.props.area) {
-			this._showBounds(this.props.area, false);
-		}
+		this._boundsFromProps();
 		
 		//Enable select
 		this.refs.map.leafletElement.selectArea.enable();
@@ -70,6 +87,10 @@ class MapSelectionComponent extends Component {
 		this.refs.map.leafletElement.on("areaselected", e => {
 			this._showBounds(e.bounds);
 		});
+	}
+	
+	componentDidUpdate() {
+		this._boundsFromProps();
 	}
 	
 	componentWillUnmount() {

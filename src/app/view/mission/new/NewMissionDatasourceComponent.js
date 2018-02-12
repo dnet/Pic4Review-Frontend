@@ -50,6 +50,22 @@ class NewMissionDatasourceComponent extends Component {
 		this.setState(newstate);
 	}
 	
+	/**
+	 * Change base options at mount or update
+	 * @private
+	 */
+	_setDefaultOptions(props) {
+		if(props.data) {
+			const newstate = {
+				source: props.data.source,
+				area: props.data.area
+			};
+			newstate["options_"+props.data.source] = props.data.options;
+			
+			this.setState(newstate);
+		}
+	}
+	
 	render() {
 		const sources = [
 			{
@@ -89,15 +105,11 @@ class NewMissionDatasourceComponent extends Component {
 	}
 	
 	componentWillMount() {
-		if(this.props.data) {
-			const newstate = {
-				source: this.props.data.source,
-				area: this.props.data.area
-			};
-			newstate["options_"+this.props.data.source] = this.props.data.options;
-			
-			this.setState(newstate);
-		}
+		this._setDefaultOptions(this.props);
+	}
+	
+	componentWillReceiveProps(nextProps) {
+		this._setDefaultOptions(nextProps);
 	}
 }
 

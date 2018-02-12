@@ -22,6 +22,18 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 	}
 	
 	/**
+	 * Restore options from props
+	 * @private
+	 */
+	_restore(props) {
+		if(props.data && props.data.item !== this.state.selectedItem) {
+			this.setState({
+				selectedItem: props.data.item
+			});
+		}
+	}
+	
+	/**
 	 * Called when a value has changed
 	 * @private
 	 */
@@ -58,12 +70,12 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 		}
 	}
 	
+	componentWillReceiveProps(nextProps) {
+		this._restore(nextProps);
+	}
+	
 	componentWillMount() {
-		if(this.props.data) {
-			this.setState({
-				selectedItem: this.props.data.item
-			});
-		}
+		this._restore(this.props);
 	}
 	
 	componentDidMount() {

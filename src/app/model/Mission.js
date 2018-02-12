@@ -82,6 +82,10 @@ class Mission {
 			opts.date = options.lastedit;
 		}
 		
+		if(options.datatype) {
+			opts.data = { source: options.datatype, options: options.dataoptions };
+		}
+		
 		return new Mission(
 			options.id,
 			options.type,

@@ -65,7 +65,7 @@ class MissionComponent extends Component {
 		.then(m => this.setState({ mission: m }))
 		.catch(e => {
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: "Oops ! Can't get details of this mission" });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission") });
 		});
 	}
 	
