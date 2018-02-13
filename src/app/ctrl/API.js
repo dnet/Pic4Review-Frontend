@@ -119,14 +119,16 @@ class API {
 	 * @param {int} [page] The page number (starting and defaults to 1)
 	 * @param {string} [type] The mission type
 	 * @param {string} [theme] The mission theme
+	 * @param {string} [status] The mission status (online by default)
 	 * @return {Promise} A promise resolving on missions
 	 */
-	static GetMissions(page, type, theme) {
+	static GetMissions(page, type, theme, status) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				page: page,
 				type: type,
-				theme: theme
+				theme: theme,
+				status: status || "online"
 			};
 			
 			request(CONST.P4R_URL + '/missions' + this.ParamsString(p), (err, res, body) => {
@@ -142,7 +144,6 @@ class API {
 						}
 						else {
 							const missions = data.missions
-								.map(m => { m.status = "online"; return m; })
 								.map(m => Mission.CreateFromAPI(m));
 						
 							resolve(missions);

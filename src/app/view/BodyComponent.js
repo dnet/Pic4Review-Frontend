@@ -16,6 +16,7 @@ import Header from './HeaderComponent';
 import LoginDialog from './LoginDialogComponent';
 import Mission from './mission/MissionComponent';
 import Missions from './mission/MissionsComponent';
+import MissionsAdmin from './mission/MissionsAdminComponent';
 import MyStatistics from './MyStatisticsComponent';
 import NewMission from './mission/new/NewMissionComponent';
 import Statistics from './StatisticsComponent';
@@ -59,6 +60,7 @@ class BodyComponent extends Component {
 					<Route exact path='/mission/new/:mid' component={Authorize.For(NewMission)} />
 					<Route exact path='/mission/:mid' component={Mission} />
 					<Route exact path='/mission/:mid/:page' component={Authorize.For(Mission)} />
+					<Route exact path='/missions/admin' component={Authorize.For(MissionsAdmin)} />
 					<Route exact path='/my/statistics' component={Authorize.For(MyStatistics)} />
 					<Route exact path='/statistics' component={Statistics} />
 				</Switch>

@@ -92,7 +92,7 @@ class Mission {
 			options.theme,
 			{ name: options.areaname, bbox: bbox },
 			{ short: options.shortdesc, full: options.fulldesc },
-			options.status,
+			options.status || "online",
 			null,
 			opts
 		);

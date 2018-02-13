@@ -61,6 +61,7 @@ const config = {
 		contentBase: 'src/www', // Relative directory for base of server
 		hot: true, // Live-reload
 		inline: true,
+		watchContentBase: true,
 		port: 3000, // Port Number
 		host: 'localhost', // Change to '0.0.0.0' for external facing server
 	},

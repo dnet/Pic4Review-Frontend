@@ -14,7 +14,8 @@ class MissionsFiltersComponent extends Component {
 		
 		this.state = {
 			theme: null,
-			type: null
+			type: null,
+			status: null
 		};
 	}
 	
@@ -23,7 +24,7 @@ class MissionsFiltersComponent extends Component {
 	 * @private
 	 */
 	_toFilters(o) {
-		return { type: o.type || "", theme: o.theme || "" };
+		return { type: o.type || "", theme: o.theme || "", status: o.status || "" };
 	}
 	
 	render() {
@@ -59,6 +60,21 @@ class MissionsFiltersComponent extends Component {
 					)}
 				</Select>
 			</FormControl>
+			
+			{this.props.status && <FormControl style={styleControl}>
+				<InputLabel htmlFor="missions-filters-status">{I18n.t("Status")}</InputLabel>
+				<Select
+					native
+					value={this.state.status !== null ? this.state.status : this.props.values.status}
+					onChange={e => this.setState({ status: e.target.value })}
+					input={<Input id="missions-filters-status" />}
+				>
+					<option value="" />
+					{Object.entries(MISSION_STATUSES).map(e =>
+						<option key={e[0]} value={e[0]}>{e[1].name}</option>
+					)}
+				</Select>
+			</FormControl>}
 		</div>;
 	}
 	

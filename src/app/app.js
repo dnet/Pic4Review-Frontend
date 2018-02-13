@@ -149,6 +149,12 @@ class App {
 			nopics: { name: I18n.t("No pictures"), color: "grey", priority: 0 },
 			cantsee: { name: I18n.t("Can't see"), color: "red", priority: 3 }
 		};
+		
+		window.MISSION_STATUSES = {
+			"online": { name: I18n.t("Online") },
+			"draft": { name: I18n.t("Draft") },
+			"canceled": { name: I18n.t("Hidden") }
+		};
 	}
 	
 	/**
