@@ -78,10 +78,11 @@ class MissionsFiltersComponent extends Component {
 		</div>;
 	}
 	
-	componentDidUpdate(prevProps, prevState) {
-		const newFilters = this._toFilters(this.state);
-		const prevFilters = this._toFilters(prevState);
+	componentWillUpdate(nextProps, nextState) {
+		const prevFilters = this._toFilters(this.state);
+		const newFilters = this._toFilters(nextState);
 		
+		console.log("filters", prevFilters, newFilters);
 		if(Hash(newFilters) !== Hash(prevFilters)) {
 			this.props.onChange(newFilters);
 		}

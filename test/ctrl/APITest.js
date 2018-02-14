@@ -259,6 +259,7 @@ describe.skip("Ctrl > API", () => {
 		it("works", done => {
 			API.GetMissionNextFeature(midNext)
 			.then(f => {
+				assert.ok(f !== null);
 				f.status = "reviewed";
 				
 				API.UpdateMissionFeature(midNext, f, "user1", 1)
