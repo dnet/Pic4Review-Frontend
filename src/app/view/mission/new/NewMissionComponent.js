@@ -100,6 +100,22 @@ class NewMissionComponent extends Component {
 	}
 	
 	/**
+	 * Handler for datasource changes
+	 * @private
+	 */
+	_sourceChanged(d) {
+		const newState = { datasource: d };
+		
+		if(d.area.toBBoxString && d.area.toBBoxString() != this.state.datasource.area.toBBoxString()) {
+			const newDetails = Object.assign({}, this.state.details);
+			newDetails.areaname = "";
+			newState.details = newDetails;
+		}
+		
+		this.setState(newState);
+	}
+	
+	/**
 	 * Check data source parameters
 	 * @private
 	 */
@@ -222,7 +238,7 @@ class NewMissionComponent extends Component {
 		
 		switch(this.state.step) {
 			case 0:
-				content = <Datasource data={this.state.datasource} onChange={d => this.setState({ datasource: d })} onPreview={this._preview.bind(this)} />;
+				content = <Datasource data={this.state.datasource} onChange={d => this._sourceChanged(d)} onPreview={this._preview.bind(this)} />;
 				break;
 			
 			case 1:
