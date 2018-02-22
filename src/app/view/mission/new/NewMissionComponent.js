@@ -106,7 +106,14 @@ class NewMissionComponent extends Component {
 	_sourceChanged(d) {
 		const newState = { datasource: d };
 		
-		if(d.area.toBBoxString && d.area.toBBoxString() != this.state.datasource.area.toBBoxString()) {
+		if(
+			this.state.datasource
+			&& this.state.datasource.area
+			&& this.state.datasource.area.toBBoxString
+			&& d.area
+			&& d.area.toBBoxString
+			&& d.area.toBBoxString() != this.state.datasource.area.toBBoxString()
+		) {
 			const newDetails = Object.assign({}, this.state.details);
 			newDetails.areaname = "";
 			newState.details = newDetails;
@@ -304,6 +311,11 @@ class NewMissionComponent extends Component {
 			
 			API.GetMissionDetails(this.props.match.params.mid)
 			.then(m => {
+				//Remove previously retrieved GeoJSON data
+				if(m.options.data.options.geojson) {
+					delete m.options.data.options.geojson;
+				}
+				
 				this.setState({
 					details: {
 						type: m.type,

@@ -100,6 +100,44 @@ class MissionReviewComponent extends Component {
 	}
 	
 	/**
+	 * Switch to next available picture
+	 * @private
+	 */
+	_nextPic() {
+		if(
+			this.state.feature
+			&& this.state.feature.pictures
+			&& this.state.currentPictureId !== null
+		) {
+			if(this.state.currentPictureId === this.state.feature.pictures.length - 1) {
+				this.setState({ currentPictureId: 0 });
+			}
+			else {
+				this.setState({ currentPictureId: this.state.currentPictureId+1 });
+			}
+		}
+	}
+	
+	/**
+	 * Switch to previous available picture
+	 * @private
+	 */
+	_prevPic() {
+		if(
+			this.state.feature
+			&& this.state.feature.pictures
+			&& this.state.currentPictureId !== null
+		) {
+			if(this.state.currentPictureId === 0) {
+				this.setState({ currentPictureId: this.state.feature.pictures.length - 1 });
+			}
+			else {
+				this.setState({ currentPictureId: this.state.currentPictureId - 1 });
+			}
+		}
+	}
+	
+	/**
 	 * Edit the current feature status, and start retrieving next one
 	 * @private
 	 */
@@ -174,7 +212,12 @@ class MissionReviewComponent extends Component {
 							style={{marginBottom: 10}}
 						/>
 						
-						{this.state.feature.pictures && this.state.currentPictureId !== null ? <Picture picture={this.state.feature.pictures[this.state.currentPictureId]} /> : null}
+						{this.state.feature.pictures && this.state.currentPictureId !== null ?
+							<Picture
+								picture={this.state.feature.pictures[this.state.currentPictureId]}
+								onPrev={() => this._prevPic()}
+								onNext={() => this._nextPic()}
+							/> : null}
 					</Grid>
 				</Grid>
 				

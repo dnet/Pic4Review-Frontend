@@ -47,7 +47,7 @@ class MapSelectionComponent extends Component {
 			this.refs.map.leafletElement.removeLayer(this.lastSelect);
 		}
 		
-		this.lastSelect = Leaflet.rectangle(bounds, { color: "red" });
+		this.lastSelect = Leaflet.rectangle(bounds, { color: "red", interactive: false });
 		this.lastSelect.addTo(this.refs.map.leafletElement);
 		this.refs.map.leafletElement.fitBounds(bounds);
 		

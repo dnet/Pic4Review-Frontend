@@ -331,7 +331,12 @@ class API {
 			return this.QueryOverpass(q)
 			.then(geojson => {
 				const opts = Object.assign({}, options, { geojson: geojson });
-				return this.GetMissionPreview(area, source, opts);
+				if(geojson.features.length > 0) {
+					return this.GetMissionPreview(area, source, opts);
+				}
+				else {
+					return new Error("No features returned by this query in the given area");
+				}
 			});
 		}
 		else {

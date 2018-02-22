@@ -20,7 +20,7 @@ class MissionReviewTagsComponent extends Component {
 			</TableRow>;
 		});
 		
-		return <Paper><Table style={style}>
+		return <Paper style={{overflowX: "auto"}}><Table style={style}>
 			<TableHead>
 				<TableRow>
 					<TableCell>{I18n.t("Key")}</TableCell>
