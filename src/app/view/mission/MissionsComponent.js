@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import withWidth from 'material-ui/utils/withWidth';
+import { ChevronDown } from 'mdi-material-ui';
 import { CircularProgress } from 'material-ui/Progress';
 import { Link } from 'react-router-dom';
 import API from '../../ctrl/API';
+import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
 import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
 import MissionsFilters from './MissionsFiltersComponent';
@@ -98,6 +100,16 @@ class MissionsComponent extends Component {
 				<Grid item hidden={{only: "xs"}} sm={4} md={3} lg={2}>
 					<Typography variant="subheading">{I18n.t("Filters")}</Typography>
 					<MissionsFilters values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} />
+				</Grid>
+				<Grid item xs={12} hidden={{smUp: true}}>
+					<ExpansionPanel>
+						<ExpansionPanelSummary expandIcon={<ChevronDown />}>
+							<Typography variant="subheading">{I18n.t("Filters")}</Typography>
+						</ExpansionPanelSummary>
+						<ExpansionPanelDetails>
+							<MissionsFilters values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} />
+						</ExpansionPanelDetails>
+					</ExpansionPanel>
 				</Grid>
 				<Grid item xs={12} sm={8} md={9} lg={10}>
 					<Tabs

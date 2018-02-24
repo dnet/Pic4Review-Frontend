@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ChevronLeft, ChevronRight, InformationOutline, MagnifyPlusOutline } from 'mdi-material-ui';
 import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
+import Magnifier from 'react-magnifier';
 import Paper from 'material-ui/Paper';
 
 /**
@@ -14,6 +15,10 @@ class MissionReviewPictureComponent extends Component {
 	}
 	
 	render() {
+// 		<img
+// 		src={this.props.picture.pictureUrl}
+// 		style={{maxWidth: "100%"}}
+// 		/>
 		return <Paper>
 			<div>
 				<IconButton href={this.props.picture.detailsUrl} target="_blank">
@@ -43,10 +48,7 @@ class MissionReviewPictureComponent extends Component {
 						href={this.props.picture.pictureUrl}
 						target="_blank"
 					>
-						<img
-							src={this.props.picture.pictureUrl}
-							style={{maxWidth: "100%"}}
-						/>
+						<Magnifier src={this.props.picture.pictureUrl} zoomFactor={2.5} mgWidth={200} mgHeight={200} />
 					</a>
 				</Grid>
 				<Grid item xs={2} sm={1} style={{textAlign: "right"}}>
