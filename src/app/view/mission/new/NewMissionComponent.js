@@ -229,7 +229,7 @@ class NewMissionComponent extends Component {
 			}
 			else {
 				PubSub.publish("UI.MESSAGE.WAIT", { progress: loading });
-				setTimeout(() => this._updateCreation(mid, pictoken), 1000);
+				setTimeout(() => this._updateCreation(mid, pictoken), 2000);
 			}
 		})
 		.catch(e => {

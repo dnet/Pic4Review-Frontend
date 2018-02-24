@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import API from '../ctrl/API';
+import Grid from 'material-ui/Grid';
 import Themes from './MyStatisticsThemesComponent';
 import Time from './StatisticsTimeComponent';
 import { CircularProgress } from 'material-ui/Progress';
@@ -27,27 +28,46 @@ class MyStatisticsComponent extends Component {
 		if(this.props.user && this.state.stats) {
 			const style={marginTop: 10};
 			
-			content = <div>
-				<Typography variant="display1">{this.props.user.name}</Typography>
+			content = <Grid container>
+				<Grid item xs={12}>
+					<Typography variant="display1">{this.props.user.name}</Typography>
+				</Grid>
 				
-				<Typography variant="subheading" style={style}>
-					{I18n.t("Position in leaderboard")}
-				</Typography>
-				<Typography variant="body1">
-					{this.state.stats.place ? "#"+this.state.stats.place : I18n.t("Unknown, as you haven't contributed yet")}
-				</Typography>
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					<Typography variant="subheading" style={style}>
+						{I18n.t("Position in leaderboard")}
+					</Typography>
+					<Typography variant="body1">
+						{this.state.stats.place ? "#"+this.state.stats.place : I18n.t("Unknown, as you haven't contributed yet")}
+					</Typography>
+				</Grid>
 				
-				<Typography variant="subheading" style={style}>
-					{I18n.t("Features")}
-				</Typography>
-				<Typography variant="body1">
-					{I18n.t({one: "One object reviewed", other: "%{count} objects reviewed"}, {count: this.state.stats.featuresEdited})}
-				</Typography>
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					<Typography variant="subheading" style={style}>
+						{I18n.t("Features")}
+					</Typography>
+					<Typography variant="body1">
+						{I18n.t({one: "One object reviewed", other: "%{count} objects reviewed"}, {count: this.state.stats.featuresEdited})}
+					</Typography>
+				</Grid>
 				
-				<Themes data={this.state.stats.themes} height={300} style={style} />
+				<Grid item xs={12} sm={6} md={4} lg={3}>
+					<Typography variant="subheading" style={style}>
+						{I18n.t("Missions")}
+					</Typography>
+					<Typography variant="body1">
+						{I18n.t({one: "One mission created", other: "%{count} missions created"}, {count: this.state.stats.missionsCreated})}
+					</Typography>
+				</Grid>
 				
-				<Time data={this.state.stats.amountEdits} height={300} />
-			</div>;
+				<Grid item xs={12}>
+					<Time data={this.state.stats.amountEdits} height={300} />
+				</Grid>
+				
+				<Grid item xs={12}>
+					<Themes data={this.state.stats.themes} height={300} style={style} />
+				</Grid>
+			</Grid>;
 		}
 		//Wait for login or stats
 		else {

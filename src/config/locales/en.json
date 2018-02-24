@@ -41,6 +41,10 @@
       "one": "One object reviewed",
       "other": "%{count} objects reviewed"
     },
+    "count_missions_created_2ff76d6b": {
+      "one": "One mission created",
+      "other": "%{count} missions created"
+    },
     "oops_can_t_get_your_user_statistics_4f2d56b9": "Oops ! Can't get your user statistics",
     "contribution_themes_83a667a2": "Contribution themes",
     "next_40e12421": "Next",

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { FormControl } from 'material-ui/Form';
 import Hash from 'object-hash';
+import IconGridSelect from '../IconGridSelectComponent';
 import Input, { InputLabel } from 'material-ui/Input';
 import Select from 'material-ui/Select';
+import Typography from 'material-ui/Typography';
 
 /**
  * Missions filters component allows user to restrict the amount of missions to display.
@@ -31,35 +33,25 @@ class MissionsFiltersComponent extends Component {
 		const styleControl = { width: "100%", marginBottom: 20 };
 		
 		return <div>
-			<FormControl style={styleControl}>
-				<InputLabel htmlFor="missions-filters-theme">{I18n.t("Theme")}</InputLabel>
-				<Select
-					native
+			<div style={styleControl}>
+				<Typography variant="body1">{I18n.t("Theme")}</Typography>
+				<IconGridSelect
+					cols={3}
+					items={THEMES}
 					value={this.state.theme !== null ? this.state.theme : this.props.values.theme}
-					onChange={e => this.setState({ theme: e.target.value })}
-					input={<Input id="missions-filters-theme" />}
-				>
-					<option value="" />
-					{Object.entries(THEMES).map(e =>
-						<option key={e[0]} value={e[0]}>{e[1].name}</option>
-					)}
-				</Select>
-			</FormControl>
+					onChange={id => this.setState({ theme: id })}
+				/>
+			</div>
 			
-			<FormControl style={styleControl}>
-				<InputLabel htmlFor="missions-filters-type">{I18n.t("Type")}</InputLabel>
-				<Select
-					native
+			<div style={styleControl}>
+				<Typography variant="body1">{I18n.t("Type")}</Typography>
+				<IconGridSelect
+					cols={3}
+					items={TYPES}
 					value={this.state.type !== null ? this.state.type : this.props.values.type}
-					onChange={e => this.setState({ type: e.target.value })}
-					input={<Input id="missions-filters-type" />}
-				>
-					<option value="" />
-					{Object.entries(TYPES).map(e =>
-						<option key={e[0]} value={e[0]}>{e[1].name}</option>
-					)}
-				</Select>
-			</FormControl>
+					onChange={id => this.setState({ type: id })}
+				/>
+			</div>
 			
 			{this.props.status && <FormControl style={styleControl}>
 				<InputLabel htmlFor="missions-filters-status">{I18n.t("Status")}</InputLabel>
@@ -76,6 +68,12 @@ class MissionsFiltersComponent extends Component {
 				</Select>
 			</FormControl>}
 		</div>;
+	}
+	
+	componentWillMount() {
+		if(this.props.values) {
+			this.setState(this.props.values);
+		}
 	}
 	
 	componentWillUpdate(nextProps, nextState) {

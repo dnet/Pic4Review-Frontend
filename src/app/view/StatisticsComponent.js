@@ -4,6 +4,8 @@ import { CircularProgress } from 'material-ui/Progress';
 import Grid from 'material-ui/Grid';
 import MissingPictures from './MissingPicturesMapComponent';
 import UsersScore from './UsersScoreComponent';
+import Themes from './MyStatisticsThemesComponent';
+import Time from './StatisticsTimeComponent';
 import Typography from 'material-ui/Typography';
 
 /**
@@ -24,12 +26,18 @@ class StatisticsComponent extends Component {
 				<Typography variant="display1">{I18n.t("Statistics")}</Typography>
 				
 				<Grid container>
+					<Grid item xs={12}>
+						<Time data={this.state.stats.amountEdits} height={300} />
+					</Grid>
 					<Grid item xs={12} md={6}>
 						<UsersScore data={this.state.stats.scores} />
 					</Grid>
 					<Grid item xs={12} md={6}>
 						<Typography variant="subheading">{I18n.t("Last missing/bad pictures")}</Typography>
 						<MissingPictures style={{height: 400}} />
+					</Grid>
+					<Grid item xs={12} md={6}>
+						<Themes data={this.state.stats.themes} height={300} />
 					</Grid>
 				</Grid>
 			</div>;
