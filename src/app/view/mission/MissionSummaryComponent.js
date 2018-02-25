@@ -16,7 +16,7 @@ const dayOffset = d => {
  */
 class MissionSummaryComponent extends Component {
 	render() {
-		return <div>
+		return <div onClick={this.props.onClick ? this.props.onClick : () => {}}>
 			<Typography variant="headline" style={{verticalAlign: "middle"}}>
 				{this.props.mission.description.short}
 				

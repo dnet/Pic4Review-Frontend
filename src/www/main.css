@@ -23,3 +23,9 @@ span.p4r-legend > span {
 	height: 12px;
 	margin-right: 5px;
 }
+
+.limited-images img {
+	max-width: 600px;
+	max-height: 400px;
+	margin: 0 auto;
+}

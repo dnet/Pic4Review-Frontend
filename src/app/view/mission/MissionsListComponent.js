@@ -19,7 +19,7 @@ class MissionsListComponent extends Component {
 				return <Grid item key={i} xs={12} lg={6}>
 					<Card>
 						<CardContent>
-							<MissionSummary mission={m} />
+							<MissionSummary mission={m} onClick={() => this.props.history.push('/mission/'+m.id)} />
 						</CardContent>
 						<CardActions>
 							<MissionSummaryButtons mid={m.id} history={this.props.history} />

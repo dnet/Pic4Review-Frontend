@@ -184,9 +184,11 @@ class MissionReviewComponent extends Component {
 				<Progress mid={this.props.mission.id} />
 				<Grid container style={{marginTop: 10}}>
 					<Grid item xs={12} sm={4} lg={3}>
-						<Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width] }} />
-						<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
-						<Tags feature={this.state.feature} style={{marginTop: 10}} />
+						<Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }} />
+						<div className="limited-images" style={{overflow: "auto", maxHeight: 200, marginBottom: 10}}>
+							<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
+						</div>
+						<Tags feature={this.state.feature} />
 					</Grid>
 					<Grid item xs={12} sm={8} lg={9}>
 						<Grid container style={{marginBottom: 10}}>

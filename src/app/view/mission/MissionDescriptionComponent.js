@@ -55,7 +55,9 @@ class MissionDescriptionComponent extends Component {
 		
 		return <div style={this.props.style}>
 			<MissionSummary mission={this.props.mission} />
-			<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
+			<div className="limited-images">
+				<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
+			</div>
 			
 			{this.props.synthetic == false && <div>
 				{percentNoPics >= 20 &&
