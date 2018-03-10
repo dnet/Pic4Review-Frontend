@@ -75,7 +75,7 @@ class Mission {
 		}
 		
 		if(options.new && options.total) {
-			opts.stats = { "new": options.new, total: options.total };
+			opts.stats = { "new": options.new, completed: options.completed, total: options.total };
 		}
 		
 		if(options.lastedit) {

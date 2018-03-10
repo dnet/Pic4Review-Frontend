@@ -45,7 +45,7 @@ class MissionsMapComponent extends Component {
 			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			
 			{this.props.missions.features &&
-			<MarkerClusterGroup ref="featureslayer" options={{maxClusterRadius: 50}}>
+			<MarkerClusterGroup ref="featureslayer" maxClusterRadius={50}>
 				{this.props.missions.features.map((f,i) => {
 					const m = Mission.CreateFromAPI(f.properties);
 					

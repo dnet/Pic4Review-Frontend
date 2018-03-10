@@ -134,7 +134,7 @@
     "feature_status_fdd066b5": "Feature status",
     "details_98a31b68": "Details",
     "start_5a4cfcd6": "Start",
-    "pct_complete_nb_features_37210e0c": "%{pct} % complete (%{nb} features)",
+    "pct_complete_nb_features_nbno_without_pics_1049f161": "%{pct} % complete (%{nb} features + %{nbno} without pics)",
     "launched_count_days_ago_9491e760": {
       "zero": "Launched today",
       "one": "Launched yesterday",

@@ -25,7 +25,7 @@ class MissingPicturesMapComponent extends Component {
 		
 		return <Map ref="map" center={[this.state.lat, this.state.lng]} zoom={this.state.zoom} style={style}>
 			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
-			{this.state.pics && <MarkerClusterGroup options={{maxClusterRadius: 50}}>
+			{this.state.pics && <MarkerClusterGroup maxClusterRadius={50}>
 				<GeoJSON data={this.state.pics} />
 			</MarkerClusterGroup>}
 		</Map>;
