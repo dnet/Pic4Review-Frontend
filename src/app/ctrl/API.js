@@ -226,11 +226,15 @@ class API {
 	/**
 	 * Get mission details
 	 * @param {int} mid The mission ID
+	 * @param {string} [userid] The user ID (to check if can edit mission)
 	 * @return {Promise} A promise resolving on mission with its full details
 	 */
-	static GetMissionDetails(mid) {
+	static GetMissionDetails(mid, userid) {
 		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/' + mid, (err, res, body) => {
+			let url = CONST.P4R_URL + '/missions/' + mid;
+			if(userid) { url += "?userid="+userid; }
+			
+			request(url, (err, res, body) => {
 				if(err) {
 					reject(err);
 				}
@@ -242,6 +246,7 @@ class API {
 								reject(new Error(data.error));
 						}
 						else {
+							if(data.canEdit === true) { data.mission.canEdit = true; }
 							resolve(Mission.CreateFromAPI(data.mission));
 						}
 					}
@@ -511,8 +516,23 @@ class API {
 	 */
 	static UpdateMission(mission, username, userid) {
 		return new Promise((resolve, reject) => {
-			request.put(
-				CONST.P4R_URL + '/missions/' + mission.id + '?username='+username+'&userid='+userid+'&status='+mission.status,
+			const data = {
+				username: username,
+				userid: userid,
+				type: mission.type,
+				theme: mission.theme,
+				areaname: mission.area.name,
+				shortdesc: mission.description.short,
+				fulldesc: mission.description.full,
+				status: mission.status
+			};
+			
+			request(
+				{
+					method: 'PUT',
+					url: CONST.P4R_URL + '/missions/' + mission.id,
+					json: data
+				},
 				(err, res, body) => {
 					if(err) {
 						reject(err);

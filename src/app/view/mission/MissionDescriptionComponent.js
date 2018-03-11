@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import { CameraOff, ContentDuplicate, Play } from 'mdi-material-ui';
+import { CameraOff, ContentDuplicate, Pencil, Play } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
 import ExportMenu from './MissionDescriptionExportComponent';
@@ -52,6 +52,7 @@ class MissionDescriptionComponent extends Component {
 	
 	render() {
 		const percentNoPics = this.state.features ? this.state.features.filter(f => f.status === 'nopics').length / this.state.features.length * 100 : 0;
+		const btnStyle = {width: "100%"};
 		
 		return <div style={this.props.style}>
 			<MissionSummary mission={this.props.mission} />
@@ -66,37 +67,56 @@ class MissionDescriptionComponent extends Component {
 					</Typography>
 				}
 				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}}>
-					<Grid item>
+					<Grid item xs={12} sm={6} md={3}>
 						<Button
 							variant="raised"
 							color="primary"
 							component={Link}
 							to={'/mission/'+this.props.mission.id+'/review'}
+							style={btnStyle}
 						>
 							<Play />
 							{I18n.t("Start review")}
 						</Button>
 					</Grid>
 					
-					<Grid item>
+					<Grid item xs={12} sm={6} md={3}>
 						<Tooltip title={I18n.t("Download the position of features lacking pictures, in order to take some by yourself")}>
-							<Button variant="raised" onClick={e => this.setState({ openExport: true, exportAnchor: e.currentTarget})}>
+							<Button
+								variant="raised"
+								style={btnStyle}
+								onClick={e => this.setState({ openExport: true, exportAnchor: e.currentTarget})}
+							>
 								<CameraOff /> {I18n.t("Export missing pics")}
 							</Button>
 						</Tooltip>
 					</Grid>
 					
-					<Grid item>
+					<Grid item xs={12} sm={6} md={3}>
 						<Tooltip title={I18n.t("Create a new mission based on this one. Useful for working on same task elsewhere.")}>
 							<Button
 								variant="raised"
 								component={Link}
 								to={'/mission/new/'+this.props.mission.id}
+								style={btnStyle}
 							>
 								<ContentDuplicate /> {I18n.t("Duplicate mission")}
 							</Button>
 						</Tooltip>
 					</Grid>
+					
+					{this.props.mission.options.canEdit && <Grid item xs={12} sm={6} md={3}>
+						<Tooltip title={I18n.t("Change the description of this mission")}>
+							<Button
+								variant="raised"
+								component={Link}
+								to={'/mission/'+this.props.mission.id+'/edit'}
+								style={btnStyle}
+							>
+								<Pencil /> {I18n.t("Edit")}
+							</Button>
+						</Tooltip>
+					</Grid>}
 				</Grid>
 				
 				<MissionMap features={this.state.features} />

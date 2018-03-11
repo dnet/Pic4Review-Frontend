@@ -19,6 +19,8 @@ class MissionComponent extends Component {
 		this.state = {
 			mission: null
 		};
+		
+		this.psTokens = {};
 	}
 	
 	render() {
@@ -61,12 +63,15 @@ class MissionComponent extends Component {
 	}
 	
 	componentWillMount() {
-		API.GetMissionDetails(this.props.match.params.mid)
-		.then(m => this.setState({ mission: m }))
-		.catch(e => {
-			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission") });
+		this.psTokens.wantUser = PubSub.subscribe("USER.INFO.READY", (msg, data) => {
+			API.GetMissionDetails(this.props.match.params.mid, data.id !== -1 ? data.id : undefined)
+			.then(m => this.setState({ mission: m }))
+			.catch(e => {
+				console.error(e);
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission") });
+			});
 		});
+		setTimeout(() => PubSub.publish("USER.INFO.WANTS"), 1000);
 	}
 	
 	componentDidUpdate() {
@@ -75,6 +80,12 @@ class MissionComponent extends Component {
 		}
 		else {
 			PubSub.publish("UI.TITLE.RESET");
+		}
+	}
+	
+	componentWillUnmount() {
+		if(this.psTokens.wantUser) {
+			PubSub.unsubscribe(this.psTokens.wantUser);
 		}
 	}
 }

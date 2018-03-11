@@ -92,6 +92,8 @@ class Mission {
 			opts.data = { source: options.datatype, options: options.dataoptions };
 		}
 		
+		opts.canEdit = options.canEdit || false;
+		
 		return new Mission(
 			options.id,
 			options.type,

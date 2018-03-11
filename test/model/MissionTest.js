@@ -18,6 +18,7 @@ describe("Model > Mission", () => {
 			assert.equal(m1.area.name, AREA.name);
 			assert.equal(m1.status, "canceled");
 			assert.ok(m1.area.bbox.equals(AREA.bbox));
+			assert.ok(!m1.options.canEdit);
 		});
 		
 		it("doesn't allow rewrite type", () => {
@@ -120,7 +121,8 @@ describe("Model > Mission", () => {
 						[-1.7525876,48.1549705],
 						[-1.7525876,48.0769155]
 					]]
-				}
+				},
+				"canEdit": true
 			});
 			
 			assert.equal(m1.id, 1);
@@ -131,6 +133,7 @@ describe("Model > Mission", () => {
 			assert.ok(m1.description.full.startsWith("These toilets"));
 			assert.equal(m1.area.bbox.getSouth(), 48.0769155);
 			assert.equal(m1.status, "draft");
+			assert.ok(m1.options.canEdit);
 		});
 	});
 	

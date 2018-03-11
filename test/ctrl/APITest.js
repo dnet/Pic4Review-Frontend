@@ -48,6 +48,19 @@ describe.skip("Ctrl > API", () => {
 				done();
 			});
 		}).timeout(TIMEOUT);
+		
+		it("works with user ID", done => {
+			API.GetMissionDetails(1, 1)
+			.then(m => {
+				assert.ok(m instanceof Mission);
+				assert.ok(m.options.canEdit);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
 	});
 	
 	describe("GetMissions", () => {
@@ -300,10 +313,11 @@ describe.skip("Ctrl > API", () => {
 			.then(d => {
 				const mid = d.id;
 				assert.ok(mid > 0);
-				m.id = mid;
-				m.status = "online";
 				
-				API.UpdateMission(m, "user1", 1)
+				const mUp = new Mission(mid, "integrate", "amenity", AREA, DESC);
+				mUp.status = "online";
+				
+				API.UpdateMission(mUp, "user1", 1)
 				.then(() => {
 					done();
 				})

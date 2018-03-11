@@ -56,11 +56,11 @@ class MissionReviewComponent extends Component {
 		API.GetMissionNextFeature(this.props.mission.id)
 		.then(f => {
 			if(f !== null) {
-				this.setState({ feature: f, currentPictureId: (f.pictures.length > 0 ? 0 : null) });
+				this.setState({ feature: f, currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null) });
 				
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 				
-				if(f.pictures.length === 0) {
+				if(!f.pictures || f.pictures.length === 0) {
 					PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
 				}
 			}
