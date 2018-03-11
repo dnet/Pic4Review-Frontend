@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ContentDuplicate, Eye, EyeOff, Information } from 'mdi-material-ui';
+import { ContentDuplicate, Eye, EyeOff, Information, Pencil } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Filters from './MissionsFiltersComponent';
 import Grid from 'material-ui/Grid';
@@ -99,6 +99,13 @@ class MissionsAdminComponent extends Component {
 												target="_blank"
 											>
 												<ContentDuplicate />
+											</IconButton>
+											<IconButton
+												component={Link}
+												to={'/mission/'+m.id+'/edit'}
+												target="_blank"
+											>
+												<Pencil />
 											</IconButton>
 											{m.status === "online" &&
 											<IconButton onClick={() => this._setMissionStatus(m, "canceled")}>
