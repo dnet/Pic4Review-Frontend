@@ -16,6 +16,7 @@ class MissionReviewPictureComponent extends Component {
 	}
 	
 	render() {
+		const date = (new Date(this.props.picture.date)).toLocaleString();
 		return <Paper>
 			<div>
 				<Tooltip title={I18n.t("Picture details (and other pictures around)")}>
@@ -62,7 +63,7 @@ class MissionReviewPictureComponent extends Component {
 				</Grid>
 			</Grid>
 			<div style={{textAlign: "center", padding: 10}}>
-				{(new Date(this.props.picture.date)).toLocaleString()} - {this.props.picture.author} - { this.props.picture.provider }
+				{date} - {this.props.picture.author} - { this.props.picture.provider }
 			</div>
 		</Paper>;
 	}
