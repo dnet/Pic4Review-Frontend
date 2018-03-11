@@ -38,9 +38,9 @@ class MissionSummaryComponent extends Component {
 			{this.props.mission.options.stats && <Typography variant="caption">
 				{
 					I18n.t("%{pct} % complete (%{nb} features + %{nbno} without pics)", {
-						pct: Math.floor(this.props.mission.options.stats.completed / (this.props.mission.options.stats.new+this.props.mission.options.stats.completed)*100),
-						nb: this.props.mission.options.stats.new+this.props.mission.options.stats.completed,
-						nbno: this.props.mission.options.stats.total - this.props.mission.options.stats.completed - this.props.mission.options.stats.new
+						pct: this.props.mission.options.stats.completed,
+						nb: this.props.mission.options.stats.total - this.props.mission.options.stats.nopics,
+						nbno: this.props.mission.options.stats.nopics
 				})}
 				{this.props.mission.options.date && " - "+I18n.t({ zero: "Launched today", one: "Launched yesterday", other: "Launched %{count} days ago" }, { count: dayOffset(this.props.mission.options.date) })}
 			</Typography>}

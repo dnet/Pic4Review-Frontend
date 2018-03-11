@@ -74,8 +74,14 @@ class Mission {
 			bbox = new P4C.LatLngBounds(new P4C.LatLng(c[0][1], c[0][0]), new P4C.LatLng(c[2][1], c[2][0]));
 		}
 		
-		if(options.new && options.total) {
-			opts.stats = { "new": options.new, completed: options.completed, total: options.total };
+		if(options.total) {
+			opts.stats = {
+				"new": options.new,
+				completed: options.completed,
+				total: options.total,
+				nopics: options.nopics,
+				seen: options.seen
+			};
 		}
 		
 		if(options.lastedit) {

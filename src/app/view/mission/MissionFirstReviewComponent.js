@@ -11,6 +11,7 @@ class MissionFirstReviewComponent extends Component {
 		return <Dialog
 			open={this.props.open}
 			onClose={this.props.onClose}
+			onClick={this.props.onClose}
 		>
 			<DialogContent>
 				<Typography variant="headline">{I18n.t("Welcome !")}</Typography>
@@ -22,7 +23,7 @@ class MissionFirstReviewComponent extends Component {
 					<li>{I18n.t("When you have added or edited the feature in OpenStreetMap successfully, you can click on \"Done\"")}</li>
 					<li>{I18n.t("If you can't see the feature on pictures, don't try to add it on OSM, click on \"Can't see\" instead")}</li>
 					<li>{I18n.t("If you are not sure of what to do, click on \"Next\", someone else will review the feature")}</li>
-					<li>{I18n.t("Every time you edit a feature, you earn one point !")} <a href="https://upload.wikimedia.org/wikipedia/en/6/61/Pok%C3%A9mon_Theme_Song_-_Sample.ogg" target="_blank">Gotta Catch 'Em all</a></li>
+					<li>{I18n.t("Every time you edit a feature, you earn one point !")} <a href="https://upload.wikimedia.org/wikipedia/en/6/61/Pok%C3%A9mon_Theme_Song_-_Sample.ogg" target="_blank" onClick={e => e.stopPropagation()}>{I18n.t("Gotta Catch 'Em all")}</a></li>
 				</ul>
 				<Typography variant="body1">
 					{I18n.t("You're now ready to start ! Good luck 😉")}

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { ChevronLeft, ChevronRight, InformationOutline, MagnifyPlusOutline } from 'mdi-material-ui';
+import { ChevronLeft, ChevronRight, MapMarkerRadius, MagnifyPlusOutline } from 'mdi-material-ui';
 import Grid from 'material-ui/Grid';
 import IconButton from 'material-ui/IconButton';
 import Magnifier from 'react-magnifier';
 import Paper from 'material-ui/Paper';
+import Tooltip from 'material-ui/Tooltip';
 
 /**
  * Mission review picture component allows showing large picture to user.
@@ -15,18 +16,18 @@ class MissionReviewPictureComponent extends Component {
 	}
 	
 	render() {
-// 		<img
-// 		src={this.props.picture.pictureUrl}
-// 		style={{maxWidth: "100%"}}
-// 		/>
 		return <Paper>
 			<div>
-				<IconButton href={this.props.picture.detailsUrl} target="_blank">
-					<InformationOutline />
-				</IconButton>
-				<IconButton href={this.props.picture.pictureUrl} target="_blank">
-					<MagnifyPlusOutline />
-				</IconButton>
+				<Tooltip title={I18n.t("Picture details (and other pictures around)")}>
+					<IconButton href={this.props.picture.detailsUrl} target="_blank">
+						<MapMarkerRadius />
+					</IconButton>
+				</Tooltip>
+				<Tooltip title={I18n.t("Zoom in (opens in new tab)")}>
+					<IconButton href={this.props.picture.pictureUrl} target="_blank">
+						<MagnifyPlusOutline />
+					</IconButton>
+				</Tooltip>
 			</div>
 			<Grid
 				container
