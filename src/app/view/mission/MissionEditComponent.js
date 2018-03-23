@@ -32,7 +32,10 @@ class MissionEditComponent extends Component {
 					this.state.details.type,
 					this.state.details.theme,
 					{ name: this.state.details.areaname, bbox: this.state.mission.area.bbox },
-					{ full: this.state.details.fulldesc, short: this.state.details.shortdesc }
+					{ full: this.state.details.fulldesc, short: this.state.details.shortdesc },
+					this.state.mission.status,
+					this.state.mission.features,
+					this.state.mission.options
 				);
 				
 				PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is updated.") });

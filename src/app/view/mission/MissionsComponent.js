@@ -139,7 +139,14 @@ class MissionsComponent extends Component {
 			|| Hash(nextState.currentFilters) !== Hash(this.state.currentFilters)
 			|| this.state.page !== nextState.page
 		) {
-			this._fetchMissions(nextState);
+			const newState = Object.assign({}, nextState);
+			
+			if(Hash(nextState.currentFilters) !== Hash(this.state.currentFilters)) {
+				newState.page = 1;
+				this.setState({ page: 1 });
+			}
+			
+			this._fetchMissions(newState);
 		}
 	}
 }

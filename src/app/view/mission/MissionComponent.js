@@ -64,7 +64,7 @@ class MissionComponent extends Component {
 	
 	componentWillMount() {
 		this.psTokens.wantUser = PubSub.subscribe("USER.INFO.READY", (msg, data) => {
-			API.GetMissionDetails(this.props.match.params.mid, data.id !== -1 ? data.id : undefined)
+			API.GetMissionDetails(this.props.match.params.mid, data && data.id !== -1 ? data.id : undefined)
 			.then(m => this.setState({ mission: m }))
 			.catch(e => {
 				console.error(e);
