@@ -49,11 +49,14 @@ class MissionReviewComponent extends Component {
 	 * Start looking for next feature
 	 * @private
 	 */
-	_next() {
+	_next(wasSkipped) {
+		wasSkipped = wasSkipped || false;
+		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
+		
 		this.setState({ feature: null, currentPictureId: null, prevFeature: this.state.feature });
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
-		API.GetMissionNextFeature(this.props.mission.id)
+		API.GetMissionNextFeature(this.props.mission.id, prevCoords)
 		.then(f => {
 			if(f !== null) {
 				this.setState({ feature: f, currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null) });
@@ -173,7 +176,7 @@ class MissionReviewComponent extends Component {
 		else {
 			const buttons = [
 				{ icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
-				{ icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next() },
+				{ icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next(true) },
 				{ spacing: true },
 				{ icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
 				{ color: "primary", icon: <Check />, label: I18n.t("Done"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },

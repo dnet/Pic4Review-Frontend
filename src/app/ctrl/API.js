@@ -261,11 +261,15 @@ class API {
 	/**
 	 * Get mission next feature
 	 * @param {int} mid The mission ID
+	 * @param {float[]} [coordinates] The coordinates to search around
 	 * @return {Promise} A promise resolving on next feature, or null if no more available
 	 */
-	static GetMissionNextFeature(mid) {
+	static GetMissionNextFeature(mid, coordinates) {
 		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/' + mid + '/features/next', (err, res, body) => {
+			let url = CONST.P4R_URL + '/missions/' + mid + '/features/next';
+			if(coordinates) { url += this.ParamsString({ lat: coordinates[0], lng: coordinates[1] }); }
+			
+			request(url, (err, res, body) => {
 				if(err) {
 					reject(err);
 				}
