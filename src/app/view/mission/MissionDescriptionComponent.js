@@ -66,7 +66,7 @@ class MissionDescriptionComponent extends Component {
 						{I18n.t("Hey ! This mission is missing a lot of pictures (%{cnt}% of the features). If you have some time and live near this area, you should consider going out and take some pictures. You can export the list of features without pictures using the button below.", { cnt: Math.round(percentNoPics) })}
 					</Typography>
 				}
-				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}}>
+				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}} spacing={16}>
 					<Grid item xs={12} sm={6} md={3}>
 						<Button
 							variant="raised"
@@ -81,7 +81,7 @@ class MissionDescriptionComponent extends Component {
 					</Grid>
 					
 					<Grid item xs={12} sm={6} md={3}>
-						<Tooltip title={I18n.t("Download the position of features lacking pictures, in order to take some by yourself")}>
+						<Tooltip title={I18n.t("Download the position of features lacking pictures, in order to take some by yourself")} style={btnStyle}>
 							<Button
 								variant="raised"
 								style={btnStyle}
@@ -93,7 +93,7 @@ class MissionDescriptionComponent extends Component {
 					</Grid>
 					
 					<Grid item xs={12} sm={6} md={3}>
-						<Tooltip title={I18n.t("Create a new mission based on this one. Useful for working on same task elsewhere.")}>
+						<Tooltip title={I18n.t("Create a new mission based on this one. Useful for working on same task elsewhere.")} style={btnStyle}>
 							<Button
 								variant="raised"
 								component={Link}
@@ -106,7 +106,7 @@ class MissionDescriptionComponent extends Component {
 					</Grid>
 					
 					{this.props.mission.options.canEdit && <Grid item xs={12} sm={6} md={3}>
-						<Tooltip title={I18n.t("Change the description of this mission")}>
+						<Tooltip title={I18n.t("Change the description of this mission")} style={btnStyle}>
 							<Button
 								variant="raised"
 								component={Link}

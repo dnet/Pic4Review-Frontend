@@ -96,7 +96,7 @@ class MissionsComponent extends Component {
 		}
 		
 		return <div style={this.props.style}>
-			<Grid container>
+			<Grid container spacing={16}>
 				<Grid item hidden={{only: "xs"}} sm={4} md={3} lg={2}>
 					<Typography variant="subheading">{I18n.t("Filters")}</Typography>
 					<MissionsFilters values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} />

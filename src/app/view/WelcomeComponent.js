@@ -14,7 +14,7 @@ class WelcomeComponent extends Component {
 		const stylePics = { height: 128, width: 128 };
 		
 		return <div style={styleContainer}>
-			<Grid container style={{marginBottom: 10}}>
+			<Grid container spacing={16} style={{marginBottom: 10}}>
 				<Grid item xs={12} sm={4}>
 					<img src="images/logo.512.png" style={stylePics} />
 					<Typography variant="title">

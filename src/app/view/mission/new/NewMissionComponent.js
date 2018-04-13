@@ -281,7 +281,7 @@ class NewMissionComponent extends Component {
 			
 			{content}
 			
-			<Grid container alignItems="center" direction="row" justify="flex-end">
+			<Grid container alignItems="center" direction="row" justify="flex-end" spacing={16}>
 				<Grid item>
 					<Button variant="raised" disabled={this.state.step === 0} onClick={() => this._prev()}>
 						{I18n.t("Back")}

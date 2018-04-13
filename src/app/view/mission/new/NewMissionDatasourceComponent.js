@@ -80,7 +80,7 @@ class NewMissionDatasourceComponent extends Component {
 			}
 		];
 		
-		return <Grid container>
+		return <Grid container spacing={16}>
 			<Grid item xs={12} sm={6} lg={4}>
 				<MapSelection style={{height: 300}} area={this.state.area} onChange={e => this._changeArea(e)} />
 			</Grid>

@@ -33,7 +33,7 @@ class IconGridSelectComponent extends Component {
 	}
 	
 	render() {
-		return <Grid container>
+		return <Grid container spacing={16}>
 			{Object.entries(this.props.items).map(e => {
 				return <Grid item xs={Math.ceil(12/this.props.cols)} key={e[0]} style={{textAlign: "center"}}>
 					<Tooltip title={e[1].name}>

@@ -60,7 +60,7 @@ class MissionsAdminComponent extends Component {
 	
 	render() {
 		if(this.props.user && this.state.missions) {
-			return <Grid container>
+			return <Grid container spacing={16}>
 				<Grid item hidden={{smDown: true}} md={3} lg={2}>
 					<Filters values={this.state.currentFilters} status={true} onChange={d => this.setState({ currentFilters: d })} />
 				</Grid>

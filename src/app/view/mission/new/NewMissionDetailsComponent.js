@@ -47,7 +47,7 @@ class NewMissionDetailsComponent extends Component {
 			<Typography variant="subheading">{I18n.t("General")}</Typography>
 			<Typography variant="caption">{I18n.t("All fields below are mandatory, in order to make your mission easy to understand for contributors.")}</Typography>
 			
-			<Grid container style={{marginBottom: 10}}>
+			<Grid container spacing={16} style={{marginBottom: 10}}>
 				<Grid item xs={12} sm={6} md={3}>
 					<TextField
 						id="mission-new-shortdesc"

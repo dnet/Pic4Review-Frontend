@@ -182,7 +182,7 @@ class MissionReviewComponent extends Component {
 			
 			return <div style={this.props.style}>
 				<Progress mid={this.props.mission.id} />
-				<Grid container style={{marginTop: 10}}>
+				<Grid container spacing={16}>
 					<Grid item xs={12} sm={4} lg={3}>
 						<Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }} />
 						<div className="limited-images" style={{overflow: "auto", maxHeight: 200, marginBottom: 10}}>
@@ -191,12 +191,12 @@ class MissionReviewComponent extends Component {
 						<Tags feature={this.state.feature} />
 					</Grid>
 					<Grid item xs={12} sm={8} lg={9}>
-						<Grid container style={{marginBottom: 10}}>
+						<Grid container spacing={16} style={{marginBottom: 10}}>
 							{buttons.map((b,i) => {
 								if(b.spacing) { return <Grid item xs={6} sm={4} lg={2} key={i}></Grid>; }
 								else {
 									return <Grid item xs={6} sm={4} lg={2} key={i}>
-										<Tooltip title={b.tip}>
+										<Tooltip title={b.tip} style={{width:"100%"}}>
 											<Button variant="raised" color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
 												{b.icon}
 												{b.label}

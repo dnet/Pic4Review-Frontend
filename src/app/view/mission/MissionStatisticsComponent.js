@@ -22,7 +22,7 @@ class MissionStatisticsComponent extends Component {
 		let content = null;
 		
 		if(this.state.stats) {
-			content = <Grid container>
+			content = <Grid container spacing={16}>
 				<Grid item xs={12} md={7} lg={8} xl={9}>
 					<Time data={this.state.stats.days} height={300} />
 				</Grid>

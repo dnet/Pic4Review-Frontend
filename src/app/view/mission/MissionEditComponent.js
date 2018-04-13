@@ -106,7 +106,7 @@ class MissionEditComponent extends Component {
 			return <div>
 				<Typography variant="display1">{I18n.t("Edit")}</Typography>
 				<Details data={this.state.details} onChange={d => this.setState({ details: d })} />
-				<Grid container alignItems="center" direction="row" justify="flex-end">
+				<Grid container alignItems="center" direction="row" justify="flex-end" spacing={16}>
 					<Grid item>
 						<Button variant="raised" color="primary" onClick={() => this._save()}>
 							{I18n.t("Save")}
