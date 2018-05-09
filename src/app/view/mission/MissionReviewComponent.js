@@ -9,13 +9,12 @@ import Editors from './MissionReviewEditorsComponent';
 import First from './MissionFirstReviewComponent';
 import Gallery from './MissionReviewGalleryComponent';
 import Grid from 'material-ui/Grid';
+import Hidden from 'material-ui/Hidden';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
 import Paper from 'material-ui/Paper';
 import Picture from './MissionReviewPictureComponent';
-import Progress from './MissionReviewProgressComponent';
 import Markdown from 'react-markdown';
-import Tags from './MissionReviewTagsComponent';
 import Tooltip from 'material-ui/Tooltip';
 
 const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
@@ -174,55 +173,78 @@ class MissionReviewComponent extends Component {
 			return <div style={style}></div>;
 		}
 		else {
-			const buttons = [
-				{ icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
-				{ icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next(true) },
-				{ spacing: true },
-				{ icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
-				{ color: "primary", icon: <Check />, label: I18n.t("Done"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
-				{ color: "secondary", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
-			];
+			const buttons = {
+				prev: { icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
+				next: { icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next(true) },
+				edit: { icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
+				done: { color: "primary", icon: <Check />, label: I18n.t("Done"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
+				cantsee: { color: "secondary", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
+			};
+			
+			const createBtn = (btn, s, text) => {
+				const b = buttons[btn];
+				text = text === undefined ? true : text;
+				return <Grid item xs={s} key={btn}>
+					<Tooltip title={b.tip} style={{width:"100%"}}>
+						<Button variant="raised" color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
+							{b.icon}
+							{text && b.label}
+						</Button>
+					</Tooltip>
+				</Grid>;
+			};
+			
+			const map = <Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }} />;
+			const instructions = <div className="limited-images" style={{overflow: "auto", maxHeight: BANNER_HEIGHT[this.props.width], marginBottom: 10}}>
+									<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
+								</div>;
 			
 			return <div style={this.props.style}>
-				<Progress mid={this.props.mission.id} />
-				<Grid container spacing={16}>
-					<Grid item xs={12} sm={4} lg={3}>
-						<Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }} />
-						<div className="limited-images" style={{overflow: "auto", maxHeight: 200, marginBottom: 10}}>
-							<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
-						</div>
-						<Tags feature={this.state.feature} />
-					</Grid>
-					<Grid item xs={12} sm={8} lg={9}>
-						<Grid container spacing={16} style={{marginBottom: 10}}>
-							{buttons.map((b,i) => {
-								if(b.spacing) { return <Grid item xs={6} sm={4} lg={2} key={i}></Grid>; }
-								else {
-									return <Grid item xs={6} sm={4} lg={2} key={i}>
-										<Tooltip title={b.tip} style={{width:"100%"}}>
-											<Button variant="raised" color={b.color || "default"} onClick={b.click} style={{width:"100%", height:"100%" }}>
-												{b.icon}
-												{b.label}
-											</Button>
-										</Tooltip>
-									</Grid>;
-								}
-							})}
+				<Grid container spacing={8}>
+					<Grid item xs={12} sm={6} lg={5} xl={4}>
+						<p>QUESTION À RÉPONDRE !!!</p>
+						
+						<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
+							{createBtn("prev", 2, false)}
+							{createBtn("next", 2, false)}
+							{createBtn("edit", 2, false)}
+							{createBtn("done", 3)}
+							{createBtn("cantsee", 3)}
 						</Grid>
 						
-						<Gallery
-							pictures={this.state.feature.pictures}
-							cols={IMG_COLS[this.props.width]}
-							height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)}
-							style={{marginBottom: 10}}
-						/>
+						<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 10}}>
+							{createBtn("done", 6)}
+							{createBtn("cantsee", 6)}
+							{createBtn("prev", 6)}
+							{createBtn("next", 6)}
+						</Grid>
 						
+						<Grid container spacing={8}>
+							<Grid item hidden={{ only: "xs" }} sm={6}>{map}</Grid>
+							<Grid item hidden={{ only: "xs" }} sm={6}>{instructions}</Grid>
+						</Grid>
+					</Grid>
+					
+					<Grid item xs={12} sm={6} lg={7} xl={8}>
 						{this.state.feature.pictures && this.state.currentPictureId !== null ?
 							<Picture
 								picture={this.state.feature.pictures[this.state.currentPictureId]}
 								onPrev={() => this._prevPic()}
 								onNext={() => this._nextPic()}
 							/> : null}
+						
+						{this.state.feature.pictures && this.state.feature.pictures.length > 1 &&
+							<Gallery
+								pictures={this.state.feature.pictures}
+								cols={IMG_COLS[this.props.width]}
+								height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)}
+								style={{marginBottom: 10}}
+							/>}
+					</Grid>
+					
+					<Grid item xs={12} hidden={{ smUp: true }}>
+						{map}
+						{instructions}
 					</Grid>
 				</Grid>
 				
