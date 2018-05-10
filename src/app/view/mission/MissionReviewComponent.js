@@ -12,9 +12,10 @@ import Grid from 'material-ui/Grid';
 import Hidden from 'material-ui/Hidden';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
+import Markdown from 'react-markdown';
 import Paper from 'material-ui/Paper';
 import Picture from './MissionReviewPictureComponent';
-import Markdown from 'react-markdown';
+import Question from './MissionReviewQuestionComponent';
 import Tooltip from 'material-ui/Tooltip';
 
 const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
@@ -177,7 +178,7 @@ class MissionReviewComponent extends Component {
 				prev: { icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
 				next: { icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next(true) },
 				edit: { icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
-				done: { color: "primary", icon: <Check />, label: I18n.t("Done"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
+				done: { color: "primary", icon: <Check />, label: I18n.t("Validate"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
 				cantsee: { color: "secondary", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
 			};
 			
@@ -202,7 +203,7 @@ class MissionReviewComponent extends Component {
 			return <div style={this.props.style}>
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
-						<p>QUESTION À RÉPONDRE !!!</p>
+						<Question onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })} />
 						
 						<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
 							{createBtn("prev", 2, false)}
@@ -234,17 +235,17 @@ class MissionReviewComponent extends Component {
 							/> : null}
 						
 						{this.state.feature.pictures && this.state.feature.pictures.length > 1 &&
-							<Gallery
+							<Hidden only="xs"><Gallery
 								pictures={this.state.feature.pictures}
 								cols={IMG_COLS[this.props.width]}
 								height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)}
 								style={{marginBottom: 10}}
-							/>}
+							/></Hidden>}
 					</Grid>
 					
 					<Grid item xs={12} hidden={{ smUp: true }}>
 						{map}
-						{instructions}
+						<Hidden only="xs">{instructions}</Hidden>
 					</Grid>
 				</Grid>
 				
