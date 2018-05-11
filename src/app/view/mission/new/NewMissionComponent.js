@@ -2,16 +2,19 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import API from '../../../ctrl/API';
 import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import MapSelection from '../../MapSelectionComponent';
 import Datasource from './NewMissionDatasourceComponent';
 import Details from './NewMissionDetailsComponent';
+import Editors from './NewMissionEditorsComponent';
+import Grid from 'material-ui/Grid';
+import MapSelection from '../../MapSelectionComponent';
 import Mission from '../../../model/Mission';
 import MissionDescription from '../MissionDescriptionComponent';
 import Paper from 'material-ui/Paper';
 import Preview from './NewMissionPreviewComponent';
 import Stepper, { Step, StepLabel } from 'material-ui/Stepper';
 import Typography from 'material-ui/Typography';
+
+const STEPS = { "datasource": 0, "details": 1, "editors": 2, "publish": 3 };
 
 /**
  * New mission component allows to create new missions.
@@ -21,11 +24,12 @@ class NewMissionComponent extends Component {
 		super();
 		
 		this.state = {
-			step: 0,
+			step: STEPS.editors,//datasource,
 			datasource: null,
 			previewOpen: false,
 			details: null,
-			mission: null
+			mission: null,
+			editors: null
 		};
 	}
 	
@@ -34,12 +38,12 @@ class NewMissionComponent extends Component {
 	 * @private
 	 */
 	_next() {
-		if(this.state.step === 0) {
+		if(this.state.step === STEPS.datasource) {
 			if(this._checkDatasource()) {
-				this.setState({ step: 1 });
+				this.setState({ step: STEPS.details });
 			}
 		}
-		else if(this.state.step === 1) {
+		else if(this.state.step === STEPS.details) {
 			if(this._checkDetails()) {
 				//Try to create mission object
 				try {
@@ -51,7 +55,7 @@ class NewMissionComponent extends Component {
 						{ full: this.state.details.fulldesc, short: this.state.details.shortdesc }
 					);
 					
-					this.setState({ mission: m, step: 2 });
+					this.setState({ mission: m, step: STEPS.editors });
 				}
 				catch(e) {
 					console.error(e);
@@ -59,7 +63,11 @@ class NewMissionComponent extends Component {
 				}
 			}
 		}
-		else if(this.state.step === 2) {
+		else if(this.state.step === STEPS.editors) {
+			//TODO
+			this.setState({ step: STEPS.publish });
+		}
+		else if(this.state.step === STEPS.publish) {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is created, it can take a few minutes.") });
 			
 			API.CreateMission(
@@ -244,15 +252,19 @@ class NewMissionComponent extends Component {
 		let content = null;
 		
 		switch(this.state.step) {
-			case 0:
+			case STEPS.datasource:
 				content = <Datasource data={this.state.datasource} onChange={d => this._sourceChanged(d)} onPreview={this._preview.bind(this)} />;
 				break;
 			
-			case 1:
+			case STEPS.details:
 				content = <Details data={this.state.details} datasource={this.state.datasource} onChange={d => this.setState({ details: d })} />;
 				break;
 			
-			case 2:
+			case STEPS.editors:
+				content = <Editors data={this.state.editors} onChange={d => this.setState({ editors: d })} />;
+				break;
+			
+			case STEPS.publish:
 				content = <div>
 					<Typography variant="subheading">{I18n.t("Summary")}</Typography>
 					<Typography variant="caption">
@@ -275,7 +287,10 @@ class NewMissionComponent extends Component {
 					<StepLabel>{I18n.t("Mission details")}</StepLabel>
 				</Step>
 				<Step>
-					<StepLabel>{I18n.t("Publish")}</StepLabel>
+					<StepLabel>{I18n.t("Editor setup")}</StepLabel>
+				</Step>
+				<Step>
+					<StepLabel>{I18n.t("Publishing")}</StepLabel>
 				</Step>
 			</Stepper>
 			
@@ -283,13 +298,13 @@ class NewMissionComponent extends Component {
 			
 			<Grid container alignItems="center" direction="row" justify="flex-end" spacing={16}>
 				<Grid item>
-					<Button variant="raised" disabled={this.state.step === 0} onClick={() => this._prev()}>
+					<Button variant="raised" disabled={this.state.step === STEPS.datasource} onClick={() => this._prev()}>
 						{I18n.t("Back")}
 					</Button>
 				</Grid>
 				<Grid item>
 					<Button variant="raised" color="primary" onClick={() => this._next()}>
-						{this.state.step === 2 ? I18n.t("Publish") : I18n.t("Next")}
+						{this.state.step === STEPS.publish ? I18n.t("Publish") : I18n.t("Next")}
 					</Button>
 				</Grid>
 			</Grid>

@@ -24,8 +24,8 @@ class MissionReviewQuestionComponent extends Component {
 	
 	render() {
 		const question = {
-			label: "À quoi ressemble l'équipement incendie ?",
-			hasImages: true,
+			question: "À quoi ressemble l'équipement incendie ?",
+			type: "images",
 			answers: [
 				{ label: "Borne", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Downtown_Charlottesville_fire_hydrant_1.jpg/150px-Downtown_Charlottesville_fire_hydrant_1.jpg" },
 				{ label: "Plaque", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Berlin_hydrant_20050211_p1000517.jpg/200px-Berlin_hydrant_20050211_p1000517.jpg" },
@@ -34,10 +34,10 @@ class MissionReviewQuestionComponent extends Component {
 			]
 		};
 		
-		if(question) {
+		if(question && question.type) {
 			let content = null;
 			
-			if(question.hasImages) {
+			if(question.type === "images") {
 				content = <GridList cols={Math.min(IMG_COLS[this.props.width], question.answers.length)} style={{ flexWrap: "nowrap", marginTop: 10 }}>
 					{question.answers.map(answer => {
 						const onClick = () => {this.setState({ selectedAnswer: answer.label })};
@@ -57,7 +57,7 @@ class MissionReviewQuestionComponent extends Component {
 					})}
 				</GridList>;
 			}
-			else {
+			else if(question.type === "choice") {
 				content = <RadioGroup
 						row
 						aria-label="answer"
@@ -73,7 +73,7 @@ class MissionReviewQuestionComponent extends Component {
 			}
 			
 			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: 20 }}>
-				<Typography variant="headline">{question.label}</Typography>
+				<Typography variant="headline">{question.question}</Typography>
 				{content}
 			</div>;
 		}
