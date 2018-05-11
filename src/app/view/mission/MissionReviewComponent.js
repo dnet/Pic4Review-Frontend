@@ -7,18 +7,17 @@ import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
 import Editors from './MissionReviewEditorsComponent';
 import First from './MissionFirstReviewComponent';
-import Gallery from './MissionReviewGalleryComponent';
+import Gallery2 from './MissionReviewGallery2Component';
 import Grid from 'material-ui/Grid';
 import Hidden from 'material-ui/Hidden';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
 import Markdown from 'react-markdown';
 import Paper from 'material-ui/Paper';
-import Picture from './MissionReviewPictureComponent';
 import Question from './MissionReviewQuestionComponent';
 import Tooltip from 'material-ui/Tooltip';
 
-const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
+const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 const NOT_FIRST_REVIEW = "no1st";
 
@@ -227,20 +226,12 @@ class MissionReviewComponent extends Component {
 					</Grid>
 					
 					<Grid item xs={12} sm={6} lg={7} xl={8}>
-						{this.state.feature.pictures && this.state.currentPictureId !== null ?
-							<Picture
-								picture={this.state.feature.pictures[this.state.currentPictureId]}
-								onPrev={() => this._prevPic()}
-								onNext={() => this._nextPic()}
-							/> : null}
-						
-						{this.state.feature.pictures && this.state.feature.pictures.length > 1 &&
-							<Hidden only="xs"><Gallery
+						{this.state.feature.pictures &&
+							<Gallery2
 								pictures={this.state.feature.pictures}
-								cols={IMG_COLS[this.props.width]}
-								height={Math.floor(BANNER_HEIGHT[this.props.width]*0.75)}
+								height={PICTURE_HEIGHT[this.props.width]}
 								style={{marginBottom: 10}}
-							/></Hidden>}
+							/>}
 					</Grid>
 					
 					<Grid item xs={12} hidden={{ smUp: true }}>
