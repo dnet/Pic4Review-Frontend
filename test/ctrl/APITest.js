@@ -177,7 +177,7 @@ describe.skip("Ctrl > API", () => {
 		it("works if properly described", done => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
-			API.CreateMission(m, "osmose", { item: 8180, amount: 1 }, "user1", 1)
+			API.CreateMission(m, "osmose", { item: 8180, amount: 1 }, null, "user1", 1)
 			.then(d => {
 				const mid = d.id;
 				pictoken = d.pictoken;
@@ -209,7 +209,7 @@ describe.skip("Ctrl > API", () => {
 		it("works for overpass", done => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
-			API.CreateMission(m, "overpass", { query: '[out:json][timeout:25];(way["station"="subway"]({{bbox}}););out center;' }, "user1", 1)
+			API.CreateMission(m, "overpass", { query: '[out:json][timeout:25];(way["station"="subway"]({{bbox}}););out center;' }, null, "user1", 1)
 			.then(d => {
 				const mid = d.id;
 				assert.ok(mid > 0);

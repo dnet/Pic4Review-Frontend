@@ -3,6 +3,7 @@ import { ChevronDown, PlusCircle } from 'mdi-material-ui';
 import Chip from 'material-ui/Chip';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import Grid from 'material-ui/Grid';
+import Hash from 'object-hash';
 import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
 import SingleChoiceAnswerDialog from './NewMissionEditorsSingleChoiceAnswerDialogComponent';
@@ -19,17 +20,12 @@ class NewMissionEditorsComponent extends Component {
 		
 		this.state = {
 			editor: "singlechoice",
-			singleChoiceAnswerDialogOpen: true,
+			singleChoiceAnswerDialogOpen: false,
+			singleChoiceAnswerDialogEdit: null,
 			data: {
 				singlechoice: {
-					question: "À quoi ressemble l'équipement incendie ?",
-					type: "images",
-					answers: [
-						{ label: "Borne", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Downtown_Charlottesville_fire_hydrant_1.jpg/150px-Downtown_Charlottesville_fire_hydrant_1.jpg" },
-						{ label: "Plaque", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Berlin_hydrant_20050211_p1000517.jpg/200px-Berlin_hydrant_20050211_p1000517.jpg" },
-						{ label: "Tuyau", image: "https://wiki.openstreetmap.org/w/images/thumb/3/33/Hydrants_20130326_112938.JPG/150px-Hydrants_20130326_112938.JPG" },
-						{ label: "Mural", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Guentherscheid_Tunnel_Rescue4.jpg/225px-Guentherscheid_Tunnel_Rescue4.jpg" }
-					]
+					question: "",
+					answers: []
 				}
 			}
 		};
@@ -40,11 +36,40 @@ class NewMissionEditorsComponent extends Component {
 	 * @private
 	 */
 	_changeEditor(id) {
-		//TODO
-		//this.props.onChange(d);
 		this.setState({ editor: id });
 	}
 	
+	/**
+	 * Change the single choice question
+	 * @private
+	 */
+	_changeSingleChoiceQuestion(event) {
+		const newData = Object.assign({}, this.state.data);
+		newData.singlechoice.question = event.target.value;
+		this.setState({ data: newData });
+	}
+	
+	/**
+	 * Add a new answer for a single choice editor
+	 * @private
+	 */
+	_addSingleChoiceAnswer(d) {
+		const newData = Object.assign({}, this.state.data);
+		
+		if(this.state.singleChoiceAnswerDialogEdit) {
+			newData.singlechoice.answers[this.state.singleChoiceAnswerDialogEdit] = d;
+		}
+		else {
+			newData.singlechoice.answers.push(d);
+		}
+		
+		this.setState({ data: newData, singleChoiceAnswerDialogEdit: null, singleChoiceAnswerDialogOpen: false });
+	}
+	
+	/**
+	 * Removes an answer of a single choice editor
+	 * @private
+	 */
 	_removeSingleChoiceAnswer(id) {
 		const newData = Object.assign({}, this.state.data);
 		newData.singlechoice.answers.splice(id, 1);
@@ -69,7 +94,7 @@ class NewMissionEditorsComponent extends Component {
 						label={I18n.t("Question label")}
 						helperText={I18n.t("A short, explicit question, leading to easy answer")}
 						value={this.state.data.singlechoice ? this.state.data.singlechoice.question : ""}
-// 						onChange={this.handleChange('name')}
+						onChange={this._changeSingleChoiceQuestion.bind(this)}
 						fullWidth
 					/>
 					
@@ -81,19 +106,28 @@ class NewMissionEditorsComponent extends Component {
 							return <Chip
 								key={i}
 								label={answer.label}
-// 								onClick={}
+								onClick={() => this.setState({ singleChoiceAnswerDialogOpen: true, singleChoiceAnswerDialogEdit: i })}
 								onDelete={() => this._removeSingleChoiceAnswer(i)}
 								style={{marginRight: 5}}
 							/>;
 						})}
 						<Tooltip title={I18n.t("Add a new answer")}>
-							<IconButton onClick={() => this.setState({ singleChoiceAnswerDialogOpen: true })}>
+							<IconButton onClick={() => this.setState({ singleChoiceAnswerDialogOpen: true, singleChoiceAnswerDialogEdit: null })}>
 								<PlusCircle />
 							</IconButton>
 						</Tooltip>
 					</div>
 					
-					<SingleChoiceAnswerDialog open={this.state.singleChoiceAnswerDialogOpen} onClose={() => this.setState({ singleChoiceAnswerDialogOpen: false })} />
+					<SingleChoiceAnswerDialog
+						open={this.state.singleChoiceAnswerDialogOpen}
+						data={
+							this.state.singleChoiceAnswerDialogEdit !== null
+							&& this.state.data.singlechoice.answers
+							&& this.state.data.singlechoice.answers[this.state.singleChoiceAnswerDialogEdit]
+						}
+						onClose={() => this.setState({ singleChoiceAnswerDialogOpen: false })}
+						onCreate={d => this._addSingleChoiceAnswer(d)}
+					/>
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			
@@ -115,8 +149,11 @@ class NewMissionEditorsComponent extends Component {
 		}
 	}
 	
-	componentDidMount() {
-//		this._changeVal("areaname", res.join(", "));
+	componentWillUpdate(nextProps, nextState) {
+		//Notify parent of changes if necessary
+		if(Hash(this.state) !== Hash(nextState)) {
+			this.props.onChange(nextState);
+		}
 	}
 }
 

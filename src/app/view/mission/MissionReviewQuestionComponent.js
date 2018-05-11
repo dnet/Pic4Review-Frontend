@@ -23,23 +23,12 @@ class MissionReviewQuestionComponent extends Component {
 	}
 	
 	render() {
-		const question = {
-			question: "À quoi ressemble l'équipement incendie ?",
-			type: "images",
-			answers: [
-				{ label: "Borne", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Downtown_Charlottesville_fire_hydrant_1.jpg/150px-Downtown_Charlottesville_fire_hydrant_1.jpg" },
-				{ label: "Plaque", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Berlin_hydrant_20050211_p1000517.jpg/200px-Berlin_hydrant_20050211_p1000517.jpg" },
-				{ label: "Tuyau", image: "https://wiki.openstreetmap.org/w/images/thumb/3/33/Hydrants_20130326_112938.JPG/150px-Hydrants_20130326_112938.JPG" },
-				{ label: "Mural", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Guentherscheid_Tunnel_Rescue4.jpg/225px-Guentherscheid_Tunnel_Rescue4.jpg" }
-			]
-		};
-		
-		if(question && question.type) {
+		if(this.props.data && this.props.data.type) {
 			let content = null;
 			
-			if(question.type === "images") {
-				content = <GridList cols={Math.min(IMG_COLS[this.props.width], question.answers.length)} style={{ flexWrap: "nowrap", marginTop: 10 }}>
-					{question.answers.map(answer => {
+			if(this.props.data.type === "images") {
+				content = <GridList cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)} style={{ flexWrap: "nowrap", marginTop: 10 }}>
+					{this.props.data.answers.map(answer => {
 						const onClick = () => {this.setState({ selectedAnswer: answer.label })};
 						
 						return <GridListTile key={answer.label} onClick={onClick}>
@@ -57,7 +46,7 @@ class MissionReviewQuestionComponent extends Component {
 					})}
 				</GridList>;
 			}
-			else if(question.type === "choice") {
+			else if(this.props.data.type === "choice") {
 				content = <RadioGroup
 						row
 						aria-label="answer"
@@ -66,14 +55,14 @@ class MissionReviewQuestionComponent extends Component {
 						onChange={ev => this.setState({ selectedAnswer: ev.target.value })}
 						style={{ justifyContent: "center" }}
 					>
-						{question.answers.map(answer => {
+						{this.props.data.answers.map(answer => {
 							return <FormControlLabel key={answer.label} value={answer.label} control={<Radio />} label={answer.label} />;
 						})}
 					</RadioGroup>;
 			}
 			
 			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: 20 }}>
-				<Typography variant="headline">{question.question}</Typography>
+				<Typography variant="headline">{this.props.data.question}</Typography>
 				{content}
 			</div>;
 		}

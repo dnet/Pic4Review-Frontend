@@ -202,7 +202,10 @@ class MissionReviewComponent extends Component {
 			return <div style={this.props.style}>
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
-						<Question onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })} />
+						<Question
+ 							data={this.props.mission.options && this.props.mission.options.data && this.props.mission.options.data.options && this.props.mission.options.data.options.editors}
+							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
+						/>
 						
 						<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
 							{createBtn("prev", 2, false)}

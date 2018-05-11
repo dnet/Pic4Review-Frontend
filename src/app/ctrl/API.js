@@ -46,11 +46,12 @@ class API {
 	 * @param {Mission} mission The mission to create on server
 	 * @param {string} source The data source (osmose)
 	 * @param {Object} sourceOptions The data source options
+	 * @param {Object} [editors] The editors options
 	 * @param {string} username The user name
 	 * @param {string} userid The user ID
 	 * @return {Promise} A promise resolving on mission ID
 	 */
-	static CreateMission(mission, source, sourceOptions, username, userid) {
+	static CreateMission(mission, source, sourceOptions, editors, username, userid) {
 		if(source === "overpass" && !sourceOptions.geojson) {
 			//Replace {{bbox}} using given area
 			const area = mission.area.bbox;
@@ -59,7 +60,7 @@ class API {
 			return this.QueryOverpass(q)
 			.then(geojson => {
 				const opts = Object.assign({}, sourceOptions, { geojson: geojson });
-				return this.CreateMission(mission, source, opts, username, userid);
+				return this.CreateMission(mission, source, opts, editors, username, userid);
 			});
 		}
 		else {
@@ -80,6 +81,11 @@ class API {
 					username: username,
 					userid: userid
 				};
+				
+				//Save editors data
+				if(editors) {
+					data.dataoptions.editors = editors;
+				}
 				
 				//Send request
 				request(

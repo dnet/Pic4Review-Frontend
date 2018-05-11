@@ -24,7 +24,7 @@ class NewMissionComponent extends Component {
 		super();
 		
 		this.state = {
-			step: STEPS.editors,//datasource,
+			step: STEPS.datasource,
 			datasource: null,
 			previewOpen: false,
 			details: null,
@@ -64,16 +64,30 @@ class NewMissionComponent extends Component {
 			}
 		}
 		else if(this.state.step === STEPS.editors) {
-			//TODO
-			this.setState({ step: STEPS.publish });
+			if(this._checkEditors()) {
+				this.setState({ step: STEPS.publish });
+			}
 		}
 		else if(this.state.step === STEPS.publish) {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is created, it can take a few minutes.") });
+			
+			//Clean editors data
+			let e = null;
+			
+			if(this.state.editors.editor === "singlechoice") {
+				e = this.state.editors.data.singlechoice;
+				e.type = "choice";
+				
+				if(this.state.editors.data.singlechoice.answers.filter(a => a.image).length === this.state.editors.data.singlechoice.answers.length) {
+					e.type = "images";
+				}
+			}
 			
 			API.CreateMission(
 				this.state.mission,
 				this.state.datasource.source,
 				this.state.datasource.options,
+				e,
 				this.props.user.name,
 				this.props.user.id
 			)
@@ -196,6 +210,45 @@ class NewMissionComponent extends Component {
 		}
 		else {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must give details about the mission before continuing") });
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Check editors parameters
+	 * @private
+	 */
+	_checkEditors() {
+		if(
+			this.state.editors
+			&& this.state.editors.editor === "singlechoice"
+			&& this.state.editors.data && this.state.editors.data.singlechoice
+		) {
+			if(this.state.editors.data.singlechoice.question && this.state.editors.data.singlechoice.question.trim().match(/^.{5,150}$/)) {
+				if(this.state.editors.data.singlechoice.answers && this.state.editors.data.singlechoice.answers.length >= 2) {
+					for(let a of this.state.editors.data.singlechoice.answers) {
+						if(!a.label || !a.tags) {
+							PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("One of the given answer is invalid (missing label or tags)") });
+							return false;
+						}
+					}
+					
+					return true;
+				}
+				else {
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Your question must have at least two answers (it's not a question otherwise)"), smiley: "😜" });
+				}
+			}
+			else {
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Your question must contains between 5 and 150 characters") });
+			}
+		}
+		else if(this.state.editors && this.state.editors.editor === "disabled") {
+			return true;
+		}
+		else {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must set up the editor before continuing") });
 		}
 		
 		return false;
