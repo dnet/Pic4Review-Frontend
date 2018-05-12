@@ -3,8 +3,10 @@ import API from '../../ctrl/API';
 import { withRouter } from 'react-router-dom';
 import Button from 'material-ui/Button';
 import Details from './new/NewMissionDetailsComponent';
+import Editors from './new/NewMissionEditorsComponent';
 import Grid from 'material-ui/Grid';
 import Mission from '../../model/Mission';
+import NewMission from './new/NewMissionComponent';
 import Typography from 'material-ui/Typography';
 import Wait from '../WaitComponent';
 
@@ -24,9 +26,14 @@ class MissionEditComponent extends Component {
 	 * @private
 	 */
 	_save() {
-		if(this._checkDetails()) {
+		if(NewMission.CheckDetails(this.state) && NewMission.CheckEditors(this.state)) {
 			//Try to create updated mission
 			try {
+				const opts = Object.assign({}, this.state.mission.options);
+				
+				if(!opts.data) { opts.data = { options: {} }; }
+				opts.data.options.editors = NewMission.UIEditorsToDb(this.state);
+				
 				const mUpdated = new Mission(
 					this.state.mission.id,
 					this.state.details.type,
@@ -35,7 +42,7 @@ class MissionEditComponent extends Component {
 					{ full: this.state.details.fulldesc, short: this.state.details.shortdesc },
 					this.state.mission.status,
 					this.state.mission.features,
-					this.state.mission.options
+					opts
 				);
 				
 				PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is updated.") });
@@ -61,51 +68,12 @@ class MissionEditComponent extends Component {
 		}
 	}
 	
-	/**
-	 * Check details parameters
-	 * @private
-	 */
-	_checkDetails() {
-		if(this.state.details) {
-			if(this.state.details.theme && Object.keys(THEMES).indexOf(this.state.details.theme) >= 0) {
-				if(this.state.details.type && Object.keys(TYPES).indexOf(this.state.details.type) >= 0) {
-					if(this.state.details.shortdesc && this.state.details.shortdesc.length >= 5) {
-						if(this.state.details.areaname && this.state.details.areaname.length >= 5) {
-							if(this.state.details.fulldesc && this.state.details.fulldesc.length >= 50) {
-								return true;
-							}
-							else {
-								PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Description is empty or too short, please give us more details") });
-							}
-						}
-						else {
-							PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Area name is empty or too short") });
-						}
-					}
-					else {
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Mission name is empty or too short") });
-					}
-				}
-				else {
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must choose a type of mission") });
-				}
-			}
-			else {
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must choose a theme for your mission") });
-			}
-		}
-		else {
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must give details about the mission before continuing") });
-		}
-		
-		return false;
-	}
-	
 	render() {
-		if(this.state.details) {
+		if(this.state.details && this.state.editors) {
 			return <div>
 				<Typography variant="display1">{I18n.t("Edit")}</Typography>
 				<Details data={this.state.details} onChange={d => this.setState({ details: d })} />
+				<Editors data={this.state.editors} onChange={d => this.setState({ editors: d })} style={{marginTop: 10}} />
 				<Grid container alignItems="center" direction="row" justify="flex-end" spacing={16}>
 					<Grid item>
 						<Button variant="raised" color="primary" onClick={() => this._save()}>
@@ -136,6 +104,26 @@ class MissionEditComponent extends Component {
 						mission: m,
 						user: data
 					});
+					
+					//Restore editors data
+					if(m.options.data.options.editors) {
+						const editors = { data: {} };
+						
+						if(m.options.data.options.editors.type === "choice" || m.options.data.options.editors.type === "images") {
+							editors.editor = "singlechoice";
+							editors.data.singlechoice = m.options.data.options.editors;
+						}
+						else {
+							editors.editor = "disabled";
+						}
+						
+						this.setState({ editors: editors });
+					}
+					else {
+						this.setState({ editors: {
+							editor: "disabled"
+						}});
+					}
 				}
 				else {
 					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You're not authorized to edit this mission") });

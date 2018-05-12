@@ -18,18 +18,24 @@ class MissionReviewQuestionComponent extends Component {
 		super();
 		
 		this.state = {
-			selectedAnswer: null
+			selectedAnswer: -1
 		};
 	}
 	
+	_onAnswerChange(key) {
+		key = parseInt(key);
+		this.setState({ selectedAnswer: key });
+		this.props.onAnswerChange(this.props.data.answers[key]);
+	}
+	
 	render() {
-		if(this.props.data && this.props.data.type) {
+		if(this.props.data && this.props.data.type && this.props.data.type !== "disabled") {
 			let content = null;
 			
 			if(this.props.data.type === "images") {
 				content = <GridList cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)} style={{ flexWrap: "nowrap", marginTop: 10 }}>
-					{this.props.data.answers.map(answer => {
-						const onClick = () => {this.setState({ selectedAnswer: answer.label })};
+					{this.props.data.answers.map((answer, i) => {
+						const onClick = () => this._onAnswerChange(i);
 						
 						return <GridListTile key={answer.label} onClick={onClick}>
 							<img src={answer.image} alt={answer.label} />
@@ -38,7 +44,7 @@ class MissionReviewQuestionComponent extends Component {
 								actionPosition="left"
 								actionIcon={
 									<IconButton style={{ color: "white" }} onClick={onClick}>
-										{this.state.selectedAnswer === answer.label ? <RadioboxMarked /> : <RadioboxBlank />}
+										{this.state.selectedAnswer === i ? <RadioboxMarked /> : <RadioboxBlank />}
 									</IconButton>
 								}
 							/>
@@ -51,12 +57,12 @@ class MissionReviewQuestionComponent extends Component {
 						row
 						aria-label="answer"
 						name="answer"
-						value={this.state.selectedAnswer}
-						onChange={ev => this.setState({ selectedAnswer: ev.target.value })}
+						value={this.state.selectedAnswer.toString()}
+						onChange={ev => this._onAnswerChange(ev.target.value)}
 						style={{ justifyContent: "center" }}
 					>
-						{this.props.data.answers.map(answer => {
-							return <FormControlLabel key={answer.label} value={answer.label} control={<Radio />} label={answer.label} />;
+						{this.props.data.answers.map((answer, i) => {
+							return <FormControlLabel key={i} value={i.toString()} control={<Radio />} label={answer.label} />;
 						})}
 					</RadioGroup>;
 			}

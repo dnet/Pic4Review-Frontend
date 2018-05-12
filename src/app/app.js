@@ -83,6 +83,7 @@ class App {
 	 */
 	_initAuth() {
 		this.auth = OsmAuth({
+			url: CONSTS.OSM_API_URL,
 			oauth_consumer_key: CONSTS.OAUTH_CONSUMER_KEY,
 			oauth_secret: CONSTS.OAUTH_SECRET,
 			landing: window.location.pathname
@@ -189,7 +190,8 @@ class App {
 					try {
 						this.user = {
 							id: details.firstChild.childNodes[1].attributes.id.value,
-							name: details.firstChild.childNodes[1].attributes.display_name.value
+							name: details.firstChild.childNodes[1].attributes.display_name.value,
+							auth: this.auth
 						};
 						
 						PubSub.publish("UI.LOGIN.DONE", { username: this.user.name });

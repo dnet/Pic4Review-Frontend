@@ -1,12 +1,14 @@
 import CONST from '../constants';
 import Feature from '../model/Feature';
 import Mission from '../model/Mission';
+import OsmRequest from 'osm-request';
 import queryOverpass from 'query-overpass';
 import request from 'browser-request';
 
 const LONG_TIMEOUT_MS = 300000;
+
 /**
- * API controller handles communication with the Pic4Review API.
+ * API controller handles communication with external APIs (mainly Pic4Review and OSM).
  */
 class API {
 	/**
@@ -537,6 +539,10 @@ class API {
 				status: mission.status
 			};
 			
+			if(mission.options && mission.options.data && mission.options.data.options) {
+				data.dataoptions = mission.options.data.options;
+			}
+			
 			request(
 				{
 					method: 'PUT',
@@ -614,6 +620,53 @@ class API {
 	 */
 	static GetExportMissingUrl(mid, format) {
 		return CONST.P4R_URL + '/missions/' + mid + '/export/missing?format=' + format;
+	}
+	
+	/**
+	 * Update an OSM feature by applying some tags.
+	 * @param {string} featureId The OSM feature ID (ex: node/1234)
+	 * @param {Object} tagsToApply The list of tags to apply on object
+	 * @param {string} comment Comment for changeset
+	 * @param {int} [changesetId] ID of changeset to reuse
+	 * @return {Promise} Resolves when feature was correctly updated (gives an object like { changesetId: int })
+	 */
+	static UpdateOSMFeature(featureId, tagsToApply, comment, changesetId) {
+		return new Promise((resolve, reject) => {
+			//Check user auth token
+			const wantUser = PubSub.subscribe("USER.INFO.READY", async (msg, user) => {
+				PubSub.unsubscribe(wantUser);
+				
+				if(user) {
+					const osm = new OsmRequest({ endpoint: CONST.OSM_API_URL });
+					osm._auth = user.auth;
+					
+					//Get OSM element from API
+					try {
+						let element = await osm.fetchElement(featureId);
+						element = osm.setProperties(element, tagsToApply);
+						element = osm.setTimestampToNow(element);
+						element = osm.incrementVersion(element);
+						
+						const isChangesetStillOpen = changesetId ? await osm.isChangesetStillOpen(changesetId) : false;
+						
+						if(!isChangesetStillOpen) {
+							changesetId = await osm.createChangeset('Pic4Review', comment);
+						}
+						
+						const newElementVersion = await osm.sendElement(element, changesetId);
+						resolve({ changesetId: changesetId });
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+				else {
+					reject(new Error("Can't verify user credentials"));
+				}
+			});
+			
+			PubSub.publish("USER.INFO.WANTS");
+		});
 	}
 }
 

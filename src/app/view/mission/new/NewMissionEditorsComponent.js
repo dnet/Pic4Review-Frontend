@@ -78,7 +78,7 @@ class NewMissionEditorsComponent extends Component {
 	
 	render() {
 		//Pour faciliter la résolution de la mission, il est conseillé de créer une question à laquelle les utilisateurs peuvent répondre simplement. Cela rend possible la contribution sur téléphone, et fait gagner du temps sur la version bureau. Mais selon les missions, la résolution ne peut se résumer à une simple question, dans ce cas il faut passer sur un éditeur OSM traditionnel.
-		return <div>
+		return <div style={this.props.style}>
 			<Typography variant="subheading">{I18n.t("Editor")}</Typography>
 			<Typography variant="caption">{I18n.t("In order to make mission solving easier, you may create a question to which users can answer simply. This makes possible to contribute on smartphone, and saves time on the desktop version. However, some missions can't be solved with a single question, then users have to contribute using a traditional OSM editor.")}</Typography>
 			<Typography variant="caption" style={{marginBottom: 10}}>{I18n.t("Choose the most appropriate editor according to your mission needs.")}</Typography>

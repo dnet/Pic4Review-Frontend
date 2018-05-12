@@ -5,6 +5,7 @@ import withWidth from 'material-ui/utils/withWidth';
 import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
+import ConfirmEdit from './MissionReviewFeatureDialogComponent';
 import Editors from './MissionReviewEditorsComponent';
 import First from './MissionFirstReviewComponent';
 import Gallery2 from './MissionReviewGallery2Component';
@@ -38,7 +39,11 @@ class MissionReviewComponent extends Component {
 			count: 0,
 			firstReview: false,
 			openEditors: false,
-			editorsAnchor: null
+			editorsAnchor: null,
+			currentAnswer: null,
+			openConfirmEdit: false,
+			hideConfirmEdit: false,
+			changesetId: null
 		};
 		
 		this.psTokens = {};
@@ -52,7 +57,7 @@ class MissionReviewComponent extends Component {
 		wasSkipped = wasSkipped || false;
 		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
 		
-		this.setState({ feature: null, currentPictureId: null, prevFeature: this.state.feature });
+		this.setState({ feature: null, currentPictureId: null, prevFeature: this.state.feature, currentAnswer: null });
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords)
@@ -143,23 +148,68 @@ class MissionReviewComponent extends Component {
 	 * Edit the current feature status, and start retrieving next one
 	 * @private
 	 */
-	_review(status) {
-		this.state.feature.status = status;
+	_review(status, externalEditConfirmed) {
+		externalEditConfirmed = externalEditConfirmed || (!this.state.currentAnswer && this.state.hideConfirmEdit);
 		
-		API.UpdateMissionFeature(
-			this.props.mission.id,
-			this.state.feature,
-			this.props.user.name,
-			this.props.user.id
-		)
-		.then(() => {
-			this.setState({ count: this.state.count+1 });
-			this._next();
-		})
-		.catch(e => {
-			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't update feature, please retry") });
-		});
+		//Update feature in DB
+		const updateDB = (upData) => {
+			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating Pic4Review mission") });
+			
+			upData = upData || {};
+			this.state.feature.status = status;
+			
+			API.UpdateMissionFeature(
+				this.props.mission.id,
+				this.state.feature,
+				this.props.user.name,
+				this.props.user.id
+			)
+			.then(() => {
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+				this.setState({ count: this.state.count+1, changesetId: upData.changesetId });
+				this._next();
+			})
+			.catch(e => {
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+				console.error(e);
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't update feature, please retry") });
+			});
+		};
+		
+		//If editor activated
+		if(status === "reviewed" && !externalEditConfirmed) {
+			if(
+				this.state.currentAnswer
+				&& this.props.mission.options && this.props.mission.options.data
+				&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
+				&& this.props.mission.options.data.options.editors.type !== "disabled"
+				&& this.state.feature && this.state.feature.properties && this.state.feature.properties.id
+			) {
+				//Update feature
+				PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating feature in OpenStreetMap") });
+				
+				API.UpdateOSMFeature(
+					this.state.feature.properties.id,
+					this.state.currentAnswer.tags,
+					this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
+					this.state.changesetId
+				)
+				.then(res => {
+					updateDB(res);
+				})
+				.catch(e => {
+					PubSub.publish("UI.MESSAGE.WAITDONE");
+					console.error(e);
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry") });
+				});
+			}
+			else {
+				this.setState({ openConfirmEdit: true });
+			}
+		}
+		else {
+			updateDB();
+		}
 	}
 	
 	_closeFirstHelp() {
@@ -203,8 +253,12 @@ class MissionReviewComponent extends Component {
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
 						<Question
- 							data={this.props.mission.options && this.props.mission.options.data && this.props.mission.options.data.options && this.props.mission.options.data.options.editors}
+							data={
+								this.state.feature && this.state.feature.properties && this.state.feature.properties.id
+								&& this.props.mission.options && this.props.mission.options.data && this.props.mission.options.data.options && this.props.mission.options.data.options.editors
+							}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
+							onAnswerChange={d => this.setState({ currentAnswer: d })}
 						/>
 						
 						<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
@@ -250,6 +304,17 @@ class MissionReviewComponent extends Component {
 					feature={this.state.feature}
 					anchor={this.state.editorsAnchor}
 					onClose={() => this.setState({openEditors: false})}
+				/>
+				
+				<ConfirmEdit
+					open={!this.state.hideConfirmEdit && this.state.openConfirmEdit}
+					onClose={() => this.setState({ openConfirmEdit: false })}
+					onValid={nomore => { this.setState({ hideConfirmEdit: nomore }); this._review("reviewed", true); }}
+					hasEditor={
+						this.props.mission.options && this.props.mission.options.data
+						&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
+						&& this.props.mission.options.data.options.editors.type !== "disabled"
+					}
 				/>
 			</div>;
 		}

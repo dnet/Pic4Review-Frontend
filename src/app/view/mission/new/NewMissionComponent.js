@@ -44,7 +44,7 @@ class NewMissionComponent extends Component {
 			}
 		}
 		else if(this.state.step === STEPS.details) {
-			if(this._checkDetails()) {
+			if(NewMissionComponent.CheckDetails(this.state)) {
 				//Try to create mission object
 				try {
 					const m = new Mission(
@@ -64,30 +64,18 @@ class NewMissionComponent extends Component {
 			}
 		}
 		else if(this.state.step === STEPS.editors) {
-			if(this._checkEditors()) {
+			if(NewMissionComponent.CheckEditors(this.state)) {
 				this.setState({ step: STEPS.publish });
 			}
 		}
 		else if(this.state.step === STEPS.publish) {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is created, it can take a few minutes.") });
 			
-			//Clean editors data
-			let e = null;
-			
-			if(this.state.editors.editor === "singlechoice") {
-				e = this.state.editors.data.singlechoice;
-				e.type = "choice";
-				
-				if(this.state.editors.data.singlechoice.answers.filter(a => a.image).length === this.state.editors.data.singlechoice.answers.length) {
-					e.type = "images";
-				}
-			}
-			
 			API.CreateMission(
 				this.state.mission,
 				this.state.datasource.source,
 				this.state.datasource.options,
-				e,
+				NewMissionComponent.UIEditorsToDb(this.state),
 				this.props.user.name,
 				this.props.user.id
 			)
@@ -177,15 +165,16 @@ class NewMissionComponent extends Component {
 	
 	/**
 	 * Check details parameters
-	 * @private
+	 * @param {Object} state The component state containing details parameters
+	 * @return {boolean} True if details are valid
 	 */
-	_checkDetails() {
-		if(this.state.details) {
-			if(this.state.details.theme && Object.keys(THEMES).indexOf(this.state.details.theme) >= 0) {
-				if(this.state.details.type && Object.keys(TYPES).indexOf(this.state.details.type) >= 0) {
-					if(this.state.details.shortdesc && this.state.details.shortdesc.length >= 5) {
-						if(this.state.details.areaname && this.state.details.areaname.length >= 5) {
-							if(this.state.details.fulldesc && this.state.details.fulldesc.length >= 50) {
+	static CheckDetails(state) {
+		if(state.details) {
+			if(state.details.theme && Object.keys(THEMES).indexOf(state.details.theme) >= 0) {
+				if(state.details.type && Object.keys(TYPES).indexOf(state.details.type) >= 0) {
+					if(state.details.shortdesc && state.details.shortdesc.length >= 5) {
+						if(state.details.areaname && state.details.areaname.length >= 5) {
+							if(state.details.fulldesc && state.details.fulldesc.length >= 50) {
 								return true;
 							}
 							else {
@@ -217,17 +206,18 @@ class NewMissionComponent extends Component {
 	
 	/**
 	 * Check editors parameters
-	 * @private
+	 * @param {Object} state The component state containing editors parameters
+	 * @return {boolean} True if editors are valid
 	 */
-	_checkEditors() {
+	static CheckEditors(state) {
 		if(
-			this.state.editors
-			&& this.state.editors.editor === "singlechoice"
-			&& this.state.editors.data && this.state.editors.data.singlechoice
+			state.editors
+			&& state.editors.editor === "singlechoice"
+			&& state.editors.data && state.editors.data.singlechoice
 		) {
-			if(this.state.editors.data.singlechoice.question && this.state.editors.data.singlechoice.question.trim().match(/^.{5,150}$/)) {
-				if(this.state.editors.data.singlechoice.answers && this.state.editors.data.singlechoice.answers.length >= 2) {
-					for(let a of this.state.editors.data.singlechoice.answers) {
+			if(state.editors.data.singlechoice.question && state.editors.data.singlechoice.question.trim().match(/^.{5,150}$/)) {
+				if(state.editors.data.singlechoice.answers && state.editors.data.singlechoice.answers.length >= 2) {
+					for(let a of state.editors.data.singlechoice.answers) {
 						if(!a.label || !a.tags) {
 							PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("One of the given answer is invalid (missing label or tags)") });
 							return false;
@@ -244,7 +234,7 @@ class NewMissionComponent extends Component {
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Your question must contains between 5 and 150 characters") });
 			}
 		}
-		else if(this.state.editors && this.state.editors.editor === "disabled") {
+		else if(state.editors && state.editors.editor === "disabled") {
 			return true;
 		}
 		else {
@@ -252,6 +242,26 @@ class NewMissionComponent extends Component {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Convert UI editors data into DB data
+	 * @param {Object} state The component state
+	 * @return {Object} Object which can be stored in DB
+	 */
+	static UIEditorsToDb(state) {
+		let e = null;
+		
+		if(state.editors.editor === "singlechoice") {
+			e = state.editors.data.singlechoice;
+			e.type = "choice";
+			
+			if(state.editors.data.singlechoice.answers.filter(a => a.image).length === state.editors.data.singlechoice.answers.length) {
+				e.type = "images";
+			}
+		}
+		
+		return e;
 	}
 	
 	/**
