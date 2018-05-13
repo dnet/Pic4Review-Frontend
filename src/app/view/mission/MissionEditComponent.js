@@ -93,7 +93,7 @@ class MissionEditComponent extends Component {
 			API.GetMissionDetails(this.props.match.params.mid, data.id !== -1 ? data.id : undefined)
 			.then(m => {
 				if(m.options.canEdit) {
-					this.setState({
+					const newState = Object.assign({}, NewMission.RestoreEditors(m), {
 						details: {
 							theme: m.theme,
 							type: m.type,
@@ -105,25 +105,7 @@ class MissionEditComponent extends Component {
 						user: data
 					});
 					
-					//Restore editors data
-					if(m.options.data.options.editors) {
-						const editors = { data: {} };
-						
-						if(m.options.data.options.editors.type === "choice" || m.options.data.options.editors.type === "images") {
-							editors.editor = "singlechoice";
-							editors.data.singlechoice = m.options.data.options.editors;
-						}
-						else {
-							editors.editor = "disabled";
-						}
-						
-						this.setState({ editors: editors });
-					}
-					else {
-						this.setState({ editors: {
-							editor: "disabled"
-						}});
-					}
+					this.setState(newState);
 				}
 				else {
 					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You're not authorized to edit this mission") });

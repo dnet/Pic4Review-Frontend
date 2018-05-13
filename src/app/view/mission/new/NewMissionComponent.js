@@ -394,7 +394,7 @@ class NewMissionComponent extends Component {
 					delete m.options.data.options.geojson;
 				}
 				
-				this.setState({
+				const newState = Object.assign({}, NewMissionComponent.RestoreEditors(m), {
 					details: {
 						type: m.type,
 						theme: m.theme,
@@ -410,6 +410,8 @@ class NewMissionComponent extends Component {
 					mission: m
 				});
 				
+				this.setState(newState);
+				
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 			})
 			.catch(e => {
@@ -417,6 +419,28 @@ class NewMissionComponent extends Component {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission") });
 			});
+		}
+	}
+	
+	static RestoreEditors(m) {
+		//Restore editors data
+		if(m.options.data.options.editors) {
+			const editors = { data: {} };
+			
+			if(m.options.data.options.editors.type === "choice" || m.options.data.options.editors.type === "images") {
+				editors.editor = "singlechoice";
+				editors.data.singlechoice = m.options.data.options.editors;
+			}
+			else {
+				editors.editor = "disabled";
+			}
+			
+			return { editors: editors };
+		}
+		else {
+			return { editors: {
+				editor: "disabled"
+			}};
 		}
 	}
 }
