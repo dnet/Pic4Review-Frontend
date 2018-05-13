@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Emoticon, MapMarkerRadius, Rocket } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
+import Hidden from 'material-ui/Hidden';
 import Typography from 'material-ui/Typography';
 
 /**
@@ -12,6 +13,9 @@ class WelcomeComponent extends Component {
 	render() {
 		const styleContainer = Object.assign({}, this.props.style, {textAlign: "center"});
 		const stylePics = { height: 128, width: 128 };
+		const start = <Button variant="raised" size="large" color="primary" style={{marginTop: 10}} component={Link} to='/missions'>
+			{I18n.t("Start now")}
+		</Button>;
 		
 		return <div style={styleContainer}>
 			<Grid container spacing={16} style={{marginBottom: 10}}>
@@ -23,6 +27,7 @@ class WelcomeComponent extends Component {
 					<Typography variant="body1">
 						{I18n.t("Pic4Review makes mapping using pictures fun ! Participate on map editing missions, earn points, and make the free world map better for everyone !")}
 					</Typography>
+					<Hidden smUp>{start}</Hidden>
 				</Grid>
 				<Grid item xs={12} sm={4}>
 					<MapMarkerRadius color="primary" style={stylePics} />
@@ -32,9 +37,7 @@ class WelcomeComponent extends Component {
 					<Typography variant="body1">
 						{I18n.t("You can find various missions, for example adding wheelchair accessibility, fix recycling containers, or integrate missing public toilets. If it's not enough, you can also create your own missions !")}
 					</Typography>
-					<Button variant="raised" size="large" color="primary" style={{marginTop: 10}} component={Link} to='/missions'>
-						{I18n.t("Start now")}
-					</Button>
+					<Hidden only="xs">{start}</Hidden>
 				</Grid>
 				<Grid item xs={12} sm={4}>
 					<Emoticon color="primary" style={stylePics} />

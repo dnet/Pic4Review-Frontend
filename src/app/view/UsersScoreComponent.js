@@ -10,7 +10,7 @@ class UsersScoreComponent extends Component {
 	render() {
 		return <div>
 			<Typography variant="subheading">{I18n.t("Users contributions")}</Typography>
-			<Paper>
+			<Paper style={{overflowY: "auto"}}>
 				<Table>
 					<TableHead>
 						<TableRow>

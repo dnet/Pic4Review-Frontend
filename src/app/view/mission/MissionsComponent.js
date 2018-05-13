@@ -40,7 +40,7 @@ class MissionsComponent extends Component {
 			this.setState({ missions: null, nextMissions: null });
 			
 			//Current mission
-			API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme)
+			API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs")
 			.then(missions => { this.setState({ missions: missions }); })
 			.catch(e => {
 				console.error(e);
@@ -48,14 +48,14 @@ class MissionsComponent extends Component {
 			});
 			
 			//Next mission
-			API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme)
+			API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs")
 			.then(missions => this.setState({ nextMissions: missions }))
 			.catch(e => console.error(e));
 		}
 		else {
 			this.setState({ map: null });
 			
-			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme)
+			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme, this.props.width === "xs")
 			.then(missions => { this.setState({ map: missions }); })
 			.catch(e => {
 				console.error(e);
@@ -68,12 +68,12 @@ class MissionsComponent extends Component {
 		let missionsarea = null;
 		const noMission = <Typography variant="body1" style={{textAlign: "center", margin: 20}}>
 			{I18n.t("Oh, there is no mission corresponding to these criterias.")}<br />
-			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
+			{this.props.width !== "xs" && <Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>}
 		</Typography>;
 		
 		const noMoreMission = (this.state.nextMissions === null || this.state.nextMissions.length === 0) ? <Typography variant="body1" style={{textAlign: "center", margin: 20}}>
 			{I18n.t("Oh, there is no more missions matching these criterias.")}<br />
-			<Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>
+			{this.props.width !== "xs" && <Link to='/mission/new'>{I18n.t("But you can create your own mission if you want !")}</Link>}
 		</Typography> : null;
 		
 		if(this.state.tab === 0 && this.state.missions) {

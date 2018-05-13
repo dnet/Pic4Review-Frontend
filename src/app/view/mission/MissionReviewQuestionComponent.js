@@ -67,7 +67,7 @@ class MissionReviewQuestionComponent extends Component {
 					</RadioGroup>;
 			}
 			
-			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: 20 }}>
+			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
 				<Typography variant="headline">{this.props.data.question}</Typography>
 				{content}
 			</div>;

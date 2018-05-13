@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { grey } from 'material-ui/colors';
+import withWidth from 'material-ui/utils/withWidth';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
@@ -17,7 +18,7 @@ const dayOffset = d => {
 class MissionSummaryComponent extends Component {
 	render() {
 		return <div onClick={this.props.onClick ? this.props.onClick : () => {}}>
-			<Typography variant="headline" style={{verticalAlign: "middle"}}>
+			<Typography variant={this.props.width === "xs" ? "subheading" : "headline"} style={{verticalAlign: "middle"}}>
 				{this.props.mission.description.short}
 				
 				<span style={{verticalAlign: "middle", color: grey[500], marginLeft: 10}}>
@@ -31,7 +32,7 @@ class MissionSummaryComponent extends Component {
 				</span>
 			</Typography>
 			
-			<Typography variant="subheading">
+			<Typography variant={this.props.width === "xs" ? "body1" : "subheading"} style={{margin: 0}}>
 				{this.props.mission.area.name}
 			</Typography>
 			
@@ -42,10 +43,10 @@ class MissionSummaryComponent extends Component {
 						nb: this.props.mission.options.stats.total - this.props.mission.options.stats.nopics,
 						nbno: this.props.mission.options.stats.nopics
 				})}
-				{this.props.mission.options.date && " - "+I18n.t({ zero: "Launched today", one: "Launched yesterday", other: "Launched %{count} days ago" }, { count: dayOffset(this.props.mission.options.date) })}
+				{this.props.mission.options.date && " - "+I18n.t({ zero: "Updated today", one: "Updated yesterday", other: "Updated %{count} days ago" }, { count: dayOffset(this.props.mission.options.date) })}
 			</Typography>}
 		</div>;
 	}
 }
 
-export default MissionSummaryComponent;
+export default withWidth()(MissionSummaryComponent);

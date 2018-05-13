@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Information, Play } from 'mdi-material-ui';
+import withWidth from 'material-ui/utils/withWidth';
 import Button from 'material-ui/Button';
 
 /**
@@ -10,6 +11,7 @@ class MissionSummaryButtonsComponent extends Component {
 		return <div>
 			<Button
 				color="secondary"
+				size={this.props.width === "xs" ? "small" : "medium"}
 				onClick={() => this.props.history.push('/mission/'+this.props.mid)}
 			>
 				<Information />
@@ -17,6 +19,7 @@ class MissionSummaryButtonsComponent extends Component {
 			</Button>
 			<Button
 				color="secondary"
+				size={this.props.width === "xs" ? "small" : "medium"}
 				onClick={() => this.props.history.push('/mission/'+this.props.mid+'/review')}
 			>
 				<Play />
@@ -26,4 +29,4 @@ class MissionSummaryButtonsComponent extends Component {
 	}
 }
 
-export default MissionSummaryButtonsComponent;
+export default withWidth()(MissionSummaryButtonsComponent);

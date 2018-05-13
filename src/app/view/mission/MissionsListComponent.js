@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import withWidth from 'material-ui/utils/withWidth';
 import Card, { CardActions, CardContent } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import MissionSummary from './MissionSummaryComponent';
@@ -18,7 +19,7 @@ class MissionsListComponent extends Component {
 			{this.props.missions.map((m, i) => {
 				return <Grid item key={i} xs={12} lg={6}>
 					<Card>
-						<CardContent>
+						<CardContent style={this.props.width === "xs" ? { paddingBottom: 0 } : null}>
 							<MissionSummary mission={m} onClick={() => this.props.history.push('/mission/'+m.id)} />
 						</CardContent>
 						<CardActions>
@@ -31,4 +32,4 @@ class MissionsListComponent extends Component {
 	}
 }
 
-export default withRouter(MissionsListComponent);
+export default withWidth()(withRouter(MissionsListComponent));

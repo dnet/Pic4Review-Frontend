@@ -42,8 +42,7 @@ class MissionReviewComponent extends Component {
 			editorsAnchor: null,
 			currentAnswer: null,
 			openConfirmEdit: false,
-			hideConfirmEdit: false,
-			changesetId: null
+			hideConfirmEdit: false
 		};
 		
 		this.psTokens = {};
@@ -166,7 +165,8 @@ class MissionReviewComponent extends Component {
 			)
 			.then(() => {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				this.setState({ count: this.state.count+1, changesetId: upData.changesetId });
+				this._setChangesetId(upData.changesetId);
+				this.setState({ count: this.state.count+1, });
 				this._next();
 			})
 			.catch(e => {
@@ -192,7 +192,7 @@ class MissionReviewComponent extends Component {
 					this.state.feature.properties.id,
 					this.state.currentAnswer.tags,
 					this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
-					this.state.changesetId
+					this._getChangesetId()
 				)
 				.then(res => {
 					updateDB(res);
@@ -217,6 +217,23 @@ class MissionReviewComponent extends Component {
 		this.setState({ firstReview: false });
 	}
 	
+	/**
+	 * Retrieve last changeset ID for this mission from sessionStorage
+	 * @private
+	 */
+	_getChangesetId() {
+		console.log(this.props.match.params.mid);
+		return sessionStorage.getItem("cid_"+this.props.match.params.mid);
+	}
+	
+	/**
+	 * Update changeset ID for this mission
+	 * @private
+	 */
+	_setChangesetId(changesetId) {
+		sessionStorage.setItem("cid_"+this.props.match.params.mid, changesetId);
+	}
+	
 	render() {
 		if(!this.state.feature) {
 			const style = Object.assign({}, this.props.style, { textAlign: "center" });
@@ -227,7 +244,7 @@ class MissionReviewComponent extends Component {
 				prev: { icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
 				next: { icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next(true) },
 				edit: { icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
-				done: { color: "primary", icon: <Check />, label: I18n.t("Validate"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") },
+				done: { color: "primary", icon: <Check />, label: I18n.t("Validate"), tip: I18n.t("Mark the feature as done when you have answered the question or edited OpenStreetMap"), click: () => this._review("reviewed") },
 				cantsee: { color: "secondary", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
 			};
 			

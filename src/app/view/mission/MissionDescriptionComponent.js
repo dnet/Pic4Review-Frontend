@@ -5,6 +5,7 @@ import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
 import ExportMenu from './MissionDescriptionExportComponent';
 import Grid from 'material-ui/Grid';
+import Hidden from 'material-ui/Hidden';
 import { Link } from 'react-router-dom';
 import MissionMap from './MissionMapComponent';
 import MissionSummary from './MissionSummaryComponent';
@@ -54,6 +55,10 @@ class MissionDescriptionComponent extends Component {
 		const percentNoPics = this.state.features ? this.state.features.filter(f => f.status === 'nopics').length / this.state.features.length * 100 : 0;
 		const btnStyle = {width: "100%"};
 		
+		const missingPics = percentNoPics >= 20 && <Typography variant="body2" style={{marginBottom: 10}}>
+			{I18n.t("Hey ! This mission is missing a lot of pictures (%{cnt}% of the features). If you have some time and live near this area, you should consider going out and take some pictures. You can export the list of features without pictures using the button below.", { cnt: Math.round(percentNoPics) })}
+		</Typography>;
+		
 		return <div style={this.props.style}>
 			<MissionSummary mission={this.props.mission} />
 			<div className="limited-images">
@@ -61,11 +66,7 @@ class MissionDescriptionComponent extends Component {
 			</div>
 			
 			{this.props.synthetic == false && <div>
-				{percentNoPics >= 20 &&
-					<Typography variant="body2" style={{marginBottom: 10}}>
-						{I18n.t("Hey ! This mission is missing a lot of pictures (%{cnt}% of the features). If you have some time and live near this area, you should consider going out and take some pictures. You can export the list of features without pictures using the button below.", { cnt: Math.round(percentNoPics) })}
-					</Typography>
-				}
+				<Hidden only="xs">{missingPics}</Hidden>
 				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}} spacing={16}>
 					<Grid item xs={12} sm={6} md={3}>
 						<Button
@@ -92,7 +93,7 @@ class MissionDescriptionComponent extends Component {
 						</Tooltip>
 					</Grid>
 					
-					<Grid item xs={12} sm={6} md={3}>
+					<Grid item hidden={{only: "xs"}} sm={6} md={3}>
 						<Tooltip title={I18n.t("Create a new mission based on this one. Useful for working on same task elsewhere.")} style={btnStyle}>
 							<Button
 								variant="raised"
@@ -105,7 +106,7 @@ class MissionDescriptionComponent extends Component {
 						</Tooltip>
 					</Grid>
 					
-					{this.props.mission.options.canEdit && <Grid item xs={12} sm={6} md={3}>
+					{this.props.mission.options.canEdit && <Grid item hidden={{only: "xs"}} sm={6} md={3}>
 						<Tooltip title={I18n.t("Change the description of this mission")} style={btnStyle}>
 							<Button
 								variant="raised"
@@ -118,6 +119,8 @@ class MissionDescriptionComponent extends Component {
 						</Tooltip>
 					</Grid>}
 				</Grid>
+				
+				<Hidden smUp>{missingPics}</Hidden>
 				
 				<MissionMap features={this.state.features} />
 				

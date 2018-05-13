@@ -128,15 +128,17 @@ class API {
 	 * @param {string} [type] The mission type
 	 * @param {string} [theme] The mission theme
 	 * @param {string} [status] The mission status (online by default)
+	 * @param {boolean} [hasEditor] True if the mission has a simple editor (false by default)
 	 * @return {Promise} A promise resolving on missions
 	 */
-	static GetMissions(page, type, theme, status) {
+	static GetMissions(page, type, theme, status, hasEditor) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				page: page,
 				type: type,
 				theme: theme,
-				status: status || "online"
+				status: status || "online",
+				editor: hasEditor || false
 			};
 			
 			request(CONST.P4R_URL + '/missions' + this.ParamsString(p), (err, res, body) => {
@@ -171,11 +173,12 @@ class API {
 	 * @param {string} [theme] The mission theme
 	 * @return {Promise} A promise resolving on GeoJSON of missions
 	 */
-	static GetMissionsMap(type, theme) {
+	static GetMissionsMap(type, theme, hasEditor) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				type: type,
-				theme: theme
+				theme: theme,
+				editor: hasEditor || false
 			};
 			
 			request(CONST.P4R_URL + '/missions/map' + this.ParamsString(p), (err, res, body) => {
@@ -645,7 +648,6 @@ class API {
 						let element = await osm.fetchElement(featureId);
 						element = osm.setProperties(element, tagsToApply);
 						element = osm.setTimestampToNow(element);
-						element = osm.incrementVersion(element);
 						
 						const isChangesetStillOpen = changesetId ? await osm.isChangesetStillOpen(changesetId) : false;
 						
@@ -653,7 +655,7 @@ class API {
 							changesetId = await osm.createChangeset('Pic4Review', comment);
 						}
 						
-						const newElementVersion = await osm.sendElement(element, changesetId);
+						await osm.sendElement(element, changesetId);
 						resolve({ changesetId: changesetId });
 					}
 					catch(e) {
