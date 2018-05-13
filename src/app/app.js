@@ -36,17 +36,6 @@ const readURLParams = str => {
  */
 class App {
 	constructor() {
-		/*
-		 * Auth
-		 */
-		const params = readURLParams(window.location.href);
-		
-		if(params.oauth_token && opener) {
-			opener.authComplete(window.location.href);
-			window.close();
-		}
-		
-		
 		/**
 		 * Every component of the application is able to send or listen to events through a publish/subscribe system (PubSub).
 		 * Available events are documented here. For usage of PubSub methods, see {@link https://github.com/mroderick/PubSubJS|official documentation}.
@@ -86,12 +75,22 @@ class App {
 			url: CONSTS.OSM_API_URL,
 			oauth_consumer_key: CONSTS.OAUTH_CONSUMER_KEY,
 			oauth_secret: CONSTS.OAUTH_SECRET,
-			landing: window.location.pathname
+			landing: window.location.pathname,
+			singlepage: true
 		});
 		
-		//Check if we receive auth token
-		this._checkAuth();
-		this.authWait = setInterval(this._checkAuth.bind(this), 100);
+		const params = readURLParams(window.location.href);
+		if(params.oauth_token) {
+			this.auth.bootstrapToken(params.oauth_token, () => {
+				this._checkAuth();
+				window.history.pushState({}, "", window.location.href.replace("?oauth_token="+params.oauth_token, ""));
+			});
+		}
+		else {
+			//Check if we receive auth token
+			this._checkAuth();
+			this.authWait = setInterval(this._checkAuth.bind(this), 100);
+		}
 		
 		PubSub.subscribe("UI.LOGIN.SURE", (msg, data) => {
 			if(!this.auth.authenticated()) {

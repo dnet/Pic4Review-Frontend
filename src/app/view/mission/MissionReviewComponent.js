@@ -17,6 +17,7 @@ import Markdown from 'react-markdown';
 import Paper from 'material-ui/Paper';
 import Question from './MissionReviewQuestionComponent';
 import Tooltip from 'material-ui/Tooltip';
+import Tags from './MissionReviewTagsComponent';
 
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
@@ -35,6 +36,7 @@ class MissionReviewComponent extends Component {
 		this.state = {
 			feature: null,
 			currentPictureId: null,
+			clickedPictureId: null,
 			prevFeature: null,
 			count: 0,
 			firstReview: false,
@@ -56,7 +58,7 @@ class MissionReviewComponent extends Component {
 		wasSkipped = wasSkipped || false;
 		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
 		
-		this.setState({ feature: null, currentPictureId: null, prevFeature: this.state.feature, currentAnswer: null });
+		this.setState({ feature: null, currentPictureId: null, clickedPictureId: null, prevFeature: this.state.feature, currentAnswer: null });
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords)
@@ -97,7 +99,8 @@ class MissionReviewComponent extends Component {
 			this.setState({
 				prevFeature: null,
 				feature: this.state.prevFeature,
-				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null
+				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
+				clickedPictureId: null
 			});
 		}
 		else {
@@ -190,7 +193,7 @@ class MissionReviewComponent extends Component {
 				
 				API.UpdateOSMFeature(
 					this.state.feature.properties.id,
-					this.state.currentAnswer.tags,
+					this._getTagsToApply(),
 					this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
 					this._getChangesetId()
 				)
@@ -222,7 +225,6 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_getChangesetId() {
-		console.log(this.props.match.params.mid);
 		return sessionStorage.getItem("cid_"+this.props.match.params.mid);
 	}
 	
@@ -232,6 +234,49 @@ class MissionReviewComponent extends Component {
 	 */
 	_setChangesetId(changesetId) {
 		sessionStorage.setItem("cid_"+this.props.match.params.mid, changesetId);
+	}
+	
+	/**
+	 * Get the tags to apply on the feature according to selected answer + current picture
+	 * @private
+	 */
+	_getTagsToApply() {
+		let tags = Object.assign({}, this.state.currentAnswer.tags);
+		
+		/*
+		 * Add tags related to picture
+		 */
+		
+		let picId = null;
+		
+		//Click on picture details
+		if(this.state.clickedPictureId !== null && this.state.clickedPictureId < 0) {
+			picId = null;
+		}
+		//Single picture
+		else if(this.state.feature.pictures.length === 1) {
+			picId = 0;
+		}
+		//Picture + click is same
+		else if(this.state.currentPictureId === this.state.clickedPictureId || (this.state.currentPictureId !== null && this.state.clickedPictureId === null)) {
+			picId = this.state.currentPictureId;
+		}
+		//Picture centered + clicked is not same
+		else {
+			console.log("Not sure which picture is the best between", this.state.currentPictureId, "and", this.state.clickedPictureId);
+		}
+		
+		//Add tags
+		if(picId !== null) {
+			const pic = this.state.feature.pictures[picId];
+			
+			if(pic && pic.osmTags) {
+				tags = Object.assign(tags, pic.osmTags);
+				tags["survey:date"] = (new Date(pic.date)).toISOString().split("T")[0];
+			}
+		}
+		
+		return tags;
 	}
 	
 	render() {
@@ -274,6 +319,7 @@ class MissionReviewComponent extends Component {
 								this.state.feature && this.state.feature.properties && this.state.feature.properties.id
 								&& this.props.mission.options && this.props.mission.options.data && this.props.mission.options.data.options && this.props.mission.options.data.options.editors
 							}
+							featureProps={this.state.feature.properties}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
 							onAnswerChange={d => this.setState({ currentAnswer: d })}
 						/>
@@ -305,6 +351,9 @@ class MissionReviewComponent extends Component {
 								pictures={this.state.feature.pictures}
 								height={PICTURE_HEIGHT[this.props.width]}
 								style={{marginBottom: 10}}
+								onPicSelected={id => this.setState({ clickedPictureId: id })}
+								onCenterPicChanged={id => this.setState({ currentPictureId: id })}
+								onPicDetails={id => this.setState({ clickedPictureId: -id })}
 							/>}
 					</Grid>
 					
@@ -339,9 +388,6 @@ class MissionReviewComponent extends Component {
 	
 	componentWillMount() {
 		this._next();
-		this.psTokens.picClick = PubSub.subscribe("UI.MISSION.PIC.CLICKED", (msg, data) => {
-			this.setState({ currentPictureId: data.id });
-		});
 		
 		if(sessionStorage.getItem(NOT_FIRST_REVIEW) === null) {
 			this.setState({ firstReview: true });
@@ -362,13 +408,6 @@ class MissionReviewComponent extends Component {
 		
 		if(this.state.count < nextState.count && goMessages[nextState.count]) {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[nextState.count].msg, smiley: goMessages[nextState.count].sml, duration: 6000 });
-		}
-	}
-	
-	componentWillUnmount() {
-		if(this.psTokens.picClick) {
-			PubSub.unsubscribe(this.psTokens.picClick);
-			delete this.psTokens.picClick;
 		}
 	}
 }

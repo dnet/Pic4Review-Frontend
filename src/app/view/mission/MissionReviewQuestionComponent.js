@@ -77,6 +77,10 @@ class MissionReviewQuestionComponent extends Component {
 				<Typography variant="headline">{I18n.t("This need an advanced edit !")}</Typography>
 				<Typography variant="subheading">{I18n.t("Edit the feature according to mission description below")}</Typography>
 				
+				{(this.props.featureProps.title || this.props.featureProps.details) &&
+					<Typography>{I18n.t("Details")} : {this.props.featureProps.details ? this.props.featureProps.details : this.props.featureProps.title}</Typography>
+				}
+				
 				<Button variant="raised" onClick={this.props.onOpenEditor} style={{ margin: 20, minWidth: 150 }}>
 					<Pencil /> {I18n.t("Edit")}
 				</Button>

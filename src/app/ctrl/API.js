@@ -649,12 +649,25 @@ class API {
 						element = osm.setProperties(element, tagsToApply);
 						element = osm.setTimestampToNow(element);
 						
-						const isChangesetStillOpen = changesetId ? await osm.isChangesetStillOpen(changesetId) : false;
+						//Do we have a valid changeset ID ?
+						let changesetOpen = changesetId && !isNaN(parseInt(changesetId));
 						
-						if(!isChangesetStillOpen) {
+						//Check against OSM API if it's still open
+						if(changesetOpen) {
+							try {
+								await osm.isChangesetStillOpen(changesetId);
+							}
+							catch(e) {
+								changesetOpen = false;
+							}
+						}
+						
+						//Create a new changeset if needed
+						if(!changesetOpen) {
 							changesetId = await osm.createChangeset('Pic4Review', comment);
 						}
 						
+						//Send element
 						await osm.sendElement(element, changesetId);
 						resolve({ changesetId: changesetId });
 					}

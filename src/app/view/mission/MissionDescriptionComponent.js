@@ -122,7 +122,7 @@ class MissionDescriptionComponent extends Component {
 				
 				<Hidden smUp>{missingPics}</Hidden>
 				
-				<MissionMap features={this.state.features} />
+				<Hidden only="xs"><MissionMap features={this.state.features} /></Hidden>
 				
 				<ExportMenu
 					open={this.state.openExport}
