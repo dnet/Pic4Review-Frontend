@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { FormControl } from 'material-ui/Form';
+import Checkbox from 'material-ui/Checkbox';
+import { FormControl, FormControlLabel } from 'material-ui/Form';
 import Hash from 'object-hash';
 import IconGridSelect from '../IconGridSelectComponent';
 import Input, { InputLabel } from 'material-ui/Input';
@@ -17,7 +18,8 @@ class MissionsFiltersComponent extends Component {
 		this.state = {
 			theme: null,
 			type: null,
-			status: null
+			status: null,
+			complete: null
 		};
 	}
 	
@@ -26,7 +28,7 @@ class MissionsFiltersComponent extends Component {
 	 * @private
 	 */
 	_toFilters(o) {
-		return { type: o.type || "", theme: o.theme || "", status: o.status || "" };
+		return { type: o.type || "", theme: o.theme || "", status: o.status || "", complete: o.complete || false };
 	}
 	
 	render() {
@@ -53,20 +55,34 @@ class MissionsFiltersComponent extends Component {
 				/>
 			</div>
 			
-			{this.props.status && <FormControl style={styleControl}>
-				<InputLabel htmlFor="missions-filters-status">{I18n.t("Status")}</InputLabel>
-				<Select
-					native
-					value={this.state.status !== null ? this.state.status : this.props.values.status}
-					onChange={e => this.setState({ status: e.target.value })}
-					input={<Input id="missions-filters-status" />}
-				>
-					<option value="" />
-					{Object.entries(MISSION_STATUSES).map(e =>
-						<option key={e[0]} value={e[0]}>{e[1].name}</option>
-					)}
-				</Select>
-			</FormControl>}
+			{(this.props.status || this.props.completeness) && <div style={styleControl}>
+				<Typography variant="body1">{I18n.t("Others")}</Typography>
+				
+				{this.props.status && <FormControl style={styleControl}>
+					<InputLabel htmlFor="missions-filters-status">{I18n.t("Status")}</InputLabel>
+					<Select
+						native
+						value={this.state.status !== null ? this.state.status : this.props.values.status}
+						onChange={e => this.setState({ status: e.target.value })}
+						input={<Input id="missions-filters-status" />}
+					>
+						<option value="" />
+						{Object.entries(MISSION_STATUSES).map(e =>
+							<option key={e[0]} value={e[0]}>{e[1].name}</option>
+						)}
+					</Select>
+				</FormControl>}
+				
+				{this.props.completeness && <FormControlLabel
+					control={
+						<Checkbox
+							checked={this.state.complete}
+							onChange={e => this.setState({ complete: e.target.checked })}
+						/>
+					}
+					label={I18n.t("Show completed missions")}
+				/>}
+			</div>}
 		</div>;
 	}
 	

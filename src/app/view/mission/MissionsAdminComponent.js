@@ -31,7 +31,7 @@ class MissionsAdminComponent extends Component {
 		this.setState({ missions: null, nextMissions: null });
 		
 		//Current mission
-		API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all")
+		API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all", null, state.currentFilters.complete)
 		.then(missions => { this.setState({ missions: missions }); })
 		.catch(e => {
 			console.error(e);
@@ -39,7 +39,7 @@ class MissionsAdminComponent extends Component {
 		});
 		
 		//Next mission
-		API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all")
+		API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all", null, state.currentFilters.complete)
 		.then(missions => this.setState({ nextMissions: missions }))
 		.catch(e => console.error(e));
 	}
@@ -62,7 +62,7 @@ class MissionsAdminComponent extends Component {
 		if(this.props.user && this.state.missions) {
 			return <Grid container spacing={16}>
 				<Grid item hidden={{smDown: true}} md={3} lg={2}>
-					<Filters values={this.state.currentFilters} status={true} onChange={d => this.setState({ currentFilters: d })} />
+					<Filters values={this.state.currentFilters} status={true} completeness={true} onChange={d => this.setState({ currentFilters: d })} />
 				</Grid>
 				<Grid item xs={12} md={9} lg={10}>
 					<Paper>

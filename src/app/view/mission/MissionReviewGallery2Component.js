@@ -29,9 +29,10 @@ class MissionReviewGallery2Component extends Component {
 			>
 				{this.props.pictures.map((p, i) => {
 					const onClick = () => this.props.onPicSelected(i);
+					const url = this.props.showThumbs ? p.thumbUrl || p.pictureUrl : p.pictureUrl;
 					
 					return <GridListTile
-						key={p.pictureUrl}
+						key={url}
 						style={{cursor:"pointer", height: "unset"}}
 						ref={el => this.myRefs.tiles[i] = ReactDOM.findDOMNode(el)}
 					>
@@ -40,8 +41,8 @@ class MissionReviewGallery2Component extends Component {
 							onClick={onClick}
 							target="_blank"
 						>
-							<Hidden only="xs"><Magnifier src={p.pictureUrl} zoomFactor={2.5} mgWidth={200} mgHeight={200} /></Hidden>
-							<Hidden smUp><img src={p.pictureUrl} style={{maxHeight: this.props.height, maxWidth: "100%"}} /></Hidden>
+							<Hidden only="xs"><Magnifier src={url} zoomFactor={2.5} mgWidth={200} mgHeight={200} /></Hidden>
+							<Hidden smUp><img src={url} style={{maxHeight: this.props.height, maxWidth: "100%"}} /></Hidden>
 						</a>
 					
 						<GridListTileBar
@@ -102,7 +103,7 @@ class MissionReviewGallery2Component extends Component {
 						}
 					}
 				}
-			}, 1000);
+			}, 500);
 		}
 	}
 	

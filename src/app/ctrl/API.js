@@ -129,16 +129,18 @@ class API {
 	 * @param {string} [theme] The mission theme
 	 * @param {string} [status] The mission status (online by default)
 	 * @param {boolean} [hasEditor] True if the mission has a simple editor (false by default)
+	 * @param {boolean} [showComplete] True if API should return completed missions
 	 * @return {Promise} A promise resolving on missions
 	 */
-	static GetMissions(page, type, theme, status, hasEditor) {
+	static GetMissions(page, type, theme, status, hasEditor, showComplete) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				page: page,
 				type: type,
 				theme: theme,
 				status: status || "online",
-				editor: hasEditor || false
+				editor: hasEditor || false,
+				complete: showComplete || false
 			};
 			
 			request(CONST.P4R_URL + '/missions' + this.ParamsString(p), (err, res, body) => {
@@ -238,12 +240,16 @@ class API {
 	 * Get mission details
 	 * @param {int} mid The mission ID
 	 * @param {string} [userid] The user ID (to check if can edit mission)
+	 * @param {boolean} [synthetic] Retrieve only synthetic data (for mobile)
 	 * @return {Promise} A promise resolving on mission with its full details
 	 */
-	static GetMissionDetails(mid, userid) {
+	static GetMissionDetails(mid, userid, synthetic) {
 		return new Promise((resolve, reject) => {
-			let url = CONST.P4R_URL + '/missions/' + mid;
-			if(userid) { url += "?userid="+userid; }
+			const params = {};
+			if(userid) { params.userid = userid; }
+			if(synthetic) { params.synthetic = "1"; }
+			
+			const url = CONST.P4R_URL + '/missions/' + mid + API.ParamsString(params);
 			
 			request(url, (err, res, body) => {
 				if(err) {

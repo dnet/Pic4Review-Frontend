@@ -88,7 +88,7 @@ class Mission {
 			opts.date = options.lastedit;
 		}
 		
-		if(options.datatype) {
+		if(options.datatype || options.dataoptions) {
 			opts.data = { source: options.datatype, options: options.dataoptions };
 		}
 		

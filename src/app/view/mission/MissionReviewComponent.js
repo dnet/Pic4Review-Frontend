@@ -22,6 +22,7 @@ import Tags from './MissionReviewTagsComponent';
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 const NOT_FIRST_REVIEW = "no1st";
+const EDITS_COUNT = "edits_count";
 
 const styles = theme => ({ root: theme.typography.caption });
 
@@ -38,7 +39,7 @@ class MissionReviewComponent extends Component {
 			currentPictureId: null,
 			clickedPictureId: null,
 			prevFeature: null,
-			count: 0,
+			count: sessionStorage.getItem(EDITS_COUNT) || 0,
 			firstReview: false,
 			openEditors: false,
 			editorsAnchor: null,
@@ -65,6 +66,9 @@ class MissionReviewComponent extends Component {
 		.then(f => {
 			if(f !== null) {
 				this.setState({ feature: f, currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null) });
+				if(this.refs.container) {
+					this.refs.container.scrollIntoView(false);
+				}
 				
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 				
@@ -279,6 +283,14 @@ class MissionReviewComponent extends Component {
 		return tags;
 	}
 	
+	_hasEditor() {
+		return this.state.feature
+			&& this.state.feature.properties && this.state.feature.properties.id
+			&& this.props.mission.options && this.props.mission.options.data
+			&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
+			&& this.props.mission.options.data.options.editors.type !== "disabled";
+	}
+	
 	render() {
 		if(!this.state.feature) {
 			const style = Object.assign({}, this.props.style, { textAlign: "center" });
@@ -289,8 +301,7 @@ class MissionReviewComponent extends Component {
 				prev: { icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
 				next: { icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next(true) },
 				edit: { icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
-				done: { color: "primary", icon: <Check />, label: I18n.t("Validate"), tip: I18n.t("Mark the feature as done when you have answered the question or edited OpenStreetMap"), click: () => this._review("reviewed") },
-				cantsee: { color: "secondary", icon: <EyeOff />, label: I18n.t("Can't see"), tip: I18n.t("When you can't see clearly the feature on pictures"), click: () => this._review("cantsee") }
+				done: { color: "primary", icon: <Check />, label: I18n.t("Validate"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") }
 			};
 			
 			const createBtn = (btn, s, text) => {
@@ -306,38 +317,54 @@ class MissionReviewComponent extends Component {
 				</Grid>;
 			};
 			
-			const map = <Map ref="map" feature={this.state.feature} pictures={this.state.feature.pictures} style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }} />;
+			const map = <Map
+							ref="map"
+							feature={this.state.feature}
+							pictures={this.state.feature.pictures}
+							currentPictureId={this.state.currentPictureId}
+							style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }}
+						/>;
+			
 			const instructions = <div className="limited-images" style={{overflow: "auto", maxHeight: BANNER_HEIGHT[this.props.width], marginBottom: 10}}>
 									<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
 								</div>;
 			
-			return <div style={this.props.style}>
+			return <div style={this.props.style} ref="container">
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
 						<Question
-							data={
-								this.state.feature && this.state.feature.properties && this.state.feature.properties.id
-								&& this.props.mission.options && this.props.mission.options.data && this.props.mission.options.data.options && this.props.mission.options.data.options.editors
-							}
+							data={this._hasEditor() && this.props.mission.options.data.options.editors}
 							featureProps={this.state.feature.properties}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
-							onAnswerChange={d => this.setState({ currentAnswer: d })}
+							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
 						/>
 						
-						<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
-							{createBtn("prev", 2, false)}
-							{createBtn("next", 2, false)}
-							{createBtn("edit", 2, false)}
-							{createBtn("done", 3)}
-							{createBtn("cantsee", 3)}
-						</Grid>
+						{this._hasEditor() ?
+							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
+								{createBtn("prev", 4)}
+								{createBtn("edit", 4)}
+								{createBtn("next", 4)}
+							</Grid>
+							:
+							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
+								{createBtn("prev", 4)}
+								{createBtn("done", 4)}
+								{createBtn("next", 4)}
+							</Grid>
+						}
 						
-						<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 10}}>
-							{createBtn("done", 6)}
-							{createBtn("cantsee", 6)}
-							{createBtn("prev", 6)}
-							{createBtn("next", 6)}
-						</Grid>
+						{this._hasEditor() ?
+							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 10}}>
+								{createBtn("prev", 6)}
+								{createBtn("next", 6)}
+							</Grid>
+							:
+							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 10}}>
+								{createBtn("done", 12)}
+								{createBtn("prev", 6)}
+								{createBtn("next", 6)}
+							</Grid>
+						}
 						
 						<Grid container spacing={8}>
 							<Grid item hidden={{ only: "xs" }} sm={6}>{map}</Grid>
@@ -354,6 +381,7 @@ class MissionReviewComponent extends Component {
 								onPicSelected={id => this.setState({ clickedPictureId: id })}
 								onCenterPicChanged={id => this.setState({ currentPictureId: id })}
 								onPicDetails={id => this.setState({ clickedPictureId: -id })}
+								showThumbs={this.props.width === "xs"}
 							/>}
 					</Grid>
 					
@@ -376,11 +404,7 @@ class MissionReviewComponent extends Component {
 					open={!this.state.hideConfirmEdit && this.state.openConfirmEdit}
 					onClose={() => this.setState({ openConfirmEdit: false })}
 					onValid={nomore => { this.setState({ hideConfirmEdit: nomore }); this._review("reviewed", true); }}
-					hasEditor={
-						this.props.mission.options && this.props.mission.options.data
-						&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
-						&& this.props.mission.options.data.options.editors.type !== "disabled"
-					}
+					hasEditor={this._hasEditor()}
 				/>
 			</div>;
 		}
@@ -409,15 +433,9 @@ class MissionReviewComponent extends Component {
 		if(this.state.count < nextState.count && goMessages[nextState.count]) {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[nextState.count].msg, smiley: goMessages[nextState.count].sml, duration: 6000 });
 		}
+		
+		sessionStorage.setItem(EDITS_COUNT, nextState.count);
 	}
 }
 
 export default withStyles(styles)(withWidth()(withRouter(MissionReviewComponent)));
-
-/**
- * Event sent when a picture was selected for the current feature
- * @event UI.MISSION.PIC.CLICKED
- * @type {Object} Event data
- * @property {int} id The picture ID
- * @memberof Events
- */

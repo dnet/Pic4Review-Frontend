@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import withWidth from 'material-ui/utils/withWidth';
 import { CircularProgress } from 'material-ui/Progress';
 import API from '../../ctrl/API';
 import MissionDescription from './MissionDescriptionComponent';
@@ -64,8 +65,12 @@ class MissionComponent extends Component {
 	
 	componentWillMount() {
 		this.psTokens.wantUser = PubSub.subscribe("USER.INFO.READY", (msg, data) => {
-			API.GetMissionDetails(this.props.match.params.mid, data && data.id !== -1 ? data.id : undefined)
-			.then(m => this.setState({ mission: m }))
+			API.GetMissionDetails(
+				this.props.match.params.mid,
+				data && data.id !== -1 ? data.id : undefined,
+				this.props.width === "xs"
+			)
+			.then(m => { this.setState({ mission: m }); })
 			.catch(e => {
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission") });
@@ -90,4 +95,4 @@ class MissionComponent extends Component {
 	}
 }
 
-export default withRouter(MissionComponent);
+export default withWidth()(withRouter(MissionComponent));
