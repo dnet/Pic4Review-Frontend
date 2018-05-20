@@ -18,6 +18,7 @@ import Paper from 'material-ui/Paper';
 import Question from './MissionReviewQuestionComponent';
 import Tooltip from 'material-ui/Tooltip';
 import Tags from './MissionReviewTagsComponent';
+import Typography from 'material-ui/Typography';
 
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
@@ -39,7 +40,7 @@ class MissionReviewComponent extends Component {
 			currentPictureId: null,
 			clickedPictureId: null,
 			prevFeature: null,
-			count: sessionStorage.getItem(EDITS_COUNT) || 0,
+			count: parseInt(sessionStorage.getItem(EDITS_COUNT)) || 0,
 			firstReview: false,
 			openEditors: false,
 			editorsAnchor: null,
@@ -331,6 +332,10 @@ class MissionReviewComponent extends Component {
 									<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
 								</div>;
 			
+			const counter = <Typography variant="body1" align="center">
+				{I18n.t({zero: "You're doing your first edit !", one: "You have done one edit !", other: "You have done %{count} edits !"}, {count: this.state.count})}
+			</Typography>;
+			
 			return <div style={this.props.style} ref="container">
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
@@ -371,6 +376,7 @@ class MissionReviewComponent extends Component {
 						<Grid container spacing={8}>
 							<Grid item hidden={{ only: "xs" }} sm={6}>{map}</Grid>
 							<Grid item hidden={{ only: "xs" }} sm={6}>{instructions}</Grid>
+							<Grid item hidden={{ only: "xs" }} sm={12}>{counter}</Grid>
 						</Grid>
 					</Grid>
 					
@@ -390,6 +396,7 @@ class MissionReviewComponent extends Component {
 					<Grid item xs={12} hidden={{ smUp: true }}>
 						{map}
 						<Hidden only="xs">{instructions}</Hidden>
+						{counter}
 					</Grid>
 				</Grid>
 				
