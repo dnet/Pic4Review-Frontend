@@ -172,9 +172,11 @@ class MissionReviewComponent extends Component {
 			)
 			.then(() => {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				this._setChangesetId(upData.changesetId);
-				this.setState({ count: this.state.count+1, });
-				this._next();
+				if(upData.changesetId) {
+					this._setChangesetId(upData.changesetId);
+					this.setState({ count: this.state.count+1, });
+				}
+				this._next(status === "skipped");
 			})
 			.catch(e => {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
@@ -299,7 +301,7 @@ class MissionReviewComponent extends Component {
 		else {
 			const buttons = {
 				prev: { icon: <SkipPrevious />, label: I18n.t("Previous"), tip: I18n.t("Go back to the previously reviewed feature"), click: this._prev.bind(this) },
-				next: { icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._next(true) },
+				next: { icon: <SkipForward />, label: I18n.t("Skip"), tip: I18n.t("Skip this feature if you are not sure of what to do"), click: () => this._review("skipped") },
 				edit: { icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
 				done: { color: "primary", icon: <Check />, label: I18n.t("Validate"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") }
 			};
