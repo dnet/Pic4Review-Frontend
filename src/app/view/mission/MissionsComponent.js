@@ -55,7 +55,7 @@ class MissionsComponent extends Component {
 		else {
 			this.setState({ map: null });
 			
-			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme, this.props.width === "xs")
+			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs", state.currentFilters.complete)
 			.then(missions => { this.setState({ map: missions }); })
 			.catch(e => {
 				console.error(e);

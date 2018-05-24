@@ -173,14 +173,19 @@ class API {
 	 * Get missions synthetic list for map rendering
 	 * @param {string} [type] The mission type
 	 * @param {string} [theme] The mission theme
+	 * @param {string} [status] The mission status (online by default)
+	 * @param {boolean} [hasEditor] True if the mission has a simple editor (false by default)
+	 * @param {boolean} [showComplete] True if API should return completed missions
 	 * @return {Promise} A promise resolving on GeoJSON of missions
 	 */
-	static GetMissionsMap(type, theme, hasEditor) {
+	static GetMissionsMap(type, theme, status, hasEditor, showComplete) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				type: type,
 				theme: theme,
-				editor: hasEditor || false
+				status: status || "online",
+				editor: hasEditor || false,
+				complete: showComplete || false
 			};
 			
 			request(CONST.P4R_URL + '/missions/map' + this.ParamsString(p), (err, res, body) => {

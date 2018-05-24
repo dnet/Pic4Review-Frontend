@@ -56,7 +56,7 @@ class StatisticsTimeComponent extends Component {
 		};
 		
 		return <div>
-			<Typography variant="subheading">{I18n.t("Contributions")}</Typography>
+			<Typography variant="subheading">{I18n.t("Contributions (last 3 months)")}</Typography>
 			<div className="chart-container" style={{position: "relative", width: "100%", height: this.props.height, maxHeight: this.props.height}}>
 				<Line data={dataset} options={opts} />
 			</div>

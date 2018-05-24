@@ -35,7 +35,7 @@ class MyStatisticsComponent extends Component {
 				
 				<Grid item xs={12} sm={6} md={4} lg={3}>
 					<Typography variant="subheading" style={style}>
-						{I18n.t("Position in leaderboard")}
+						{I18n.t("Position in leaderboard (last 30 days)")}
 					</Typography>
 					<Typography variant="body1">
 						{this.state.stats.place ? "#"+this.state.stats.place : I18n.t("Unknown, as you haven't contributed yet")}
