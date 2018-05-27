@@ -446,6 +446,37 @@ class API {
 	}
 	
 	/**
+	 * Get mission statistics for given user
+	 * @param {int} mid The mission ID
+	 * @param {int} uid The user ID
+	 * @return {Promise} A promise resolving on features statistics
+	 */
+	static GetMissionUserStatistics(mid, uid) {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/missions/' + mid + '/stats/' + uid, (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.error));
+						}
+						else {
+							resolve(data);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
 	 * Get missing pictures
 	 * @return {Promise} A promise resolving on pictures list
 	 */

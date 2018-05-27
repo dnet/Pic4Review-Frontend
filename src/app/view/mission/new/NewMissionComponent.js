@@ -272,31 +272,9 @@ class NewMissionComponent extends Component {
 		API.GetMissionLoading(pictoken)
 		.then(loading => {
 			if(loading >= 100) {
-				//Get details
-				API.GetMissionDetails(mid)
-				.then(mission => {
-					//And publish
-					mission.status = "online";
-					
-					API.UpdateMission(mission, this.props.user.name, this.props.user.id)
-					.then(() => {
-						PubSub.publish("UI.MESSAGE.WAITDONE");
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Your mission was succesfully created !") });
-						this.props.history.push("/mission/"+mid);
-					})
-					.catch(e => {
-						console.log("Failed updating");
-						console.error(e);
-						PubSub.publish("UI.MESSAGE.WAITDONE");
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission") });
-					});
-				})
-				.catch(e => {
-					console.log("Failed getting details");
-					console.error(e);
-					PubSub.publish("UI.MESSAGE.WAITDONE");
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission") });
-				});
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Your mission was succesfully created !") });
+				this.props.history.push("/mission/"+mid);
 			}
 			else {
 				PubSub.publish("UI.MESSAGE.WAIT", { progress: loading });

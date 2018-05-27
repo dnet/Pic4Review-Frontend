@@ -122,11 +122,6 @@
     "edit_this_feature_with_an_openstreetmap_editor_4522da18": "Edit this feature with an OpenStreetMap editor",
     "validate_fdf76f9d": "Validate",
     "mark_the_feature_as_done_when_you_have_edited_open_378db828": "Mark the feature as done when you have edited OpenStreetMap",
-    "you_have_done_count_edits_7c6397df": {
-      "zero": "You're doing your first edit !",
-      "one": "You have done one edit !",
-      "other": "You have done %{count} edits !"
-    },
     "you_made_you_first_edit_great_e2ee0245": "You made you first edit, great !",
     "10_edits_keep_going_1ed4d47c": "10 edits, keep going !",
     "30_edits_not_bad_d37dbf98": "30 edits, not bad",
@@ -155,6 +150,11 @@
     "this_need_an_advanced_edit_2cdafa13": "This need an advanced edit !",
     "edit_the_feature_according_to_mission_description__7aa23328": "Edit the feature according to mission description below",
     "details_98a31b68": "Details",
+    "amount_of_edits_5729a31b": "Amount of edits",
+    "count_to_overtake_next_user_9002b5af": "%{count} to overtake next user",
+    "count_since_you_started_7a4b2fa1": "%{count} since you started",
+    "ranked_rank_151814b0": "(ranked #%{rank})",
+    "count_before_previous_user_passes_you_8b96b12d": "%{count} before previous user passes you",
     "key_f2a919d5": "Key",
     "value_d842f16d": "Value",
     "oops_can_t_get_statistics_for_this_mission_5d88085b": "Oops ! Can't get statistics for this mission",
