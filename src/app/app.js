@@ -80,10 +80,13 @@ class App {
 		});
 		
 		const params = readURLParams(window.location.href);
-		if(params.oauth_token) {
-			this.auth.bootstrapToken(params.oauth_token, () => {
+		const token = params.oauth_token || localStorage.getItem("oauth_token") || null;
+		
+		if(token) {
+			this.auth.bootstrapToken(token, () => {
 				this._checkAuth();
-				window.history.pushState({}, "", window.location.href.replace("?oauth_token="+params.oauth_token, ""));
+				window.history.pushState({}, "", window.location.href.replace("?oauth_token="+token, ""));
+				localStorage.setItem("oauth_token", token);
 			});
 		}
 		else {
@@ -111,6 +114,7 @@ class App {
 			}
 			
 			this.user = null;
+			localStorage.removeItem("oauth_token");
 			PubSub.publish("USER.INFO.READY", this.user);
 		});
 		

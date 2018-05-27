@@ -30,9 +30,9 @@ class MissionSummaryComponent extends Component {
 						{THEMES[this.props.mission.theme].icon}
 					</Tooltip>
 					
-					<Tooltip title={EDITORS[this.props.mission.options.canEdit].name}>
+					{this.props.mission.options.canEdit && <Tooltip title={EDITORS[this.props.mission.options.canEdit].name}>
 						{EDITORS[this.props.mission.options.canEdit].icon}
-					</Tooltip>
+					</Tooltip>}
 				</span>
 			</Typography>
 			

@@ -16,9 +16,9 @@ import Map from './MissionReviewMapComponent';
 import Markdown from 'react-markdown';
 import Paper from 'material-ui/Paper';
 import Question from './MissionReviewQuestionComponent';
+import Statistics from './MissionReviewStatisticsComponent';
 import Tooltip from 'material-ui/Tooltip';
 import Tags from './MissionReviewTagsComponent';
-import Typography from 'material-ui/Typography';
 
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
@@ -40,13 +40,14 @@ class MissionReviewComponent extends Component {
 			currentPictureId: null,
 			clickedPictureId: null,
 			prevFeature: null,
-			count: parseInt(sessionStorage.getItem(EDITS_COUNT)) || 0,
+			count: null,
 			firstReview: false,
 			openEditors: false,
 			editorsAnchor: null,
 			currentAnswer: null,
 			openConfirmEdit: false,
-			hideConfirmEdit: false
+			hideConfirmEdit: false,
+			stats: {}
 		};
 		
 		this.psTokens = {};
@@ -60,7 +61,12 @@ class MissionReviewComponent extends Component {
 		wasSkipped = wasSkipped || false;
 		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
 		
-		this.setState({ feature: null, currentPictureId: null, clickedPictureId: null, prevFeature: this.state.feature, currentAnswer: null });
+		this.setState({
+			feature: null, currentPictureId: null, clickedPictureId: null,
+			prevFeature: this.state.feature, currentAnswer: null,
+			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0
+		});
+		
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords)
@@ -76,6 +82,12 @@ class MissionReviewComponent extends Component {
 				if(!f.pictures || f.pictures.length === 0) {
 					PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
 				}
+				
+				//Load user statistics for this mission
+				API.GetMissionUserStatistics(this.props.mission.id, this.props.user.id)
+				.then(s => {
+					this.setState({ stats: s });
+				});
 			}
 			else {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
@@ -332,9 +344,7 @@ class MissionReviewComponent extends Component {
 									<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
 								</div>;
 			
-			const counter = <Typography variant="body1" align="center">
-				{I18n.t({zero: "You're doing your first edit !", one: "You have done one edit !", other: "You have done %{count} edits !"}, {count: this.state.count})}
-			</Typography>;
+			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
 			
 			return <div style={this.props.style} ref="container">
 				<Grid container spacing={8}>
@@ -395,8 +405,8 @@ class MissionReviewComponent extends Component {
 					
 					<Grid item xs={12} hidden={{ smUp: true }}>
 						{map}
-						<Hidden only="xs">{instructions}</Hidden>
 						{counter}
+						{instructions}
 					</Grid>
 				</Grid>
 				
@@ -443,7 +453,7 @@ class MissionReviewComponent extends Component {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[nextState.count].msg, smiley: goMessages[nextState.count].sml, duration: 6000 });
 		}
 		
-		sessionStorage.setItem(EDITS_COUNT, nextState.count);
+		sessionStorage.setItem(EDITS_COUNT+"_"+this.props.mission.id, nextState.count);
 	}
 }
 
