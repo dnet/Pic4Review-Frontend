@@ -92,7 +92,11 @@ class Mission {
 			opts.data = { source: options.datatype, options: options.dataoptions };
 		}
 		
-		opts.canEdit = options.canEdit || false;
+		if(options.illustration) {
+			opts.illustration = options.illustration;
+		}
+		
+		opts.canEdit = options.canEdit || options.editor || false;
 		
 		return new Mission(
 			options.id,

@@ -19,7 +19,8 @@ class MissionsFiltersComponent extends Component {
 			theme: null,
 			type: null,
 			status: null,
-			complete: null
+			complete: null,
+			editor: null
 		};
 	}
 	
@@ -28,7 +29,7 @@ class MissionsFiltersComponent extends Component {
 	 * @private
 	 */
 	_toFilters(o) {
-		return { type: o.type || "", theme: o.theme || "", status: o.status || "", complete: o.complete || false };
+		return { type: o.type || "", theme: o.theme || "", status: o.status || "", complete: o.complete || false, editor: o.editor || false };
 	}
 	
 	render() {
@@ -73,15 +74,27 @@ class MissionsFiltersComponent extends Component {
 					</Select>
 				</FormControl>}
 				
-				{this.props.completeness && <FormControlLabel
-					control={
-						<Checkbox
-							checked={this.state.complete}
-							onChange={e => this.setState({ complete: e.target.checked })}
-						/>
-					}
-					label={I18n.t("Show completed missions")}
-				/>}
+				{this.props.completeness && <div>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={this.state.editor}
+								onChange={e => this.setState({ editor: e.target.checked })}
+							/>
+						}
+						label={I18n.t("With integrated editor")}
+					/>
+					
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={this.state.complete}
+								onChange={e => this.setState({ complete: e.target.checked })}
+							/>
+						}
+						label={I18n.t("Show completed missions")}
+					/>
+				</div>}
 			</div>}
 		</div>;
 	}

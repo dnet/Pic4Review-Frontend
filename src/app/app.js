@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { HashRouter } from 'react-router-dom';
-import { Car, Cart, Cctv, CupWater, Download, PineTree, Pillar, TagPlus, Wrench, SubwayVariant, HelpCircle, WheelchairAccessibility } from 'mdi-material-ui';
+import { Car, Cart, Cctv, CupWater, Download, PineTree, Pillar, TagPlus, Wrench, RunFast, SubwayVariant, TimerSand, HelpCircle, WheelchairAccessibility } from 'mdi-material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import BodyComponent from './view/BodyComponent';
 import CONSTS from './constants';
@@ -154,6 +154,11 @@ class App {
 			"online": { name: I18n.t("Online") },
 			"draft": { name: I18n.t("Draft") },
 			"canceled": { name: I18n.t("Hidden") }
+		};
+		
+		window.EDITORS = {
+			true: { name: I18n.t("Integrated editor available"), icon: <RunFast /> },
+			false: { name: I18n.t("External editor required"), icon: <TimerSand /> }
 		};
 	}
 	

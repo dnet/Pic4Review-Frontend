@@ -9,6 +9,7 @@ import Radio, { RadioGroup } from 'material-ui/Radio';
 import Typography from 'material-ui/Typography';
 
 const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
+const IMG_HEIGHT = { "xs": 100, "sm": 150, "md": 200, "lg": 250, "xl": 250 };
 
 /**
  * Mission review progress component displays a progress bar for the current review session.
@@ -33,20 +34,25 @@ class MissionReviewQuestionComponent extends Component {
 			let content = null;
 			
 			if(this.props.data.type === "images") {
-				content = <GridList cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)} style={{ flexWrap: "nowrap", marginTop: 10 }}>
+				content = <GridList
+					cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)}
+					cellHeight={IMG_HEIGHT[this.props.width]}
+					style={{ flexWrap: "nowrap", marginTop: 10 }}
+				>
 					{this.props.data.answers.map((answer, i) => {
 						const onClick = () => this._onAnswerChange(i);
 						
 						return <GridListTile key={answer.label} onClick={onClick}>
 							<img src={answer.image} alt={answer.label} />
 							<GridListTileBar
-								title={answer.label}
+								subtitle={answer.label}
 								actionPosition="left"
 								actionIcon={
 									<IconButton style={{ color: "white" }} onClick={onClick}>
 										{this.state.selectedAnswer === i ? <RadioboxMarked /> : <RadioboxBlank />}
 									</IconButton>
 								}
+								style={{height: 30}}
 							/>
 						</GridListTile>;
 					})}
