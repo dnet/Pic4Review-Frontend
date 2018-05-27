@@ -40,7 +40,7 @@ class MissionsComponent extends Component {
 			this.setState({ missions: null, nextMissions: null });
 			
 			//Current mission
-			API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs", state.currentFilters.complete)
+			API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs" || state.currentFilters.editor, state.currentFilters.complete)
 			.then(missions => { this.setState({ missions: missions }); })
 			.catch(e => {
 				console.error(e);
@@ -48,14 +48,14 @@ class MissionsComponent extends Component {
 			});
 			
 			//Next mission
-			API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs", state.currentFilters.complete)
+			API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs" || state.currentFilters.editor, state.currentFilters.complete)
 			.then(missions => this.setState({ nextMissions: missions }))
 			.catch(e => console.error(e));
 		}
 		else {
 			this.setState({ map: null });
 			
-			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs", state.currentFilters.complete)
+			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs" || state.currentFilters.editor, state.currentFilters.complete)
 			.then(missions => { this.setState({ map: missions }); })
 			.catch(e => {
 				console.error(e);

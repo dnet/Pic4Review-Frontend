@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { ContentDuplicate, Eye, EyeOff, Information, Pencil } from 'mdi-material-ui';
+import { ChevronDown, ContentDuplicate, Eye, EyeOff, Information, Pencil } from 'mdi-material-ui';
 import API from '../../ctrl/API';
+import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui/ExpansionPanel';
 import Filters from './MissionsFiltersComponent';
 import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
@@ -10,6 +11,7 @@ import Pager from '../PagerComponent';
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel } from 'material-ui/Table';
 import Tooltip from 'material-ui/Tooltip';
+import Typography from 'material-ui/Typography';
 import Wait from '../WaitComponent';
 
 /**
@@ -31,7 +33,7 @@ class MissionsAdminComponent extends Component {
 		this.setState({ missions: null, nextMissions: null });
 		
 		//Current mission
-		API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all", null, state.currentFilters.complete)
+		API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all", state.currentFilters.editor, state.currentFilters.complete)
 		.then(missions => { this.setState({ missions: missions }); })
 		.catch(e => {
 			console.error(e);
@@ -39,7 +41,7 @@ class MissionsAdminComponent extends Component {
 		});
 		
 		//Next mission
-		API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all", null, state.currentFilters.complete)
+		API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, state.currentFilters.status || "all", state.currentFilters.editor, state.currentFilters.complete)
 		.then(missions => this.setState({ nextMissions: missions }))
 		.catch(e => console.error(e));
 	}
@@ -60,10 +62,24 @@ class MissionsAdminComponent extends Component {
 	
 	render() {
 		if(this.props.user && this.state.missions) {
+			const filters = <Filters values={this.state.currentFilters} status={true} completeness={true} onChange={d => this.setState({ currentFilters: d })} />;
+			
 			return <Grid container spacing={16}>
 				<Grid item hidden={{smDown: true}} md={3} lg={2}>
-					<Filters values={this.state.currentFilters} status={true} completeness={true} onChange={d => this.setState({ currentFilters: d })} />
+					{filters}
 				</Grid>
+				
+				<Grid item hidden={{mdUp: true}} xs={12}>
+					<ExpansionPanel>
+						<ExpansionPanelSummary expandIcon={<ChevronDown />}>
+							<Typography variant="subheading">{I18n.t("Filters")}</Typography>
+						</ExpansionPanelSummary>
+						<ExpansionPanelDetails>
+							{filters}
+						</ExpansionPanelDetails>
+					</ExpansionPanel>
+				</Grid>
+				
 				<Grid item xs={12} md={9} lg={10}>
 					<Paper>
 						<Table>

@@ -21,13 +21,17 @@ class MissionSummaryComponent extends Component {
 			<Typography variant={this.props.width === "xs" ? "subheading" : "headline"} style={{verticalAlign: "middle"}}>
 				{this.props.mission.description.short}
 				
-				<span style={{verticalAlign: "middle", color: grey[500], marginLeft: 10}}>
+				<span style={{verticalAlign: "middle", color: grey[500], marginLeft: 10, float: "right"}}>
 					<Tooltip title={TYPES[this.props.mission.type].name}>
 						{TYPES[this.props.mission.type].icon}
 					</Tooltip>
 					
 					<Tooltip title={THEMES[this.props.mission.theme].name}>
 						{THEMES[this.props.mission.theme].icon}
+					</Tooltip>
+					
+					<Tooltip title={EDITORS[this.props.mission.options.canEdit].name}>
+						{EDITORS[this.props.mission.options.canEdit].icon}
 					</Tooltip>
 				</span>
 			</Typography>
