@@ -23,6 +23,8 @@ class MissionReviewStatisticsComponent extends Component {
 					<Account style={{verticalAlign: "middle"}} />
 					<Pencil style={{verticalAlign: "middle", color: "grey"}} />
 					{I18n.t("%{count} since you started", { count: this.props.count })}
+					&nbsp;
+					{this.props.data && this.props.data.place !== undefined && I18n.t("(ranked #%{rank})", { rank: this.props.data.place })}
 				</Grid>}
 				
 				{this.props.data && this.props.data.prev !== undefined && <Grid item>
