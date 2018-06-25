@@ -33,11 +33,9 @@ class StatisticsComponent extends Component {
 						<UsersScore data={this.state.stats.scores} />
 					</Grid>
 					<Grid item xs={12} md={6}>
-						<Typography variant="subheading">{I18n.t("Last missing/bad pictures")}</Typography>
-						<MissingPictures style={{height: 400}} />
-					</Grid>
-					<Grid item xs={12} md={6}>
 						<Themes data={this.state.stats.themes} height={300} />
+						<Typography variant="subheading" style={{marginTop: 10}}>{I18n.t("Last missing/bad pictures")}</Typography>
+						<MissingPictures style={{height: 400}} />
 					</Grid>
 				</Grid>
 			</div>;

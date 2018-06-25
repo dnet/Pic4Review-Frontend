@@ -14,6 +14,7 @@ class MissionFirstReviewComponent extends Component {
 			onClick={this.props.onClose}
 		>
 			<DialogContent>
+				<div style={{float: "right", cursor: "pointer"}}>❌</div>
 				<Typography variant="headline">{I18n.t("Welcome !")}</Typography>
 				<Typography variant="body1">
 					{I18n.t("Have we already met ? Anyway, welcome to the review page.")}<br />{I18n.t("Here are some tips for a good start in Pic4Review:")}

@@ -8,7 +8,7 @@ import IconButton from 'material-ui/IconButton';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import Typography from 'material-ui/Typography';
 
-const IMG_COLS = { "xs": 1.5, "sm": 2.5, "md": 3.5, "lg": 4.5, "xl": 5.5 };
+const IMG_COLS = { "xs": 1.5, "sm": 1.5, "md": 2.5, "lg": 3.5, "xl": 3.5 };
 const IMG_HEIGHT = { "xs": 100, "sm": 150, "md": 200, "lg": 250, "xl": 250 };
 
 /**

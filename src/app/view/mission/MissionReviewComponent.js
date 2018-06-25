@@ -7,6 +7,7 @@ import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
 import ConfirmEdit from './MissionReviewFeatureDialogComponent';
 import Editors from './MissionReviewEditorsComponent';
+import FeatureDetails from './MissionReviewFeatureDetailsComponent';
 import First from './MissionFirstReviewComponent';
 import Gallery2 from './MissionReviewGallery2Component';
 import Grid from 'material-ui/Grid';
@@ -18,7 +19,6 @@ import Paper from 'material-ui/Paper';
 import Question from './MissionReviewQuestionComponent';
 import Statistics from './MissionReviewStatisticsComponent';
 import Tooltip from 'material-ui/Tooltip';
-import Tags from './MissionReviewTagsComponent';
 
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
@@ -347,6 +347,8 @@ class MissionReviewComponent extends Component {
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
 			
 			return <div style={this.props.style} ref="container">
+				<FeatureDetails feature={this.state.feature} />
+				
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
 						<Question
