@@ -28,10 +28,10 @@ class MissionReviewFeatureDetailsComponent extends Component {
 				<Typography variant="subheading" style={{textAlign: "center"}}>
 					{name}
 					<Tooltip title={I18n.t("Show more details about this object")}>
-						<IconButton>
-							<DotsHorizontal
-								onClick={() => this.setState({ dialogOpen: true })}
-							/>
+						<IconButton
+							onClick={() => this.setState({ dialogOpen: true })}
+						>
+							<DotsHorizontal />
 						</IconButton>
 					</Tooltip>
 				</Typography>
