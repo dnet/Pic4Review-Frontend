@@ -10,7 +10,7 @@ const JSON_RGX = /^[A-Za-z0-9_\-]+\.json$/;
 //Read translation files
 fs.readdirSync(I18N_DIR).forEach((file) => {
 	if(JSON_RGX.test(file)) {
-		const lng = file.substring(0, file.length - 5);
+		const lng = file.substring(0, file.length - 5).replace("_", "-");
 		try {
 			//Read file
 			const lngData = JSON.parse(fs.readFileSync(I18N_DIR+"/"+file, 'utf8'));

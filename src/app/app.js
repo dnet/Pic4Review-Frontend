@@ -9,7 +9,7 @@ import I18n from 'i18nline/lib/i18n';
 import OsmAuth from 'osm-auth';
 import PubSub from 'pubsub-js';
 
-const LOCALES = [ "en", "fr" ];
+const LOCALES = [ "en", "fr", "hu", "pt-PT" ];
 
 const readURLParams = str => {
 	const u = str.split('?');
@@ -55,12 +55,22 @@ class App {
 	 * @private
 	 */
 	_initI18n() {
-		I18n.locale = window.navigator.userLanguage || window.navigator.language;
+		let locale = null;
+		if(window.navigator.languages) {
+			for(const l of window.navigator.languages) {
+				if(LOCALES.includes(l)) {
+					locale = l;
+					break;
+				}
+			}
+		}
+		
+		I18n.locale = locale || window.navigator.userLanguage || window.navigator.language;
 		I18n.fallbacks = true;
 		
 		//Load translation files
 		for(const l of LOCALES) {
-			Object.assign(I18n.translations, require("../config/locales/"+l+".json"));
+			Object.assign(I18n.translations, require("../config/locales/"+l.replace("-", "_")+".json"));
 		}
 		
 		window.I18n = I18n;
