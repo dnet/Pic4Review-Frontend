@@ -23,7 +23,7 @@ class MissionReviewGallery2Component extends Component {
 			const style = Object.assign({}, this.props.style, {flexWrap: "nowrap", maxHeight: this.props.height});
 			
 			return <GridList
-				cols={Math.min(1.25, this.props.pictures.length)}
+				cols={1.25}
 				style={style}
 				ref={el => this.myRefs.grid = ReactDOM.findDOMNode(el)}
 			>
