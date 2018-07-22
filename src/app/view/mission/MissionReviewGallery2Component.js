@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Information, MapMarkerRadius, MagnifyPlusOutline } from 'mdi-material-ui';
+import { Information, MapMarkerRadius, MagnifyPlusOutline, PlusCircle } from 'mdi-material-ui';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Hidden from 'material-ui/Hidden';
 import IconButton from 'material-ui/IconButton';
@@ -74,6 +74,22 @@ class MissionReviewGallery2Component extends Component {
 						/>
 					</GridListTile>;
 				})}
+				
+				{this.props.showMore &&
+					<GridListTile
+						style={{cursor:"pointer", height: "unset", width: "40%"}}
+						onClick={() => this.props.onShowMore()}
+					>
+						<GridListTileBar
+							titlePosition="top"
+							style={{ height: 40 }}
+							title={I18n.t("Load more pictures")}
+						/>
+						<div style={{width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+							<PlusCircle style={{height: 128, width: 128, color: "#3849aa"}}/>
+						</div>
+					</GridListTile>
+				}
 			</GridList>;
 		}
 		else {

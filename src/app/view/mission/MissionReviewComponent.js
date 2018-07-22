@@ -15,6 +15,7 @@ import Hidden from 'material-ui/Hidden';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
 import Markdown from 'react-markdown';
+import P4C from 'pic4carto';
 import Paper from 'material-ui/Paper';
 import Question from './MissionReviewQuestionComponent';
 import Statistics from './MissionReviewStatisticsComponent';
@@ -37,6 +38,7 @@ class MissionReviewComponent extends Component {
 		
 		this.state = {
 			feature: null,
+			pictures: null,
 			currentPictureId: null,
 			clickedPictureId: null,
 			prevFeature: null,
@@ -47,10 +49,12 @@ class MissionReviewComponent extends Component {
 			currentAnswer: null,
 			openConfirmEdit: false,
 			hideConfirmEdit: false,
+			showMore: 0,
 			stats: {}
 		};
 		
 		this.psTokens = {};
+		this.picMan = new P4C.PicturesManager();
 	}
 	
 	/**
@@ -62,7 +66,7 @@ class MissionReviewComponent extends Component {
 		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
 		
 		this.setState({
-			feature: null, currentPictureId: null, clickedPictureId: null,
+			feature: null, pictures: null, currentPictureId: null, clickedPictureId: null,
 			prevFeature: this.state.feature, currentAnswer: null,
 			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0
 		});
@@ -72,7 +76,7 @@ class MissionReviewComponent extends Component {
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords)
 		.then(f => {
 			if(f !== null) {
-				this.setState({ feature: f, currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null) });
+				this.setState({ feature: f, pictures: f.pictures, currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null) });
 				if(this.refs.container) {
 					this.refs.container.scrollIntoView(false);
 				}
@@ -126,41 +130,43 @@ class MissionReviewComponent extends Component {
 	}
 	
 	/**
-	 * Switch to next available picture
+	 * Load more pictures around the feature
 	 * @private
 	 */
-	_nextPic() {
-		if(
-			this.state.feature
-			&& this.state.feature.pictures
-			&& this.state.currentPictureId !== null
-		) {
-			if(this.state.currentPictureId === this.state.feature.pictures.length - 1) {
-				this.setState({ currentPictureId: 0 });
-			}
-			else {
-				this.setState({ currentPictureId: this.state.currentPictureId+1 });
-			}
-		}
-	}
-	
-	/**
-	 * Switch to previous available picture
-	 * @private
-	 */
-	_prevPic() {
-		if(
-			this.state.feature
-			&& this.state.feature.pictures
-			&& this.state.currentPictureId !== null
-		) {
-			if(this.state.currentPictureId === 0) {
-				this.setState({ currentPictureId: this.state.feature.pictures.length - 1 });
-			}
-			else {
-				this.setState({ currentPictureId: this.state.currentPictureId - 1 });
-			}
-		}
+	_loadMorePics() {
+		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading more pictures around") });
+		
+		this.picMan.startPicsRetrievalAround(
+			new P4C.LatLng(this.state.feature.coordinates[0], this.state.feature.coordinates[1]),
+			30,
+			{ mindate: Date.now() - 1000*3600*24*365*3, towardscenter: this.state.showMore === 0 }
+		)
+		.then(pics => {
+			const newPics = this.state.pictures.slice(0);
+			
+			//Avoid adding pics we already have
+			pics.forEach(p => {
+				let dupe = false;
+				const json = JSON.stringify(p.osmTags);
+				for(let i=0; i < newPics.length; i++) {
+					if(json === JSON.stringify(newPics[i].osmTags)) {
+						dupe = true;
+						break;
+					}
+				}
+				
+				if(!dupe) {
+					newPics.push(p);
+				}
+			});
+			
+			this.setState({ pictures: newPics, showMore: this.state.showMore + 1 });
+			PubSub.publish("UI.MESSAGE.WAITDONE");
+		})
+		.catch(e => {
+			PubSub.publish("UI.MESSAGE.WAITDONE");
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops, can't get more pictures for now.") });
+		});
 	}
 	
 	/**
@@ -273,7 +279,7 @@ class MissionReviewComponent extends Component {
 			picId = null;
 		}
 		//Single picture
-		else if(this.state.feature.pictures.length === 1) {
+		else if(this.state.pictures.length === 1) {
 			picId = 0;
 		}
 		//Picture + click is same
@@ -287,7 +293,7 @@ class MissionReviewComponent extends Component {
 		
 		//Add tags
 		if(picId !== null) {
-			const pic = this.state.feature.pictures[picId];
+			const pic = this.state.pictures[picId];
 			
 			if(pic && pic.osmTags) {
 				tags = Object.assign(tags, pic.osmTags);
@@ -335,7 +341,7 @@ class MissionReviewComponent extends Component {
 			const map = <Map
 							ref="map"
 							feature={this.state.feature}
-							pictures={this.state.feature.pictures}
+							pictures={this.state.pictures}
 							currentPictureId={this.state.currentPictureId}
 							style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }}
 						/>;
@@ -393,15 +399,17 @@ class MissionReviewComponent extends Component {
 					</Grid>
 					
 					<Grid item xs={12} sm={6} lg={7} xl={8}>
-						{this.state.feature.pictures &&
+						{this.state.pictures &&
 							<Gallery2
-								pictures={this.state.feature.pictures}
+								pictures={this.state.pictures}
 								height={PICTURE_HEIGHT[this.props.width]}
 								style={{marginBottom: 10}}
 								onPicSelected={id => this.setState({ clickedPictureId: id })}
 								onCenterPicChanged={id => this.setState({ currentPictureId: id })}
 								onPicDetails={id => this.setState({ clickedPictureId: -id })}
+								onShowMore={() => this._loadMorePics()}
 								showThumbs={this.props.width === "xs"}
+								showMore={this.state.showMore < 2}
 							/>}
 					</Grid>
 					
