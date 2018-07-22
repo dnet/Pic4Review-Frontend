@@ -123,6 +123,12 @@ class MissionReviewGallery2Component extends Component {
 		}
 	}
 	
+	componentDidUpdate(prevProps) {
+		if(prevProps.currentPictureId !== this.props.currentPictureId && this.centerPic !== this.props.currentPictureId) {
+			this.myRefs.grid.scrollLeft = this.myRefs.tiles[this.props.currentPictureId].offsetLeft - this.myRefs.tiles[this.props.currentPictureId].offsetWidth;
+		}
+	}
+	
 	componentWillUnmount() {
 		clearInterval(this.timer);
 	}

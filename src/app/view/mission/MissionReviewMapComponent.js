@@ -46,6 +46,7 @@ class MissionReviewMapComponent extends Component {
 					icon={this.props.currentPictureId == i || (i === 0 && this.props.currentPictureId === null) ? picSelectedIcon : picIcon}
 					iconAngle={p.direction}
 					ref={"marker-"+i}
+					onClick={() => this.props.onPicClicked(i)}
 				/>);
 			}
 		}

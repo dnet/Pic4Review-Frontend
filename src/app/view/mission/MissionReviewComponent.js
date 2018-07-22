@@ -67,7 +67,7 @@ class MissionReviewComponent extends Component {
 		
 		this.setState({
 			feature: null, pictures: null, currentPictureId: null, clickedPictureId: null,
-			prevFeature: this.state.feature, currentAnswer: null,
+			prevFeature: this.state.feature, currentAnswer: null, showMore: 0,
 			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0
 		});
 		
@@ -120,6 +120,8 @@ class MissionReviewComponent extends Component {
 			this.setState({
 				prevFeature: null,
 				feature: this.state.prevFeature,
+				pictures: this.state.prevFeature.pictures,
+				showMore: 0,
 				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
 				clickedPictureId: null
 			});
@@ -343,6 +345,7 @@ class MissionReviewComponent extends Component {
 							feature={this.state.feature}
 							pictures={this.state.pictures}
 							currentPictureId={this.state.currentPictureId}
+							onPicClicked={id => this.setState({ currentPictureId: id })}
 							style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }}
 						/>;
 			
@@ -404,6 +407,7 @@ class MissionReviewComponent extends Component {
 								pictures={this.state.pictures}
 								height={PICTURE_HEIGHT[this.props.width]}
 								style={{marginBottom: 10}}
+								currentPictureId={this.state.currentPictureId}
 								onPicSelected={id => this.setState({ clickedPictureId: id })}
 								onCenterPicChanged={id => this.setState({ currentPictureId: id })}
 								onPicDetails={id => this.setState({ clickedPictureId: -id })}
