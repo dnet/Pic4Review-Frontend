@@ -189,7 +189,7 @@ class MissionReviewComponent extends Component {
 					}
 				});
 				
-				this.setState({ pictures: newPics, shownPics: Math.min(this.state.shownPics + PICS_PER_PAGE, newPics.length), noMorePics: true });
+				this.setState({ pictures: newPics, shownPics: Math.min(this.state.shownPics + PICS_PER_PAGE, newPics.length + 1), noMorePics: true });
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 			})
 			.catch(e => {
@@ -375,7 +375,7 @@ class MissionReviewComponent extends Component {
 			const map = <Map
 							ref="map"
 							feature={this.state.feature}
-							pictures={this.state.pictures}
+							pictures={this.state.pictures.slice(0, this.state.shownPics)}
 							currentPictureId={this.state.currentPictureId}
 							onPicClicked={id => this.setState({ currentPictureId: id })}
 							style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }}
