@@ -33,15 +33,25 @@ class MissionsComponent extends Component {
 			page: 1,
 			tab: 0
 		};
+		
+		this.apiCallToken = 0;
 	}
 	
 	_fetchMissions(state) {
+		//Mechanism to avoid late API answer overwrite latest request results
+		this.apiCallToken++;
+		const currentToken = parseInt(this.apiCallToken.toString());
+		
 		if(state.tab === 0) {
 			this.setState({ missions: null, nextMissions: null });
 			
 			//Current mission
 			API.GetMissions(state.page, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs" || state.currentFilters.editor, state.currentFilters.complete)
-			.then(missions => { this.setState({ missions: missions }); })
+			.then(missions => {
+				if(currentToken === this.apiCallToken) {
+					this.setState({ missions: missions });
+				}
+			})
 			.catch(e => {
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
@@ -49,14 +59,22 @@ class MissionsComponent extends Component {
 			
 			//Next mission
 			API.GetMissions(state.page+1, state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs" || state.currentFilters.editor, state.currentFilters.complete)
-			.then(missions => this.setState({ nextMissions: missions }))
+			.then(missions => {
+				if(currentToken === this.apiCallToken) {
+					this.setState({ nextMissions: missions });
+				}
+			})
 			.catch(e => console.error(e));
 		}
 		else {
 			this.setState({ map: null });
 			
 			API.GetMissionsMap(state.currentFilters.type, state.currentFilters.theme, null, this.props.width === "xs" || state.currentFilters.editor, state.currentFilters.complete)
-			.then(missions => { this.setState({ map: missions }); })
+			.then(missions => { 
+				if(currentToken === this.apiCallToken) {
+					this.setState({ map: missions });
+				}
+			})
 			.catch(e => {
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
