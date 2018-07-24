@@ -32,7 +32,7 @@ class MissionReviewGallery2Component extends Component {
 					const url = this.props.showThumbs ? p.thumbUrl || p.pictureUrl : p.pictureUrl;
 					
 					return <GridListTile
-						key={url}
+						key={i}
 						style={{cursor:"pointer", height: "unset"}}
 						ref={el => this.myRefs.tiles[i] = ReactDOM.findDOMNode(el)}
 					>

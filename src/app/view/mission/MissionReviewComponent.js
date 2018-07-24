@@ -25,6 +25,7 @@ const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 }
 const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 const NOT_FIRST_REVIEW = "no1st";
 const EDITS_COUNT = "edits_count";
+const PICS_PER_PAGE = 10;
 
 const styles = theme => ({ root: theme.typography.caption });
 
@@ -49,7 +50,8 @@ class MissionReviewComponent extends Component {
 			currentAnswer: null,
 			openConfirmEdit: false,
 			hideConfirmEdit: false,
-			showMore: 0,
+			shownPics: 0,
+			noMorePics: false,
 			stats: {}
 		};
 		
@@ -66,8 +68,14 @@ class MissionReviewComponent extends Component {
 		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
 		
 		this.setState({
-			feature: null, pictures: null, currentPictureId: null, clickedPictureId: null,
-			prevFeature: this.state.feature, currentAnswer: null, showMore: 0,
+			feature: null,
+			pictures: null,
+			currentPictureId: null,
+			clickedPictureId: null,
+			prevFeature: this.state.feature,
+			currentAnswer: null,
+			shownPics: 0,
+			noMorePics: false,
 			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0
 		});
 		
@@ -76,7 +84,12 @@ class MissionReviewComponent extends Component {
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords)
 		.then(f => {
 			if(f !== null) {
-				this.setState({ feature: f, pictures: f.pictures, currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null) });
+				this.setState({
+					feature: f,
+					pictures: f.pictures,
+					currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
+					shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0)
+				});
 				if(this.refs.container) {
 					this.refs.container.scrollIntoView(false);
 				}
@@ -121,7 +134,8 @@ class MissionReviewComponent extends Component {
 				prevFeature: null,
 				feature: this.state.prevFeature,
 				pictures: this.state.prevFeature.pictures,
-				showMore: 0,
+				shownPics: this.state.prevFeature.pictures.length > 0 ? Math.min(PICS_PER_PAGE, this.state.prevFeature.pictures.length) : 0,
+				noMorePics: false,
 				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
 				clickedPictureId: null
 			});
@@ -136,39 +150,57 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_loadMorePics() {
-		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading more pictures around") });
-		
-		this.picMan.startPicsRetrievalAround(
-			new P4C.LatLng(this.state.feature.coordinates[0], this.state.feature.coordinates[1]),
-			30,
-			{ mindate: Date.now() - 1000*3600*24*365*3, towardscenter: this.state.showMore === 0 }
-		)
-		.then(pics => {
-			const newPics = this.state.pictures.slice(0);
+		//Pictures left in cache
+		if(this.state.shownPics < this.state.pictures.length) {
+			let newShownPics = Math.min(this.state.shownPics+PICS_PER_PAGE, this.state.pictures.length);
 			
-			//Avoid adding pics we already have
-			pics.forEach(p => {
-				let dupe = false;
-				const json = JSON.stringify(p.osmTags);
-				for(let i=0; i < newPics.length; i++) {
-					if(json === JSON.stringify(newPics[i].osmTags)) {
-						dupe = true;
-						break;
-					}
-				}
+			//Avoid showing no more pics msg
+			if(this.state.noMorePics && newShownPics === this.state.pictures.length) {
+				newShownPics++;
+			}
+			
+			this.setState({ shownPics: newShownPics });
+		}
+		//Load from Pic4Carto
+		else if(!this.state.noMorePics) {
+			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading more pictures around") });
+			
+			this.picMan.startPicsRetrievalAround(
+				new P4C.LatLng(this.state.feature.coordinates[0], this.state.feature.coordinates[1]),
+				30,
+				{ mindate: Date.now() - 1000*3600*24*365*3, towardscenter: false }
+			)
+			.then(pics => {
+				const newPics = this.state.pictures.slice(0);
 				
-				if(!dupe) {
-					newPics.push(p);
-				}
+				//Avoid adding pics we already have
+				pics.forEach(p => {
+					let dupe = false;
+					const json = JSON.stringify(p.osmTags);
+					for(let i=0; i < newPics.length; i++) {
+						if(json === JSON.stringify(newPics[i].osmTags)) {
+							dupe = true;
+							break;
+						}
+					}
+					
+					if(!dupe) {
+						newPics.push(p);
+					}
+				});
+				
+				this.setState({ pictures: newPics, shownPics: Math.min(this.state.shownPics + PICS_PER_PAGE, newPics.length), noMorePics: true });
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+			})
+			.catch(e => {
+				PubSub.publish("UI.MESSAGE.WAITDONE");
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops, can't get more pictures for now.") });
 			});
-			
-			this.setState({ pictures: newPics, showMore: this.state.showMore + 1 });
-			PubSub.publish("UI.MESSAGE.WAITDONE");
-		})
-		.catch(e => {
-			PubSub.publish("UI.MESSAGE.WAITDONE");
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops, can't get more pictures for now.") });
-		});
+		}
+		else {
+			this.setState({ shownPics: this.state.shownPics + 1 });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("We don't have more pictures available around this feature") });
+		}
 	}
 	
 	/**
@@ -404,7 +436,7 @@ class MissionReviewComponent extends Component {
 					<Grid item xs={12} sm={6} lg={7} xl={8}>
 						{this.state.pictures &&
 							<Gallery2
-								pictures={this.state.pictures}
+								pictures={this.state.pictures.slice(0, this.state.shownPics)}
 								height={PICTURE_HEIGHT[this.props.width]}
 								style={{marginBottom: 10}}
 								currentPictureId={this.state.currentPictureId}
@@ -413,7 +445,7 @@ class MissionReviewComponent extends Component {
 								onPicDetails={id => this.setState({ clickedPictureId: -id })}
 								onShowMore={() => this._loadMorePics()}
 								showThumbs={this.props.width === "xs"}
-								showMore={this.state.showMore < 2}
+								showMore={this.state.shownPics <= this.state.pictures.length}
 							/>}
 					</Grid>
 					

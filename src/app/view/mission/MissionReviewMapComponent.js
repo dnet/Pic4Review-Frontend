@@ -41,7 +41,7 @@ class MissionReviewMapComponent extends Component {
 			for(let i in this.props.pictures) {
 				const p = this.props.pictures[i];
 				this.markers.push(<Marker
-					key={p.pictureUrl}
+					key={i}
 					position={p.coordinates}
 					icon={this.props.currentPictureId == i || (i === 0 && this.props.currentPictureId === null) ? picSelectedIcon : picIcon}
 					iconAngle={p.direction}
