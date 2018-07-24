@@ -23,7 +23,27 @@ class MissionReviewFeatureDetailsComponent extends Component {
 		if(this.props.feature && this.props.feature.properties) {
 			const f = this.props.feature;
 			const p = f.properties;
-			const name = p.name || I18n.t("Feature #%{id}", { id: f.id });
+			let name = I18n.t("Feature #%{id}", { id: f.id });
+			
+			//Try to find better name
+			if(p["name:"+I18n.locale]) { name = p["name:"+I18n.locale]; }
+			else if(p["name:en"]) { name = p["name:en"]; }
+			else if(p.name) { name = p.name; }
+			else if(p.ref) { name = p.ref; }
+			else if(p["addr:housenumber"] && p["addr:street"]) { name = p["addr:housenumber"] + " " + p["addr:street"]; }
+			else {
+				let found = false;
+				for(let k in p) {
+					if(k.startsWith("ref")) {
+						name = p[k];
+						found = true;
+						break;
+					}
+				}
+				
+				if(!found && p.id) { name = p.id; }
+			}
+			
 			return <div>
 				<Typography variant="subheading" style={{textAlign: "center"}}>
 					{name}
