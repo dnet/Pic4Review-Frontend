@@ -227,8 +227,12 @@ class MissionReviewComponent extends Component {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 				if(upData.changesetId) {
 					this._setChangesetId(upData.changesetId);
-					this.setState({ count: this.state.count+1, });
 				}
+				
+				if(status === "reviewed") {
+					this.setState({ count: this.state.count+1, openConfirmEdit: false });
+				}
+				
 				this._next(status === "skipped");
 			})
 			.catch(e => {
