@@ -171,7 +171,7 @@ class MissionReviewComponent extends Component {
 				{ mindate: Date.now() - 1000*3600*24*365*3, towardscenter: false }
 			)
 			.then(pics => {
-				const newPics = this.state.pictures.slice(0);
+				const newPics = this.state.pictures ? this.state.pictures.slice(0) : [];
 				
 				//Avoid adding pics we already have
 				pics.forEach(p => {
@@ -379,7 +379,7 @@ class MissionReviewComponent extends Component {
 			const map = <Map
 							ref="map"
 							feature={this.state.feature}
-							pictures={this.state.pictures.slice(0, this.state.shownPics)}
+							pictures={this.state.pictures ? this.state.pictures.slice(0, this.state.shownPics) : []}
 							currentPictureId={this.state.currentPictureId}
 							onPicClicked={id => this.setState({ currentPictureId: id })}
 							style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }}

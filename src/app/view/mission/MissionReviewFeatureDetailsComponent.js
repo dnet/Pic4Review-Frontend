@@ -31,6 +31,7 @@ class MissionReviewFeatureDetailsComponent extends Component {
 			else if(p.name) { name = p.name; }
 			else if(p.ref) { name = p.ref; }
 			else if(p["addr:housenumber"] && p["addr:street"]) { name = p["addr:housenumber"] + " " + p["addr:street"]; }
+			else if(p.advertising) { name = p.operator ? p.operator + " ("+p.advertising+")" : p.advertising; }
 			else {
 				let found = false;
 				for(let k in p) {
