@@ -284,7 +284,7 @@ class NewMissionComponent extends Component {
 		.catch(e => {
 			console.log("Failed getting progress");
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.WAITDONE");
+			setTimeout(() => this._updateCreation(mid, pictoken), 2000);
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission") });
 		});
 	}
