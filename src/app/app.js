@@ -81,13 +81,14 @@ class App {
 	 * @private
 	 */
 	_initAuth() {
-		this.auth = OsmAuth({
+		const opts = {
 			url: CONSTS.OSM_API_URL,
 			oauth_consumer_key: CONSTS.OAUTH_CONSUMER_KEY,
 			oauth_secret: CONSTS.OAUTH_SECRET,
-			landing: window.location.pathname,
+			landing: window.location.pathname + window.location.hash,
 			singlepage: true
-		});
+		};
+		this.auth = OsmAuth(opts);
 		
 		const params = readURLParams(window.location.href);
 		const token = params.oauth_token || localStorage.getItem("oauth_token") || null;
@@ -106,6 +107,9 @@ class App {
 		}
 		
 		PubSub.subscribe("UI.LOGIN.SURE", (msg, data) => {
+			opts.landing = window.location.pathname + window.location.hash;
+			this.auth.options(opts);
+			
 			if(!this.auth.authenticated()) {
 				this.auth.authenticate((err, res) => {
 					if(err) {
