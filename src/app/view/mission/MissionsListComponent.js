@@ -21,8 +21,8 @@ class MissionsListComponent extends Component {
 				const showPic = this.props.width !== "xs" && m.options.illustration;
 				
 				return <Grid item key={i} xs={12} lg={6}>
-					<Card style={{display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-						<div style={{width: "100%", backgroundColor: done ? "white": "#e0e0e0"}}>
+					<Card style={{display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: done ? "white": "#e0e0e0"}}>
+						<div style={{width: "100%"}}>
 							<CardContent style={this.props.width === "xs" ? { paddingBottom: 0 } : null}>
 								<MissionSummary mission={m} onClick={() => this.props.history.push('/mission/'+m.id)} />
 							</CardContent>
