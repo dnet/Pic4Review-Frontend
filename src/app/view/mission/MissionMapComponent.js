@@ -86,7 +86,7 @@ class MissionMapComponent extends Component {
 		return <div style={this.props.style}>
 			<div style={{textAlign: "center"}}>{legend}</div>
 		
-			<Map ref="map" center={position} zoom={this.state.zoom} style={{width:"100%", height:"400px"}}>
+			<Map ref="map" center={position} zoom={this.state.zoom} style={{width:"100%", height:"400px"}} preferCanvas={true}>
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 				{datalayer}
 			</Map>
