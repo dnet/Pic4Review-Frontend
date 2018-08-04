@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import CONSTS from '../../constants';
 import Hash from 'object-hash';
 import Leaflet from 'leaflet';
-import { Map, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import { Map, TileLayer, CircleMarker, Popup, Tooltip } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import MissionSummary from './MissionSummaryComponent';
 import MissionSummaryButtons from './MissionSummaryButtonsComponent';
@@ -52,6 +52,9 @@ class MissionsMapComponent extends Component {
 				fillOpacity={1}
 				fillColor={THEMES[f.properties.theme].color}
 			>
+				<Tooltip>
+					<div>{m.description.short}<br />{m.area.name}</div>
+				</Tooltip>
 				<Popup>
 					<div style={{textAlign: "center"}}>
 						<MissionSummary mission={m} />
