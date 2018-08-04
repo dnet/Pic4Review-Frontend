@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { withStyles } from 'material-ui/styles';
 import withWidth from 'material-ui/utils/withWidth';
 import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
 import API from '../../ctrl/API';
@@ -14,7 +13,6 @@ import Grid from 'material-ui/Grid';
 import Hidden from 'material-ui/Hidden';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
-import Markdown from 'react-markdown';
 import P4C from 'pic4carto';
 import Paper from 'material-ui/Paper';
 import Question from './MissionReviewQuestionComponent';
@@ -22,7 +20,7 @@ import Statistics from './MissionReviewStatisticsComponent';
 import Tooltip from 'material-ui/Tooltip';
 
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
-const BANNER_HEIGHT = { "xs": 150, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
+const MAP_HEIGHT = { "xs": 180, "sm": 200, "md": 200, "lg": 250, "xl": 250 };
 const NOT_FIRST_REVIEW = "no1st";
 const EDITS_COUNT = "edits_count";
 const PICS_PER_PAGE = 10;
@@ -386,39 +384,30 @@ class MissionReviewComponent extends Component {
 							currentPictureId={this.state.currentPictureId}
 							onPicClicked={id => this.setState({ currentPictureId: id })}
 							onFeatureClicked={() => this.setState({ showFeatureDetails: true })}
-							style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }}
+							style={{ height: MAP_HEIGHT[this.props.width], marginBottom: 10 }}
 						/>;
-			
-			const instructions = <div className="limited-images" style={{overflow: "auto", maxHeight: BANNER_HEIGHT[this.props.width], marginBottom: 10}}>
-									<Markdown className={this.props.classes.root} source={this.props.mission.description.full} />
-								</div>;
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
 			
 			return <div style={this.props.style} ref="container">
-				<FeatureDetails
-					feature={this.state.feature}
-					showPopup={this.state.showFeatureDetails}
-					onShowPopup={show => this.setState({ showFeatureDetails: show })}
-				/>
-				
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
 						<Question
 							data={this._hasEditor() && this.props.mission.options.data.options.editors}
 							featureProps={this.state.feature.properties}
+							instructions={this.props.mission.description.full}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
 							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
 						/>
 						
 						{this._hasEditor() ?
-							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
+							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 20}}>
 								{createBtn("prev", 4)}
 								{createBtn("edit", 4)}
 								{createBtn("next", 4)}
 							</Grid>
 							:
-							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 10}}>
+							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 20}}>
 								{createBtn("prev", 4)}
 								{createBtn("done", 4)}
 								{createBtn("next", 4)}
@@ -426,12 +415,12 @@ class MissionReviewComponent extends Component {
 						}
 						
 						{this._hasEditor() ?
-							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 10}}>
+							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 20}}>
 								{createBtn("prev", 6)}
 								{createBtn("next", 6)}
 							</Grid>
 							:
-							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 10}}>
+							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 20}}>
 								{createBtn("done", 12)}
 								{createBtn("prev", 6)}
 								{createBtn("next", 6)}
@@ -439,13 +428,18 @@ class MissionReviewComponent extends Component {
 						}
 						
 						<Grid container spacing={8}>
-							<Grid item hidden={{ only: "xs" }} sm={6}>{map}</Grid>
-							<Grid item hidden={{ only: "xs" }} sm={6}>{instructions}</Grid>
-							<Grid item hidden={{ only: "xs" }} sm={12}>{counter}</Grid>
+							<Grid item hidden={{ only: "xs" }} sm={7}>{map}</Grid>
+							<Grid item hidden={{ only: "xs" }} sm={5}>{counter}</Grid>
 						</Grid>
 					</Grid>
 					
 					<Grid item xs={12} sm={6} lg={7} xl={8}>
+						<FeatureDetails
+							feature={this.state.feature}
+							showPopup={this.state.showFeatureDetails}
+							onShowPopup={show => this.setState({ showFeatureDetails: show })}
+						/>
+						
 						{this.state.pictures &&
 							<Gallery2
 								pictures={this.state.pictures.slice(0, this.state.shownPics)}
@@ -464,7 +458,6 @@ class MissionReviewComponent extends Component {
 					<Grid item xs={12} hidden={{ smUp: true }}>
 						{map}
 						{counter}
-						{instructions}
 					</Grid>
 				</Grid>
 				
@@ -515,4 +508,4 @@ class MissionReviewComponent extends Component {
 	}
 }
 
-export default withStyles(styles)(withWidth()(withRouter(MissionReviewComponent)));
+export default withWidth()(withRouter(MissionReviewComponent));
