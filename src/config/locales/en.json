@@ -154,8 +154,8 @@
     "picture_details_and_other_pictures_around_c91bac61": "Picture details (and other pictures around)",
     "zoom_in_opens_in_new_tab_7543398b": "Zoom in (opens in new tab)",
     "load_more_pictures_46ea3c7d": "Load more pictures",
+    "use_street_pictures_at_the_bottom_to_find_the_answ_cee9c236": "Use street pictures at the bottom to find the answer !",
     "this_need_an_advanced_edit_2cdafa13": "This need an advanced edit !",
-    "edit_the_feature_according_to_mission_description__7aa23328": "Edit the feature according to mission description below",
     "details_98a31b68": "Details",
     "amount_of_edits_5729a31b": "Amount of edits",
     "count_to_overtake_next_user_9002b5af": "%{count} to overtake next user",
@@ -167,12 +167,17 @@
     "oops_can_t_get_statistics_for_this_mission_5d88085b": "Oops ! Can't get statistics for this mission",
     "feature_status_fdd066b5": "Feature status",
     "start_5a4cfcd6": "Start",
-    "pct_complete_nb_features_nbno_without_pics_1049f161": "%{pct} % complete (%{nb} features + %{nbno} without pics)",
     "updated_count_days_ago_5a6ddd5": {
       "zero": "Updated today",
       "one": "Updated yesterday",
       "other": "Updated %{count} days ago"
     },
+    "count_contributors_9f80880": {
+      "zero": "No contributors yet",
+      "one": "1 contributor",
+      "other": "%{count} contributors"
+    },
+    "pct_complete_nb_features_nbno_without_pics_1049f161": "%{pct} % complete (%{nb} features + %{nbno} without pics)",
     "oops_something_went_wrong_when_fetching_missions_88739fd3": "Oops ! Something went wrong when fetching missions",
     "mission_visibility_was_changed_535ea4f3": "Mission visibility was changed",
     "oops_can_t_change_mission_visibility_fadc6ba5": "Oops ! Can't change mission visibility",
