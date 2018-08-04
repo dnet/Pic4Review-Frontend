@@ -53,7 +53,14 @@ class MissionReviewMapComponent extends Component {
 		
 		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.state.zoom} style={style}>
 			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
-			<CircleMarker center={this.props.feature.coordinates} radius={8} color="red" fillColor="red" fillOpacity={0.7} />
+			<CircleMarker
+				center={this.props.feature.coordinates}
+				radius={8}
+				color="red"
+				fillColor="red"
+				fillOpacity={0.7}
+				onClick={() => this.props.onFeatureClicked()}
+			/>
 			{this.markers}
 		</Map>;
 	}

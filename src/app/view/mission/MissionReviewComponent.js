@@ -52,7 +52,8 @@ class MissionReviewComponent extends Component {
 			hideConfirmEdit: false,
 			shownPics: 0,
 			noMorePics: false,
-			stats: {}
+			stats: {},
+			showFeatureDetails: false
 		};
 		
 		this.psTokens = {};
@@ -76,7 +77,8 @@ class MissionReviewComponent extends Component {
 			currentAnswer: null,
 			shownPics: 0,
 			noMorePics: false,
-			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0
+			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0,
+			showFeatureDetails: false
 		});
 		
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
@@ -137,7 +139,8 @@ class MissionReviewComponent extends Component {
 				shownPics: this.state.prevFeature.pictures.length > 0 ? Math.min(PICS_PER_PAGE, this.state.prevFeature.pictures.length) : 0,
 				noMorePics: false,
 				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
-				clickedPictureId: null
+				clickedPictureId: null,
+				showFeatureDetails: false
 			});
 		}
 		else {
@@ -382,6 +385,7 @@ class MissionReviewComponent extends Component {
 							pictures={this.state.pictures ? this.state.pictures.slice(0, this.state.shownPics) : []}
 							currentPictureId={this.state.currentPictureId}
 							onPicClicked={id => this.setState({ currentPictureId: id })}
+							onFeatureClicked={() => this.setState({ showFeatureDetails: true })}
 							style={{ height: BANNER_HEIGHT[this.props.width], marginBottom: 10 }}
 						/>;
 			
@@ -392,7 +396,11 @@ class MissionReviewComponent extends Component {
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
 			
 			return <div style={this.props.style} ref="container">
-				<FeatureDetails feature={this.state.feature} />
+				<FeatureDetails
+					feature={this.state.feature}
+					showPopup={this.state.showFeatureDetails}
+					onShowPopup={show => this.setState({ showFeatureDetails: show })}
+				/>
 				
 				<Grid container spacing={8}>
 					<Grid item xs={12} sm={6} lg={5} xl={4}>

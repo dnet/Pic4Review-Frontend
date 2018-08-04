@@ -11,14 +11,6 @@ import Typography from 'material-ui/Typography';
  * Mission review feature details show summary of a feature, and possibly its details
  */
 class MissionReviewFeatureDetailsComponent extends Component {
-	constructor() {
-		super();
-		
-		this.state = {
-			dialogOpen: false
-		};
-	}
-	
 	render() {
 		if(this.props.feature && this.props.feature.properties) {
 			const f = this.props.feature;
@@ -50,7 +42,7 @@ class MissionReviewFeatureDetailsComponent extends Component {
 					{name}
 					<Tooltip title={I18n.t("Show more details about this object")}>
 						<IconButton
-							onClick={() => this.setState({ dialogOpen: true })}
+							onClick={() => this.props.onShowPopup(true)}
 						>
 							<DotsHorizontal />
 						</IconButton>
@@ -58,15 +50,15 @@ class MissionReviewFeatureDetailsComponent extends Component {
 				</Typography>
 				
 				<Dialog
-					open={this.state.dialogOpen}
-					onClose={() => this.setState({ dialogOpen: false })}
+					open={this.props.showPopup}
+					onClose={() => this.props.onShowPopup(false)}
 				>
 					<DialogTitle>{name}</DialogTitle>
 					<DialogContent>
 						<Tags feature={f} />
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={() => this.setState({ dialogOpen: false })} color="primary">
+						<Button onClick={() => this.props.onShowPopup(false)} color="primary">
 							{I18n.t("Close")}
 						</Button>
 					</DialogActions>
