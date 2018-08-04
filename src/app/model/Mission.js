@@ -96,6 +96,13 @@ class Mission {
 			opts.illustration = options.illustration;
 		}
 		
+		if(options.contributors) {
+			opts.contributors = parseInt(options.contributors);
+		}
+		else {
+			opts.contributors = null;
+		}
+		
 		opts.canEdit = options.canEdit || options.editor || false;
 		
 		return new Mission(

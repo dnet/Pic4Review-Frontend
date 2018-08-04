@@ -17,6 +17,29 @@ const dayOffset = d => {
  */
 class MissionSummaryComponent extends Component {
 	render() {
+		let details = [];
+		
+		if(this.props.mission.options.stats) {
+			if(this.props.mission.options.date) {
+				details.push(I18n.t({
+					zero: "Updated today",
+					one: "Updated yesterday",
+					other: "Updated %{count} days ago"
+				}, { count: dayOffset(this.props.mission.options.date) }));
+			}
+			
+			if(this.props.mission.options.contributors !== null) {
+				details.push(I18n.t({
+					zero: "No contributors yet",
+					one: "1 contributor",
+					other: "%{count} contributors"
+				}, { count: this.props.mission.options.contributors }));
+			}
+		}
+		
+		details = details.join(" - ");
+		if(this.props.width !== "xs") { details = " - " + details; }
+		
 		return <div onClick={this.props.onClick ? this.props.onClick : () => {}}>
 			<Typography variant={this.props.width === "xs" ? "subheading" : "headline"} style={{verticalAlign: "middle"}}>
 				{this.props.mission.description.short}
@@ -47,7 +70,8 @@ class MissionSummaryComponent extends Component {
 						nb: this.props.mission.options.stats.total - this.props.mission.options.stats.nopics,
 						nbno: this.props.mission.options.stats.nopics
 				})}
-				{this.props.mission.options.date && " - "+I18n.t({ zero: "Updated today", one: "Updated yesterday", other: "Updated %{count} days ago" }, { count: dayOffset(this.props.mission.options.date) })}
+				{this.props.width === "xs" && <br />}
+				{details}
 			</Typography>}
 		</div>;
 	}
