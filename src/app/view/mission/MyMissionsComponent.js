@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PaginatedList from './PaginatedMissionListComponent';
+import Wait from '../WaitComponent';
 
 /**
  * Missions component is the page displaying list of missions to user.
@@ -11,11 +12,19 @@ class MissionsComponent extends Component {
 	}
 	
 	render() {
-		return <PaginatedList />;
+		if(this.props.user) {
+			return <PaginatedList
+				user={this.props.user}
+				synthetic={true}
+			/>;
+		}
+		else {
+			return <Wait />;
+		}
 	}
 	
 	componentWillMount() {
-		PubSub.publish("UI.TITLE.SET", { title: I18n.t("Missions") });
+		PubSub.publish("UI.TITLE.SET", { title: I18n.t("Your missions") });
 	}
 }
 

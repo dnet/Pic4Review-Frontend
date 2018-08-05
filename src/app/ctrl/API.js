@@ -130,9 +130,10 @@ class API {
 	 * @param {string} [status] The mission status (online by default)
 	 * @param {boolean} [hasEditor] True if the mission has a simple editor (false by default)
 	 * @param {boolean} [showComplete] True if API should return completed missions
+	 * @param {string} [userid] If set, only retrieves missions concerning this user
 	 * @return {Promise} A promise resolving on missions
 	 */
-	static GetMissions(page, type, theme, status, hasEditor, showComplete) {
+	static GetMissions(page, type, theme, status, hasEditor, showComplete, userid) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				page: page,
@@ -140,7 +141,8 @@ class API {
 				theme: theme,
 				status: status || "online",
 				editor: hasEditor || false,
-				complete: showComplete || false
+				complete: showComplete || false,
+				user: userid || null
 			};
 			
 			request(CONST.P4R_URL + '/missions' + this.ParamsString(p), (err, res, body) => {
@@ -176,16 +178,18 @@ class API {
 	 * @param {string} [status] The mission status (online by default)
 	 * @param {boolean} [hasEditor] True if the mission has a simple editor (false by default)
 	 * @param {boolean} [showComplete] True if API should return completed missions
+	 * @param {string} [userid] If set, only retrieves missions concerning this user
 	 * @return {Promise} A promise resolving on GeoJSON of missions
 	 */
-	static GetMissionsMap(type, theme, status, hasEditor, showComplete) {
+	static GetMissionsMap(type, theme, status, hasEditor, showComplete, userid) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				type: type,
 				theme: theme,
 				status: status || "online",
 				editor: hasEditor || false,
-				complete: showComplete || false
+				complete: showComplete || false,
+				user: userid || null
 			};
 			
 			request(CONST.P4R_URL + '/missions/map' + this.ParamsString(p), (err, res, body) => {

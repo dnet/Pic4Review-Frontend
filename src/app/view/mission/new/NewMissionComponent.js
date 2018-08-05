@@ -359,7 +359,7 @@ class NewMissionComponent extends Component {
 	}
 	
 	componentWillMount() {
-		PubSub.publish("UI.TITLE.RESET");
+		PubSub.publish("UI.TITLE.SET", { title: I18n.t("New mission") });
 		
 		//Load parameters from other mission
 		if(this.props.match.params.mid) {

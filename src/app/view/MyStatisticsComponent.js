@@ -29,10 +29,6 @@ class MyStatisticsComponent extends Component {
 			const style={marginTop: 10};
 			
 			content = <Grid container spacing={16}>
-				<Grid item xs={12}>
-					<Typography variant="display1">{this.props.user.name}</Typography>
-				</Grid>
-				
 				<Grid item xs={12} sm={6} md={4} lg={3}>
 					<Typography variant="subheading" style={style}>
 						{I18n.t("Position in leaderboard (last 30 days)")}
@@ -81,6 +77,8 @@ class MyStatisticsComponent extends Component {
 		PubSub.publish("UI.TITLE.RESET");
 		
 		if(this.props.user) {
+			PubSub.publish("UI.TITLE.SET", { title: I18n.t("Your statistics"), subtitle: this.props.user.name });
+			
 			//Retrieve statistics
 			API.GetUserStatistics(this.props.user.id)
 			.then(stats => {

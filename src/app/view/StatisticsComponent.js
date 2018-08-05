@@ -23,8 +23,6 @@ class StatisticsComponent extends Component {
 	render() {
 		if(this.state.stats) {
 			return <div>
-				<Typography variant="display1">{I18n.t("Statistics")}</Typography>
-				
 				<Grid container spacing={16}>
 					<Grid item xs={12}>
 						<Time data={this.state.stats.amountEdits} height={300} />
@@ -46,7 +44,7 @@ class StatisticsComponent extends Component {
 	}
 	
 	componentWillMount() {
-		PubSub.publish("UI.TITLE.RESET");
+		PubSub.publish("UI.TITLE.SET", { title: I18n.t("Statistics") });
 		
 		API.GetUsersStatistics()
 		.then(stats => {

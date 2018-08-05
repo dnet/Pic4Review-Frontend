@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Account, AccountCircle, ChartPie, Login, Logout } from 'mdi-material-ui';
+import { Account, AccountCircle, CameraBurst, ChartPie, Login, Logout } from 'mdi-material-ui';
 import IconButton from 'material-ui/IconButton';
 import { Link } from 'react-router-dom';
 import { ListItemIcon, ListItemText } from 'material-ui/List';
@@ -57,6 +57,16 @@ class UserButtonComponent extends Component {
 					onClose={this._closeMenu.bind(this)}
 				>
 					<MenuItem disabled>{this.state.user}</MenuItem>
+					<MenuItem
+						onClick={this._closeMenu.bind(this)}
+						component={Link}
+						to='/my/missions'
+					>
+						<ListItemIcon>
+							<CameraBurst />
+						</ListItemIcon>
+						<ListItemText inset primary={I18n.t("Your missions")} />
+					</MenuItem>
 					<MenuItem
 						onClick={this._closeMenu.bind(this)}
 						component={Link}
