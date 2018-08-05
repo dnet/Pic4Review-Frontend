@@ -4,6 +4,7 @@ import IconButton from 'material-ui/IconButton';
 import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
 import Table, { TableBody, TableCell, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel } from 'material-ui/Table';
+import Tooltip from 'material-ui/Tooltip';
 
 class MissionsTableComponent extends Component {
 	render() {
@@ -34,37 +35,47 @@ class MissionsTableComponent extends Component {
 							{completion+"%"}
 						</TableCell>
 						<TableCell style={styleCentered}>
-							<IconButton
-								component={Link}
-								to={'/mission/'+m.id}
-								target="_blank"
-							>
-								<Information />
-							</IconButton>
-							<IconButton
-								component={Link}
-								to={'/mission/new/'+m.id}
-								target="_blank"
-							>
-								<ContentDuplicate />
-							</IconButton>
-							<IconButton
-								component={Link}
-								to={'/mission/'+m.id+'/edit'}
-								target="_blank"
-							>
-								<Pencil />
-							</IconButton>
-							{m.status === "online" &&
-								<IconButton onClick={() => this._setMissionStatus(m, "canceled")}>
-									<EyeOff />
+							<Tooltip title={I18n.t("See mission details")}>
+								<IconButton
+									component={Link}
+									to={'/mission/'+m.id}
+									target="_blank"
+								>
+									<Information />
 								</IconButton>
-							}
-							{m.status !== "online" &&
-								<IconButton onClick={() => this._setMissionStatus(m, "online")}>
-									<Eye />
+							</Tooltip>
+							<Tooltip title={I18n.t("Duplicate mission")}>
+								<IconButton
+									component={Link}
+									to={'/mission/new/'+m.id}
+									target="_blank"
+								>
+									<ContentDuplicate />
 								</IconButton>
-							}
+							</Tooltip>
+							<Tooltip title={I18n.t("Edit mission")}>
+								<IconButton
+									component={Link}
+									to={'/mission/'+m.id+'/edit'}
+									target="_blank"
+								>
+									<Pencil />
+								</IconButton>
+							</Tooltip>
+								{m.status === "online" &&
+									<Tooltip title={I18n.t("Hide mission from public list")}>
+										<IconButton onClick={() => this._setMissionStatus(m, "canceled")}>
+											<EyeOff />
+										</IconButton>
+									</Tooltip>
+								}
+								{m.status !== "online" &&
+									<Tooltip title={I18n.t("Show mission in public list")}>
+										<IconButton onClick={() => this._setMissionStatus(m, "online")}>
+											<Eye />
+										</IconButton>
+									</Tooltip>
+								}
 						</TableCell>
 					</TableRow>;
 				})}
