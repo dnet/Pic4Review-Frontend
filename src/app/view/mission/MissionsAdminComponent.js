@@ -14,6 +14,8 @@ class MissionsAdminComponent extends Component {
 		if(this.props.user) {
 			return <PaginatedList
 				synthetic={true}
+				user={this.props.user}
+				admin={true}
 			/>;
 		}
 		else {

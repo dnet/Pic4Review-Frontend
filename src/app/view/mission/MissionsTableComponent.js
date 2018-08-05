@@ -64,14 +64,14 @@ class MissionsTableComponent extends Component {
 							</Tooltip>
 								{m.status === "online" &&
 									<Tooltip title={I18n.t("Hide mission from public list")}>
-										<IconButton onClick={() => this._setMissionStatus(m, "canceled")}>
+										<IconButton onClick={() => this.props.onChangeMissionStatus(m, "canceled")}>
 											<EyeOff />
 										</IconButton>
 									</Tooltip>
 								}
 								{m.status !== "online" &&
 									<Tooltip title={I18n.t("Show mission in public list")}>
-										<IconButton onClick={() => this._setMissionStatus(m, "online")}>
+										<IconButton onClick={() => this.props.onChangeMissionStatus(m, "online")}>
 											<Eye />
 										</IconButton>
 									</Tooltip>

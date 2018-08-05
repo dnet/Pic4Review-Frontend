@@ -56,10 +56,10 @@ class PaginatedMissionListComponent extends Component {
 					state.page,
 					state.currentFilters.type,
 					state.currentFilters.theme,
-					null,
+					this.props.admin || this.props.user ? state.currentFilters.status || "all" : null,
 					this.props.width === "xs" || state.currentFilters.editor,
 					state.currentFilters.complete,
-					this.props.user ? this.props.user.id : null
+					this.props.user && !this.props.admin ? this.props.user.id : null
 				)
 				.then(missions => {
 					if(currentToken === this.apiCallToken) {
@@ -77,10 +77,10 @@ class PaginatedMissionListComponent extends Component {
 				state.page+1,
 				state.currentFilters.type,
 				state.currentFilters.theme,
-				null,
+				this.props.admin || this.props.user  ? state.currentFilters.status || "all" : null,
 				this.props.width === "xs" || state.currentFilters.editor,
 				state.currentFilters.complete,
-				this.props.user ? this.props.user.id : null
+				this.props.user && !this.props.admin ? this.props.user.id : null
 			)
 			.then(missions => {
 				if(currentToken === this.apiCallToken) {
@@ -95,10 +95,10 @@ class PaginatedMissionListComponent extends Component {
 			API.GetMissionsMap(
 				state.currentFilters.type,
 				state.currentFilters.theme,
-				null,
+				this.props.admin || this.props.user  ? state.currentFilters.status || "all" : null,
 				this.props.width === "xs" || state.currentFilters.editor,
 				state.currentFilters.complete,
-				this.props.user ? this.props.user.id : null
+				this.props.user && !this.props.admin ? this.props.user.id : null
 			)
 			.then(missions => { 
 				if(currentToken === this.apiCallToken) {
@@ -110,6 +110,20 @@ class PaginatedMissionListComponent extends Component {
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
 			});
 		}
+	}
+	
+	_setMissionStatus(m, status) {
+		m.status = status;
+		API.UpdateMission(m, this.props.user.name, this.props.user.id)
+		.then(() => {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Mission visibility was changed") });
+			this.setState({ missions: null, nextMissions: null });
+			this._fetchMissions(this.state);
+		})
+		.catch(e => {
+			console.error(e);
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't change mission visibility") });
+		});
 	}
 	
 	render() {
@@ -127,7 +141,7 @@ class PaginatedMissionListComponent extends Component {
 		if(this.state.tab === 0 && this.state.missions) {
 			missionsarea = this.state.missions.length > 0 ? <div>
 				{this.props.synthetic ?
-					<MissionsTable missions={this.state.missions} />
+					<MissionsTable missions={this.state.missions} onChangeMissionStatus={(m,s) => this._setMissionStatus(m, s)} />
 					: <MissionsList missions={this.state.missions} />
 				}
 				
@@ -152,7 +166,7 @@ class PaginatedMissionListComponent extends Component {
 			<Grid container spacing={16}>
 				<Grid item hidden={{only: "xs"}} sm={4} md={3} lg={2}>
 					<Typography variant="subheading">{I18n.t("Filters")}</Typography>
-					<MissionsFilters completeness={true} values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} />
+					<MissionsFilters status={this.props.admin || this.props.user} completeness={true} values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} />
 				</Grid>
 				<Grid item xs={12} hidden={{smUp: true}}>
 					<ExpansionPanel>
