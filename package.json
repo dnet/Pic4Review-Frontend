@@ -1,6 +1,6 @@
 {
   "name": "pic4review",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "Tool for reviewing geo-dataset using open-licensed pictures around your features.",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@babel/runtime": "7.0.0-beta.42",
-    "react-event-listener": "^0.6.2",
+    "react-event-listener": "0.5.5",
     "recompose": "^0.28.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
@@ -40,7 +40,6 @@
     "i18nline": "^1.7.1",
     "mocha": "^4.1.0",
     "mocha-webpack": "^1.1.0",
-    "react-event-listener": "0.5.5",
     "request": "^2.87.0",
     "style-loader": "^0.19.1",
     "transfer-webpack-plugin": "^0.1.4",
