@@ -68,7 +68,7 @@ class PaginatedMissionListComponent extends Component {
 				})
 				.catch(e => {
 					console.error(e);
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions")+" "+e.message });
 				});
 			}
 			
@@ -107,7 +107,7 @@ class PaginatedMissionListComponent extends Component {
 			})
 			.catch(e => {
 				console.error(e);
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions") });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions")+" "+e.message });
 			});
 		}
 	}
@@ -122,7 +122,7 @@ class PaginatedMissionListComponent extends Component {
 		})
 		.catch(e => {
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't change mission visibility") });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't change mission visibility")+" "+e.message });
 		});
 	}
 	

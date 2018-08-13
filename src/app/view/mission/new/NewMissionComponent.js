@@ -86,7 +86,7 @@ class NewMissionComponent extends Component {
 				console.log("Failed creating");
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission") });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission")+" "+e.message });
 			});
 		}
 	}
@@ -172,7 +172,7 @@ class NewMissionComponent extends Component {
 		if(state.details) {
 			if(state.details.theme && Object.keys(THEMES).indexOf(state.details.theme) >= 0) {
 				if(state.details.type && Object.keys(TYPES).indexOf(state.details.type) >= 0) {
-					if(state.details.shortdesc && state.details.shortdesc.length >= 5) {
+					if(state.details.shortdesc && state.details.shortdesc.length >= 10) {
 						if(state.details.areaname && state.details.areaname.length >= 5) {
 							if(state.details.fulldesc && state.details.fulldesc.length >= 50) {
 								return true;
@@ -285,7 +285,7 @@ class NewMissionComponent extends Component {
 			console.log("Failed getting progress");
 			console.error(e);
 			setTimeout(() => this._updateCreation(mid, pictoken), 2000);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission") });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission")+" "+e.message });
 		});
 	}
 	
@@ -395,7 +395,7 @@ class NewMissionComponent extends Component {
 			.catch(e => {
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission") });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission")+" "+e.message });
 			});
 		}
 	}

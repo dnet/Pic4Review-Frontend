@@ -120,7 +120,7 @@ class MissionReviewComponent extends Component {
 		.catch(e => {
 			console.error(e);
 			PubSub.publish("UI.MESSAGE.WAITDONE");
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't retrieve next feature to review.") });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't retrieve next feature to review.")+" "+e.message });
 		});
 	}
 	
@@ -195,7 +195,7 @@ class MissionReviewComponent extends Component {
 			})
 			.catch(e => {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops, can't get more pictures for now.") });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops, can't get more pictures for now.")+" "+e.message });
 			});
 		}
 		else {
@@ -239,7 +239,7 @@ class MissionReviewComponent extends Component {
 			.catch(e => {
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 				console.error(e);
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't update feature, please retry") });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't update feature, please retry")+" "+e.message });
 			});
 		};
 		
@@ -267,7 +267,7 @@ class MissionReviewComponent extends Component {
 				.catch(e => {
 					PubSub.publish("UI.MESSAGE.WAITDONE");
 					console.error(e);
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry") });
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry")+" "+e.message });
 				});
 			}
 			else {

@@ -32,22 +32,22 @@ const STATUSES = [ "online", "draft", "canceled" ];
 class Mission {
 	constructor(id, type, theme, area, description, status, features, options) {
 		if(type === null || type === undefined || TYPES.indexOf(type) < 0) {
-			throw new TypeError("type parameter must be one of "+TYPES.join(", "));
+			throw new TypeError("Mission type must be one of "+TYPES.join(", "));
 		}
 		else if(theme === null || theme === undefined || theme.length < 3) {
-			throw new TypeError("theme parameter must be a valid string");
+			throw new TypeError("Mission theme must be defined");
 		}
 		else if(!area || !area.name) {
-			throw new TypeError("area parameter should be an object like { name: string, bbox: LatLngBounds }");
+			throw new TypeError("Mission area is unknown");
 		}
 		else if(area.bbox && !area.bbox.toBBoxString) {
-			throw new TypeError("area parameter should be an object like { name: string, bbox: LatLngBounds }");
+			throw new TypeError("Mission area is not correctly defined");
 		}
 		else if(!description || !description.short || description.short.trim().length < 10) {
-			throw new TypeError("description parameters must be an object like { short: string, full: string }. Short description is mandatory.");
+			throw new TypeError("Mission name and description must be defined. Name must be at least 10 characters long.");
 		}
 		else if(status && STATUSES.indexOf(status) < 0) {
-			throw new TypeError("status parameter must be one of "+STATUSES.join(", "));
+			throw new TypeError("Mission status should be one of "+STATUSES.join(", "));
 		}
 		
 		this.id = id;

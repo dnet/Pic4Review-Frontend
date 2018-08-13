@@ -49,7 +49,7 @@ class MissionStatisticsComponent extends Component {
 		.then(s => this.setState({ stats: s }))
 		.catch(e => {
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get statistics for this mission") });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get statistics for this mission")+" "+e.message });
 		});
 	}
 }

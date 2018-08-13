@@ -86,7 +86,7 @@ class MyStatisticsComponent extends Component {
 			})
 			.catch(e => {
 				console.error(e);
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get your user statistics") });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get your user statistics")+" "+e.message });
 			});
 		}
 	}
