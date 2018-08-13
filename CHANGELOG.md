@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Changed
+- Improved readability of error messages coming from API
+
 
 ## 0.4.11 - 2018-08-09
 
