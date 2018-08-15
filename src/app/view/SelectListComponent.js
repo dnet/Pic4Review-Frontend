@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
+import Hash from 'object-hash';
 import { ListItemText, ListItemIcon } from 'material-ui/List';
 import { MenuList, MenuItem } from 'material-ui/Menu';
 import Paper from 'material-ui/Paper';
@@ -50,6 +51,22 @@ class SelectListComponent extends Component {
 		if(this.props.entries.length === 1) {
 			this.setState({ selected: 0 });
 			this.props.onSelect(this.props.entries[0]);
+		}
+	}
+	
+	componentDidUpdate() {
+		if(this.props.entries.length === 1 && this.state.selected !== 0) {
+			this.setState({ selected: 0 });
+			this.props.onSelect(this.props.entries[0]);
+		}
+	}
+	
+	componentWillReceiveProps(nextProps) {
+		if(
+			nextProps.entries && this.props.entries
+			&& (nextProps.entries.length != this.props.entries.length || Hash(this.props.entries) !== Hash(nextProps.entries))
+		) {
+			this.setState({ selected: null });
 		}
 	}
 	

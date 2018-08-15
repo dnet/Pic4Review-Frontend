@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import { ContentDuplicate } from 'mdi-material-ui';
+import API from '../../../ctrl/API';
 import Button from 'material-ui/Button';
 import Geosearch from '../../GeosearchComponent';
 import Grid from 'material-ui/Grid';
 import IconGridSelect from '../../IconGridSelectComponent';
 import SelectList from '../../SelectListComponent';
 import Typography from 'material-ui/Typography';
+import Wait from '../../WaitComponent';
 
 const styles = theme => {
 	return {
@@ -24,22 +26,19 @@ class CopyMissionComponent extends Component {
 		this.state = {
 			theme: null,
 			mission: null,
-			place: null
+			place: null,
+			missions: null
 		};
 	}
 	
 	render() {
-		const missions = [
-			{ title: "Bus stop type", subtitle: "These objects doesn't have a shelter=* tag, if you can see it please add this information using pictures", icon: <ContentDuplicate /> },
-			{ title: "Bus stop type", subtitle: "These objects doesn't have a shelter=* tag, if you can see it please add this information using pictures", icon: <ContentDuplicate /> },
-			{ title: "Bus stop type", subtitle: "These objects doesn't have a shelter=* tag, if you can see it please add this information using pictures", icon: <ContentDuplicate /> },
-			{ title: "Bus stop type", subtitle: "These objects doesn't have a shelter=* tag, if you can see it please add this information using pictures", icon: <ContentDuplicate /> },
-			{ title: "Bus stop type", subtitle: "These objects doesn't have a shelter=* tag, if you can see it please add this information using pictures", icon: <ContentDuplicate /> }
-		];
+		let missions = null;
 		
-		console.log(this.state);
+		if(this.state.missions) {
+			missions = this.state.missions.filter(m => this.state.theme === null || this.state.theme === m.theme);
+		}
 		
-		return <div>
+		return this.state.missions ? <div>
 			<Grid container spacing={16}>
 				<Grid item xs={12} lg={6}>
 					<Typography variant="subheading">{I18n.t("Choose a mission")}</Typography>
@@ -50,10 +49,13 @@ class CopyMissionComponent extends Component {
 						onChange={id => this.setState({ theme: id })}
 					/>
 					
-					<SelectList
-						entries={missions}
-						onSelect={m => this.setState({ mission: m })}
-					/>
+					{missions && missions.length > 0 ?
+						<SelectList
+							entries={missions}
+							onSelect={m => this.setState({ mission: m })}
+						/>
+						: <Typography variant="body1" style={{textAlign: "center"}}>{I18n.t("There is no template for this theme")}</Typography>
+					}
 				</Grid>
 				
 				<Grid item xs={12} lg={6}>
@@ -76,11 +78,30 @@ class CopyMissionComponent extends Component {
 					</Button>
 				</Grid>
 			</Grid>
-		</div>;
+		</div> : <Wait />;
 	}
 	
 	componentWillMount() {
 		PubSub.publish("UI.TITLE.SET", { title: I18n.t("Create mission"), subtitle: I18n.t("Using a template") });
+		
+		API.GetMissionsTemplates()
+		.then(templates => {
+			const entries = templates.map(t => {
+				return {
+					title: t.shortdesc,
+					subtitle: t.fulldesc,
+					icon: THEMES[t.theme] ? THEMES[t.theme].icon : THEMES.other.icon,
+					id: t.id,
+					theme: t.theme
+				};
+			});
+			
+			this.setState({ missions: entries });
+		})
+		.catch(e => {
+			console.error(e);
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching templates")+" "+e.message });
+		});
 	}
 }
 

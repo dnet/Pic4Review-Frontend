@@ -173,6 +173,28 @@ describe.skip("Ctrl > API", () => {
 		}).timeout(TIMEOUT);
 	});
 	
+	describe("GetMissionsTemplates", () => {
+		it("works without params", done => {
+			API.GetMissionsTemplates()
+			.then(missions => {
+				assert.ok(missions.length > 0);
+				
+				missions.forEach(m => {
+					assert.ok(m.id);
+					assert.ok(m.theme);
+					assert.ok(m.shortdesc);
+					assert.ok(m.fulldesc);
+				});
+				
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
+	
 	describe("CreateMission", () => {
 		it("works if properly described", done => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);

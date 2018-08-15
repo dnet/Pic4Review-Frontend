@@ -246,6 +246,35 @@ class API {
 	}
 	
 	/**
+	 * Get missions synthetic list
+	 * @return {Promise} A promise resolving on missions templates { id: int, theme: string, shortdesc: string, fulldesc: string }
+	 */
+	static GetMissionsTemplates() {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/missions/templates', (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.details_for_humans || data.error) {
+							reject(new Error(data.details_for_humans || data.error));
+						}
+						else {
+							resolve(data.templates);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
 	 * Get mission details
 	 * @param {int} mid The mission ID
 	 * @param {string} [userid] The user ID (to check if can edit mission)
