@@ -12,6 +12,8 @@ import createMuiTheme from 'material-ui/styles/createMuiTheme';
 import { Switch, Route } from 'react-router-dom';
 import Alert from './AlertComponent';
 import Authorize from './AuthorizeComponent';
+import CopyMission from './mission/new/CopyMissionComponent';
+import CreateMission from './mission/new/CreateMissionComponent';
 import Header from './HeaderComponent';
 import LoginDialog from './LoginDialogComponent';
 import Mission from './mission/MissionComponent';
@@ -58,6 +60,8 @@ class BodyComponent extends Component {
 				<Switch>
 					<Route exact path='/' component={Welcome} />
 					<Route exact path='/missions' component={Missions} />
+					<Route exact path='/mission/create' component={Authorize.For(CreateMission)} />
+					<Route exact path='/mission/copy' component={Authorize.For(CopyMission)} />
 					<Route exact path='/mission/new' component={Authorize.For(NewMission)} />
 					<Route exact path='/mission/new/:mid' component={Authorize.For(NewMission)} />
 					<Route exact path='/mission/:mid' component={Mission} />

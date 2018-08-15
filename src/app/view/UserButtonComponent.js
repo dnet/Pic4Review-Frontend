@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Account, AccountCircle, CameraBurst, ChartPie, Login, Logout } from 'mdi-material-ui';
+import { Account, AccountCircle, CameraBurst, ChartPie, LibraryPlus, Login, Logout } from 'mdi-material-ui';
+import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import { Link } from 'react-router-dom';
 import { ListItemIcon, ListItemText } from 'material-ui/List';
@@ -83,6 +84,33 @@ class UserButtonComponent extends Component {
 						</ListItemIcon>
 						<ListItemText inset primary={I18n.t("Logout")} />
 					</MenuItem>
+					
+					{this.props.withLinks && <Divider light />}
+					
+					{this.props.withLinks &&
+						<MenuItem
+							onClick={this._closeMenu.bind(this)}
+							component={Link}
+							to='/mission/copy'
+						>
+							<ListItemIcon>
+								<LibraryPlus />
+							</ListItemIcon>
+							<ListItemText inset primary={I18n.t("Create mission")} />
+						</MenuItem>
+					}
+					{this.props.withLinks &&
+						<MenuItem
+							onClick={this._closeMenu.bind(this)}
+							component={Link}
+							to='/statistics'
+						>
+							<ListItemIcon>
+								<ChartPie />
+							</ListItemIcon>
+							<ListItemText inset primary={I18n.t("Statistics")} />
+						</MenuItem>
+					}
 				</Menu>
 			</div>;
 		}

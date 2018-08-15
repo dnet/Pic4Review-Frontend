@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import withWidth from 'material-ui/utils/withWidth';
 import { ChartPie, LibraryPlus, ViewGrid } from 'mdi-material-ui';
 import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
@@ -58,10 +59,10 @@ class HeaderComponent extends Component {
 					</Tooltip>
 					
 					<Hidden only="xs">
-						<Tooltip title={I18n.t("New mission")} placement="bottom">
+						<Tooltip title={I18n.t("Create mission")} placement="bottom">
 							<IconButton
 								component={Link}
-								to='/mission/new'
+								to='/mission/create'
 								color="inherit"
 							>
 								<LibraryPlus />
@@ -81,7 +82,7 @@ class HeaderComponent extends Component {
 						</Tooltip>
 					</Hidden>
 					
-					<UserButton />
+					<UserButton withLinks={this.props.width === "xs"} />
 				</div>
 			</Toolbar>
 		</AppBar>;
@@ -108,7 +109,7 @@ class HeaderComponent extends Component {
 	}
 }
 
-export default HeaderComponent;
+export default withWidth()(HeaderComponent);
 
 /**
  * Event to display a particular title
