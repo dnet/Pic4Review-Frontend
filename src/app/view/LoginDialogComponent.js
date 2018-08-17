@@ -17,6 +17,7 @@ class LoginDialogComponent extends Component {
 		};
 		
 		PubSub.subscribe("UI.LOGIN.WANTS", (msg, data) => {
+			data = data || {};
 			this.setState({ open: true, goBack: data.goBack || false });
 		});
 	}
@@ -37,7 +38,7 @@ class LoginDialogComponent extends Component {
 	_closeDialog() {
 		const goBack = this.state.goBack;
 		this.setState({ open: false, goBack: false });
-		if(goBack) {
+		if(goBack && this.props.history) {
 			if(window.history.length > 2 || document.referrer.length > 0) {
 				this.props.history.goBack();
 			}
@@ -50,7 +51,7 @@ class LoginDialogComponent extends Component {
 	render() {
 		return <Dialog
 			open={this.state.open}
-			onClose={this._closeDialog.bind(this)}
+			onClose={() => this._closeDialog()}
 		>
 			<DialogTitle>{I18n.t("Connect to OpenStreetMap")}</DialogTitle>
 			<DialogContent>
