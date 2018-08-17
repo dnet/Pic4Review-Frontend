@@ -20,12 +20,12 @@ class MissionSummaryComponent extends Component {
 		let details = [];
 		
 		if(this.props.mission.options.stats) {
-			if(this.props.mission.options.date) {
+			if(this.props.mission.options.dateCreation) {
 				details.push(I18n.t({
-					zero: "Updated today",
-					one: "Updated yesterday",
-					other: "Updated %{count} days ago"
-				}, { count: dayOffset(this.props.mission.options.date) }));
+					zero: "Created today",
+					one: "Created yesterday",
+					other: "Created %{count} days ago"
+				}, { count: dayOffset(this.props.mission.options.dateCreation) }));
 			}
 			
 			if(this.props.mission.options.contributors !== null) {

@@ -66,7 +66,7 @@ class GeosearchComponent extends Component {
 			})
 			.catch(e => {
 				this.setState({ waitForResult: false, results: null });
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Address search service seems unavailable for now")+" "+e.message });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Address search service seems unavailable for now"), details: e.message });
 			});
 		}
 	}

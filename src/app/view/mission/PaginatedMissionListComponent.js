@@ -68,7 +68,7 @@ class PaginatedMissionListComponent extends Component {
 				})
 				.catch(e => {
 					console.error(e);
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions")+" "+e.message });
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions"), details: e.message });
 				});
 			}
 			
@@ -107,7 +107,7 @@ class PaginatedMissionListComponent extends Component {
 			})
 			.catch(e => {
 				console.error(e);
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions")+" "+e.message });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when fetching missions"), details: e.message });
 			});
 		}
 	}
@@ -122,7 +122,21 @@ class PaginatedMissionListComponent extends Component {
 		})
 		.catch(e => {
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't change mission visibility")+" "+e.message });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't change mission visibility"), details: e.message });
+		});
+	}
+	
+	_setMissionTemplate(m, template) {
+		m.options.template = template;
+		API.UpdateMission(m, this.props.user.name, this.props.user.id)
+		.then(() => {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: template ? I18n.t("Mission was set as a template") : I18n.t("Mission was removed from template list") });
+			this.setState({ missions: null, nextMissions: null });
+			this._fetchMissions(this.state);
+		})
+		.catch(e => {
+			console.error(e);
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't edit template list"), details: e.message });
 		});
 	}
 	
@@ -141,7 +155,12 @@ class PaginatedMissionListComponent extends Component {
 		if(this.state.tab === 0 && this.state.missions) {
 			missionsarea = this.state.missions.length > 0 ? <div>
 				{this.props.synthetic ?
-					<MissionsTable missions={this.state.missions} onChangeMissionStatus={(m,s) => this._setMissionStatus(m, s)} />
+					<MissionsTable
+						missions={this.state.missions}
+						admin={this.props.admin}
+						onChangeMissionStatus={(m,s) => this._setMissionStatus(m, s)}
+						onSetTemplate={(m,s) => this._setMissionTemplate(m, s)}
+					/>
 					: <MissionsList missions={this.state.missions} />
 				}
 				

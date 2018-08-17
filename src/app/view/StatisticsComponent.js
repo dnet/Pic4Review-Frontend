@@ -52,7 +52,7 @@ class StatisticsComponent extends Component {
 		})
 		.catch(e => {
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get statistics")+" "+e.message });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get statistics"), details: e.message });
 		});
 	}
 }

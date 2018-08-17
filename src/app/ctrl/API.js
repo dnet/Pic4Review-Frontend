@@ -105,7 +105,7 @@ class API {
 							try {
 								const data = typeof body === "string" ? JSON.parse(body) : body;
 								
-								if(data.details_for_humans || data.error) {
+								if(data.error) {
 									reject(new Error(data.details_for_humans || data.error));
 								}
 								else {
@@ -153,7 +153,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -200,7 +200,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -230,7 +230,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -259,7 +259,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -297,7 +297,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -332,7 +332,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else if(!data.feature) {
@@ -365,7 +365,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -431,7 +431,7 @@ class API {
 							try {
 								const data = typeof body === "string" ? JSON.parse(body) : body;
 								
-								if(data.details_for_humans || data.error) {
+								if(data.error) {
 									reject(new Error(data.details_for_humans || data.error));
 								}
 								else {
@@ -463,7 +463,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -494,7 +494,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -523,7 +523,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -553,7 +553,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -582,7 +582,7 @@ class API {
 					try {
 						const data = typeof body === "string" ? JSON.parse(body) : body;
 						
-						if(data.details_for_humans || data.error) {
+						if(data.error) {
 							reject(new Error(data.details_for_humans || data.error));
 						}
 						else {
@@ -621,6 +621,10 @@ class API {
 				data.dataoptions = mission.options.data.options;
 			}
 			
+			if(mission.options && mission.options.template != null) {
+				data.template = mission.options.template;
+			}
+			
 			request(
 				{
 					method: 'PUT',
@@ -635,7 +639,7 @@ class API {
 						try {
 							const data = typeof body === "string" ? JSON.parse(body) : body;
 							
-							if(data.details_for_humans || data.error) {
+							if(data.error) {
 								reject(new Error(data.details_for_humans || data.error));
 							}
 							else {
@@ -674,7 +678,7 @@ class API {
 						try {
 							const data = typeof body === "string" ? JSON.parse(body) : body;
 							
-							if(data.details_for_humans || data.error) {
+							if(data.error) {
 								reject(new Error(data.details_for_humans || data.error));
 							}
 							else {

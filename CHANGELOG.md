@@ -8,8 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Added
+- Create new mission, the fast way, using templates
+
 ### Changed
 - Improved readability of error messages coming from API
+- Creation date shown instead of update date in missions list and map
+- Create mission link in page header redirects to a two entries page, allowing to choose mission creation tool (templates or scratch)
 
 
 ## 0.4.11 - 2018-08-09

@@ -88,6 +88,10 @@ class Mission {
 			opts.date = options.lastedit;
 		}
 		
+		if(options.created) {
+			opts.dateCreation = options.created;
+		}
+		
 		if(options.datatype || options.dataoptions) {
 			opts.data = { source: options.datatype, options: options.dataoptions };
 		}
@@ -101,6 +105,10 @@ class Mission {
 		}
 		else {
 			opts.contributors = null;
+		}
+		
+		if(options.template) {
+			opts.template = options.template;
 		}
 		
 		opts.canEdit = options.canEdit || options.editor || false;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ContentDuplicate, Eye, EyeOff, Information, Pencil } from 'mdi-material-ui';
+import { ContentDuplicate, Eye, EyeOff, Information, Pencil, Star, StarOutline } from 'mdi-material-ui';
 import IconButton from 'material-ui/IconButton';
 import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
@@ -62,20 +62,34 @@ class MissionsTableComponent extends Component {
 									<Pencil />
 								</IconButton>
 							</Tooltip>
-								{m.status === "online" &&
-									<Tooltip title={I18n.t("Hide mission from public list")}>
-										<IconButton onClick={() => this.props.onChangeMissionStatus(m, "canceled")}>
-											<EyeOff />
-										</IconButton>
-									</Tooltip>
-								}
-								{m.status !== "online" &&
-									<Tooltip title={I18n.t("Show mission in public list")}>
-										<IconButton onClick={() => this.props.onChangeMissionStatus(m, "online")}>
-											<Eye />
-										</IconButton>
-									</Tooltip>
-								}
+							{m.status === "online" &&
+								<Tooltip title={I18n.t("Hide mission from public list")}>
+									<IconButton onClick={() => this.props.onChangeMissionStatus(m, "canceled")}>
+										<EyeOff />
+									</IconButton>
+								</Tooltip>
+							}
+							{m.status !== "online" &&
+								<Tooltip title={I18n.t("Show mission in public list")}>
+									<IconButton onClick={() => this.props.onChangeMissionStatus(m, "online")}>
+										<Eye />
+									</IconButton>
+								</Tooltip>
+							}
+							{this.props.admin && m.options.template &&
+								<Tooltip title={I18n.t("Remove this mission from template list")}>
+									<IconButton onClick={() => this.props.onSetTemplate(m, false)}>
+										<Star />
+									</IconButton>
+								</Tooltip>
+							}
+							{this.props.admin && !m.options.template &&
+								<Tooltip title={I18n.t("Set this mission as a template")}>
+									<IconButton onClick={() => this.props.onSetTemplate(m, true)}>
+										<StarOutline />
+									</IconButton>
+								</Tooltip>
+							}
 						</TableCell>
 					</TableRow>;
 				})}

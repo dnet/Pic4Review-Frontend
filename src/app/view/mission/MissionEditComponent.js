@@ -58,12 +58,12 @@ class MissionEditComponent extends Component {
 					console.log("Failed updating");
 					console.error(e);
 					PubSub.publish("UI.MESSAGE.WAITDONE");
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when updating the mission")+" "+e.message });
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when updating the mission"), details: e.message });
 				});
 			}
 			catch(e) {
 				console.error(e);
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something is wrong with your mission.")+" "+e.message });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something is wrong with your mission."), details: e.message });
 			}
 		}
 	}
@@ -114,7 +114,7 @@ class MissionEditComponent extends Component {
 			})
 			.catch(e => {
 				console.error(e);
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission")+" "+e.message });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission"), details: e.message });
 			});
 		});
 		setTimeout(() => PubSub.publish("USER.INFO.WANTS"), 1000);

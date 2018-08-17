@@ -18,6 +18,10 @@ class CreateMissionComponent extends Component {
 		];
 		
 		return <Grid container spacing={8} justify="center" alignItems="center" style={{marginTop: 20}}>
+			<Grid item xs={12} style={{marginBottom: 10, textAlign: "center"}}>
+				<Typography variant="body1">{I18n.t("Select the way you want to create your new mission : using existing templates (takes few seconds), or creating from scratch your mission (takes few minutes, but you can do whatever you like).")}</Typography>
+			</Grid>
+			
 			{entries.map((e,i) => {
 				return <Grid item xs={12} sm={6} lg={4} xl={3} key={i}>
 					<Link to={e.link} style={{textDecoration: "none"}}>

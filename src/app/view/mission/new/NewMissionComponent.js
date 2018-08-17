@@ -59,7 +59,7 @@ class NewMissionComponent extends Component {
 				}
 				catch(e) {
 					console.error(e);
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something is wrong with your mission.")+" "+e.message });
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something is wrong with your mission."), details: e.message });
 				}
 			}
 		}
@@ -86,7 +86,7 @@ class NewMissionComponent extends Component {
 				console.log("Failed creating");
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission")+" "+e.message });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission"), details: e.message });
 			});
 		}
 	}
@@ -285,7 +285,7 @@ class NewMissionComponent extends Component {
 			console.log("Failed getting progress");
 			console.error(e);
 			setTimeout(() => this._updateCreation(mid, pictoken), 2000);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission")+" "+e.message });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission"), details: e.message });
 		});
 	}
 	
@@ -368,36 +368,38 @@ class NewMissionComponent extends Component {
 			API.GetMissionDetails(this.props.match.params.mid)
 			.then(m => {
 				//Remove previously retrieved GeoJSON data
-				if(m.options.data.options.geojson) {
+				if(m.options && m.options.data && m.options.data.options && m.options.data.options.geojson) {
 					delete m.options.data.options.geojson;
 				}
 				
-				const newState = Object.assign({}, NewMissionComponent.RestoreEditors(m), {
-					details: {
-						type: m.type,
-						theme: m.theme,
-						areaname: m.area.name,
-						fulldesc: m.description.full,
-						shortdesc: m.description.short
-					},
-					datasource: {
-						source: m.options.data.source,
-						options: m.options.data.options,
-						area: m.area.bbox
-					},
-					mission: m
-				});
-				
-				this.setState(newState);
+				this.setState(NewMissionComponent.MissionToState(m));
 				
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 			})
 			.catch(e => {
 				console.error(e);
 				PubSub.publish("UI.MESSAGE.WAITDONE");
-				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission")+" "+e.message });
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get details of this mission"), details: e.message });
 			});
 		}
+	}
+	
+	static MissionToState(m) {
+		return Object.assign({}, NewMissionComponent.RestoreEditors(m), {
+			details: {
+				type: m.type,
+				theme: m.theme,
+				areaname: m.area.name,
+				fulldesc: m.description.full,
+				shortdesc: m.description.short
+			},
+			datasource: {
+				source: m.options.data.source,
+				options: m.options.data.options,
+				area: m.area.bbox
+			},
+			mission: m
+		});
 	}
 	
 	static RestoreEditors(m) {

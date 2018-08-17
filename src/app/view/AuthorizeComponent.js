@@ -47,12 +47,12 @@ class AuthorizeComponent extends Component {
 			this.setState({ user: data ? data : -1 });
 		});
 		
-		setTimeout(() => PubSub.publish("USER.INFO.WANTS"), 1000);
+		setTimeout(() => PubSub.publish("USER.INFO.WANTS"), 1500);
 	}
 	
 	componentDidUpdate() {
 		if(this.state.user === -1) {
-			PubSub.publish("UI.LOGIN.WANTS");
+			PubSub.publish("UI.LOGIN.WANTS", { goBack: true });
 			if(window.history.length > 2 || document.referrer.length > 0) {
 				this.props.history.goBack();
 			}

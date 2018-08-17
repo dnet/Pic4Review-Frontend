@@ -10,7 +10,7 @@ class AlertComponent extends Component {
 	constructor() {
 		super();
 		this.state = {
-			duration: 3000,
+			duration: 6000,
 			message: "",
 			smiley: null,
 			type: "info",
@@ -19,8 +19,8 @@ class AlertComponent extends Component {
 		
 		PubSub.subscribe("UI.MESSAGE.BASIC", (msg, data) => {
 			this.setState({
-				message: data.message,
-				duration: data.duration || 4000,
+				message: data.message+(data.details ? " ("+data.details+")" : ""),
+				duration: data.duration || (data.details ? 6000 : 3000),
 				type: data.type || "info",
 				open: true,
 				smiley: data.smiley || null

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import Button from 'material-ui/Button';
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } from 'material-ui/Dialog';
 
@@ -11,11 +12,12 @@ class LoginDialogComponent extends Component {
 		super();
 		
 		this.state = {
-			open: false
+			open: false,
+			goBack: false
 		};
 		
-		PubSub.subscribe("UI.LOGIN.WANTS", () => {
-			this.setState({ open: true });
+		PubSub.subscribe("UI.LOGIN.WANTS", (msg, data) => {
+			this.setState({ open: true, goBack: data.goBack || false });
 		});
 	}
 	
@@ -33,7 +35,16 @@ class LoginDialogComponent extends Component {
 	 * @private
 	 */
 	_closeDialog() {
-		this.setState({ open: false });
+		const goBack = this.state.goBack;
+		this.setState({ open: false, goBack: false });
+		if(goBack) {
+			if(window.history.length > 2 || document.referrer.length > 0) {
+				this.props.history.goBack();
+			}
+			else {
+				this.props.history.push('/');
+			}
+		}
 	}
 	
 	render() {
@@ -59,7 +70,7 @@ class LoginDialogComponent extends Component {
 	}
 }
 
-export default LoginDialogComponent;
+export default withRouter(LoginDialogComponent);
 
 /**
  * Event when the user wants to login for sure.

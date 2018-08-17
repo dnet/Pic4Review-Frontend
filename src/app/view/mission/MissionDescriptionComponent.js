@@ -46,7 +46,7 @@ class MissionDescriptionComponent extends Component {
 		})
 		.catch(e => {
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't retrieve features for this mission.")+" "+e.message });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't retrieve features for this mission."), details: e.message });
 			this.setState({ features: null });
 		});
 	}

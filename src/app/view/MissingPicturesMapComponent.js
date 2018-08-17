@@ -36,7 +36,7 @@ class MissingPicturesMapComponent extends Component {
 		.then(d => this.setState({ pics: d }))
 		.catch(e => {
 			console.error(e);
-			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get missing pictures")+" "+e.message });
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't get missing pictures"), details: e.message });
 		});
 	}
 }
