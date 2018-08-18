@@ -41,8 +41,31 @@ class CopyMissionComponent extends Component {
 				//Fetch template details
 				API.GetMissionDetails(this.state.mission.id)
 				.then(m => {
+					let names = this.state.place.names;
+					
+					//Shorten name if needed
+					if(names.join(', ').length >= 100) {
+						//Remove next to last item if start with same string as last item
+						if(names.length >= 3 && names[names.length-2].split(' ')[0].startsWith(names[names.length-1].split(' '))) {
+							names.splice(names.length-2, 1);
+						}
+						
+						if(names.length > 3) {
+							names.splice(1, names.length-3);
+						}
+						
+						names = names.join(', ');
+						if(names.length >= 100) {
+							names = names.substring(0, 90)+"...";
+						}
+					}
+					else {
+						names = names.join(', ');
+					}
+					
 					const data = NewMissionComponent.MissionToState(m);
-					data.mission.area.name = data.details.areaname = this.state.place.names.join(', ');
+					console.log("names", names);
+					data.mission.area.name = data.details.areaname = names;
 					data.mission.area.bbox = data.datasource.bbox = this.state.place.bbox;
 					if(data.datasource.options && data.datasource.options.geojson) {
 						delete data.datasource.options.geojson;
