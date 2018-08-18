@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import Hash from 'object-hash';
 import { ListItemText, ListItemIcon } from 'material-ui/List';
 import { MenuList, MenuItem } from 'material-ui/Menu';
 import Paper from 'material-ui/Paper';
@@ -54,19 +53,30 @@ class SelectListComponent extends Component {
 		}
 	}
 	
-	componentDidUpdate() {
+	componentDidUpdate(prevProps, prevState) {
 		if(this.props.entries.length === 1 && this.state.selected !== 0) {
 			this.setState({ selected: 0 });
 			this.props.onSelect(this.props.entries[0]);
 		}
-	}
-	
-	componentWillReceiveProps(nextProps) {
-		if(
-			nextProps.entries && this.props.entries
-			&& (nextProps.entries.length != this.props.entries.length || Hash(this.props.entries) !== Hash(nextProps.entries))
-		) {
-			this.setState({ selected: null });
+		else if(prevProps.entries && this.props.entries) {
+			if(this.props.entries.length !== prevProps.entries.length) {
+				this.setState({ selected: null });
+			}
+			else {
+				//Check entries one by one
+				let diffEntries = false;
+				
+				for(let i=0; i < this.props.entries.length; i++) {
+					if(this.props.entries[i].title !== prevProps.entries[i].title || this.props.entries[i].subtitle !== prevProps.entries[i].subtitle) {
+						diffEntries = true;
+						break;
+					}
+				}
+				
+				if(diffEntries) {
+					this.setState({ selected: null });
+				}
+			}
 		}
 	}
 	

@@ -18,28 +18,32 @@ if(process.env.NODE_ENV === "production") {
 		new webpack.optimize.AggressiveMergingPlugin(),
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		// Minify the bundle
-		new UglifyJSPlugin({ uglifyOptions: {
-			mangle: true,
-			compress: {
-				warnings: false, // Suppress uglification warnings
-				pure_getters: true,
-				unsafe: true,
-				unsafe_comps: true,
-				ie8: false,
-				conditionals: true,
-				unused: true,
-				comparisons: true,
-				sequences: true,
-				dead_code: true,
-				evaluate: true,
-				if_return: true,
-				join_vars: true
-			},
-			output: {
-				comments: false,
-			},
-			exclude: [/\.min\.js$/gi]
-		}})
+		new UglifyJSPlugin({
+			//sourceMap: true, // For debugging purposes only
+			parallel: 2,
+			uglifyOptions: {
+				mangle: true,
+				compress: {
+					warnings: false, // Suppress uglification warnings
+					pure_getters: true,
+					unsafe: true,
+					unsafe_comps: true,
+					ie8: false,
+					conditionals: true,
+					unused: true,
+					comparisons: true,
+					sequences: true,
+					dead_code: true,
+					evaluate: true,
+					if_return: true,
+					join_vars: true
+				},
+				output: {
+					comments: false,
+				},
+				exclude: [/\.min\.js$/gi]
+			}
+		})
 	]);
 }
 else {
