@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Improved readability of error messages coming from API
 - Creation date shown instead of update date in missions list and map
 - Create mission link in page header redirects to a two entries page, allowing to choose mission creation tool (templates or scratch)
+- On large screens, mission answers on review page can be shown as a multi-line grid if there are many possible answers
 
 
 ## 0.4.11 - 2018-08-09

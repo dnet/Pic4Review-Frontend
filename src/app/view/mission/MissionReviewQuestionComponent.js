@@ -42,29 +42,43 @@ class MissionReviewQuestionComponent extends Component {
 			let content = null;
 			
 			if(this.props.data.type === "images") {
-				content = <GridList
-					cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)}
-					cellHeight={IMG_HEIGHT[this.props.width]}
-					style={{ flexWrap: "nowrap", marginTop: 10 }}
-				>
-					{this.props.data.answers.map((answer, i) => {
-						const onClick = () => this._onAnswerChange(i);
-						
-						return <GridListTile key={answer.label} onClick={onClick}>
-							<img src={answer.image} alt={answer.label} />
-							<GridListTileBar
-								subtitle={answer.label}
-								actionPosition="left"
-								actionIcon={
-									<IconButton style={{ color: "white" }} onClick={onClick}>
-										{this.state.selectedAnswer === i ? <RadioboxMarked /> : <RadioboxBlank />}
-									</IconButton>
-								}
-								style={{height: 30}}
-							/>
-						</GridListTile>;
-					})}
-				</GridList>;
+				const tiles = this.props.data.answers.map((answer, i) => {
+					const onClick = () => this._onAnswerChange(i);
+					
+					return <GridListTile key={answer.label} onClick={onClick}>
+						<img src={answer.image} alt={answer.label} />
+						<GridListTileBar
+							subtitle={answer.label}
+							actionPosition="left"
+							actionIcon={
+								<IconButton style={{ color: "white" }} onClick={onClick}>
+									{this.state.selectedAnswer === i ? <RadioboxMarked /> : <RadioboxBlank />}
+								</IconButton>
+							}
+							style={{height: 30}}
+						/>
+					</GridListTile>;
+				});
+				
+				content = (this.props.width === "xs" || this.props.width === "sm") ?
+					<GridList
+						cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)}
+						cellHeight={IMG_HEIGHT[this.props.width]}
+						style={{ flexWrap: "nowrap", marginTop: 10 }}
+					>
+						{tiles}
+					</GridList>
+					:
+					<div
+						style={{ maxHeight: IMG_HEIGHT[this.props.width]*2.2, marginTop: 10, overflowX: "hidden", overflowY: "auto" }}
+					>
+						<GridList
+							cols={Math.min((this.props.width === "md" ? 2 : 3), tiles.length)}
+							cellHeight={IMG_HEIGHT[this.props.width]}
+						>
+							{tiles}
+						</GridList>
+					</div>;
 			}
 			else if(this.props.data.type === "choice") {
 				content = <RadioGroup
