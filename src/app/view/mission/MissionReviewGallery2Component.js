@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Information, MapMarkerRadius, MagnifyPlusOutline, PlusCircle } from 'mdi-material-ui';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Hidden from 'material-ui/Hidden';
+import HorizontalScrollGridList from '../HorizontalScrollGridList';
 import IconButton from 'material-ui/IconButton';
 import Magnifier from 'react-magnifier';
 import Tooltip from 'material-ui/Tooltip';
@@ -22,9 +23,10 @@ class MissionReviewGallery2Component extends Component {
 		if(this.props.pictures && this.props.pictures.length > 0) {
 			const style = Object.assign({}, this.props.style, {flexWrap: "nowrap", maxHeight: this.props.height});
 			
-			return <GridList
+			return <HorizontalScrollGridList
 				cols={1.15}
 				style={style}
+				speed={2}
 				ref={el => this.myRefs.grid = ReactDOM.findDOMNode(el)}
 			>
 				{this.props.pictures.map((p, i) => {
@@ -90,7 +92,7 @@ class MissionReviewGallery2Component extends Component {
 						</div>
 					</GridListTile>
 				}
-			</GridList>;
+			</HorizontalScrollGridList>;
 		}
 		else {
 			return <div></div>;
@@ -98,24 +100,6 @@ class MissionReviewGallery2Component extends Component {
 	}
 	
 	componentDidMount() {
-		//Horizontal scroll
-		if(this.myRefs.grid) {
-			const scrollHorizontally = e => {
-				e = window.event || e;
-				const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
-				this.myRefs.grid.scrollLeft -= (delta*80); // Multiplied by 40
-				e.preventDefault();
-			};
-			
-			if(this.myRefs.grid.addEventListener) {
-				this.myRefs.grid.addEventListener("mousewheel", scrollHorizontally, false);
-				this.myRefs.grid.addEventListener("DOMMouseScroll", scrollHorizontally, false);
-			}
-			else {
-				this.myRefs.grid.attachEvent("onmousewheel", scrollHorizontally);
-			}
-		}
-		
 		//Find currently viewed picture
 		if(this.props.pictures.length > 1) {
 			this.timer = setInterval(() => {

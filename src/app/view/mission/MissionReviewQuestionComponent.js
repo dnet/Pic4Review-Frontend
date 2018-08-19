@@ -5,6 +5,7 @@ import { Pencil, RadioboxBlank, RadioboxMarked } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { FormControlLabel } from 'material-ui/Form';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import HorizontalScrollGridList from '../HorizontalScrollGridList';
 import IconButton from 'material-ui/IconButton';
 import Markdown from 'react-markdown';
 import Radio, { RadioGroup } from 'material-ui/Radio';
@@ -61,13 +62,14 @@ class MissionReviewQuestionComponent extends Component {
 				});
 				
 				content = (this.props.width === "xs" || this.props.width === "sm") ?
-					<GridList
+					<HorizontalScrollGridList
 						cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)}
 						cellHeight={IMG_HEIGHT[this.props.width]}
 						style={{ flexWrap: "nowrap", marginTop: 10 }}
+						speed={2}
 					>
 						{tiles}
-					</GridList>
+					</HorizontalScrollGridList>
 					:
 					<div
 						style={{ maxHeight: IMG_HEIGHT[this.props.width]*2.2, marginTop: 10, overflowX: "hidden", overflowY: "auto" }}
