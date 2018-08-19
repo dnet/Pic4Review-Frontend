@@ -70,7 +70,7 @@ class BodyComponent extends Component {
 					<Route exact path='/missions/admin' component={Authorize.For(MissionsAdmin)} />
 					<Route exact path='/my/missions' component={Authorize.For(MyMissions)} />
 					<Route exact path='/my/statistics' component={Authorize.For(MyStatistics)} />
-					<Route exact path='/statistics' component={Statistics} />
+					<Route exact path='/statistics' component={Authorize.For(Statistics)} />
 				</Switch>
 			</div>
 			

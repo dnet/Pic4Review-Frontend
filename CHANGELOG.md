@@ -11,12 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Create new mission, the fast way, using templates
 - In review page, picture gallery and response image list can be horizontally scrolled using mouse wheel
+- In users leaderboard (general and per mission), current user ranking is always shown and highlighted
 
 ### Changed
 - Improved readability of error messages coming from API
 - Creation date shown instead of update date in missions list and map
 - Create mission link in page header redirects to a two entries page, allowing to choose mission creation tool (templates or scratch)
 - On large screens, mission answers on review page can be shown as a multi-line grid if there are many possible answers
+- Statistics page can be accessed only if logged-in
 
 
 ## 0.4.11 - 2018-08-09

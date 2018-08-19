@@ -28,7 +28,7 @@ class StatisticsComponent extends Component {
 						<Time data={this.state.stats.amountEdits} height={300} />
 					</Grid>
 					<Grid item xs={12} md={6}>
-						<UsersScore data={this.state.stats.scores} />
+						<UsersScore data={this.state.stats.scores} user={this.props.user} />
 					</Grid>
 					<Grid item xs={12} md={6}>
 						<Themes data={this.state.stats.themes} height={300} />
@@ -46,7 +46,7 @@ class StatisticsComponent extends Component {
 	componentWillMount() {
 		PubSub.publish("UI.TITLE.SET", { title: I18n.t("Statistics") });
 		
-		API.GetUsersStatistics()
+		API.GetUsersStatistics(this.props.user.id)
 		.then(stats => {
 			this.setState({ stats: stats });
 		})

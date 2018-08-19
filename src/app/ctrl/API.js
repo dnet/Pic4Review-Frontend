@@ -451,11 +451,12 @@ class API {
 	/**
 	 * Get mission statistics
 	 * @param {int} mid The mission ID
+	 * @param {int} uid The user ID
 	 * @return {Promise} A promise resolving on features statistics
 	 */
-	static GetMissionStatistics(mid) {
+	static GetMissionStatistics(mid, uid) {
 		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/' + mid + '/stats', (err, res, body) => {
+			request(CONST.P4R_URL + '/missions/' + mid + '/stats' + (uid ? '?user='+uid : ''), (err, res, body) => {
 				if(err) {
 					reject(err);
 				}
@@ -570,11 +571,12 @@ class API {
 	
 	/**
 	 * Get statistics for all users
+	 * @param {int} [uid] User ID (for showing this user ranking even if not in top 20)
 	 * @return {Promise} A promise resolving on users statistics
 	 */
-	static GetUsersStatistics() {
+	static GetUsersStatistics(uid) {
 		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/users/stats', (err, res, body) => {
+			request(CONST.P4R_URL + '/users/stats' + (uid ? '?user='+uid : ''), (err, res, body) => {
 				if(err) {
 					reject(err);
 				}

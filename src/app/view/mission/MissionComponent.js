@@ -40,7 +40,7 @@ class MissionComponent extends Component {
 					break;
 				
 				case 2:
-					content = <MissionStatistics mission={this.state.mission} style={contentStyle} />;
+					content = <MissionStatistics mission={this.state.mission} style={contentStyle} user={this.props.user} />;
 					break;
 			}
 		}

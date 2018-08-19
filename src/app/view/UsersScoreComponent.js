@@ -21,8 +21,8 @@ class UsersScoreComponent extends Component {
 					</TableHead>
 					<TableBody>
 						{this.props.data.map((d,i) => {
-							return <TableRow key={i}>
-								<TableCell>{i+1}</TableCell>
+							return <TableRow key={i} style={this.props.user && this.props.user.name === d.user ? { backgroundColor: "#FFF9C4" } : {}}>
+								<TableCell>{d.place || i+1}</TableCell>
 								<TableCell>{d.user}</TableCell>
 								<TableCell>{d.featuresEdited}</TableCell>
 							</TableRow>

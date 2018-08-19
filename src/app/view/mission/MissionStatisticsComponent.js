@@ -31,7 +31,7 @@ class MissionStatisticsComponent extends Component {
 				</Grid>
 				<Grid item md={3}></Grid>
 				<Grid item xs={12} md={6}>
-					<Score data={this.state.stats.users} />
+					<Score data={this.state.stats.users} user={this.props.user} />
 				</Grid>
 			</Grid>;
 		}
@@ -45,7 +45,7 @@ class MissionStatisticsComponent extends Component {
 	}
 	
 	componentWillMount() {
-		API.GetMissionStatistics(this.props.mission.id)
+		API.GetMissionStatistics(this.props.mission.id, this.props.user.id)
 		.then(s => this.setState({ stats: s }))
 		.catch(e => {
 			console.error(e);
