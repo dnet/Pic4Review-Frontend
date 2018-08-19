@@ -98,6 +98,24 @@ class MissionReviewGallery2Component extends Component {
 	}
 	
 	componentDidMount() {
+		//Horizontal scroll
+		if(this.myRefs.grid) {
+			const scrollHorizontally = e => {
+				e = window.event || e;
+				const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+				this.myRefs.grid.scrollLeft -= (delta*80); // Multiplied by 40
+				e.preventDefault();
+			};
+			
+			if(this.myRefs.grid.addEventListener) {
+				this.myRefs.grid.addEventListener("mousewheel", scrollHorizontally, false);
+				this.myRefs.grid.addEventListener("DOMMouseScroll", scrollHorizontally, false);
+			}
+			else {
+				this.myRefs.grid.attachEvent("onmousewheel", scrollHorizontally);
+			}
+		}
+		
 		//Find currently viewed picture
 		if(this.props.pictures.length > 1) {
 			this.timer = setInterval(() => {

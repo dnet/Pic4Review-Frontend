@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Create new mission, the fast way, using templates
+- In review page, picture gallery can be scrolled using mouse wheel
 
 ### Changed
 - Improved readability of error messages coming from API
