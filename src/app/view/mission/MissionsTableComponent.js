@@ -25,7 +25,7 @@ class MissionsTableComponent extends Component {
 				<TableBody>
 				{this.props.missions.map(m => {
 					const completion = Math.floor(100 - (m.options.stats.new / m.options.stats.total)*100);
-					const backcolor = m.status === "online" ? (completion < 100 ? "#C8F7C5" : "#F5D76E") : "#DADFE1";
+					const backcolor = m.status === "online" ? (completion < 100 ? "white" : "#FFECB3") : "#E0E0E0";
 					
 					return <TableRow key={m.id} style={{backgroundColor: backcolor}}>
 						<TableCell style={styleCentered}>{m.id}</TableCell>
@@ -65,14 +65,14 @@ class MissionsTableComponent extends Component {
 							{m.status === "online" &&
 								<Tooltip title={I18n.t("Hide mission from public list")}>
 									<IconButton onClick={() => this.props.onChangeMissionStatus(m, "canceled")}>
-										<EyeOff />
+										<Eye />
 									</IconButton>
 								</Tooltip>
 							}
 							{m.status !== "online" &&
 								<Tooltip title={I18n.t("Show mission in public list")}>
 									<IconButton onClick={() => this.props.onChangeMissionStatus(m, "online")}>
-										<Eye />
+										<EyeOff />
 									</IconButton>
 								</Tooltip>
 							}
