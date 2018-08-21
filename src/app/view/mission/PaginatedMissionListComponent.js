@@ -114,28 +114,36 @@ class PaginatedMissionListComponent extends Component {
 	
 	_setMissionStatus(m, status) {
 		m.status = status;
+		
+		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating the mission") });
 		API.UpdateMission(m, this.props.user.name, this.props.user.id)
 		.then(() => {
+			PubSub.publish("UI.MESSAGE.WAITDONE");
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Mission visibility was changed") });
 			this.setState({ missions: null, nextMissions: null });
 			this._fetchMissions(this.state);
 		})
 		.catch(e => {
 			console.error(e);
+			PubSub.publish("UI.MESSAGE.WAITDONE");
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't change mission visibility"), details: e.message });
 		});
 	}
 	
 	_setMissionTemplate(m, template) {
 		m.options.template = template;
+		
+		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating the mission") });
 		API.UpdateMission(m, this.props.user.name, this.props.user.id)
 		.then(() => {
+			PubSub.publish("UI.MESSAGE.WAITDONE");
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: template ? I18n.t("Mission was set as a template") : I18n.t("Mission was removed from template list") });
 			this.setState({ missions: null, nextMissions: null });
 			this._fetchMissions(this.state);
 		})
 		.catch(e => {
 			console.error(e);
+			PubSub.publish("UI.MESSAGE.WAITDONE");
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't edit template list"), details: e.message });
 		});
 	}

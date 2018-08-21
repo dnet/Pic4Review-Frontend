@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Create mission link in page header redirects to a two entries page, allowing to choose mission creation tool (templates or scratch)
 - On large screens, mission answers on review page can be shown as a multi-line grid if there are many possible answers
 - Statistics page can be accessed only if logged-in
+- In missions management page, when updating visibility status, a blocking loading is now shown (as API can take some delay to update due to caching system)
 
 
 ## 0.4.11 - 2018-08-09
