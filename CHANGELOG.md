@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.4.12 - 2018-08-24
+
 ### Added
 - Create new mission, the fast way, using templates
 - In review page, picture gallery and response image list can be horizontally scrolled using mouse wheel
