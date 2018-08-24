@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Create new mission, the fast way, using templates
 - In review page, picture gallery and response image list can be horizontally scrolled using mouse wheel
 - In users leaderboard (general and per mission), current user ranking is always shown and highlighted
+- Partial support for Japanese (ja) locale
 
 ### Changed
 - Improved readability of error messages coming from API
