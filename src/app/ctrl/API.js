@@ -1,4 +1,5 @@
 import CONST from '../constants';
+import PACKAGE from '../../../package.json';
 import Feature from '../model/Feature';
 import Mission from '../model/Mission';
 import OsmRequest from 'osm-request';
@@ -745,7 +746,7 @@ class API {
 						
 						//Create a new changeset if needed
 						if(!changesetOpen) {
-							changesetId = await osm.createChangeset('Pic4Review', comment);
+							changesetId = await osm.createChangeset('Pic4Review '+PACKAGE.version, comment);
 						}
 						
 						//Send element
