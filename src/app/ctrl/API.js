@@ -89,6 +89,9 @@ class API {
 				if(editors) {
 					data.dataoptions.editors = editors;
 				}
+				else {
+					data.dataoptions.editors = null;
+				}
 				
 				//Send request
 				request(

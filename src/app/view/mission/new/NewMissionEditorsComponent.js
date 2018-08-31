@@ -151,7 +151,13 @@ class NewMissionEditorsComponent extends Component {
 	componentWillUpdate(nextProps, nextState) {
 		//Notify parent of changes if necessary
 		if(Hash(this.state) !== Hash(nextState)) {
-			this.props.onChange(nextState);
+			const info = Object.assign({}, nextState);
+			
+			if(info.editor === "disabled") {
+				info.data = {};
+			}
+			
+			this.props.onChange(info);
 		}
 	}
 }
