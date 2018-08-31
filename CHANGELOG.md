@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Changed
+- Mission without integrated editor has dedicated icon in missions list
+- In personnal mission page, details for each mission has a new layout, and mission completion is shown as bar diagram
+
+### Fixed
+- When duplicating mission and changing editor, editor settings are now properly sent to back-end
+- Mission having double-quotes in their name are now properly handled (fix in osm-request on XML special characters escaping)
+
 
 ## 0.4.12 - 2018-08-24
 

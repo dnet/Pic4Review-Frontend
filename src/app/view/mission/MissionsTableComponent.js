@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ContentDuplicate, Eye, EyeOff, Information, Pencil, Star, StarOutline } from 'mdi-material-ui';
+import { HorizontalBar } from 'react-chartjs-2';
 import IconButton from 'material-ui/IconButton';
 import { Link } from 'react-router-dom';
 import Paper from 'material-ui/Paper';
@@ -10,14 +11,14 @@ class MissionsTableComponent extends Component {
 	render() {
 		const style = { margin: 0, padding: 0 };
 		const styleCentered = Object.assign({}, style, { textAlign: "center" });
+		const styleId = Object.assign({}, styleCentered, { paddingRight: 10, paddingLeft: 10 });
 		
 		return <Paper>
 			<Table>
 				<TableHead>
 					<TableRow>
-						<TableCell style={styleCentered}>#</TableCell>
+						<TableCell style={styleId}>#</TableCell>
 						<TableCell style={style}>{I18n.t("Name")}</TableCell>
-						<TableCell style={style}>{I18n.t("Area")}</TableCell>
 						<TableCell style={styleCentered}>{I18n.t("Completion")}</TableCell>
 						<TableCell style={styleCentered}>{I18n.t("Actions")}</TableCell>
 					</TableRow>
@@ -27,12 +28,18 @@ class MissionsTableComponent extends Component {
 					const completion = Math.floor(100 - (m.options.stats.new / m.options.stats.total)*100);
 					const backcolor = m.status === "online" ? (completion < 100 ? "white" : "#FFECB3") : "#E0E0E0";
 					
+					//Prepare dataset
+					const statusesKeys = Object.keys(m.options.stats).filter(s => STATUSES[s]);
+					statusesKeys.sort((a, b) => STATUSES[a].priority - STATUSES[b].priority);
+					
 					return <TableRow key={m.id} style={{backgroundColor: backcolor}}>
-						<TableCell style={styleCentered}>{m.id}</TableCell>
-						<TableCell style={style}>{m.description.short}</TableCell>
-						<TableCell style={style}>{m.area.name}</TableCell>
+						<TableCell style={styleId}>{m.id}</TableCell>
+						<TableCell style={style}>{m.description.short}<br />{m.area.name}</TableCell>
 						<TableCell style={styleCentered}>
-							{completion+"%"}
+							{statusesKeys.map(s => {
+								const mylength = Math.round(m.options.stats[s]*100/m.options.stats.total/2)+"%";
+								return <span title={STATUSES[s].name+" : "+m.options.stats[s]} style={{backgroundColor: STATUSES[s].color, height: 15, paddingLeft: mylength, paddingRight: mylength }}> </span>;
+							})}
 						</TableCell>
 						<TableCell style={styleCentered}>
 							<Tooltip title={I18n.t("See mission details")}>
