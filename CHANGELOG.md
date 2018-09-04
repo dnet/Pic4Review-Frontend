@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Mission without integrated editor has dedicated icon in missions list
 - In personnal mission page, details for each mission has a new layout, and mission completion is shown as bar diagram
+- If OSM feature already has associated pictures, we don't change the related tag values
+- If OSM feature already has a `survey:date` tag, we only change it if picture date is more recent than existing one
 
 ### Fixed
 - When duplicating mission and changing editor, editor settings are now properly sent to back-end

@@ -335,8 +335,30 @@ class MissionReviewComponent extends Component {
 			const pic = this.state.pictures[picId];
 			
 			if(pic && pic.osmTags) {
-				tags = Object.assign(tags, pic.osmTags);
-				tags["survey:date"] = (new Date(pic.date)).toISOString().split("T")[0];
+				Object.entries(pic.osmTags).forEach(e => {
+					if(!this.state.feature.properties[e[0]]) {
+						tags[e[0]] = e[1];
+					}
+				});
+				
+				const surveyDateObj = new Date(pic.date);
+				const surveyDate = surveyDateObj.toISOString().split("T")[0];
+				
+				if(this.state.feature.properties["survey:date"]) {
+					try {
+						const existingDate = new Date(this.state.feature.properties["survey:date"]);
+						
+						if(existingDate < surveyDateObj) {
+							tags["survey:date"] = surveyDate;
+						}
+					}
+					catch(e) {
+						tags["survey:date"] = surveyDate;
+					}
+				}
+				else {
+					tags["survey:date"] = surveyDate;
+				}
 			}
 		}
 		
