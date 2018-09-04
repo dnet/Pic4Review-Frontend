@@ -45,12 +45,6 @@ describe("Model > Feature", () => {
 			}, TypeError);
 		});
 		
-		it("fails if coordinates are not of correct length", () => {
-			assert.throws(() => {
-				const f1 = new Feature(1, [ 1, 2, 3 ], [ pic1 ], { "t1": "v1" });
-			}, TypeError);
-		});
-		
 		it("fails if status is invalid", () => {
 			assert.throws(() => {
 				const f1 = new Feature(1, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" }, "not a valid status");

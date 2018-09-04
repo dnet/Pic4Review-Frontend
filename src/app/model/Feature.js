@@ -2,6 +2,12 @@ import Hash from 'object-hash';
 
 const STATUSES = [ "new", "skipped", "nopics", "reviewed", "cantsee" ];
 
+const flatten = (arr) => {
+	return arr.reduce(function (flat, toFlatten) {
+		return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+	}, []);
+};
+
 /**
  * A feature is a geolocated object, which has to reviewed using pictures.
  * It has a review status, center coordinates, and a list of pictures associated.
@@ -13,7 +19,7 @@ const STATUSES = [ "new", "skipped", "nopics", "reviewed", "cantsee" ];
  * @param {string} [status] The feature review status, one of [new, skipped, nopics, reviewed]. Defaults to "new".
  * 
  * @property {string} id The feature unique ID
- * @property {float[]} coordinates The feature coordinates as [lat, lng] in WGS84
+ * @property {float[]} coordinates The feature coordinates in WGS84
  * @property {Object} properties The feature properties, as a set of key -> value
  * @property {Picture[]} pictures The feature pictures, as described in {@link https://framagit.org/Pic4Carto/Pic4Carto.js/blob/master/doc/API.md#picture|Pic4Carto.js doc}
  */
@@ -23,18 +29,27 @@ class Feature {
 			throw new TypeError("ID must be a valid string");
 		}
 		
-		if(!Array.isArray(coordinates) || coordinates.length !== 2 || isNaN(coordinates[0]) || isNaN(coordinates[1])) {
-			throw new TypeError("Coordinates must be a float array as [ lat, lng ]");
+		if(!Array.isArray(coordinates)) {
+			throw new TypeError("Coordinates must be a float array");
 		}
 		
 		this.id = id;
-		this.coordinates = coordinates;
+		this.geojsonCoordinates = coordinates;
 		this.properties = properties;
 		this.status = status || "new";
 		
 		this.lastRadius = null;
 		this._pictures = (pictures && pictures.length > 0) ? pictures : null;
 		this.picsShown = {};
+		
+		//Centroid
+		const coords = flatten(this.geojsonCoordinates);
+		this._centroid = [0,0];
+		coords.forEach((v,i) => {
+			this._centroid[(i+1) % 2] += v;
+		});
+		this._centroid[0] = this._centroid[0] / (coords.length/2);
+		this._centroid[1] = this._centroid[1] / (coords.length/2);
 	}
 	
 	/**
@@ -45,7 +60,9 @@ class Feature {
 	static CreateFromAPI(options) {
 		return new Feature(
 			options.id,
-			[ options.geom.coordinates[1], options.geom.coordinates[0] ],
+			options.geomfull ?
+				(options.geomfull.length ? JSON.parse(options.geomfull).coordinates : options.geomfull.coordinates)
+				: options.geom.coordinates,
 			options.pictures,
 			options.properties,
 			options.status
@@ -69,6 +86,14 @@ class Feature {
 	 */
 	get pictures() {
 		return this._pictures;
+	}
+	
+	/**
+	 * Get the centroid coordinates.
+	 * @return {float[]} The centroid
+	 */
+	get coordinates() {
+		return this._centroid;
 	}
 	
 	/**
