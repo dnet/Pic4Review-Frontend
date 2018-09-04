@@ -25,11 +25,11 @@ class MissionsTableComponent extends Component {
 				</TableHead>
 				<TableBody>
 				{this.props.missions.map(m => {
-					const completion = Math.floor(100 - (m.options.stats.new / m.options.stats.total)*100);
+					const completion = (m.options && m.options.stats) ? Math.floor(100 - (m.options.stats.new / m.options.stats.total)*100) : 0;
 					const backcolor = m.status === "online" ? (completion < 100 ? "white" : "#FFECB3") : "#E0E0E0";
 					
 					//Prepare dataset
-					const statusesKeys = Object.keys(m.options.stats).filter(s => STATUSES[s]);
+					const statusesKeys = (m.options && m.options.stats) ? Object.keys(m.options.stats).filter(s => STATUSES[s]) : [];
 					statusesKeys.sort((a, b) => STATUSES[a].priority - STATUSES[b].priority);
 					
 					return <TableRow key={m.id} style={{backgroundColor: backcolor}}>
@@ -38,7 +38,7 @@ class MissionsTableComponent extends Component {
 						<TableCell style={styleCentered}>
 							{statusesKeys.map(s => {
 								const mylength = Math.round(m.options.stats[s]*100/m.options.stats.total/2)+"%";
-								return <span title={STATUSES[s].name+" : "+m.options.stats[s]} style={{backgroundColor: STATUSES[s].color, height: 15, paddingLeft: mylength, paddingRight: mylength }}> </span>;
+								return <span key={s} title={STATUSES[s].name+" : "+m.options.stats[s]} style={{backgroundColor: STATUSES[s].color, height: 15, paddingLeft: mylength, paddingRight: mylength }}> </span>;
 							})}
 						</TableCell>
 						<TableCell style={styleCentered}>

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - When duplicating mission and changing editor, editor settings are now properly sent to back-end
 - Mission having double-quotes in their name are now properly handled (fix in osm-request on XML special characters escaping)
+- Missions not having statistics were sometimes creating an error in personal mission dashboard
 
 
 ## 0.4.12 - 2018-08-24
