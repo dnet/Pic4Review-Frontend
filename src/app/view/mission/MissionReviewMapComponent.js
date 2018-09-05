@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CONSTS from '../../constants';
 import Leaflet from 'leaflet';
 import LeafletMarker from '../MarkerRotate';
-import { Map, CircleMarker, Marker, TileLayer } from 'react-leaflet';
+import { Map, GeoJSON, Marker, TileLayer } from 'react-leaflet';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
 Leaflet.Marker = LeafletMarker;
@@ -53,13 +53,13 @@ class MissionReviewMapComponent extends Component {
 		
 		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.state.zoom} style={style}>
 			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
-			<CircleMarker
-				center={this.props.feature.coordinates}
-				radius={8}
+			<GeoJSON
+				data={this.props.feature.geometry}
 				color="red"
 				fillColor="red"
 				fillOpacity={0.7}
 				onClick={() => this.props.onFeatureClicked()}
+				pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
 			/>
 			{this.markers}
 		</Map>;

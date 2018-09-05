@@ -12,7 +12,7 @@ const pic1 = new P4C.Picture("http://data.net/pic.jpg", 1000, new P4C.LatLng(0.1
 describe("Model > Feature", () => {
 	describe("Constructor", () => {
 		it("creates the object", () => {
-			const f1 = new Feature(1, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" }, "skipped");
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, [ pic1 ], { "t1": "v1" }, "skipped");
 			
 			assert.equal(f1.id, 1);
 			assert.equal(f1.coordinates[0], 48);
@@ -23,7 +23,7 @@ describe("Model > Feature", () => {
 		});
 		
 		it("creates the object with defaults values", () => {
-			const f1 = new Feature(1, [ 48, -1.7 ], null, { "t1": "v1" });
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, null, { "t1": "v1" });
 			
 			assert.equal(f1.id, 1);
 			assert.equal(f1.coordinates[0], 48);
@@ -35,7 +35,7 @@ describe("Model > Feature", () => {
 		
 		it("fails if no ID is given", () => {
 			assert.throws(() => {
-				const f1 = new Feature(null, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" });
+				const f1 = new Feature(null, { type: "Point", coordinates: [ -1.7, 48 ] }, [ pic1 ], { "t1": "v1" });
 			}, TypeError);
 		});
 		
@@ -47,27 +47,27 @@ describe("Model > Feature", () => {
 		
 		it("fails if status is invalid", () => {
 			assert.throws(() => {
-				const f1 = new Feature(1, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" }, "not a valid status");
+				const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, [ pic1 ], { "t1": "v1" }, "not a valid status");
 			}, TypeError);
 		});
 	});
 	
 	describe("get status", () => {
 		it("returns status", () => {
-			const f1 = new Feature(1, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" }, "skipped");
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, [ pic1 ], { "t1": "v1" }, "skipped");
 			assert.equal(f1.status, "skipped");
 		});
 	});
 	
 	describe("pictures", () => {
 		it("returns pictures", () => {
-			const f1 = new Feature(1, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" }, "skipped");
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, [ pic1 ], { "t1": "v1" }, "skipped");
 			const pics = f1.pictures;
 			assert.equal(pics[0], pic1);
 		});
 		
 		it("returns null if no pictures", () => {
-			const f1 = new Feature(1, [ 48, -1.7 ], [], { "t1": "v1" }, "skipped");
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, [], { "t1": "v1" }, "skipped");
 			const pics = f1.pictures;
 			assert.equal(pics, null);
 		});
@@ -75,19 +75,19 @@ describe("Model > Feature", () => {
 	
 	describe("isShownOnPicture", () => {
 		it("returns false by default", () => {
-			const f1 = new Feature(1, [ 48.1294, -1.6760 ], [ pic1 ], { "t1": "v1" });
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.6760, 48.1294 ] }, [ pic1 ], { "t1": "v1" });
 			assert.ok(!f1.isShownOnPicture(0));
 		});
 		
 		it("returns true if set", () => {
-			const f1 = new Feature(1, [ 48.1294, -1.6760 ], [ pic1 ], { "t1": "v1" });
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.6760, 48.1294 ] }, [ pic1 ], { "t1": "v1" });
 			f1.seenOnPicture(0);
 			assert.ok(f1.isShownOnPicture(0));
 		});
 		
 		it("fails if no pictures available", () => {
 			assert.throws(() => {
-				const f1 = new Feature(1, [ 48.1294, -1.6760 ], [ ], { "t1": "v1" });
+				const f1 = new Feature(1, { type: "Point", coordinates: [ -1.6760, 48.1294 ] }, [ ], { "t1": "v1" });
 				f1.isShownOnPicture(0);
 			}, TypeError);
 		});
@@ -95,7 +95,7 @@ describe("Model > Feature", () => {
 	
 	describe("set status", () => {
 		it("works if status is valid", () => {
-			const f1 = new Feature(1, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" });
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, [ pic1 ], { "t1": "v1" });
 			
 			assert.equal(f1.status, "new");
 			
@@ -106,7 +106,7 @@ describe("Model > Feature", () => {
 		
 		it("fails if status is not valid", () => {
 			assert.throws(() => {
-				const f1 = new Feature(1, [ 48, -1.7 ], [ pic1 ], { "t1": "v1" });
+				const f1 = new Feature(1, { type: "Point", coordinates: [ -1.7, 48 ] }, [ pic1 ], { "t1": "v1" });
 				f1.status = "not a valid status";
 			}, TypeError);
 		});
@@ -114,14 +114,14 @@ describe("Model > Feature", () => {
 	
 	describe("seenOnPicture", () => {
 		it("sets properly list of pictures", () => {
-			const f1 = new Feature(1, [ 48.1294, -1.6760 ], [ pic1 ], { "t1": "v1" });
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.6760, 48.1294 ] }, [ pic1 ], { "t1": "v1" });
 			
 			f1.seenOnPicture(0);
 			assert.ok(f1.isShownOnPicture(0));
 		});
 		
 		it("sets properly list of pictures when disabling", () => {
-			const f1 = new Feature(1, [ 48.1294, -1.6760 ], [ pic1 ], { "t1": "v1" });
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.6760, 48.1294 ] }, [ pic1 ], { "t1": "v1" });
 			
 			f1.seenOnPicture(0);
 			f1.seenOnPicture(0, false);
@@ -131,7 +131,7 @@ describe("Model > Feature", () => {
 	
 	describe("asGeoJSON", () => {
 		it("returns GeoJSON representation", () => {
-			const f1 = new Feature(1, [ 48.1294, -1.6760 ], [ pic1 ], { "t1": "v1" });
+			const f1 = new Feature(1, { type: "Point", coordinates: [ -1.6760, 48.1294 ] }, [ pic1 ], { "t1": "v1" });
 			
 			f1.seenOnPicture(0);
 			

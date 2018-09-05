@@ -19,22 +19,22 @@ const flatten = (arr) => {
  * @param {string} [status] The feature review status, one of [new, skipped, nopics, reviewed]. Defaults to "new".
  * 
  * @property {string} id The feature unique ID
- * @property {float[]} coordinates The feature coordinates in WGS84
+ * @property {Object} geometry The GeoJSON geometry
  * @property {Object} properties The feature properties, as a set of key -> value
  * @property {Picture[]} pictures The feature pictures, as described in {@link https://framagit.org/Pic4Carto/Pic4Carto.js/blob/master/doc/API.md#picture|Pic4Carto.js doc}
  */
 class Feature {
-	constructor(id, coordinates, pictures, properties, status) {
+	constructor(id, geometry, pictures, properties, status) {
 		if(id == null || id === "") {
 			throw new TypeError("ID must be a valid string");
 		}
 		
-		if(!Array.isArray(coordinates)) {
-			throw new TypeError("Coordinates must be a float array");
+		if(!geometry || !geometry.type || !geometry.coordinates) {
+			throw new TypeError("Geometry must be in GeoJSON Geometry format");
 		}
 		
 		this.id = id;
-		this.geojsonCoordinates = coordinates;
+		this.geometry = geometry;
 		this.properties = properties;
 		this.status = status || "new";
 		
@@ -43,7 +43,7 @@ class Feature {
 		this.picsShown = {};
 		
 		//Centroid
-		const coords = flatten(this.geojsonCoordinates);
+		const coords = flatten(this.geometry.coordinates);
 		this._centroid = [0,0];
 		coords.forEach((v,i) => {
 			this._centroid[(i+1) % 2] += v;
@@ -61,8 +61,8 @@ class Feature {
 		return new Feature(
 			options.id,
 			options.geomfull ?
-				(options.geomfull.length ? JSON.parse(options.geomfull).coordinates : options.geomfull.coordinates)
-				: options.geom.coordinates,
+				(options.geomfull.length ? JSON.parse(options.geomfull) : options.geomfull)
+				: options.geom,
 			options.pictures,
 			options.properties,
 			options.status
@@ -90,7 +90,7 @@ class Feature {
 	
 	/**
 	 * Get the centroid coordinates.
-	 * @return {float[]} The centroid
+	 * @return {float[]} The centroid as [lat, lng] in WGS84
 	 */
 	get coordinates() {
 		return this._centroid;

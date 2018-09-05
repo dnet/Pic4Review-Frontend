@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Added
+- If feature in mission has complex geometry (other than point), it is properly rendered on review page map
+
 ### Changed
 - Mission without integrated editor has dedicated icon in missions list
 - In personnal mission page, details for each mission has a new layout, and mission completion is shown as bar diagram
