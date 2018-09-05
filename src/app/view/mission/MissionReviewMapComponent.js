@@ -54,6 +54,7 @@ class MissionReviewMapComponent extends Component {
 		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.state.zoom} style={style}>
 			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			<GeoJSON
+				ref="data"
 				data={this.props.feature.geometry}
 				color="red"
 				fillColor="red"
@@ -63,6 +64,20 @@ class MissionReviewMapComponent extends Component {
 			/>
 			{this.markers}
 		</Map>;
+	}
+	
+	_fitBounds() {
+		if(this.refs.map && this.refs.data) {
+			this.refs.map.leafletElement.fitBounds(this.refs.data.leafletElement.getBounds());
+		}
+	}
+	
+	componentDidMount() {
+		this._fitBounds();
+	}
+	
+	componentDidUpdate() {
+		this._fitBounds();
 	}
 	
 	componentWillReceiveProps(nextProps) {
