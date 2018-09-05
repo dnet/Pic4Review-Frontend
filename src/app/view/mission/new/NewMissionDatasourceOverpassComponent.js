@@ -42,7 +42,7 @@ class NewMissionDatasourceOverpassComponent extends Component {
 	render() {
 		return <div>
 			<FormControl style={{width: "100%"}}>
-				<Typography variant="caption">{I18n.t("Insert the full Overpass query below. Note that your query must only return points (as JSON), so consider using \"[out:json]\" and \"out center;\" commands. \"bbox\" parameter will be replaced by selected area.")}</Typography>
+				<Typography variant="caption">{I18n.t("Insert the full Overpass query below. Note that your query must return features as JSON, so consider using \"[out:json]\". \"bbox\" parameter will be replaced by selected area.")}</Typography>
 				<TextField
 					id="oapi-query"
 					label={I18n.t("Full Overpass API query")}

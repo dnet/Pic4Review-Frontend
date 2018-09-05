@@ -24,7 +24,7 @@ fs.readdirSync(I18N_DIR).forEach((file) => {
 					outData[lng] = lngData.en;
 					
 					//Overwrite file
-					fs.writeFile(I18N_DIR+"/"+file, JSON.stringify(outData), function(err) {
+					fs.writeFile(I18N_DIR+"/"+file, JSON.stringify(outData, null, 2), function(err) {
 						if(err) {
 							throw new Error(err);
 						}
