@@ -13,7 +13,7 @@ const flatten = (arr) => {
  * It has a review status, center coordinates, and a list of pictures associated.
  * 
  * @param {string} id An unique ID between all features of a given {@link Dataset}
- * @param {float[]} coordinates The feature center coordinates, as [ lat, lng ] in WGS84
+ * @param {Object} geometry The GeoJSON geometry
  * @param {Object} properties A list of key->value properties from data source
  * @param {Picture[]} [pictures] The feature pictures, as described in {@link https://framagit.org/Pic4Carto/Pic4Carto.js/blob/master/doc/API.md#picture|Pic4Carto.js doc}
  * @param {string} [status] The feature review status, one of [new, skipped, nopics, reviewed]. Defaults to "new".
