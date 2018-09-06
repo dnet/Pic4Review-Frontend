@@ -78,6 +78,7 @@ class Mission {
 			opts.stats = {
 				"new": options.new,
 				completed: options.completed,
+				reviewed: options.seen,
 				total: options.total,
 				nopics: options.nopics,
 				seen: options.seen

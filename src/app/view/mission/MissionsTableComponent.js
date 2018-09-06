@@ -30,12 +30,14 @@ class MissionsTableComponent extends Component {
 					
 					//Prepare dataset
 					const statusesKeys = (m.options && m.options.stats) ? Object.keys(m.options.stats).filter(s => STATUSES[s]) : [];
-					statusesKeys.sort((a, b) => STATUSES[a].priority - STATUSES[b].priority);
+					statusesKeys.sort((a, b) => STATUSES[b].priority - STATUSES[a].priority);
 					
 					return <TableRow key={m.id} style={{backgroundColor: backcolor}}>
 						<TableCell style={styleId}>{m.id}</TableCell>
 						<TableCell style={style}>{m.description.short}<br />{m.area.name}</TableCell>
 						<TableCell style={styleCentered}>
+							{m.options && m.options.stats && m.options.stats.total && I18n.t("%{count} features", { count: m.options.stats.total })}
+							{m.options && m.options.stats && m.options.stats.total && <br />}
 							{statusesKeys.map(s => {
 								const mylength = Math.round(m.options.stats[s]*100/m.options.stats.total/2)+"%";
 								return <span key={s} title={STATUSES[s].name+" : "+m.options.stats[s]} style={{backgroundColor: STATUSES[s].color, height: 15, paddingLeft: mylength, paddingRight: mylength }}> </span>;
