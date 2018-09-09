@@ -12,6 +12,7 @@ class MissionsTableComponent extends Component {
 		const style = { margin: 0, padding: 0 };
 		const styleCentered = Object.assign({}, style, { textAlign: "center" });
 		const styleId = Object.assign({}, styleCentered, { paddingRight: 10, paddingLeft: 10 });
+		const styleProgress = Object.assign({}, styleCentered, { whiteSpace: "nowrap" });
 		
 		return <Paper>
 			<Table>
@@ -35,7 +36,7 @@ class MissionsTableComponent extends Component {
 					return <TableRow key={m.id} style={{backgroundColor: backcolor}}>
 						<TableCell style={styleId}>{m.id}</TableCell>
 						<TableCell style={style}>{m.description.short}<br />{m.area.name}</TableCell>
-						<TableCell style={styleCentered}>
+						<TableCell style={styleProgress}>
 							{m.options && m.options.stats && m.options.stats.total && I18n.t("%{count} features", { count: m.options.stats.total })}
 							{m.options && m.options.stats && m.options.stats.total && <br />}
 							{statusesKeys.map(s => {
