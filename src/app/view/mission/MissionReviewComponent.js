@@ -163,7 +163,7 @@ class MissionReviewComponent extends Component {
 			this.setState({ shownPics: newShownPics });
 		}
 		//Load from Pic4Carto
-		else if(!this.state.noMorePics) {
+		else if(!this.state.noMorePics && this.state.feature.geometry.type === "Point") {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading more pictures around") });
 			
 			this.picMan.startPicsRetrievalAround(
