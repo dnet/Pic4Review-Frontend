@@ -321,12 +321,25 @@ class API {
 	 * Get mission next feature
 	 * @param {int} mid The mission ID
 	 * @param {float[]} [coordinates] The coordinates to search around
+	 * @param {string} [userid] The user ID (to filter skipped features)
 	 * @return {Promise} A promise resolving on next feature, or null if no more available
 	 */
-	static GetMissionNextFeature(mid, coordinates) {
+	static GetMissionNextFeature(mid, coordinates, userid) {
 		return new Promise((resolve, reject) => {
 			let url = CONST.P4R_URL + '/missions/' + mid + '/features/next';
-			if(coordinates) { url += this.ParamsString({ lat: coordinates[0], lng: coordinates[1] }); }
+			
+			const params = {};
+			
+			if(coordinates) {
+				params.lat = coordinates[0];
+				params.lng = coordinates[1];
+			}
+			
+			if(userid) {
+				params.userid = userid;
+			}
+			
+			url += this.ParamsString(params);
 			
 			request(url, (err, res, body) => {
 				if(err) {

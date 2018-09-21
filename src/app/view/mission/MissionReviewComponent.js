@@ -81,7 +81,7 @@ class MissionReviewComponent extends Component {
 		
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
 		
-		API.GetMissionNextFeature(this.props.mission.id, prevCoords)
+		API.GetMissionNextFeature(this.props.mission.id, prevCoords, this.props.user.id)
 		.then(f => {
 			if(f !== null) {
 				this.setState({

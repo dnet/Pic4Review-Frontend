@@ -64,7 +64,7 @@ class MissionsMapComponent extends Component {
 			</CircleMarker>;
 		});
 		
-		return <Map ref="map" center={[this.state.lat, this.state.lng]} zoom={this.state.zoom} style={style}>
+		return <Map ref="map" center={[this.state.lat, this.state.lng]} zoom={this.state.zoom} style={style} preferCanvas={true}>
 			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			
 			{this.props.missions.features && this.props.missions.features.length > 1 &&
