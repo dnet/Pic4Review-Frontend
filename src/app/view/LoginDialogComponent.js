@@ -12,13 +12,12 @@ class LoginDialogComponent extends Component {
 		super();
 		
 		this.state = {
-			open: false,
-			goBack: false
+			open: false
 		};
 		
 		PubSub.subscribe("UI.LOGIN.WANTS", (msg, data) => {
 			data = data || {};
-			this.setState({ open: true, goBack: data.goBack || false });
+			this.setState({ open: true });
 		});
 	}
 	
@@ -28,30 +27,25 @@ class LoginDialogComponent extends Component {
 	 */
 	_loginClicked() {
 		PubSub.publish("UI.LOGIN.SURE");
-		this._closeDialog();
+		this._closeDialog(false);
 	}
 	
 	/**
 	 * Handler for closing dialog
 	 * @private
 	 */
-	_closeDialog() {
-		const goBack = this.state.goBack;
-		this.setState({ open: false, goBack: false });
-		if(goBack && this.props.history) {
-			if(window.history.length > 2 || document.referrer.length > 0) {
-				this.props.history.goBack();
-			}
-			else {
-				this.props.history.push('/');
-			}
+	_closeDialog(backToHome) {
+		this.setState({ open: false });
+		
+		if(backToHome && this.props.history) {
+			this.props.history.push('/');
 		}
 	}
 	
 	render() {
 		return <Dialog
 			open={this.state.open}
-			onClose={() => this._closeDialog()}
+			onClose={() => this._closeDialog(true)}
 		>
 			<DialogTitle>{I18n.t("Connect to OpenStreetMap")}</DialogTitle>
 			<DialogContent>
@@ -60,10 +54,10 @@ class LoginDialogComponent extends Component {
 				</DialogContentText>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={this._closeDialog.bind(this)} color="default">
+				<Button onClick={() => this._closeDialog(true)} color="default">
 					{I18n.t("Cancel")}
 				</Button>
-				<Button onClick={this._loginClicked.bind(this)} color="primary" autoFocus>
+				<Button onClick={() => this._loginClicked()} color="primary" autoFocus>
 					{I18n.t("Login or create account")}
 				</Button>
 			</DialogActions>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { CircularProgress } from 'material-ui/Progress';
+import Wait from './WaitComponent';
 
 /**
  * Authorize component checks if user is authenticated before accessing content.
@@ -26,7 +26,7 @@ class AuthorizeComponent extends Component {
 	render() {
 		//Not logged in
 		if(this.state.user === -1) {
-			return <div></div>;
+			return <Wait />;
 		}
 		//Logged in
 		else if(this.state.user) {
@@ -38,7 +38,7 @@ class AuthorizeComponent extends Component {
 		}
 		//Wait for login
 		else {
-			return <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
+			return <Wait />;
 		}
 	}
 	
@@ -52,13 +52,7 @@ class AuthorizeComponent extends Component {
 	
 	componentDidUpdate() {
 		if(this.state.user === -1) {
-			PubSub.publish("UI.LOGIN.WANTS", { goBack: true });
-			if(window.history.length > 2 || document.referrer.length > 0) {
-				this.props.history.goBack();
-			}
-			else {
-				this.props.history.push('/');
-			}
+			PubSub.publish("UI.LOGIN.WANTS");
 		}
 	}
 	
