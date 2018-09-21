@@ -11,12 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - If feature in mission has complex geometry (other than point), it is properly rendered on review page map
 - In mission review, skipped features are not shown two times to the same user
+- In mission statistics, a graph shows solved features amount evolution
 
 ### Changed
 - Mission without integrated editor has dedicated icon in missions list
 - In personnal mission page, details for each mission has a new layout, and mission completion is shown as bar diagram
 - If OSM feature already has associated pictures, we don't change the related tag values
 - If OSM feature already has a `survey:date` tag, we only change it if picture date is more recent than existing one
+- In various statistics pages, contribution chart is renamed "Activity" chart
 
 ### Fixed
 - When duplicating mission and changing editor, editor settings are now properly sent to back-end

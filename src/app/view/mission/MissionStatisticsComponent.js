@@ -5,6 +5,7 @@ import Grid from 'material-ui/Grid';
 import Time from '../StatisticsTimeComponent';
 import Score from '../UsersScoreComponent';
 import Status from './MissionStatisticsStatusComponent';
+import Typography from 'material-ui/Typography';
 
 /**
  * Mission statistics component show statistics for a given mission.
@@ -24,13 +25,17 @@ class MissionStatisticsComponent extends Component {
 		if(this.state.stats) {
 			content = <Grid container spacing={16}>
 				<Grid item xs={12} md={7} lg={8} xl={9}>
+					<Typography variant="subheading">{I18n.t("Activity (last 3 months)")}</Typography>
 					<Time data={this.state.stats.days} height={300} />
 				</Grid>
 				<Grid item xs={12} md={5} lg={4} xl={3}>
 					<Status data={this.state.stats.status} height={300} />
 				</Grid>
-				<Grid item md={3}></Grid>
-				<Grid item xs={12} md={6}>
+				<Grid item xs={12} md={6} lg={8}>
+					<Typography variant="subheading">{I18n.t("Solved features")}</Typography>
+					<Time data={this.state.stats.contributions} height={300} />
+				</Grid>
+				<Grid item xs={12} md={6} lg={4}>
 					<Score data={this.state.stats.users} user={this.props.user} />
 				</Grid>
 			</Grid>;

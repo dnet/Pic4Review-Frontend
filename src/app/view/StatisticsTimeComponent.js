@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
-import Typography from 'material-ui/Typography';
 
 Date.prototype.addDays = function(days) {
     var date = new Date(this.valueOf());
@@ -38,7 +37,7 @@ class StatisticsTimeComponent extends Component {
 		const dataset = {
 			labels: daysList,
 			datasets: [{
-				label: I18n.t("Amount of contributions"),
+				label: I18n.t("Amount"),
 				data: daysList.map(d => days[d]),
 				fillColor: "rgba(220,220,220,0.5)",
 				strokeColor: "rgba(220,220,220,1)",
@@ -56,7 +55,6 @@ class StatisticsTimeComponent extends Component {
 		};
 		
 		return <div>
-			<Typography variant="subheading">{I18n.t("Contributions (last 3 months)")}</Typography>
 			<div className="chart-container" style={{position: "relative", width: "100%", height: this.props.height, maxHeight: this.props.height}}>
 				<Line data={dataset} options={opts} />
 			</div>

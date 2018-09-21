@@ -4,8 +4,8 @@ import API from '../ctrl/API';
 import Grid from 'material-ui/Grid';
 import Themes from './MyStatisticsThemesComponent';
 import Time from './StatisticsTimeComponent';
-import { CircularProgress } from 'material-ui/Progress';
 import Typography from 'material-ui/Typography';
+import Wait from './WaitComponent';
 
 /**
  * My statistics component displays user contribution statistics
@@ -57,6 +57,7 @@ class MyStatisticsComponent extends Component {
 				</Grid>
 				
 				<Grid item xs={12}>
+					<Typography variant="subheading">{I18n.t("Activity (last 3 months)")}</Typography>
 					<Time data={this.state.stats.amountEdits} height={300} />
 				</Grid>
 				
@@ -67,7 +68,7 @@ class MyStatisticsComponent extends Component {
 		}
 		//Wait for login or stats
 		else {
-			content = <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
+			content = <Wait />;
 		}
 		
 		return content;

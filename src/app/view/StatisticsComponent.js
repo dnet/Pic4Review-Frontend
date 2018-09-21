@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import API from '../ctrl/API';
-import { CircularProgress } from 'material-ui/Progress';
 import Grid from 'material-ui/Grid';
 import MissingPictures from './MissingPicturesMapComponent';
 import UsersScore from './UsersScoreComponent';
 import Themes from './MyStatisticsThemesComponent';
 import Time from './StatisticsTimeComponent';
 import Typography from 'material-ui/Typography';
+import Wait from './WaitComponent';
 
 /**
  * Statistics component shows statistics for all the community.
@@ -25,6 +25,7 @@ class StatisticsComponent extends Component {
 			return <div>
 				<Grid container spacing={16}>
 					<Grid item xs={12}>
+						<Typography variant="subheading">{I18n.t("Activity (last 3 months)")}</Typography>
 						<Time data={this.state.stats.amountEdits} height={300} />
 					</Grid>
 					<Grid item xs={12} md={6}>
@@ -39,7 +40,7 @@ class StatisticsComponent extends Component {
 			</div>;
 		}
 		else {
-			return <div style={{textAlign: "center"}}><CircularProgress size={70} /></div>;
+			return <Wait />;
 		}
 	}
 	
