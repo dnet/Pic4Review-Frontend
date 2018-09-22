@@ -33,7 +33,7 @@ class MissionStatisticsComponent extends Component {
 				</Grid>
 				<Grid item xs={12} md={6} lg={8}>
 					<Typography variant="subheading">{I18n.t("Solved features")}</Typography>
-					<Time data={this.state.stats.contributions} height={300} />
+					<Time data={this.state.stats.contributions} height={300} computeMissingValues={true} />
 				</Grid>
 				<Grid item xs={12} md={6} lg={4}>
 					<Score data={this.state.stats.users} user={this.props.user} />

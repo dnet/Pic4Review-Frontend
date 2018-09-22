@@ -23,10 +23,12 @@ class StatisticsTimeComponent extends Component {
 		const days = {};
 		let currentDate = new Date(partialDays[0]);
 		const lastDate = new Date(Date.now());
+		let lastVal = 0;
 		
 		while(currentDate <= lastDate) {
 			const d = currentDate.toP4RString();
-			days[d] = this.props.data[d] ? this.props.data[d] : 0;
+			days[d] = this.props.data[d] ? this.props.data[d] : (this.props.computeMissingValues ? lastVal : 0);
+			lastVal = days[d];
 			currentDate = currentDate.addDays(1);
 		}
 		
