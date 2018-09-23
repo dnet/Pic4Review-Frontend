@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Information, MapMarkerRadius, MagnifyPlusOutline, PlusCircle } from 'mdi-material-ui';
+import { Information, MapMarkerRadius, MagnifyPlusOutline, PlusCircle, TagHeart } from 'mdi-material-ui';
 import { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Hidden from 'material-ui/Hidden';
 import HorizontalScrollGridList from '../HorizontalScrollGridList';
@@ -50,7 +50,15 @@ class MissionReviewGallery2Component extends Component {
 						<GridListTileBar
 							titlePosition="top"
 							style={{ height: 40 }}
-							subtitle={(new Date(p.date)).toLocaleDateString() + " - " + p.author + " - " + p.provider}
+							subtitle={
+								<div>
+								{p.featured &&
+									<Tooltip title={I18n.t("This picture is already associated to this feature")} style={{marginRight: 5}}>
+										<TagHeart style={{verticalAlign: "middle"}} />
+									</Tooltip>}
+								
+								{(new Date(p.date)).toLocaleDateString() + " - " + p.author + " - " + p.provider}
+								</div>}
 							actionIcon={<div>
 								<Tooltip title={I18n.t("Picture details (and other pictures around)")}>
 									<IconButton

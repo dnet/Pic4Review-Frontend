@@ -85,6 +85,24 @@ class MissionReviewComponent extends Component {
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords, this.props.user.id)
 		.then(f => {
 			if(f !== null) {
+				//Find pictures already associated to feature
+				const picsFromTags = this.picMan.getPicturesFromTags(f.properties);
+				
+				f.pictures.map(p => {
+					p.featured = picsFromTags.includes(p.pictureUrl);
+					return p;
+				});
+				
+				f.pictures.sort((a, b) => {
+					if(a.featured === b.featured) {
+						return a.date - b.date;
+					}
+					else {
+						return a.featured ? -1 : 1;
+					}
+				});
+				
+				//Change state
 				this.setState({
 					feature: f,
 					pictures: f.pictures,

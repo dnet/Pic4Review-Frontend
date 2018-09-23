@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - If OSM feature already has associated pictures, we don't change the related tag values
 - If OSM feature already has a `survey:date` tag, we only change it if picture date is more recent than existing one
 - In various statistics pages, contribution chart is renamed "Activity" chart
+- In review page, pictures already linked to current feature are shown before others
 
 ### Fixed
 - When duplicating mission and changing editor, editor settings are now properly sent to back-end
