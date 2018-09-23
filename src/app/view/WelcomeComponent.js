@@ -56,6 +56,8 @@ class WelcomeComponent extends Component {
 			</Typography>
 			<Typography variant="body1">
 				{I18n.t("Pic4Review is still in beta version, so you can help us make it better.")} <a href="mailto:panieravide@riseup.net">{I18n.t("Contact us !")}</a>
+				<br />
+				<a href="https://framagit.org/Pic4Carto/Pic4Review">{I18n.t("About | Code repository")}</a>
 			</Typography>
 		</div>;
 	}

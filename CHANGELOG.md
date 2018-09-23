@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - If feature in mission has complex geometry (other than point), it is properly rendered on review page map
 - In mission review, skipped features are not shown two times to the same user
 - In mission statistics, a graph shows solved features amount evolution
+- A link to code repository is present on homepage
 
 ### Changed
 - Mission without integrated editor has dedicated icon in missions list
