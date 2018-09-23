@@ -65,7 +65,8 @@ class MissionReviewComponent extends Component {
 	_next(wasSkipped) {
 		wasSkipped = wasSkipped || false;
 		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
-		
+		const prevId = this.state.feature !== null ? this.state.feature.id : null;
+
 		this.setState({
 			feature: null,
 			pictures: null,
@@ -90,21 +91,28 @@ class MissionReviewComponent extends Component {
 					currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
 					shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0)
 				});
-				if(this.refs.container) {
-					this.refs.container.scrollIntoView(false);
+				
+				//Handle case where returned feature is same as previous one (API async bug ?)
+				if(!prevId || f.id !== prevId) {
+					if(this.refs.container) {
+						this.refs.container.scrollIntoView(false);
+					}
+					
+					PubSub.publish("UI.MESSAGE.WAITDONE");
+					
+					if(!f.pictures || f.pictures.length === 0) {
+						PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
+					}
+					
+					//Load user statistics for this mission
+					API.GetMissionUserStatistics(this.props.mission.id, this.props.user.id)
+					.then(s => {
+						this.setState({ stats: s });
+					});
 				}
-				
-				PubSub.publish("UI.MESSAGE.WAITDONE");
-				
-				if(!f.pictures || f.pictures.length === 0) {
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
+				else {
+					this._next(wasSkipped);
 				}
-				
-				//Load user statistics for this mission
-				API.GetMissionUserStatistics(this.props.mission.id, this.props.user.id)
-				.then(s => {
-					this.setState({ stats: s });
-				});
 			}
 			else {
 				PubSub.publish("UI.MESSAGE.WAITDONE");

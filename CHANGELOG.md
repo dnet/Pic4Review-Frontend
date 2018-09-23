@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Mission having double-quotes in their name are now properly handled (fix in osm-request on XML special characters escaping)
 - Missions not having statistics were sometimes creating an error in personal mission dashboard
 - User is always redirected to original page after logging in (wasn't working if user landed directly on page needing authentication)
+- Interface should not show again same feature if returned twice by API
 
 
 ## 0.4.12 - 2018-08-24
