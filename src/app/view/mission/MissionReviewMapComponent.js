@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CONSTS from '../../constants';
 import Leaflet from 'leaflet';
 import LeafletMarker from '../MarkerRotate';
-import { Map, GeoJSON, Marker, TileLayer } from 'react-leaflet';
+import { Map, GeoJSON, Marker, TileLayer, LayersControl } from 'react-leaflet';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
 Leaflet.Marker = LeafletMarker;
@@ -52,7 +52,29 @@ class MissionReviewMapComponent extends Component {
 		}
 		
 		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.state.zoom} style={style}>
-			<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
+			{this.props.layers ?
+				<LayersControl position="topright">
+					{this.props.layers.filter(l => l.type === "tms").map((l,i) => {
+						const url = l.url
+							.replace(/\{zoom\}/g, "{z}")
+							.replace(/\{switch:.+?\}/g, "{s}");
+						
+						const maxZoom = l.id === "fr.ign.bdortho" ? 19 : l.max_zoom || 18;
+						
+						return <LayersControl.BaseLayer name={l.name || l.id} key={l.id} checked={i===0}>
+							<TileLayer
+								attribution={'<a href="'+l.attribution.url+'" target="_blank">'+l.attribution.text+'</a>'}
+								url={url}
+								minZoom={l.min_zoom || 1}
+								maxZoom={maxZoom}
+							/>
+						</LayersControl.BaseLayer>;
+					})}
+				</LayersControl>
+				:
+				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
+			}
+			
 			<GeoJSON
 				ref="data"
 				data={this.props.feature.geometry}

@@ -433,6 +433,7 @@ class MissionReviewComponent extends Component {
 							onPicClicked={id => this.setState({ currentPictureId: id })}
 							onFeatureClicked={() => this.setState({ showFeatureDetails: true })}
 							style={{ height: MAP_HEIGHT[this.props.width], marginBottom: 10 }}
+							layers={this.props.mission.options.layers}
 						/>;
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;

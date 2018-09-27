@@ -85,20 +85,8 @@ class Mission {
 			};
 		}
 		
-		if(options.lastedit) {
-			opts.date = options.lastedit;
-		}
-		
-		if(options.created) {
-			opts.dateCreation = options.created;
-		}
-		
 		if(options.datatype || options.dataoptions) {
 			opts.data = { source: options.datatype, options: options.dataoptions };
-		}
-		
-		if(options.illustration) {
-			opts.illustration = options.illustration;
 		}
 		
 		if(options.contributors) {
@@ -108,9 +96,19 @@ class Mission {
 			opts.contributors = null;
 		}
 		
-		if(options.template) {
-			opts.template = options.template;
-		}
+		const optsToCopy = {
+			lastedit: "date",
+			created: "dateCreation",
+			illustration: "illustration",
+			template: "template",
+			layers: "layers"
+		};
+		
+		Object.entries(optsToCopy).forEach(e => {
+			if(options[e[0]]) {
+				opts[e[1]] = options[e[0]];
+			}
+		});
 		
 		opts.canEdit = options.canEdit || options.editor || false;
 		

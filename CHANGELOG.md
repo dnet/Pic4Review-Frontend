@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Added
+- In review page, map offers various tile providers according to what's available on the mission area
+
 
 ## 0.5.0 - 2018-09-24
 
