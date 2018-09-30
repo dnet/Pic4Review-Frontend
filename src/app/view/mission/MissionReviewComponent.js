@@ -95,7 +95,7 @@ class MissionReviewComponent extends Component {
 				
 				f.pictures.sort((a, b) => {
 					if(a.featured === b.featured) {
-						return a.date - b.date;
+						return b.date - a.date;
 					}
 					else {
 						return a.featured ? -1 : 1;

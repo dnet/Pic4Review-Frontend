@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - In review page, map offers various tile providers according to what's available on the mission area
 
 
+## 0.5.1 - 2018-09-30
+
+### Fixed
+- Pictures sorting order fixed back to date descending (prioritizing pics already associated to feature)
+
+
 ## 0.5.0 - 2018-09-24
 
 ### Added
