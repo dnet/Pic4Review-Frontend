@@ -51,7 +51,9 @@ class MissionReviewComponent extends Component {
 			shownPics: 0,
 			noMorePics: false,
 			stats: {},
-			showFeatureDetails: false
+			showFeatureDetails: false,
+			mapZoom: 18,
+			mapBaseLayer: null
 		};
 		
 		this.psTokens = {};
@@ -434,6 +436,10 @@ class MissionReviewComponent extends Component {
 							onFeatureClicked={() => this.setState({ showFeatureDetails: true })}
 							style={{ height: MAP_HEIGHT[this.props.width], marginBottom: 10 }}
 							layers={this.props.mission.options.layers}
+							zoom={this.state.mapZoom}
+							onZoomChange={z => this.setState({ mapZoom: z })}
+							baseLayer={this.state.mapBaseLayer}
+							onBaseLayerChange={l => this.setState({ mapBaseLayer: l })}
 						/>;
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;

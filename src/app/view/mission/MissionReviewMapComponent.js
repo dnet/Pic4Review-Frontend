@@ -7,6 +7,8 @@ import { Map, GeoJSON, Marker, TileLayer, LayersControl } from 'react-leaflet';
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
 Leaflet.Marker = LeafletMarker;
 
+const DEFAULT_ZOOM = 18;
+
 const picIcon = Leaflet.icon({
 	iconUrl: 'images/marker_directed_transparent.png',
 	iconSize: [22.6, 21.6],
@@ -25,10 +27,6 @@ const picSelectedIcon = Leaflet.icon({
 class MissionReviewMapComponent extends Component {
 	constructor() {
 		super();
-		
-		this.state = {
-			zoom: 18
-		};
 	}
 	
 	render() {
@@ -51,7 +49,7 @@ class MissionReviewMapComponent extends Component {
 			}
 		}
 		
-		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.state.zoom} style={style}>
+		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.props.zoom || DEFAULT_ZOOM} style={style}>
 			{this.props.layers ?
 				<LayersControl position="topright">
 					{this.props.layers.filter(l => l.type === "tms").map((l,i) => {
@@ -59,9 +57,9 @@ class MissionReviewMapComponent extends Component {
 							.replace(/\{zoom\}/g, "{z}")
 							.replace(/\{switch:.+?\}/g, "{s}");
 						
-						const maxZoom = l.id === "fr.ign.bdortho" ? 19 : l.max_zoom || 18;
+							const maxZoom = l.id === "fr.ign.bdortho" ? 19 : l.max_zoom || DEFAULT_ZOOM;
 						
-						return <LayersControl.BaseLayer name={l.name || l.id} key={l.id} checked={i===0}>
+						return <LayersControl.BaseLayer name={l.name || l.id} key={l.id} checked={(!this.props.baseLayer && i===0) || (this.props.baseLayer === (l.name || l.id))}>
 							<TileLayer
 								attribution={'<a href="'+l.attribution.url+'" target="_blank">'+l.attribution.text+'</a>'}
 								url={url}
@@ -90,12 +88,30 @@ class MissionReviewMapComponent extends Component {
 	
 	_fitBounds() {
 		if(this.refs.map && this.refs.data) {
-			this.refs.map.leafletElement.fitBounds(this.refs.data.leafletElement.getBounds());
+			this.refs.map.leafletElement.setView(this.refs.data.leafletElement.getBounds().getCenter(), this.props.zoom || DEFAULT_ZOOM);
 		}
 	}
 	
 	componentDidMount() {
 		this._fitBounds();
+		
+		if(this.refs.map) {
+			//Zoom
+			this.refs.map.leafletElement.on("zoomend", () => {
+				const newzoom = this.refs.map.leafletElement.getZoom();
+				
+				if(this.props.onZoomChange && newzoom !== this.props.zoom) {
+					this.props.onZoomChange(newzoom);
+				}
+			});
+			
+			//Base layer
+			this.refs.map.leafletElement.on("baselayerchange", e => {
+				if(this.props.onBaseLayerChange && e.name !== this.props.baseLayer) {
+					this.props.onBaseLayerChange(e.name);
+				}
+			});
+		}
 	}
 	
 	componentDidUpdate() {
@@ -106,6 +122,11 @@ class MissionReviewMapComponent extends Component {
 		this.markers.forEach((m, i) => {
 			this.refs["marker-"+i].leafletElement.setIcon(nextProps.currentPictureId == i ? picSelectedIcon : picIcon);
 		});
+	}
+	
+	componentWillUnmount() {
+		this.refs.map.leafletElement.off("zoomend");
+		this.refs.map.leafletElement.off("baselayerchange");
 	}
 }
 
