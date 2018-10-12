@@ -39,6 +39,8 @@
     "area_935a0975": "Area",
     "select_an_area_for_example_a_city_using_the_search_3d9d8e0f": "Seleziona un'area (ad esempio, una città) usando la barra di ricerca, o selezionando il tasto Ctrl e trascinando il mouse sulla mappa con il tasto sinistro cliccato",
     "area_or_city_name_c4a464b": "Area o nome di città..",
+    "define_area_using_a_local_geo_file_geojson_json_km_a756bbfa": "Define area using a local geo file (GeoJSON, JSON, KML or GPX)",
+    "oops_it_seems_that_the_file_you_selected_is_not_a__9f254f44": "Oops ! It seems that the file you selected is not a valid geo file (GeoJSON, JSON, KML or GPX)",
     "oops_can_t_get_missing_pictures_522a5693": "Oops! Non posso recuperare le immagini mancanti",
     "position_in_leaderboard_last_30_days_76586397": "Posizione in classifica (ultimi 30 giorni)",
     "unknown_as_you_haven_t_contributed_yet_c9e2b800": "Sconosciuto, non hai ancora contribuito",

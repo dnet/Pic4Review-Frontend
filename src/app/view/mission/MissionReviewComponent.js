@@ -109,7 +109,8 @@ class MissionReviewComponent extends Component {
 					feature: f,
 					pictures: f.pictures,
 					currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
-					shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0)
+					shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
+					noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
 				});
 				
 				//Handle case where returned feature is same as previous one (API async bug ?)
@@ -184,8 +185,14 @@ class MissionReviewComponent extends Component {
 			let newShownPics = Math.min(this.state.shownPics+PICS_PER_PAGE, this.state.pictures.length);
 			
 			//Avoid showing no more pics msg
-			if(this.state.noMorePics && newShownPics === this.state.pictures.length) {
-				newShownPics++;
+			if(newShownPics === this.state.pictures.length) {
+				if(this.state.noMorePics) {
+					newShownPics++;
+				}
+				
+				if(this.state.feature.geometry.type !== "Point") {
+					this.setState({ noMorePics: true });
+				}
 			}
 			
 			this.setState({ shownPics: newShownPics });
@@ -506,7 +513,7 @@ class MissionReviewComponent extends Component {
 								onPicDetails={id => this.setState({ clickedPictureId: -id })}
 								onShowMore={() => this._loadMorePics()}
 								showThumbs={this.props.width === "xs"}
-								showMore={(!this.state.feature.geometry || this.state.feature.geometry.type === "Point") && this.state.shownPics <= this.state.pictures.length}
+								showMore={this.state.shownPics <= this.state.pictures.length && (this.state.feature.geometry.type === "Point" || !this.state.noMorePics)}
 							/>}
 					</Grid>
 					
