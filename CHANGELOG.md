@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - In review page, map offers various tile providers according to what's available on the mission area
+- When creating a new mission, you can set area using a local geo file (GeoJSON, GPX, KML)
 
 ### Changed
 - In review page, map keeps zoom level and used tiles between two features review

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import CONSTS from '../constants';
-import Leaflet from 'leaflet';
+import L from 'leaflet';
 import Geocoder from 'leaflet-control-geocoder';
+import FileLayer from 'leaflet-filelayer';
 import { Map, TileLayer } from 'react-leaflet';
 import SelectArea from 'leaflet-area-select';
 import Typography from 'material-ui/Typography';
+
+const Leaflet = new FileLayer();
 
 /**
  * Mission review map component allows to display current feature being reviewed.
@@ -86,6 +89,23 @@ class MapSelectionComponent extends Component {
 		//Show select
 		this.refs.map.leafletElement.on("areaselected", e => {
 			this._showBounds(e.bounds);
+		});
+		
+		//Add file selector
+		Leaflet.Control.FileLayerLoad.TITLE = I18n.t("Define area using a local geo file (GeoJSON, JSON, KML or GPX)");
+		Leaflet.Control.FileLayerLoad.LABEL = "&#x2317;";
+		this.fileLayer = Leaflet.Control.fileLayerLoad({
+			addToMap: false,
+			position: "bottomleft"
+		}).addTo(this.refs.map.leafletElement);
+		
+		//Handle file loading
+		this.fileLayer.loader.on("data:loaded", e => {
+			this._showBounds(e.layer.getBounds());
+		});
+		
+		this.fileLayer.loader.on("data:error", e => {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! It seems that the file you selected is not a valid geo file (GeoJSON, JSON, KML or GPX)") });
 		});
 	}
 	
