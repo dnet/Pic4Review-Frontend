@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - In review page, map offers various tile providers according to what's available on the mission area
 
+### Fixed
+- "Show more pictures" button is hidden for complex geometries
+
 
 ## 0.5.1 - 2018-09-30
 

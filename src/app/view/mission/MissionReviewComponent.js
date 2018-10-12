@@ -500,7 +500,7 @@ class MissionReviewComponent extends Component {
 								onPicDetails={id => this.setState({ clickedPictureId: -id })}
 								onShowMore={() => this._loadMorePics()}
 								showThumbs={this.props.width === "xs"}
-								showMore={this.state.shownPics <= this.state.pictures.length}
+								showMore={(!this.state.feature.geometry || this.state.feature.geometry.type === "Point") && this.state.shownPics <= this.state.pictures.length}
 							/>}
 					</Grid>
 					
