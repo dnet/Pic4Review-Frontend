@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import CONSTS from '../../constants';
 import Hash from 'object-hash';
@@ -8,6 +9,7 @@ import MarkerClusterGroup from 'react-leaflet-markercluster';
 import MissionSummary from './MissionSummaryComponent';
 import MissionSummaryButtons from './MissionSummaryButtonsComponent';
 import Mission from '../../model/Mission';
+import RouterForwarder from '../RouterForwarder';
 
 /**
  * Missions map component shows available missions on a map.
@@ -56,10 +58,10 @@ class MissionsMapComponent extends Component {
 					<div>{m.description.short}<br />{m.area.name}</div>
 				</Tooltip>
 				<Popup>
-					<div style={{textAlign: "center"}}>
+					<RouterForwarder style={{textAlign: "center"}} context={this.context}>
 						<MissionSummary mission={m} />
 						<MissionSummaryButtons mid={m.id} history={this.props.history} />
-					</div>
+					</RouterForwarder>
 				</Popup>
 			</CircleMarker>;
 		});
@@ -80,5 +82,10 @@ class MissionsMapComponent extends Component {
 		this._featureLayerBounds();
 	}
 }
+
+//Fixture for making popup buttons as links work
+MissionsMapComponent.contextTypes = {
+	router: PropTypes.object
+};
 
 export default withRouter(MissionsMapComponent);
