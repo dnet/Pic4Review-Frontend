@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - In review page, map offers various tile providers according to what's available on the mission area
 - When creating a new mission, you can set area using a local geo file (GeoJSON, GPX, KML)
+- In general statistics, a new graph shows source of used pictures
 
 ### Changed
 - In review page, map keeps zoom level and used tiles between two features review
@@ -17,6 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - "Show more pictures" button is hidden for complex geometries
+
+### Removed
+- Last missing pictures map in general statistics page
 
 
 ## 0.5.1 - 2018-09-30

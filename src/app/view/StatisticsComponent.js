@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import API from '../ctrl/API';
 import Grid from 'material-ui/Grid';
 import MissingPictures from './MissingPicturesMapComponent';
+import PicProvider from './PictureProviderComponent';
 import UsersScore from './UsersScoreComponent';
 import Themes from './MyStatisticsThemesComponent';
 import Time from './StatisticsTimeComponent';
@@ -33,8 +34,8 @@ class StatisticsComponent extends Component {
 					</Grid>
 					<Grid item xs={12} md={6}>
 						<Themes data={this.state.stats.themes} height={300} />
-						<Typography variant="subheading" style={{marginTop: 10}}>{I18n.t("Last missing/bad pictures")}</Typography>
-						<MissingPictures style={{height: 400}} />
+						<Typography variant="subheading" style={{marginTop: 10}}>{I18n.t("Sources of used pictures")}</Typography>
+						<PicProvider data={this.state.stats.picProviders} height={300} />
 					</Grid>
 				</Grid>
 			</div>;
