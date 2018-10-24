@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Last missing pictures map in general statistics page
 
 
+## 0.5.2 - 2018-10-24
+
+### Fixed
+- Handling of OSM features having no tags in [osm-request library](https://github.com/osmlab/osm-request/)
+
+
 ## 0.5.1 - 2018-09-30
 
 ### Fixed
