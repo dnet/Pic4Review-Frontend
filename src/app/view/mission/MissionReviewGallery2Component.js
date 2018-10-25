@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Information, MapMarkerRadius, MagnifyPlusOutline, PlusCircle, TagHeart } from 'mdi-material-ui';
+import { Information, MapMarkerRadius, MagnifyPlusOutline, PlusCircle, Star, StarOutline, TagHeart } from 'mdi-material-ui';
 import { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import Hidden from 'material-ui/Hidden';
 import HorizontalScrollGridList from '../HorizontalScrollGridList';
@@ -22,6 +22,7 @@ class MissionReviewGallery2Component extends Component {
 	render() {
 		if(this.props.pictures && this.props.pictures.length > 0) {
 			const style = Object.assign({}, this.props.style, {flexWrap: "nowrap", maxHeight: this.props.height});
+			const allowUpdateAssociation = this.props.pictures.filter(p => p.featured).length > 0;
 			
 			return <HorizontalScrollGridList
 				cols={1.15}
@@ -56,6 +57,23 @@ class MissionReviewGallery2Component extends Component {
 									<Tooltip title={I18n.t("This picture is already associated to this feature")} style={{marginRight: 5}}>
 										<TagHeart style={{verticalAlign: "middle"}} />
 									</Tooltip>}
+								
+								{allowUpdateAssociation && !p.featured && this.props.picMarked !== i &&
+									<Tooltip title={I18n.t("Mark this picture as best one")} style={{marginRight: 5}}>
+										<StarOutline
+											onClick={() => this.props.onPicMarked(i)}
+											style={{verticalAlign: "middle"}}
+										/>
+									</Tooltip>
+								}
+								{allowUpdateAssociation && !p.featured && this.props.picMarked === i &&
+									<Tooltip title={I18n.t("Unmark this picture")} style={{marginRight: 5}}>
+										<Star
+											style={{verticalAlign: "middle"}}
+											onClick={() => this.props.onPicUnmarked(i)}
+										/>
+									</Tooltip>
+								}
 								
 								{(new Date(p.date)).toLocaleDateString() + " - " + p.author + " - " + p.provider}
 								</div>}

@@ -53,7 +53,8 @@ class MissionReviewComponent extends Component {
 			stats: {},
 			showFeatureDetails: false,
 			mapZoom: 18,
-			mapBaseLayer: null
+			mapBaseLayer: null,
+			markedPictureId: -1
 		};
 		
 		this.psTokens = {};
@@ -74,6 +75,7 @@ class MissionReviewComponent extends Component {
 			pictures: null,
 			currentPictureId: null,
 			clickedPictureId: null,
+			markedPictureId: -1,
 			prevFeature: this.state.feature,
 			currentAnswer: null,
 			shownPics: 0,
@@ -167,6 +169,7 @@ class MissionReviewComponent extends Component {
 				noMorePics: false,
 				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
 				clickedPictureId: null,
+				markedPictureId: -1,
 				showFeatureDetails: false
 			});
 		}
@@ -347,9 +350,15 @@ class MissionReviewComponent extends Component {
 		 */
 		
 		let picId = null;
+		let changePic = false;
 		
+		//Explicitly marked picture
+		if(this.state.markedPictureId !== -1) {
+			picId = this.state.markedPictureId;
+			changePic = true;
+		}
 		//Click on picture details
-		if(this.state.clickedPictureId !== null && this.state.clickedPictureId < 0) {
+		else if(this.state.clickedPictureId !== null && this.state.clickedPictureId < 0) {
 			picId = null;
 		}
 		//Single picture
@@ -370,11 +379,18 @@ class MissionReviewComponent extends Component {
 			const pic = this.state.pictures[picId];
 			
 			if(pic && pic.osmTags) {
-				Object.entries(pic.osmTags).forEach(e => {
-					if(!this.state.feature.properties[e[0]]) {
-						tags[e[0]] = e[1];
-					}
-				});
+				//If not forcing pic change, only set data if no image is defined
+				if(!changePic) {
+					Object.entries(pic.osmTags).forEach(e => {
+						if(!this.state.feature.properties[e[0]]) {
+							tags[e[0]] = e[1];
+						}
+					});
+				}
+				//If forcing, then always change pic tags
+				else {
+					tags = Object.assign(tags, pic.osmTags);
+				}
 				
 				const surveyDateObj = new Date(pic.date);
 				const surveyDate = surveyDateObj.toISOString().split("T")[0];
@@ -514,6 +530,9 @@ class MissionReviewComponent extends Component {
 								onShowMore={() => this._loadMorePics()}
 								showThumbs={this.props.width === "xs"}
 								showMore={this.state.shownPics <= this.state.pictures.length && (this.state.feature.geometry.type === "Point" || !this.state.noMorePics)}
+								onPicMarked={id => this.setState({ markedPictureId: id })}
+								onPicUnmarked={id => this.setState({ markedPictureId: -1 })}
+								picMarked={this.state.markedPictureId}
 							/>}
 					</Grid>
 					
