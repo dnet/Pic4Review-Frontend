@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.5.3 - 2018-10-28
+
 ### Added
 - In review page, map offers various tile providers according to what's available on the mission area
 - When creating a new mission, you can set area using a local geo file (GeoJSON, GPX, KML)
