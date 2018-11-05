@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import withWidth from 'material-ui/utils/withWidth';
-import { Pencil, RadioboxBlank, RadioboxMarked } from 'mdi-material-ui';
+import { Check, Pencil, RadioboxBlank, RadioboxMarked } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { FormControlLabel } from 'material-ui/Form';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
@@ -9,6 +9,9 @@ import HorizontalScrollGridList from '../HorizontalScrollGridList';
 import IconButton from 'material-ui/IconButton';
 import Markdown from 'react-markdown';
 import Radio, { RadioGroup } from 'material-ui/Radio';
+import { SwatchesPicker } from 'react-color';
+import TextField from 'material-ui/TextField';
+import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
 const IMG_COLS = { "xs": 1.5, "sm": 1.5, "md": 2.5, "lg": 3.5, "xl": 3.5 };
@@ -24,7 +27,8 @@ class MissionReviewQuestionComponent extends Component {
 		super();
 		
 		this.state = {
-			selectedAnswer: -1
+			selectedAnswer: -1,
+			usertextValue: undefined
 		};
 	}
 	
@@ -32,6 +36,18 @@ class MissionReviewQuestionComponent extends Component {
 		key = parseInt(key);
 		this.setState({ selectedAnswer: key });
 		this.props.onAnswerChange(this.props.data.answers[key]);
+	}
+	
+	_onUsertextAnswerChange(value) {
+		this.setState({ usertextValue: value });
+	}
+	
+	_onUsertextValidated() {
+		this.props.onAnswerChange({
+			tags: {
+				[this.props.data.tag]: this.state.usertextValue
+			}
+		});
 	}
 	
 	render() {
@@ -95,6 +111,46 @@ class MissionReviewQuestionComponent extends Component {
 							return <FormControlLabel key={i} value={i.toString()} control={<Radio />} label={answer.label} />;
 						})}
 					</RadioGroup>;
+			}
+			else if(this.props.data.type === "usertext") {
+				let select = null;
+				if(this.props.data.type === "usertext" && this.props.data.valueType === "text") {
+					select = <TextField
+								id="answer"
+								label={I18n.t("Your response")}
+								value={this.state.usertextValue}
+								onChange={ev => this._onUsertextAnswerChange(ev.target.value)}
+								type="text"
+								fullWidth
+							/>;
+				}
+				else if(this.props.data.type === "usertext" && this.props.data.valueType === "number") {
+					select = <TextField
+								id="answer"
+								label={I18n.t("Your response")}
+								value={this.state.usertextValue}
+								onChange={ev => this._onUsertextAnswerChange(ev.target.value)}
+								type="number"
+								fullWidth
+							/>;
+				}
+				else if(this.props.data.type === "usertext" && this.props.data.valueType === "color") {
+					select = <SwatchesPicker
+								width="100%"
+								height="200px"
+								color={this.state.usertextValue}
+								onChangeComplete={(color, ev) => this._onUsertextAnswerChange(color.hex)}
+							/>;
+				}
+				
+				content = <div>
+					{select}
+					<Tooltip title={I18n.t("Validate your answer")} style={{width:"100%", marginTop: 10}}>
+						<Button variant="raised" color="primary" onClick={this._onUsertextValidated.bind(this)} style={{width:"100%", height:"100%" }}>
+							<Check /> {I18n.t("OK")}
+						</Button>
+					</Tooltip>
+				</div>;
 			}
 			
 			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>

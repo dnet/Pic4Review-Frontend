@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Added
+- Missions can now have new kinds of questions : define a color, number or free text for a particular tag
+
 
 ## 0.5.3 - 2018-10-28
 

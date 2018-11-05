@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { ChevronDown, PlusCircle } from 'mdi-material-ui';
 import Chip from 'material-ui/Chip';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
+import { FormControl, FormLabel, FormControlLabel } from 'material-ui/Form';
 import Grid from 'material-ui/Grid';
 import Hash from 'object-hash';
 import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
+import Radio, { RadioGroup } from 'material-ui/Radio';
 import SingleChoiceAnswerDialog from './NewMissionEditorsSingleChoiceAnswerDialogComponent';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'material-ui/Tooltip';
@@ -26,8 +28,19 @@ class NewMissionEditorsComponent extends Component {
 				singlechoice: {
 					question: "",
 					answers: []
+				},
+				usertext: {
+					question: "",
+					tag: "",
+					valueType: "text"
 				}
 			}
+		};
+		
+		this.userTextValueTypes = {
+			"text": I18n.t("Free text"),
+			"number": I18n.t("Number"),
+			"color": I18n.t("Color")
 		};
 	}
 	
@@ -40,12 +53,17 @@ class NewMissionEditorsComponent extends Component {
 	}
 	
 	/**
-	 * Change the single choice question
+	 * Change an editor value
 	 * @private
 	 */
-	_changeSingleChoiceQuestion(event) {
+	_changeProp(editor, prop, value) {
 		const newData = Object.assign({}, this.state.data);
-		newData.singlechoice.question = event.target.value;
+		
+		if(!newData[editor]) {
+			newData[editor] = {};
+		}
+		
+		newData[editor][prop] = value;
 		this.setState({ data: newData });
 	}
 	
@@ -89,11 +107,11 @@ class NewMissionEditorsComponent extends Component {
 				
 				<ExpansionPanelDetails style={{display: "block"}}>
 					<TextField
-						id="question"
+						id="singlechoice_question"
 						label={I18n.t("Question label")}
 						helperText={I18n.t("A short, explicit question, leading to easy answer")}
-						value={this.state.data.singlechoice ? this.state.data.singlechoice.question : ""}
-						onChange={this._changeSingleChoiceQuestion.bind(this)}
+						value={this.state.data.singlechoice && this.state.data.singlechoice.question ? this.state.data.singlechoice.question.toString() : ""}
+						onChange={e => this._changeProp("singlechoice", "question", e.target.value)}
 						fullWidth
 					/>
 					
@@ -127,6 +145,48 @@ class NewMissionEditorsComponent extends Component {
 						onClose={() => this.setState({ singleChoiceAnswerDialogOpen: false })}
 						onCreate={d => this._addSingleChoiceAnswer(d)}
 					/>
+				</ExpansionPanelDetails>
+			</ExpansionPanel>
+			
+			<ExpansionPanel expanded={this.state.editor === "usertext"} onChange={() => this._changeEditor("usertext")}>
+				<ExpansionPanelSummary expandIcon={<ChevronDown />}>
+					<Typography variant="body2">{I18n.t("Question with free user input")}</Typography>
+				</ExpansionPanelSummary>
+				
+				<ExpansionPanelDetails style={{display: "block"}}>
+					<TextField
+						id="usertext_question"
+						label={I18n.t("Question label")}
+						helperText={I18n.t("A short, explicit question, leading to easy answer")}
+						value={this.state.data.usertext && this.state.data.usertext.question ? this.state.data.usertext.question.toString() : ""}
+						onChange={e => this._changeProp("usertext", "question", e.target.value)}
+						fullWidth
+					/>
+					
+					<TextField
+						id="usertext_tag"
+						label={I18n.t("Tag to set")}
+						helperText={I18n.t("The key to fill with user input, for example \"colour\" or \"building:levels\"")}
+						value={this.state.data.usertext && this.state.data.usertext.tag ? this.state.data.usertext.tag.toString() : ""}
+						onChange={e => this._changeProp("usertext", "tag", e.target.value)}
+						fullWidth
+					/>
+					
+					<FormControl component="fieldset" style={{marginTop: 20}}>
+						<FormLabel component="legend">{I18n.t("Answer type")}</FormLabel>
+						<RadioGroup
+							row
+							aria-label="value type"
+							name="value_type"
+							value={this.state.data.usertext && this.state.data.usertext.valueType ? this.state.data.usertext.valueType : ""}
+							onChange={ev => this._changeProp("usertext", "valueType", ev.target.value)}
+							style={{ justifyContent: "center" }}
+						>
+							{Object.entries(this.userTextValueTypes).map((e, i) => {
+								return <FormControlLabel key={i} value={e[0]} control={<Radio />} label={e[1]} />;
+							})}
+						</RadioGroup>
+					</FormControl>
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			
