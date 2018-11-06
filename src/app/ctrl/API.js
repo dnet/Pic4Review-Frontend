@@ -724,6 +724,32 @@ class API {
 	}
 	
 	/**
+	 * Check if given OSM feature can be moved without breaking things
+	 * @param {string} feature The OSM feature ID (ex: node/1234)
+	 * @return {Promise} Resolves on boolean letting you know if it can be moved
+	 */
+	static CanOSMFeatureMove(featureId) {
+		return new Promise(async(resolve, reject) => {
+			//Only node can be moved
+			if(!featureId || !featureId.startsWith("node/")) {
+				resolve(false);
+			}
+			else {
+				const osm = new OsmRequest({ endpoint: CONST.OSM_API_URL });
+				
+				//Call API
+				try {
+					let ways = await osm.fetchWaysForNode(featureId);
+					resolve(!ways || ways.length === 0);
+				}
+				catch(e) {
+					reject(e);
+				}
+			}
+		});
+	}
+	
+	/**
 	 * Update an OSM feature by applying some tags.
 	 * @param {string} featureId The OSM feature ID (ex: node/1234)
 	 * @param {Object} tagsToApply The list of tags to apply on object

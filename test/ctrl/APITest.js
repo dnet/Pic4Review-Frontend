@@ -434,4 +434,54 @@ describe.skip("Ctrl > API", () => {
 			});
 		}).timeout(TIMEOUT);
 	});
+	
+	describe.skip("CanOSMFeatureMove", () => {
+		it("works with way", done => {
+			API.CanOSMFeatureMove("way/1234")
+			.then(canMove => {
+				assert.ok(!canMove);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		});
+		
+		it("works with relation", done => {
+			API.CanOSMFeatureMove("relation/1234")
+			.then(canMove => {
+				assert.ok(!canMove);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		});
+		
+		it("works with node attached to ways", done => {
+			API.CanOSMFeatureMove("node/4716460882")
+			.then(canMove => {
+				assert.ok(!canMove);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+		
+		it("works with single node", done => {
+			API.CanOSMFeatureMove("node/849511790")
+			.then(canMove => {
+				assert.ok(canMove);
+				done();
+			})
+			.catch(e => {
+				assert.fail(e);
+				done();
+			});
+		}).timeout(TIMEOUT);
+	});
 });

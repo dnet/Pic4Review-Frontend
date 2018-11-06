@@ -54,7 +54,9 @@ class MissionReviewComponent extends Component {
 			showFeatureDetails: false,
 			mapZoom: 18,
 			mapBaseLayer: null,
-			markedPictureId: -1
+			markedPictureId: -1,
+			featureCanMove: false,
+			newFeatureGeometry: null
 		};
 		
 		this.psTokens = {};
@@ -81,7 +83,9 @@ class MissionReviewComponent extends Component {
 			shownPics: 0,
 			noMorePics: false,
 			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0,
-			showFeatureDetails: false
+			showFeatureDetails: false,
+			featureCanMove: false,
+			newFeatureGeometry: null
 		});
 		
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
@@ -89,37 +93,45 @@ class MissionReviewComponent extends Component {
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords, this.props.user.id)
 		.then(f => {
 			if(f !== null) {
-				//Find pictures already associated to feature
-				const picsFromTags = this.picMan.getPicturesFromTags(f.properties);
-				
-				f.pictures.map(p => {
-					p.featured = picsFromTags.includes(p.pictureUrl);
-					return p;
-				});
-				
-				f.pictures.sort((a, b) => {
-					if(a.featured === b.featured) {
-						return b.date - a.date;
-					}
-					else {
-						return a.featured ? -1 : 1;
-					}
-				});
-				
-				//Change state
-				this.setState({
-					feature: f,
-					pictures: f.pictures,
-					currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
-					shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
-					noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
-				});
-				
 				//Handle case where returned feature is same as previous one (API async bug ?)
 				if(!prevId || f.id !== prevId) {
+					//Find pictures already associated to feature
+					const picsFromTags = this.picMan.getPicturesFromTags(f.properties);
+					
+					f.pictures.map(p => {
+						p.featured = picsFromTags.includes(p.pictureUrl);
+						return p;
+					});
+					
+					f.pictures.sort((a, b) => {
+						if(a.featured === b.featured) {
+							return b.date - a.date;
+						}
+						else {
+							return a.featured ? -1 : 1;
+						}
+					});
+					
+					//Change state
+					this.setState({
+						feature: f,
+						pictures: f.pictures,
+						currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
+						shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
+						noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
+					});
+					
 					if(this.refs.container) {
 						this.refs.container.scrollIntoView(false);
 					}
+					
+					API.CanOSMFeatureMove(f.properties.id)
+					.then(canMove => {
+						if(this.state.feature.properties.id === f.properties.id && canMove) {
+							this.setState({ featureCanMove: true });
+						}
+					})
+					.catch(e => console.error);
 					
 					PubSub.publish("UI.MESSAGE.WAITDONE");
 					
@@ -170,7 +182,9 @@ class MissionReviewComponent extends Component {
 				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
 				clickedPictureId: null,
 				markedPictureId: -1,
-				showFeatureDetails: false
+				showFeatureDetails: false,
+				featureCanMove: false,
+				newFeatureGeometry: null
 			});
 		}
 		else {
@@ -463,6 +477,8 @@ class MissionReviewComponent extends Component {
 							onZoomChange={z => this.setState({ mapZoom: z })}
 							baseLayer={this.state.mapBaseLayer}
 							onBaseLayerChange={l => this.setState({ mapBaseLayer: l })}
+							featureMove={this.state.featureCanMove}
+							onFeatureMove={g => this.setState({ newFeatureGeometry: g })}
 						/>;
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
@@ -505,10 +521,8 @@ class MissionReviewComponent extends Component {
 							</Grid>
 						}
 						
-						<Grid container spacing={8}>
-							<Grid item hidden={{ only: "xs" }} sm={7}>{map}</Grid>
-							<Grid item hidden={{ only: "xs" }} sm={5}>{counter}</Grid>
-						</Grid>
+						<Hidden only="xs">{map}</Hidden>
+						<Hidden only="xs">{counter}</Hidden>
 					</Grid>
 					
 					<Grid item xs={12} sm={6} lg={7} xl={8}>
