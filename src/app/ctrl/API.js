@@ -725,7 +725,7 @@ class API {
 	
 	/**
 	 * Check if given OSM feature can be moved without breaking things
-	 * @param {string} feature The OSM feature ID (ex: node/1234)
+	 * @param {string} featureId The OSM feature ID (ex: node/1234)
 	 * @return {Promise} Resolves on boolean letting you know if it can be moved
 	 */
 	static CanOSMFeatureMove(featureId) {
