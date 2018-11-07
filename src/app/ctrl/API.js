@@ -767,9 +767,17 @@ class API {
 					const osm = new OsmRequest({ endpoint: CONST.OSM_API_URL });
 					osm._auth = user.auth;
 					
-					//Get OSM element from API
 					try {
+						//Get OSM element from API
 						let element = await osm.fetchElement(featureId);
+						
+						//Handle tags to remove
+						Object.keys(tagsToApply).filter(k => k.startsWith("-") && k.length >= 2).forEach(k => {
+							delete tagsToApply[k];
+							element = osm.removeProperty(element, k.substring(1));
+						});
+						
+						//Change tags and timestamp
 						element = osm.setProperties(element, tagsToApply);
 						element = osm.setTimestampToNow(element);
 						
