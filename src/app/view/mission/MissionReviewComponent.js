@@ -521,11 +521,16 @@ class MissionReviewComponent extends Component {
 							</Grid>
 						}
 						
-						<Hidden only="xs">{map}</Hidden>
-						<Hidden only="xs">{counter}</Hidden>
+						<Hidden mdDown={true}>{map}</Hidden>
+						<Hidden mdDown={true}>{counter}</Hidden>
 					</Grid>
 					
-					<Grid item xs={12} sm={6} lg={7} xl={8}>
+					<Grid item sm={6} hidden={{ lgUp: true, xsDown: true }}>
+						{map}
+						{counter}
+					</Grid>
+					
+					<Grid item xs={12} sm={12} lg={7} xl={8}>
 						<FeatureDetails
 							feature={this.state.feature}
 							showPopup={this.state.showFeatureDetails}
