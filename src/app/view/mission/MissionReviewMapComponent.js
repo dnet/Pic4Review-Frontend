@@ -32,7 +32,8 @@ class MissionReviewMapComponent extends Component {
 		super();
 		
 		this.state = {
-			editingGeom: false
+			editingGeom: false,
+			markEditGeom: null
 		};
 	}
 	
@@ -55,6 +56,8 @@ class MissionReviewMapComponent extends Component {
 				/>);
 			}
 		}
+		
+		const feature = this.state.markerEditGeom || this.props.feature;
 		
 		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.props.zoom || DEFAULT_ZOOM} style={style}>
 			{this.props.layers ?
@@ -80,15 +83,25 @@ class MissionReviewMapComponent extends Component {
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			}
 			
-			<GeoJSON
-				ref="data"
-				data={this.props.feature.geometry}
-				color="red"
-				fillColor="red"
-				fillOpacity={0.7}
-				onClick={() => this.props.onFeatureClicked()}
-				pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
-			/>
+			{this.state.editingGeom ?
+				<Marker
+					ref="markerEdit"
+					position={Leaflet.GeoJSON.coordsToLatLng(feature.geometry.coordinates)}
+					draggable={true}
+					onDragEnd={() => this.setState({ markerEditGeom: this.refs.markerEdit.leafletElement.toGeoJSON()})}
+				/>
+				:
+				<GeoJSON
+					ref="data"
+					data={feature.geometry}
+					color="red"
+					fillColor="red"
+					fillOpacity={0.7}
+					onClick={() => this.props.onFeatureClicked()}
+					pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
+				/>
+			}
+			
 			{this.markers}
 			
 			{this.props.featureMove ?
@@ -97,13 +110,13 @@ class MissionReviewMapComponent extends Component {
 						<Button
 							variant="fab"
 							color="primary"
-							onClick={() => this.setState({ editingGeom: false })}
+							onClick={() => this._editGeomDone()}
 						>
 							<Check />
 						</Button>
 						<Button
 							variant="fab"
-							onClick={() => this.setState({ editingGeom: false })}
+							onClick={() => this._editGeomCancelled()}
 							style={{marginLeft: 5}}
 						>
 							<Close />
@@ -113,7 +126,7 @@ class MissionReviewMapComponent extends Component {
 					<Button
 						variant="fab"
 						style={{ position: "absolute", left: 5, bottom: 5, zIndex: 10000 }}
-						onClick={() => this.setState({ editingGeom: true })}
+						onClick={() => this._editGeomStart()}
 					>
 						<CursorMove />
 					</Button>
@@ -127,6 +140,20 @@ class MissionReviewMapComponent extends Component {
 		if(this.refs.map && this.refs.data) {
 			this.refs.map.leafletElement.setView(this.refs.data.leafletElement.getBounds().getCenter(), this.props.zoom || DEFAULT_ZOOM);
 		}
+	}
+	
+	_editGeomStart() {
+		this.setState({ editingGeom: true })
+	}
+	
+	_editGeomDone() {
+		this.props.onFeatureMove(this.state.markerEditGeom);
+		this.setState({ editingGeom: false });
+	}
+	
+	_editGeomCancelled() {
+		this.props.onFeatureMove(this.props.feature);
+		this.setState({ editingGeom: false, markerEditGeom: null })
 	}
 	
 	componentDidMount() {

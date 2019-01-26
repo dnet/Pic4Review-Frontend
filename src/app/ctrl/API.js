@@ -755,9 +755,10 @@ class API {
 	 * @param {Object} tagsToApply The list of tags to apply on object
 	 * @param {string} comment Comment for changeset
 	 * @param {int} [changesetId] ID of changeset to reuse
+	 * @param {Object} [geometry] The new geometry to use (geometry property of a GeoJSON feature)
 	 * @return {Promise} Resolves when feature was correctly updated (gives an object like { changesetId: int })
 	 */
-	static UpdateOSMFeature(featureId, tagsToApply, comment, changesetId) {
+	static UpdateOSMFeature(featureId, tagsToApply, comment, changesetId, geometry) {
 		return new Promise((resolve, reject) => {
 			//Check user auth token
 			const wantUser = PubSub.subscribe("USER.INFO.READY", async (msg, user) => {
@@ -780,6 +781,13 @@ class API {
 						//Change tags and timestamp
 						element = osm.setProperties(element, tagsToApply);
 						element = osm.setTimestampToNow(element);
+						
+						//Edit geometry
+						if(geometry) {
+							if(geometry.type === "Point" && featureId.startsWith("node/")) {
+								element = osm.setCoordinates(element, geometry.coordinates[1], geometry.coordinates[0]);
+							}
+						}
 						
 						//Do we have a valid changeset ID ?
 						let changesetOpen = changesetId && !isNaN(parseInt(changesetId));

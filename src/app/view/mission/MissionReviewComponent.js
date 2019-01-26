@@ -125,13 +125,20 @@ class MissionReviewComponent extends Component {
 						this.refs.container.scrollIntoView(false);
 					}
 					
-					API.CanOSMFeatureMove(f.properties.id)
-					.then(canMove => {
-						if(this.state.feature.properties.id === f.properties.id && canMove) {
-							this.setState({ featureCanMove: true });
-						}
-					})
-					.catch(e => console.error);
+					//Check if we allow feature geometry editing (must have integrated editor + be a node)
+					if(
+						this.props.mission.options && this.props.mission.options.data
+						&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
+						&& this.props.mission.options.data.options.editors.type !== "disabled"
+					) {
+						API.CanOSMFeatureMove(f.properties.id)
+						.then(canMove => {
+							if(this.state.feature.properties.id === f.properties.id && canMove) {
+								this.setState({ featureCanMove: true });
+							}
+						})
+						.catch(e => console.error);
+					}
 					
 					PubSub.publish("UI.MESSAGE.WAITDONE");
 					
@@ -311,7 +318,8 @@ class MissionReviewComponent extends Component {
 					this.state.feature.properties.id,
 					this._getTagsToApply(),
 					this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
-					this._getChangesetId()
+					this._getChangesetId(),
+					this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : null
 				)
 				.then(res => {
 					updateDB(res);
@@ -478,7 +486,7 @@ class MissionReviewComponent extends Component {
 							baseLayer={this.state.mapBaseLayer}
 							onBaseLayerChange={l => this.setState({ mapBaseLayer: l })}
 							featureMove={this.state.featureCanMove}
-							onFeatureMove={g => this.setState({ newFeatureGeometry: g })}
+							onFeatureMove={g => {console.log(g); this.setState({ newFeatureGeometry: g })}}
 						/>;
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
