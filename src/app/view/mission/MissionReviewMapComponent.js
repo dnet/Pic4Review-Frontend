@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import CONSTS from '../../constants';
+import { CursorMove, Check, Close } from 'mdi-material-ui';
+import Button from 'material-ui/Button';
 import Leaflet from 'leaflet';
 import LeafletMarker from '../MarkerRotate';
 import { Map, GeoJSON, Marker, TileLayer, LayersControl } from 'react-leaflet';
+import Tooltip from 'material-ui/Tooltip';
 
 Leaflet.Icon.Default.imagePath = CONSTS.LEAFLET_IMG_PATH;
 Leaflet.Marker = LeafletMarker;
@@ -27,6 +30,10 @@ const picSelectedIcon = Leaflet.icon({
 class MissionReviewMapComponent extends Component {
 	constructor() {
 		super();
+		
+		this.state = {
+			editingGeom: false
+		};
 	}
 	
 	render() {
@@ -83,6 +90,36 @@ class MissionReviewMapComponent extends Component {
 				pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
 			/>
 			{this.markers}
+			
+			{this.props.featureMove ?
+				(this.state.editingGeom ?
+					<div style={{ position: "absolute", left: 5, bottom: 5, zIndex: 10000 }}>
+						<Button
+							variant="fab"
+							color="primary"
+							onClick={() => this.setState({ editingGeom: false })}
+						>
+							<Check />
+						</Button>
+						<Button
+							variant="fab"
+							onClick={() => this.setState({ editingGeom: false })}
+							style={{marginLeft: 5}}
+						>
+							<Close />
+						</Button>
+					</div>
+					:
+					<Button
+						variant="fab"
+						style={{ position: "absolute", left: 5, bottom: 5, zIndex: 10000 }}
+						onClick={() => this.setState({ editingGeom: true })}
+					>
+						<CursorMove />
+					</Button>
+				)
+				: null
+			}
 		</Map>;
 	}
 	
