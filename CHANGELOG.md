@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Missions can now have new kinds of questions : define a color, number or free text for a particular tag
 - Missions with single choice answer are now able to delete tags using `-tagname=*` syntax
+- Geometry editing is available for some missions (missions working on detached nodes, mainly POI)
 
 ### Changed
 - In review page, map is now wider
+- In review page, for mid-size screens, layout has changed (map next to integrated editor, pictures below)
 
 
 ## 0.5.3 - 2018-10-28
