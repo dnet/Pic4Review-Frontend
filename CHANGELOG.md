@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.5.4 - 2019-01-27
+
 ### Added
 - Missions can now have new kinds of questions : define a color, number or free text for a particular tag
 - Missions with single choice answer are now able to delete tags using `-tagname=*` syntax
