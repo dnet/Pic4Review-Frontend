@@ -330,7 +330,11 @@ class NewMissionComponent extends Component {
 				break;
 			
 			case STEPS.editors:
-				content = <Editors data={this.state.editors} onChange={d => this.setState({ editors: d })} />;
+				content = <Editors
+							data={this.state.editors}
+							showOnly={this.state.datasource.options.allowedEditors}
+							onChange={d => this.setState({ editors: d })}
+						/>;
 				break;
 			
 			case STEPS.publish:

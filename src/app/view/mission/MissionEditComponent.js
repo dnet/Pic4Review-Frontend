@@ -70,10 +70,27 @@ class MissionEditComponent extends Component {
 	
 	render() {
 		if(this.state.details && this.state.editors) {
+			//Restore editors restrictions according to datasource
+			let editors = "all";
+			
+			if(
+				this.state.mission
+				&& this.state.mission.options
+				&& this.state.mission.options.data
+				&& this.state.mission.options.data.options
+				&& this.state.mission.options.data.options.allowedEditors
+			) {
+				editors = this.state.mission.options.data.options.allowedEditors;
+			}
+			
 			return <div>
 				<Typography variant="display1">{I18n.t("Edit")}</Typography>
 				<Details data={this.state.details} onChange={d => this.setState({ details: d })} />
-				<Editors data={this.state.editors} onChange={d => this.setState({ editors: d })} style={{marginTop: 10}} />
+				<Editors
+					data={this.state.editors}
+					showOnly={editors}
+					onChange={d => this.setState({ editors: d })} style={{marginTop: 10}}
+				/>
 				<Grid container alignItems="center" direction="row" justify="flex-end" spacing={16}>
 					<Grid item>
 						<Button variant="raised" color="primary" onClick={() => this._save()}>

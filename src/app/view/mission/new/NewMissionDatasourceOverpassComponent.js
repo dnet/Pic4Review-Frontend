@@ -11,7 +11,8 @@ class NewMissionDatasourceOverpassComponent extends Component {
 		super();
 		
 		this.state = {
-			oapiQuery: ""
+			oapiQuery: "",
+			allowedEditors: "all"
 		};
 	}
 	
@@ -34,7 +35,7 @@ class NewMissionDatasourceOverpassComponent extends Component {
 	_changed(what, value) {
 		if(what === "query" && value !== this.state.oapiQuery) {
 			if(value === "") { value = null; }
-			this.props.onChange({ query: value });
+			this.props.onChange({ query: value, allowedEditors: this.state.allowedEditors });
 			this.setState({ oapiQuery: value });
 		}
 	}

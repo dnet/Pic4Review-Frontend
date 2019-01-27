@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Added
+- Integrated editors can be partially disabled according to the used datasource
+
+### Changed
+- List of Osmose errors limited to the ones that make sense for Pic4Review
+
 
 ## 0.5.4 - 2019-01-27
 

@@ -21,7 +21,7 @@ class NewMissionEditorsComponent extends Component {
 		super();
 		
 		this.state = {
-			editor: "singlechoice",
+			editor: "disabled",
 			singleChoiceAnswerDialogOpen: false,
 			singleChoiceAnswerDialogEdit: null,
 			data: {
@@ -100,7 +100,11 @@ class NewMissionEditorsComponent extends Component {
 			<Typography variant="caption">{I18n.t("In order to make mission solving easier, you may create a question to which users can answer simply. This makes possible to contribute on smartphone, and saves time on the desktop version. However, some missions can't be solved with a single question, then users have to contribute using a traditional OSM editor.")}</Typography>
 			<Typography variant="caption" style={{marginBottom: 10}}>{I18n.t("Choose the most appropriate editor according to your mission needs.")}</Typography>
 			
-			<ExpansionPanel expanded={this.state.editor === "singlechoice"} onChange={() => this._changeEditor("singlechoice")}>
+			<ExpansionPanel
+				expanded={this.state.editor === "singlechoice"}
+				disabled={this.props.showOnly !== "all" && !this.props.showOnly.includes("singlechoice")}
+				onChange={() => this._changeEditor("singlechoice")}
+			>
 				<ExpansionPanelSummary expandIcon={<ChevronDown />}>
 					<Typography variant="body2">{I18n.t("Question with single choice answer")}</Typography>
 				</ExpansionPanelSummary>
@@ -148,7 +152,11 @@ class NewMissionEditorsComponent extends Component {
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			
-			<ExpansionPanel expanded={this.state.editor === "usertext"} onChange={() => this._changeEditor("usertext")}>
+			<ExpansionPanel
+				expanded={this.state.editor === "usertext"}
+				disabled={this.props.showOnly !== "all" && !this.props.showOnly.includes("usertext")}
+				onChange={() => this._changeEditor("usertext")}
+			>
 				<ExpansionPanelSummary expandIcon={<ChevronDown />}>
 					<Typography variant="body2">{I18n.t("Question with free user input")}</Typography>
 				</ExpansionPanelSummary>
@@ -190,7 +198,11 @@ class NewMissionEditorsComponent extends Component {
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			
-			<ExpansionPanel expanded={this.state.editor === "disabled"} onChange={() => this._changeEditor("disabled")} style={{marginBottom: 10}}>
+			<ExpansionPanel
+				expanded={this.state.editor === "disabled"}
+				onChange={() => this._changeEditor("disabled")}
+				style={{marginBottom: 10}}
+			>
 				<ExpansionPanelSummary expandIcon={<ChevronDown />}>
 					<Typography variant="body2">{I18n.t("Disabled")}</Typography>
 				</ExpansionPanelSummary>
@@ -203,8 +215,22 @@ class NewMissionEditorsComponent extends Component {
 	}
 	
 	componentWillMount() {
-		if(this.props.data) {
+		if(this.props.data && (this.props.showOnly === "all" || this.props.showOnly.includes(this.props.data.editor))) {
 			this.setState(this.props.data);
+		}
+		else {
+			const newState = (this.props.data) ? Object.assign({}, this.props.data) : {};
+			
+			//Fallback for first shown editor
+			const fallbacks = [ "singlechoice", "usertext", "disabled" ];
+			for(const e of fallbacks) {
+				if(this.props.showOnly === "all" || this.props.showOnly.includes(e)) {
+					this.setState(Object.assign({}, newState, { editor: e }));
+					const newState = Object.assign({}, this.state, { editor: e });
+					this.props.onChange(newState);
+					break;
+				}
+			}
 		}
 	}
 	
