@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
-import { CameraOff, ContentDuplicate, Pencil, Play } from 'mdi-material-ui';
+import { CameraOff, ContentDuplicate, Email, Pencil, Play } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
+import CONST from '../../constants';
 import ExportMenu from './MissionDescriptionExportComponent';
 import Grid from 'material-ui/Grid';
 import Hidden from 'material-ui/Hidden';
@@ -68,7 +69,7 @@ class MissionDescriptionComponent extends Component {
 			{this.props.synthetic == false && <div>
 				<Hidden only="xs">{missingPics}</Hidden>
 				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}} spacing={16}>
-					<Grid item xs={12} sm={6} md={3}>
+					<Grid item xs={12} sm={6} md={4} xl={3}>
 						<Button
 							variant="raised"
 							color="primary"
@@ -81,7 +82,7 @@ class MissionDescriptionComponent extends Component {
 						</Button>
 					</Grid>
 					
-					<Grid item xs={12} sm={6} md={3}>
+					<Grid item xs={12} sm={6} md={4} xl={3}>
 						<Tooltip title={I18n.t("Download the position of features lacking pictures, in order to take some by yourself")} style={btnStyle}>
 							<Button
 								variant="raised"
@@ -93,7 +94,7 @@ class MissionDescriptionComponent extends Component {
 						</Tooltip>
 					</Grid>
 					
-					<Grid item hidden={{only: "xs"}} sm={6} md={3}>
+					<Grid item hidden={{only: "xs"}} sm={6} md={4} xl={3}>
 						<Tooltip title={I18n.t("Create a new mission based on this one. Useful for working on same task elsewhere.")} style={btnStyle}>
 							<Button
 								variant="raised"
@@ -106,7 +107,20 @@ class MissionDescriptionComponent extends Component {
 						</Tooltip>
 					</Grid>
 					
-					{this.props.mission.options.canEdit && <Grid item hidden={{only: "xs"}} sm={6} md={3}>
+					{this.props.mission.options.username && <Grid item hidden={{only: "xs"}} sm={6} md={4} xl={3}>
+						<Tooltip title={I18n.t("Contact the author of this mission")} style={btnStyle}>
+							<Button
+								variant="raised"
+								href={CONST.OSM_API_URL+'/message/new/'+this.props.mission.options.username}
+								target="_blank"
+								style={btnStyle}
+							>
+								<Email /> {I18n.t("Contact author")}
+							</Button>
+						</Tooltip>
+					</Grid>}
+					
+					{this.props.mission.options.canEdit && <Grid item hidden={{only: "xs"}} sm={6} md={4} xl={3}>
 						<Tooltip title={I18n.t("Change the description of this mission")} style={btnStyle}>
 							<Button
 								variant="raised"

@@ -101,7 +101,9 @@ class Mission {
 			created: "dateCreation",
 			illustration: "illustration",
 			template: "template",
-			layers: "layers"
+			layers: "layers",
+			username: "username",
+			userid: "userid"
 		};
 		
 		Object.entries(optsToCopy).forEach(e => {

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 ### Added
+- Author of a mission can be contacted (link provided in mission description page)
 - Integrated editors can be partially disabled according to the used datasource
 
 ### Changed
