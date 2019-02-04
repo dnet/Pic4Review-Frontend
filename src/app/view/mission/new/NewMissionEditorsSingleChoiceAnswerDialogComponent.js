@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Button from 'material-ui/Button';
 import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } from 'material-ui/Dialog';
+import TagInput from '../../TagInputComponent';
 import TextField from 'material-ui/TextField';
 
 /**
@@ -14,10 +15,9 @@ class NewMissionEditorsSingleChoiceAnswerDialogComponent extends Component {
 		this.state = {
 			label: "",
 			image: "",
-			tags: "",
+			tags: null,
 			error_label: false,
-			error_image: false,
-			error_tags: false
+			error_image: false
 		};
 	}
 	
@@ -31,15 +31,14 @@ class NewMissionEditorsSingleChoiceAnswerDialogComponent extends Component {
 				this.state.image.trim().length === 0
 				|| this.state.image.trim().match(/^(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+[\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-]$/)
 			) {
-				if(this.state.tags.trim().match(/^[a-z0-9_\.:-]+=[^=]+(\n[a-z0-9_\.:-]+=[^=]+)*$/im)) {
+				if(this.state.tags && Object.keys(this.state.tags).length > 0) {
 					this.props.onCreate({
 						label: this.state.label.trim(),
 						image: this.state.image.trim() === 0 ? null : this.state.image.trim(),
-						tags: this._textToTags(this.state.tags.trim())
+						tags: this.state.tags
 					});
 				}
 				else {
-					this.setState({ error_tags: true });
 					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Your tag list should only contain key=value entries (one per line)") });
 				}
 			}
@@ -52,26 +51,6 @@ class NewMissionEditorsSingleChoiceAnswerDialogComponent extends Component {
 			this.setState({ error_label: true });
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Your answer name should contain between 1 and 50 characters") });
 		}
-	}
-	
-	/**
-	 * Transform JS object into string representation
-	 * @private
-	 */
-	_tagsToText(tags) {
-		return Object.entries(tags).map(e => e[0] + "=" + e[1]).join("\n");
-	}
-	
-	/**
-	 * Convert tags text into JS object
-	 * @private
-	 */
-	_textToTags(text) {
-		const tags = {};
-		text.split("\n").map(e => e.split("=")).forEach(e => {
-			tags[e[0]] = e[1];
-		});
-		return tags;
 	}
 	
 	render() {
@@ -110,17 +89,9 @@ class NewMissionEditorsSingleChoiceAnswerDialogComponent extends Component {
 					onChange={ev => this.setState({ image: ev.target.value, error_image: false })}
 				/>
 				
-				<TextField
-					id="tags"
-					margin="normal"
-					fullWidth multiline required
-					error={this.state.error_tags}
-					label={I18n.t("OSM tags")}
-					helperText={I18n.t("Tags, as key=value (one per line), to apply on feature if answer is selected")}
-					placeholder={"amenity=bench\nbackrest=yes\nmaterial=wood".replace(/\\n/g, '\n')}
-					rows="4"
-					value={this.state.tags}
-					onChange={ev => this.setState({ tags: ev.target.value, error_tags: false })}
+				<TagInput
+					tags={this.state.tags}
+					onChange={newTags => this.setState({ tags: newTags })}
 				/>
 			</DialogContent>
 			<DialogActions>
@@ -139,10 +110,9 @@ class NewMissionEditorsSingleChoiceAnswerDialogComponent extends Component {
 			this.setState({
 				label: this.props.data.label,
 				image: this.props.data.image,
-				tags: this._tagsToText(this.props.data.tags),
+				tags: this.props.data.tags,
 				error_label: false,
-				error_image: false,
-				error_tags: false
+				error_image: false
 			});
 		}
 	}
@@ -152,20 +122,18 @@ class NewMissionEditorsSingleChoiceAnswerDialogComponent extends Component {
 			this.setState({
 				label: nextProps.data.label,
 				image: nextProps.data.image,
-				tags: this._tagsToText(nextProps.data.tags),
+				tags: nextProps.data.tags,
 				error_label: false,
-				error_image: false,
-				error_tags: false
+				error_image: false
 			});
 		}
 		else {
 			this.setState({
 				label: "",
 				image: "",
-				tags: "",
+				tags: null,
 				error_label: false,
-				error_image: false,
-				error_tags: false
+				error_image: false
 			});
 		}
 	}

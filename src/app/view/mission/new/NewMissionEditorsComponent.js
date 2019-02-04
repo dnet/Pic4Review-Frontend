@@ -199,6 +199,20 @@ class NewMissionEditorsComponent extends Component {
 			</ExpansionPanel>
 			
 			<ExpansionPanel
+				expanded={this.state.editor === "importer"}
+				disabled={this.props.showOnly !== "all" && !this.props.showOnly.includes("importer")}
+				onChange={() => this._changeEditor("importer")}
+			>
+				<ExpansionPanelSummary expandIcon={<ChevronDown />}>
+					<Typography variant="body2">{I18n.t("Import external features")}</Typography>
+				</ExpansionPanelSummary>
+				
+				<ExpansionPanelDetails style={{display: "block"}}>
+					<Typography variant="body1">{"TODO"}</Typography>
+				</ExpansionPanelDetails>
+			</ExpansionPanel>
+			
+			<ExpansionPanel
 				expanded={this.state.editor === "disabled"}
 				onChange={() => this._changeEditor("disabled")}
 				style={{marginBottom: 10}}

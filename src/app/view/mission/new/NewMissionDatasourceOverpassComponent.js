@@ -12,7 +12,7 @@ class NewMissionDatasourceOverpassComponent extends Component {
 		
 		this.state = {
 			oapiQuery: "",
-			allowedEditors: "all"
+			allowedEditors: [ "singlechoice", "usertext", "disabled" ],
 		};
 	}
 	
