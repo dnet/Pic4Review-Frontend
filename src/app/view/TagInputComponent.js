@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import TextField from 'material-ui/TextField';
 
+/**
+ * Tag input component allows user to define, as text, a set of tags (in a key=value format)
+ */
 class TagInputComponent extends Component {
 	constructor() {
 		super();
@@ -31,6 +34,10 @@ class TagInputComponent extends Component {
 		return tags;
 	}
 	
+	/**
+	 * Event handler for text change in textfield
+	 * @private
+	 */
 	_textChanged(newText) {
 		this.setState({ text: newText, error: false });
 		if(newText.trim().match(/^[a-z0-9_\.:-]+=[^=\n]+(\n[a-z0-9_\.:-]+=[^=\n]+)*$/i)) {
