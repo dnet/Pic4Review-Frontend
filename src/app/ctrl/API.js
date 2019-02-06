@@ -778,6 +778,19 @@ class API {
 							element = osm.removeProperty(element, k.substring(1));
 						});
 						
+						//Handle geometry-specific tags
+						Object.keys(tagsToApply).filter(k => k.startsWith("~") && k.length >= 2 && k.indexOf(":") > 0).forEach(k => {
+							if(
+								(k.startsWith("~node:") && featureId.startsWith("node/"))
+								|| (k.startsWith("~way:") && featureId.startsWith("way/"))
+								|| (k.startsWith("~relation:") && featureId.startsWith("relation/"))
+							) {
+								tagsToApply[k.substring(k.indexOf(":")+1)] = tagsToApply[k];
+							}
+							
+							delete tagsToApply[k];
+						});
+						
 						//Change tags and timestamp
 						element = osm.setProperties(element, tagsToApply);
 						element = osm.setTimestampToNow(element);

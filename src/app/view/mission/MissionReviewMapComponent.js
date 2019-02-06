@@ -106,7 +106,7 @@ class MissionReviewMapComponent extends Component {
 			
 			{this.props.featureMove ?
 				(this.state.editingGeom ?
-					<div style={{ position: "absolute", left: 5, bottom: 5, zIndex: 10000 }}>
+					<div style={{ position: "absolute", left: 5, bottom: 5, zIndex: 1000 }}>
 						<Button
 							variant="fab"
 							color="primary"
@@ -125,7 +125,7 @@ class MissionReviewMapComponent extends Component {
 					:
 					<Button
 						variant="fab"
-						style={{ position: "absolute", left: 5, bottom: 5, zIndex: 10000 }}
+						style={{ position: "absolute", left: 5, bottom: 5, zIndex: 1000 }}
 						onClick={() => this._editGeomStart()}
 					>
 						<CursorMove />

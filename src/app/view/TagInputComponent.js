@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { DotsHorizontal } from 'mdi-material-ui';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
+import Typography from 'material-ui/Typography';
 
 /**
  * Tag input component allows user to define, as text, a set of tags (in a key=value format)
@@ -10,7 +13,8 @@ class TagInputComponent extends Component {
 		
 		this.state = {
 			text: "",
-			error: false
+			error: false,
+			showHelp: false
 		};
 	}
 	
@@ -40,7 +44,7 @@ class TagInputComponent extends Component {
 	 */
 	_textChanged(newText) {
 		this.setState({ text: newText, error: false });
-		if(newText.trim().match(/^[a-z0-9_\.:-]+=[^=\n]+(\n[a-z0-9_\.:-]+=[^=\n]+)*$/i)) {
+		if(newText.trim().match(/^[a-z0-9_\.:\-~]+=[^=\n]+(\n[a-z0-9_\.:\-~]+=[^=\n]+)*$/i)) {
 			this.props.onChange(this._textToTags(newText.trim()));
 		}
 		else {
@@ -50,17 +54,35 @@ class TagInputComponent extends Component {
 	}
 	
 	render() {
-		return <TextField
-			margin="normal"
-			fullWidth multiline required
-			error={this.state.error}
-			label={I18n.t("OSM tags")}
-			helperText={I18n.t("Tags, as key=value (one per line), to apply on feature if answer is selected")}
-			placeholder={"amenity=bench\nbackrest=yes\nmaterial=wood".replace(/\\n/g, '\n')}
-			rows="4"
-			value={this.state.text}
-			onChange={ev => this._textChanged(ev.target.value)}
-		/>;
+		return <div style={{ position: "relative" }}>
+			<Button
+				variant="fab"
+				style={{ position: "absolute", right: 5, top: 5, zIndex: 1000 }}
+				onClick={() => this.setState({ showHelp: !this.state.showHelp })}
+			>
+				<DotsHorizontal />
+			</Button>
+			
+			<TextField
+				margin="normal"
+				fullWidth multiline required
+				error={this.state.error}
+				label={I18n.t("OSM tags")}
+				helperText={I18n.t("Tags, as key=value (one per line), to apply on feature if answer is selected")}
+				placeholder={"amenity=bench\nbackrest=yes\nmaterial=wood".replace(/\\n/g, '\n')}
+				rows="4"
+				value={this.state.text}
+				onChange={ev => this._textChanged(ev.target.value)}
+			/>
+			
+			{this.state.showHelp &&
+				<Typography variant="body1">
+					{I18n.t("You can use advanced syntax for more precise editing of features:")}
+					<br />- {I18n.t("To delete a tag: -tagtodelete=*")}
+					<br />- {I18n.t("To apply a tag only on specific geometry: ~node:tagfornode=yes")}
+				</Typography>
+			}
+		</div>;
 	}
 	
 	componentWillMount() {

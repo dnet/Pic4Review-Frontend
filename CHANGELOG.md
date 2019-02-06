@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - List of Osmose errors limited to the ones that make sense for Pic4Review
+- Allow in integrated editor configuration to apply some tags only on a specific geometry type with `~node:tag=value` syntax
 
 
 ## 0.5.4 - 2019-01-27
