@@ -9,6 +9,7 @@ import IconButton from 'material-ui/IconButton';
 import Paper from 'material-ui/Paper';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import SingleChoiceAnswerDialog from './NewMissionEditorsSingleChoiceAnswerDialogComponent';
+import TagInput from '../../TagInputComponent';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
@@ -33,6 +34,9 @@ class NewMissionEditorsComponent extends Component {
 					question: "",
 					tag: "",
 					valueType: "text"
+				},
+				importer: {
+					mainTags: {}
 				}
 			}
 		};
@@ -208,7 +212,24 @@ class NewMissionEditorsComponent extends Component {
 				</ExpansionPanelSummary>
 				
 				<ExpansionPanelDetails style={{display: "block"}}>
-					<Typography variant="body1">{"TODO"}</Typography>
+					<Typography variant="body1">{"To allow proper integration of data, some information is necessary to look for existing similar objects."}</Typography>
+					<TagInput
+						tags={this.state.data.importer.mainTags}
+						onChange={newTags => this._changeProp("importer", "mainTags", newTags)}
+						onlyAddTags={true}
+						label={I18n.t("Main OSM tags")}
+						helper={I18n.t("Minimal set of tags to select existing features in OpenStreetMap.")}
+					/>
+					
+					<TextField
+						id="importer_conflation"
+						label={I18n.t("Conflation distance (in meters)")}
+						value={this.state.data.importer.conflation}
+						onChange={ev => this._changeProp("importer", "conflation", ev.target.value)}
+						helperText={I18n.t("Distance to look for similar objects (to merge this one with and avoid duplicates)")}
+						type="number"
+						fullWidth
+					/>
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			

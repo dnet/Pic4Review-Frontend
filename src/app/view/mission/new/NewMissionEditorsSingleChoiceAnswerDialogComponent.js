@@ -92,6 +92,7 @@ class NewMissionEditorsSingleChoiceAnswerDialogComponent extends Component {
 				<TagInput
 					tags={this.state.tags}
 					onChange={newTags => this.setState({ tags: newTags })}
+					helper={I18n.t("Tags to add if answer is selected.")}
 				/>
 			</DialogContent>
 			<DialogActions>

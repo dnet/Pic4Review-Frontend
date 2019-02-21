@@ -26,8 +26,8 @@ class NewMissionComponent extends Component {
 		super();
 		
 		this.state = {
-			step: STEPS.datasource,
-			datasource: null,
+			step: STEPS.editors, //STEPS.datasource,
+			datasource: { options: { allowedEditors: ["importer"] } }, //null,
 			previewOpen: false,
 			details: null,
 			mission: null,

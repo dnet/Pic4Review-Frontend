@@ -54,21 +54,24 @@ class TagInputComponent extends Component {
 	}
 	
 	render() {
+		const helper = this.props.helper ? this.props.helper + " " : "";
 		return <div style={{ position: "relative" }}>
-			<Button
-				variant="fab"
-				style={{ position: "absolute", right: 5, top: 5, zIndex: 1000 }}
-				onClick={() => this.setState({ showHelp: !this.state.showHelp })}
-			>
-				<DotsHorizontal />
-			</Button>
+			{!this.props.onlyAddTags &&
+				<Button
+					variant="fab"
+					style={{ position: "absolute", right: 5, top: 5, zIndex: 1000 }}
+					onClick={() => this.setState({ showHelp: !this.state.showHelp })}
+				>
+					<DotsHorizontal />
+				</Button>
+			}
 			
 			<TextField
 				margin="normal"
 				fullWidth multiline required
 				error={this.state.error}
-				label={I18n.t("OSM tags")}
-				helperText={I18n.t("Tags, as key=value (one per line), to apply on feature if answer is selected")}
+				label={this.props.label || I18n.t("OSM tags")}
+				helperText={helper+I18n.t("List tags as key=value (one tag per line).")}
 				placeholder={"amenity=bench\nbackrest=yes\nmaterial=wood".replace(/\\n/g, '\n')}
 				rows="4"
 				value={this.state.text}
