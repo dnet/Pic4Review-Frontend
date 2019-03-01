@@ -67,14 +67,12 @@ class MissionReviewMapComponent extends Component {
 							.replace(/\{zoom\}/g, "{z}")
 							.replace(/\{switch:.+?\}/g, "{s}");
 						
-							const maxZoom = l.id === "fr.ign.bdortho" ? 19 : l.max_zoom || DEFAULT_ZOOM;
-						
 						return <LayersControl.BaseLayer name={l.name || l.id} key={l.id} checked={(!this.props.baseLayer && i===0) || (this.props.baseLayer === (l.name || l.id))}>
 							<TileLayer
-								attribution={'<a href="'+l.attribution.url+'" target="_blank">'+l.attribution.text+'</a>'}
+								attribution={l.attribution ? '<a href="'+l.attribution.url+'" target="_blank">'+l.attribution.text+'</a>' : ''}
 								url={url}
 								minZoom={l.min_zoom || 1}
-								maxZoom={maxZoom}
+								maxZoom={l.max_zoom || DEFAULT_ZOOM}
 							/>
 						</LayersControl.BaseLayer>;
 					})}
