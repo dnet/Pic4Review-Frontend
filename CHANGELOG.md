@@ -16,6 +16,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allow in integrated editor configuration to apply some tags only on a specific geometry type with `~node:tag=value` syntax
 
 
+## 0.5.5 - 2019-03-01
+
+### Changed
+- Imagery is more logically sorted in review map
+
+### Fixed
+- When imagery in review page lacks attribution, empty text is shown instead of breaking page
+
+
 ## 0.5.4 - 2019-01-27
 
 ### Added
