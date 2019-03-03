@@ -88,6 +88,7 @@ class MissionEditComponent extends Component {
 				<Details data={this.state.details} onChange={d => this.setState({ details: d })} />
 				<Editors
 					data={this.state.editors}
+					dataSource={this.state.datasource}
 					showOnly={editors}
 					onChange={d => this.setState({ editors: d })} style={{marginTop: 10}}
 				/>
@@ -110,18 +111,7 @@ class MissionEditComponent extends Component {
 			API.GetMissionDetails(this.props.match.params.mid, data.id !== -1 ? data.id : undefined)
 			.then(m => {
 				if(m.options.canEdit) {
-					const newState = Object.assign({}, NewMission.RestoreEditors(m), {
-						details: {
-							theme: m.theme,
-							type: m.type,
-							shortdesc: m.description.short,
-							areaname: m.area.name,
-							fulldesc: m.description.full
-						},
-						mission: m,
-						user: data
-					});
-					
+					const newState = Object.assign({}, NewMission.MissionToState(m), { user: data });
 					this.setState(newState);
 				}
 				else {

@@ -26,8 +26,8 @@ class NewMissionComponent extends Component {
 		super();
 		
 		this.state = {
-			step: STEPS.editors, //STEPS.datasource,
-			datasource: { options: { allowedEditors: ["importer"] } }, //null,
+			step: STEPS.datasource,
+			datasource: null,
 			previewOpen: false,
 			details: null,
 			mission: null,
@@ -258,6 +258,38 @@ class NewMissionComponent extends Component {
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("Your question must contains between 5 and 150 characters") });
 			}
 		}
+		else if(
+			state.editors
+			&& state.editors.editor === "importer"
+			&& state.editors.data && state.editors.data.importer
+		) {
+			//Osmose case
+			if(state.datasource.source === "osmose") {
+				return true;
+			}
+			//Other data case
+			else {
+				if(
+					state.editors.data.importer.mainTags
+					&& typeof state.editors.data.importer.mainTags === "object"
+					&& Object.keys(state.editors.data.importer.mainTags).length > 0
+				) {
+					if(
+						state.editors.data.importer.conflation
+						&& typeof state.editors.data.importer.conflation === "number"
+						&& state.editors.data.importer.conflation > 0
+					) {
+						return true;
+					}
+					else {
+						PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("The conflation distance should be in meters, and have a value greater than zero") });
+					}
+				}
+				else {
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You should list one or several main OpenStreetMap tags, so we can check for duplicates") });
+				}
+			}
+		}
 		else if(state.editors && state.editors.editor === "disabled") {
 			return true;
 		}
@@ -284,9 +316,9 @@ class NewMissionComponent extends Component {
 				e.type = "images";
 			}
 		}
-		else if(state.editors.editor === "usertext") {
-			e = state.editors.data.usertext;
-			e.type = "usertext";
+		else if([ "usertext", "importer" ].includes(state.editors.editor)) {
+			e = state.editors.data[state.editors.editor];
+			e.type = state.editors.editor;
 		}
 		
 		return e;
@@ -332,6 +364,7 @@ class NewMissionComponent extends Component {
 			case STEPS.editors:
 				content = <Editors
 							data={this.state.editors}
+							dataSource={this.state.datasource}
 							showOnly={this.state.datasource.options.allowedEditors}
 							onChange={d => this.setState({ editors: d })}
 						/>;

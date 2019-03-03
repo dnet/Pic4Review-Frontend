@@ -36,7 +36,8 @@ class NewMissionEditorsComponent extends Component {
 					valueType: "text"
 				},
 				importer: {
-					mainTags: {}
+					mainTags: {},
+					conflation: ""
 				}
 			}
 		};
@@ -212,24 +213,35 @@ class NewMissionEditorsComponent extends Component {
 				</ExpansionPanelSummary>
 				
 				<ExpansionPanelDetails style={{display: "block"}}>
-					<Typography variant="body1">{"To allow proper integration of data, some information is necessary to look for existing similar objects."}</Typography>
-					<TagInput
-						tags={this.state.data.importer.mainTags}
-						onChange={newTags => this._changeProp("importer", "mainTags", newTags)}
-						onlyAddTags={true}
-						label={I18n.t("Main OSM tags")}
-						helper={I18n.t("Minimal set of tags to select existing features in OpenStreetMap.")}
-					/>
-					
-					<TextField
-						id="importer_conflation"
-						label={I18n.t("Conflation distance (in meters)")}
-						value={this.state.data.importer.conflation}
-						onChange={ev => this._changeProp("importer", "conflation", ev.target.value)}
-						helperText={I18n.t("Distance to look for similar objects (to merge this one with and avoid duplicates)")}
-						type="number"
-						fullWidth
-					/>
+					{this.props.dataSource.source === "osmose" ?
+						<Typography variant="body1">
+							{I18n.t("Feature will be shown to user, which will validate its presence on pictures.")}
+						</Typography>
+						:
+						<div>
+							<Typography variant="body1">
+								{I18n.t("To allow proper integration of data, some information is necessary to look for existing similar objects.")}
+							</Typography>
+							
+							<TagInput
+								tags={this.state.data.importer.mainTags}
+								onChange={newTags => this._changeProp("importer", "mainTags", newTags)}
+								onlyAddTags={true}
+								label={I18n.t("Main OSM tags")}
+								helper={I18n.t("Minimal set of tags to select existing features in OpenStreetMap.")}
+							/>
+							
+							<TextField
+								id="importer_conflation"
+								label={I18n.t("Conflation distance (in meters)")}
+								value={this.state.data.importer.conflation}
+								onChange={ev => this._changeProp("importer", "conflation", parseInt(ev.target.value))}
+								helperText={I18n.t("Distance to look for similar objects (to merge this one with and avoid duplicates)")}
+								type="number"
+								fullWidth
+							/>
+						</div>
+					}
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			
@@ -257,7 +269,7 @@ class NewMissionEditorsComponent extends Component {
 			const newState = (this.props.data) ? Object.assign({}, this.props.data) : {};
 			
 			//Fallback for first shown editor
-			const fallbacks = [ "singlechoice", "usertext", "disabled" ];
+			const fallbacks = [ "singlechoice", "usertext", "importer", "disabled" ];
 			for(const e of fallbacks) {
 				if(this.props.showOnly === "all" || this.props.showOnly.includes(e)) {
 					this.setState(Object.assign({}, newState, { editor: e }));

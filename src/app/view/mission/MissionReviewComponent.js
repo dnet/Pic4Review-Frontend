@@ -131,13 +131,22 @@ class MissionReviewComponent extends Component {
 						&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
 						&& this.props.mission.options.data.options.editors.type !== "disabled"
 					) {
-						API.CanOSMFeatureMove(f.properties.id)
-						.then(canMove => {
-							if(this.state.feature.properties.id === f.properties.id && canMove) {
+						// If editing OSM data
+						if(this.props.mission.options.data.options.editors.type !== "importer" && f.properties.id) {
+							API.CanOSMFeatureMove(f.properties.id)
+							.then(canMove => {
+								if(this.state.feature.properties.id === f.properties.id && canMove) {
+									this.setState({ featureCanMove: true });
+								}
+							})
+							.catch(e => console.error);
+						}
+						// If editing external data
+						else if(this.props.mission.options.data.options.editors.type === "importer") {
+							if(this.state.feature.geometry.type === "Point") {
 								this.setState({ featureCanMove: true });
 							}
-						})
-						.catch(e => console.error);
+						}
 					}
 					
 					PubSub.publish("UI.MESSAGE.WAITDONE");
@@ -311,24 +320,31 @@ class MissionReviewComponent extends Component {
 				&& this.props.mission.options.data.options.editors.type !== "disabled"
 				&& this.state.feature && this.state.feature.properties && this.state.feature.properties.id
 			) {
-				//Update feature
-				PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating feature in OpenStreetMap") });
-				
-				API.UpdateOSMFeature(
-					this.state.feature.properties.id,
-					this._getTagsToApply(),
-					this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
-					this._getChangesetId(),
-					this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : null
-				)
-				.then(res => {
-					updateDB(res);
-				})
-				.catch(e => {
-					PubSub.publish("UI.MESSAGE.WAITDONE");
-					console.error(e);
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry"), details: e.message });
-				});
+				// Editing existing OSM feature
+				if(this.props.mission.options.data.options.editors.type !== "importer") {
+					//Update feature
+					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating feature in OpenStreetMap") });
+					
+					API.UpdateOSMFeature(
+						this.state.feature.properties.id,
+						this._getTagsToApply(),
+						this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
+						this._getChangesetId(),
+						this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : null
+					)
+					.then(res => {
+						updateDB(res);
+					})
+					.catch(e => {
+						PubSub.publish("UI.MESSAGE.WAITDONE");
+						console.error(e);
+						PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry"), details: e.message });
+					});
+				}
+				// Importing new feature in OSM
+				else {
+					//TODO
+				}
 			}
 			else {
 				this.setState({ openConfirmEdit: true });
@@ -440,7 +456,7 @@ class MissionReviewComponent extends Component {
 	
 	_hasEditor() {
 		return this.state.feature
-			&& this.state.feature.properties && this.state.feature.properties.id
+			&& this.state.feature.properties
 			&& this.props.mission.options && this.props.mission.options.data
 			&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
 			&& this.props.mission.options.data.options.editors.type !== "disabled";

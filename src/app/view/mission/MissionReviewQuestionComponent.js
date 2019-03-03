@@ -55,8 +55,10 @@ class MissionReviewQuestionComponent extends Component {
 			<Markdown className={this.props.classes.root} source={this.props.instructions} />
 		</div>;
 		
+		console.log(this.props.data);
 		if(this.props.data && this.props.data.type && this.props.data.type !== "disabled") {
 			let content = null;
+			let question = this.props.data.question;
 			
 			if(this.props.data.type === "images") {
 				const tiles = this.props.data.answers.map((answer, i) => {
@@ -152,9 +154,16 @@ class MissionReviewQuestionComponent extends Component {
 					</Tooltip>
 				</div>;
 			}
+			else if(this.props.data.type === "importer") {
+				//TODO
+				question = I18n.t("Can you see the feature on pictures ?");
+				content = <Button variant="raised" color="primary" onClick={this._onUsertextValidated.bind(this)} style={{width:"100%", height:"100%" }}>
+					<Check /> {I18n.t("Yes, I see the feature")}
+				</Button>;
+			}
 			
 			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
-				<Typography variant="headline">{this.props.data.question}</Typography>
+				<Typography variant="headline">{question}</Typography>
 				{this.props.width === "xs" && <Typography variant="subheading">{I18n.t("Use street pictures at the bottom to find the answer !")}</Typography>}
 				
 				{instructions}
