@@ -213,35 +213,29 @@ class NewMissionEditorsComponent extends Component {
 				</ExpansionPanelSummary>
 				
 				<ExpansionPanelDetails style={{display: "block"}}>
-					{this.props.dataSource.source === "osmose" ?
-						<Typography variant="body1">
-							{I18n.t("Feature will be shown to user, which will validate its presence on pictures.")}
-						</Typography>
-						:
-						<div>
-							<Typography variant="body1">
-								{I18n.t("To allow proper integration of data, some information is necessary to look for existing similar objects.")}
-							</Typography>
-							
-							<TagInput
-								tags={this.state.data.importer.mainTags}
-								onChange={newTags => this._changeProp("importer", "mainTags", newTags)}
-								onlyAddTags={true}
-								label={I18n.t("Main OSM tags")}
-								helper={I18n.t("Minimal set of tags to select existing features in OpenStreetMap.")}
-							/>
-							
-							<TextField
-								id="importer_conflation"
-								label={I18n.t("Conflation distance (in meters)")}
-								value={this.state.data.importer.conflation}
-								onChange={ev => this._changeProp("importer", "conflation", parseInt(ev.target.value))}
-								helperText={I18n.t("Distance to look for similar objects (to merge this one with and avoid duplicates)")}
-								type="number"
-								fullWidth
-							/>
-						</div>
-					}
+					<Typography variant="body1">
+						{I18n.t("Feature will be shown to user, which will validate its presence on pictures.")}
+						<br />
+						{I18n.t("To allow proper integration of data, some information is necessary to look for existing similar objects.")}
+					</Typography>
+					
+					<TagInput
+						tags={this.state.data.importer.mainTags}
+						onChange={newTags => this._changeProp("importer", "mainTags", newTags)}
+						onlyAddTags={true}
+						label={I18n.t("Main OSM tags")}
+						helper={I18n.t("Minimal set of tags to select existing features in OpenStreetMap.")}
+					/>
+					
+					<TextField
+						id="importer_conflation"
+						label={I18n.t("Conflation distance (in meters)")}
+						value={this.state.data.importer.conflation}
+						onChange={ev => this._changeProp("importer", "conflation", parseInt(ev.target.value))}
+						helperText={I18n.t("Distance to look for similar objects (to merge this one with and avoid duplicates)")}
+						type="number"
+						fullWidth
+					/>
 				</ExpansionPanelDetails>
 			</ExpansionPanel>
 			

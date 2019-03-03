@@ -13,12 +13,13 @@ class MissionReviewTagsComponent extends Component {
 	render() {
 		const style = Object.assign({}, this.props.style);
 		
-		const tags = Object.keys(this.props.feature.properties).map((k, i) => {
-			return <TableRow key={i}>
-				<TableCell>{k}</TableCell>
-				<TableCell>{this.props.feature.properties[k]}</TableCell>
-			</TableRow>;
-		});
+		const tags = Object.keys(this.props.feature.properties)
+			.map((k, i) => {
+				return <TableRow key={i}>
+					<TableCell>{k}</TableCell>
+					<TableCell>{this.props.feature.properties[k]}</TableCell>
+				</TableRow>;
+			});
 		
 		return <Paper style={{overflowX: "auto"}}><Table style={style}>
 			<TableHead>

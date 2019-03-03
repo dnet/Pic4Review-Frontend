@@ -45,6 +45,31 @@ class API {
 	}
 	
 	/**
+	 * Look for similar objects in Overpass API in an area.
+	 * @param {Object} tags The list of tags to search on
+	 * @param {Object} geom The GeoJSON geometry object to look around
+	 * @param {int} radius The search radius (in meters)
+	 * @return {Promise} Resolves on GeoJSON entries found
+	 */
+	static FindSimilarInOverpass(tags, geom, radius) {
+		if(geom.type !== "Point") {
+			return { type: "FeatureCollection", features: [] };
+		}
+		
+		let request = "[out:json][timeout:10];(";
+		
+		const around = "(around:"+radius+","+geom.coordinates[1]+","+geom.coordinates[0]+")";
+		const tagFilter = Object.entries(tags).map(e => "[\""+e[0]+"\"=\""+e[1]+"\"]").join("");
+		
+		const types = [ "node", "way" ];
+		request += types.map(type => type+tagFilter+around+";").join(" ");
+		
+		request += "); out body; >; out skel qt;";
+		
+		return API.QueryOverpass(request);
+	}
+	
+	/**
 	 * Creates a new mission
 	 * @param {Mission} mission The mission to create on server
 	 * @param {string} source The data source (osmose)
@@ -746,6 +771,72 @@ class API {
 					reject(e);
 				}
 			}
+		});
+	}
+	
+	/**
+	 * Create a new OSM feature
+	 * @param {Object} geometry The geometry to use (geometry property of a GeoJSON feature)
+	 * @param {Object} tags The list of tags to use on the object
+	 * @param {string} comment Comment for changeset
+	 * @param {int} [changesetId] ID of changeset to reuse
+	 * @return {Promise} Resolves when feature was correctly created (gives an object like { changesetId: int })
+	 */
+	static CreateOSMFeature(geometry, tags, comment, changesetId) {
+		return new Promise((resolve, reject) => {
+			//Check user auth token
+			const wantUser = PubSub.subscribe("USER.INFO.READY", async (msg, user) => {
+				PubSub.unsubscribe(wantUser);
+				
+				if(user) {
+					const osm = new OsmRequest({ endpoint: CONST.OSM_API_URL });
+					osm._auth = user.auth;
+					
+					try {
+						// Only works for node as now
+						if(geometry.type !== "Point") {
+							throw new Error("Can only create node features on OSM");
+						}
+						
+						//Check tags
+						const tagsToRemove = [ "error_id", "title" ];
+						tagsToRemove.forEach(k => delete tags[k]);
+						
+						//Create new node
+						let element = osm.createNodeElement(geometry.coordinates[1], geometry.coordinates[0], tags);
+						
+						//Do we have a valid changeset ID ?
+						let changesetOpen = changesetId && !isNaN(parseInt(changesetId));
+						
+						//Check against OSM API if it's still open
+						if(changesetOpen) {
+							try {
+								await osm.isChangesetStillOpen(changesetId);
+							}
+							catch(e) {
+								changesetOpen = false;
+							}
+						}
+						
+						//Create a new changeset if needed
+						if(!changesetOpen) {
+							changesetId = await osm.createChangeset('Pic4Review '+PACKAGE.version, comment);
+						}
+						
+						//Send element
+						await osm.sendElement(element, changesetId);
+						resolve({ changesetId: changesetId });
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+				else {
+					reject(new Error("Can't verify user credentials"));
+				}
+			});
+			
+			PubSub.publish("USER.INFO.WANTS");
 		});
 	}
 	

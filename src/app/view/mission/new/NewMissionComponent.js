@@ -263,31 +263,24 @@ class NewMissionComponent extends Component {
 			&& state.editors.editor === "importer"
 			&& state.editors.data && state.editors.data.importer
 		) {
-			//Osmose case
-			if(state.datasource.source === "osmose") {
-				return true;
-			}
-			//Other data case
-			else {
+			if(
+				state.editors.data.importer.mainTags
+				&& typeof state.editors.data.importer.mainTags === "object"
+				&& Object.keys(state.editors.data.importer.mainTags).length > 0
+			) {
 				if(
-					state.editors.data.importer.mainTags
-					&& typeof state.editors.data.importer.mainTags === "object"
-					&& Object.keys(state.editors.data.importer.mainTags).length > 0
+					state.editors.data.importer.conflation
+					&& typeof state.editors.data.importer.conflation === "number"
+					&& state.editors.data.importer.conflation > 0
 				) {
-					if(
-						state.editors.data.importer.conflation
-						&& typeof state.editors.data.importer.conflation === "number"
-						&& state.editors.data.importer.conflation > 0
-					) {
-						return true;
-					}
-					else {
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("The conflation distance should be in meters, and have a value greater than zero") });
-					}
+					return true;
 				}
 				else {
-					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You should list one or several main OpenStreetMap tags, so we can check for duplicates") });
+					PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("The conflation distance should be in meters, and have a value greater than zero") });
 				}
+			}
+			else {
+				PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You should list one or several main OpenStreetMap tags, so we can check for duplicates") });
 			}
 		}
 		else if(state.editors && state.editors.editor === "disabled") {

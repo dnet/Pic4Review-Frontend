@@ -56,7 +56,8 @@ class MissionReviewComponent extends Component {
 			mapBaseLayer: null,
 			markedPictureId: -1,
 			featureCanMove: false,
-			newFeatureGeometry: null
+			newFeatureGeometry: null,
+			similar: null
 		};
 		
 		this.psTokens = {};
@@ -85,7 +86,8 @@ class MissionReviewComponent extends Component {
 			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0,
 			showFeatureDetails: false,
 			featureCanMove: false,
-			newFeatureGeometry: null
+			newFeatureGeometry: null,
+			similar: null
 		});
 		
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
@@ -112,54 +114,82 @@ class MissionReviewComponent extends Component {
 						}
 					});
 					
-					//Change state
-					this.setState({
-						feature: f,
-						pictures: f.pictures,
-						currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
-						shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
-						noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
-					});
-					
-					if(this.refs.container) {
-						this.refs.container.scrollIntoView(false);
-					}
-					
-					//Check if we allow feature geometry editing (must have integrated editor + be a node)
-					if(
-						this.props.mission.options && this.props.mission.options.data
-						&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
-						&& this.props.mission.options.data.options.editors.type !== "disabled"
-					) {
-						// If editing OSM data
-						if(this.props.mission.options.data.options.editors.type !== "importer" && f.properties.id) {
-							API.CanOSMFeatureMove(f.properties.id)
-							.then(canMove => {
-								if(this.state.feature.properties.id === f.properties.id && canMove) {
+					// Function when everything is ready for display
+					const showFeature = () => {
+						//Change state
+						this.setState({
+							feature: f,
+							pictures: f.pictures,
+							currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
+							shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
+							noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
+						});
+						
+						if(this.refs.container) {
+							this.refs.container.scrollIntoView(false);
+						}
+						
+						//Check if we allow feature geometry editing (must have integrated editor + be a node)
+						if(
+							this.props.mission.options && this.props.mission.options.data
+							&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
+							&& this.props.mission.options.data.options.editors.type !== "disabled"
+						) {
+							// If editing OSM data
+							if(this.props.mission.options.data.options.editors.type !== "importer" && f.properties.id) {
+								API.CanOSMFeatureMove(f.properties.id)
+								.then(canMove => {
+									if(this.state.feature.properties.id === f.properties.id && canMove) {
+										this.setState({ featureCanMove: true });
+									}
+								})
+								.catch(e => console.error);
+							}
+							// If editing external data
+							else if(this.props.mission.options.data.options.editors.type === "importer") {
+								if(this.state.feature.geometry.type === "Point") {
 									this.setState({ featureCanMove: true });
 								}
-							})
-							.catch(e => console.error);
-						}
-						// If editing external data
-						else if(this.props.mission.options.data.options.editors.type === "importer") {
-							if(this.state.feature.geometry.type === "Point") {
-								this.setState({ featureCanMove: true });
 							}
 						}
+						
+						PubSub.publish("UI.MESSAGE.WAITDONE");
+						
+						if(!f.pictures || f.pictures.length === 0) {
+							PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
+						}
+						
+						//Load user statistics for this mission
+						API.GetMissionUserStatistics(this.props.mission.id, this.props.user.id)
+						.then(s => {
+							this.setState({ stats: s });
+						});
+					};
+					
+					if(
+						this.props.mission.options
+						&& this.props.mission.options.data
+						&& this.props.mission.options.data.options
+						&& this.props.mission.options.data.options.editors
+						&& this.props.mission.options.data.options.editors.type === "importer"
+					) {
+						API.FindSimilarInOverpass(
+							this.props.mission.options.data.options.editors.mainTags,
+							f.geometry,
+							this.props.mission.options.data.options.editors.conflation
+						)
+						.then(similarFeatures => {
+							this.setState({ similar: similarFeatures });
+							showFeature();
+						})
+						.catch(e => {
+							console.error(e);
+							showFeature();
+						});
 					}
-					
-					PubSub.publish("UI.MESSAGE.WAITDONE");
-					
-					if(!f.pictures || f.pictures.length === 0) {
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
+					else {
+						showFeature();
 					}
-					
-					//Load user statistics for this mission
-					API.GetMissionUserStatistics(this.props.mission.id, this.props.user.id)
-					.then(s => {
-						this.setState({ stats: s });
-					});
 				}
 				else {
 					this._next(wasSkipped);
@@ -200,7 +230,8 @@ class MissionReviewComponent extends Component {
 				markedPictureId: -1,
 				showFeatureDetails: false,
 				featureCanMove: false,
-				newFeatureGeometry: null
+				newFeatureGeometry: null,
+				similar: null
 			});
 		}
 		else {
@@ -318,10 +349,10 @@ class MissionReviewComponent extends Component {
 				&& this.props.mission.options && this.props.mission.options.data
 				&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
 				&& this.props.mission.options.data.options.editors.type !== "disabled"
-				&& this.state.feature && this.state.feature.properties && this.state.feature.properties.id
+				&& this.state.feature && this.state.feature.properties
 			) {
 				// Editing existing OSM feature
-				if(this.props.mission.options.data.options.editors.type !== "importer") {
+				if(this.props.mission.options.data.options.editors.type !== "importer" && this.state.feature.properties.id) {
 					//Update feature
 					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating feature in OpenStreetMap") });
 					
@@ -342,8 +373,28 @@ class MissionReviewComponent extends Component {
 					});
 				}
 				// Importing new feature in OSM
+				else if(this.props.mission.options.data.options.editors.type === "importer") {
+					//Create feature
+					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Creating feature in OpenStreetMap") });
+					
+					API.CreateOSMFeature(
+						this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : this.state.feature.geometry,
+						this.state.feature.properties,
+						this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
+						this._getChangesetId()
+					)
+					.then(res => {
+						updateDB(res);
+					})
+					.catch(e => {
+						PubSub.publish("UI.MESSAGE.WAITDONE");
+						console.error(e);
+						PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry"), details: e.message });
+					});
+				}
+				// Only skip feature if something missing
 				else {
-					//TODO
+					updateDB();
 				}
 			}
 			else {
@@ -491,6 +542,7 @@ class MissionReviewComponent extends Component {
 			const map = <Map
 							ref="map"
 							feature={this.state.feature}
+							similarFeatures={this.state.similar}
 							pictures={this.state.pictures ? this.state.pictures.slice(0, this.state.shownPics) : []}
 							currentPictureId={this.state.currentPictureId}
 							onPicClicked={id => this.setState({ currentPictureId: id })}
@@ -502,7 +554,7 @@ class MissionReviewComponent extends Component {
 							baseLayer={this.state.mapBaseLayer}
 							onBaseLayerChange={l => this.setState({ mapBaseLayer: l })}
 							featureMove={this.state.featureCanMove}
-							onFeatureMove={g => {console.log(g); this.setState({ newFeatureGeometry: g })}}
+							onFeatureMove={g => { this.setState({ newFeatureGeometry: g })}}
 						/>;
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;

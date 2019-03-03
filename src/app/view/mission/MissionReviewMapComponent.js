@@ -100,6 +100,17 @@ class MissionReviewMapComponent extends Component {
 				/>
 			}
 			
+			{this.props.similarFeatures &&
+				<GeoJSON
+					ref="data-similar"
+					data={this.props.similarFeatures}
+					color="orange"
+					fillColor="orange"
+					fillOpacity={0.7}
+					pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: 3, color: "orange", fillColor: "orange", fillOpacity: 0.7 }); }}
+				/>
+			}
+			
 			{this.markers}
 			
 			{this.props.featureMove ?

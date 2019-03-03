@@ -50,12 +50,17 @@ class MissionReviewQuestionComponent extends Component {
 		});
 	}
 	
+	_onImportValidated() {
+		this.props.onAnswerChange({
+			validated: true
+		});
+	}
+	
 	render() {
 		const instructions = <div className="limited-images" style={{overflow: "auto", textAlign: "justify", maxHeight: INSTR_HEIGHT[this.props.width], marginBottom: 10}}>
 			<Markdown className={this.props.classes.root} source={this.props.instructions} />
 		</div>;
 		
-		console.log(this.props.data);
 		if(this.props.data && this.props.data.type && this.props.data.type !== "disabled") {
 			let content = null;
 			let question = this.props.data.question;
@@ -155,9 +160,8 @@ class MissionReviewQuestionComponent extends Component {
 				</div>;
 			}
 			else if(this.props.data.type === "importer") {
-				//TODO
 				question = I18n.t("Can you see the feature on pictures ?");
-				content = <Button variant="raised" color="primary" onClick={this._onUsertextValidated.bind(this)} style={{width:"100%", height:"100%" }}>
+				content = <Button variant="raised" color="primary" onClick={this._onImportValidated.bind(this)} style={{width:"100%", height:"100%" }}>
 					<Check /> {I18n.t("Yes, I see the feature")}
 				</Button>;
 			}
