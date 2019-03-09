@@ -100,17 +100,6 @@ class MissionReviewMapComponent extends Component {
 				/>
 			}
 			
-			{this.props.similarFeatures &&
-				<GeoJSON
-					ref="data-similar"
-					data={this.props.similarFeatures}
-					color="orange"
-					fillColor="orange"
-					fillOpacity={0.7}
-					pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: 3, color: "orange", fillColor: "orange", fillOpacity: 0.7 }); }}
-				/>
-			}
-			
 			{this.markers}
 			
 			{this.props.featureMove ?
@@ -141,6 +130,33 @@ class MissionReviewMapComponent extends Component {
 					</Button>
 				)
 				: null
+			}
+			
+			{this.props.similarFeatures &&
+				<GeoJSON
+					ref="data-similar"
+					data={this.props.similarFeatures}
+					color="orange"
+					fillColor="orange"
+					fillOpacity={0.7}
+					pointToLayer={(geojsonPoint, latlng) => {
+						return Leaflet.circleMarker(latlng, { radius: 6, color: "orange", fillColor: "orange", fillOpacity: 0.7 });
+					}}
+					onEachFeature={(feature, layer) => {
+						const content = document.createElement("div");
+						content.innerHTML = Object.entries(feature.properties).map(e => e[0]+" = "+e[1]).join("<br />");
+						
+						if(this.props.similarFeatures.features.length > 1) {
+							const btn = document.createElement("button");
+							btn.innerHTML = I18n.t("Merge with this feature");
+							btn.className = "p4r-smallbtn";
+							btn.onClick = () => PubSub.publish("UI.MAP.SIMILARCLICKED", { feature: feature });
+							content.appendChild(btn);
+						}
+						
+						layer.bindPopup(content);
+					}}
+				/>
 			}
 		</Map>;
 	}
@@ -202,5 +218,14 @@ class MissionReviewMapComponent extends Component {
 		this.refs.map.leafletElement.off("baselayerchange");
 	}
 }
+
+/**
+ * Event when user choose a similar feature on map
+ * @event UI.MAP.SIMILARCLICKED
+ * @type {Object} Event data
+ * @property {Object} feature The clicked feature as GeoJSON
+ * @memberof Events
+ */
+
 
 export default MissionReviewMapComponent;

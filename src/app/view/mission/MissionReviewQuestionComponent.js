@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import withWidth from 'material-ui/utils/withWidth';
-import { Check, Pencil, RadioboxBlank, RadioboxMarked } from 'mdi-material-ui';
+import { Check, Pencil, RadioboxBlank, RadioboxMarked, MapMarkerMultiple } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { FormControlLabel } from 'material-ui/Form';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
@@ -54,6 +54,22 @@ class MissionReviewQuestionComponent extends Component {
 		this.props.onAnswerChange({
 			validated: true
 		});
+	}
+	
+	_handleMerge(feature) {
+		if(feature) {
+			this.props.onAnswerChange({
+				mergeWith: feature
+			});
+		}
+		else if(this.props.similarFeatures && this.props.similarFeatures.features && this.props.similarFeatures.features.length === 1) {
+			this.props.onAnswerChange({
+				mergeWith: this.props.similarFeatures.features[0]
+			});
+		}
+		else {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Choose the feature you want to merge with by clicking on it using the map"), smiley: "🔍", duration: 5000 });
+		}
 	}
 	
 	render() {
@@ -161,9 +177,25 @@ class MissionReviewQuestionComponent extends Component {
 			}
 			else if(this.props.data.type === "importer") {
 				question = I18n.t("Can you see the feature on pictures ?");
-				content = <Button variant="raised" color="primary" onClick={this._onImportValidated.bind(this)} style={{width:"100%", height:"100%" }}>
-					<Check /> {I18n.t("Yes, I see the feature")}
-				</Button>;
+				content = <div>
+					{this.props.similarFeatures &&
+						<Typography variant="subheading" style={{marginBottom: 20}}>{I18n.t("There are similar features already existing around in OpenStreetMap (shown in orange on map).")}</Typography>
+					}
+					
+					<Tooltip title={I18n.t("Click here if you can see the concerned feature on pictures")} style={{width:"100%"}}>
+						<Button variant="raised" color="primary" onClick={this._onImportValidated.bind(this)} style={{ width:"100%", height:"100%" }}>
+							<Check /> {I18n.t("I can see the feature")}
+						</Button>
+					</Tooltip>
+					
+					{this.props.similarFeatures &&
+						<Tooltip title={I18n.t("Click here if you can see the concerned feature on pictures, but also as an already existing feature in OSM shown as in orange on map")} style={{width:"100%", marginTop: 10}}>
+							<Button variant="raised" color="secondary" onClick={() => this._handleMerge()} style={{ width:"100%", height:"100%" }}>
+								<MapMarkerMultiple /> {I18n.t("I see it but it already exists in OSM")}
+							</Button>
+						</Tooltip>
+					}
+				</div>;
 			}
 			
 			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
@@ -189,6 +221,16 @@ class MissionReviewQuestionComponent extends Component {
 				</Button>
 			</div>;
 		}
+	}
+	
+	componentDidMount() {
+		PubSub.subscribe("UI.MAP.SIMILARCLICKED", (msg, data) => {
+			this._handleMerge(data.feature);
+		});
+	}
+	
+	componentWillUnmount() {
+		PubSub.unsubscribe("UI.MAP.SIMILARCLICKED");
 	}
 }
 

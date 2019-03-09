@@ -179,7 +179,10 @@ class MissionReviewComponent extends Component {
 							this.props.mission.options.data.options.editors.conflation
 						)
 						.then(similarFeatures => {
-							this.setState({ similar: similarFeatures });
+							if(similarFeatures && similarFeatures.features && similarFeatures.features.length > 0) {
+								this.setState({ similar: similarFeatures });
+							}
+							
 							showFeature();
 						})
 						.catch(e => {
@@ -373,7 +376,7 @@ class MissionReviewComponent extends Component {
 					});
 				}
 				// Importing new feature in OSM
-				else if(this.props.mission.options.data.options.editors.type === "importer") {
+				else if(this.props.mission.options.data.options.editors.type === "importer" && this.state.currentAnswer.validated) {
 					//Create feature
 					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Creating feature in OpenStreetMap") });
 					
@@ -382,6 +385,33 @@ class MissionReviewComponent extends Component {
 						this.state.feature.properties,
 						this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
 						this._getChangesetId()
+					)
+					.then(res => {
+						updateDB(res);
+					})
+					.catch(e => {
+						PubSub.publish("UI.MESSAGE.WAITDONE");
+						console.error(e);
+						PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry"), details: e.message });
+					});
+				}
+				else if(
+					this.props.mission.options.data.options.editors.type === "importer"
+					&& this.state.currentAnswer.mergeWith
+					&& this.state.currentAnswer.mergeWith.properties
+					&& this.state.currentAnswer.mergeWith.properties.id
+				) {
+					//Update feature
+					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating feature in OpenStreetMap") });
+					
+					const merged = this.state.currentAnswer.mergeWith;
+					
+					API.UpdateOSMFeature(
+						merged.properties.id,
+						this._getTagsToApplyForImporter(merged),
+						this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
+						this._getChangesetId(),
+						this.state.newFeatureGeometry && merged.geometry.type === "Point" ? this.state.newFeatureGeometry.geometry : null
 					)
 					.then(res => {
 						updateDB(res);
@@ -428,11 +458,27 @@ class MissionReviewComponent extends Component {
 	}
 	
 	/**
+	 * Get the tags to apply on the feature according to feature to merge with + current picture
+	 * @private
+	 */
+	_getTagsToApplyForImporter(merged) {
+		let tags = Object.assign({}, this.state.feature.properties);
+		
+		//Delete Osmose properties
+		delete tags.error_id;
+		delete tags.title;
+		
+		return this._getTagsToApply(merged.properties, tags);
+	}
+	
+	/**
 	 * Get the tags to apply on the feature according to selected answer + current picture
 	 * @private
 	 */
-	_getTagsToApply() {
-		let tags = Object.assign({}, this.state.currentAnswer.tags);
+	_getTagsToApply(baseTags, newTags) {
+		baseTags = baseTags || this.state.feature.properties;
+		newTags = newTags || this.state.currentAnswer.tags;
+		let tags = Object.assign({}, newTags);
 		
 		/*
 		 * Add tags related to picture
@@ -471,7 +517,7 @@ class MissionReviewComponent extends Component {
 				//If not forcing pic change, only set data if no image is defined
 				if(!changePic) {
 					Object.entries(pic.osmTags).forEach(e => {
-						if(!this.state.feature.properties[e[0]]) {
+						if(!baseTags[e[0]]) {
 							tags[e[0]] = e[1];
 						}
 					});
@@ -484,9 +530,9 @@ class MissionReviewComponent extends Component {
 				const surveyDateObj = new Date(pic.date);
 				const surveyDate = surveyDateObj.toISOString().split("T")[0];
 				
-				if(this.state.feature.properties["survey:date"]) {
+				if(baseTags["survey:date"]) {
 					try {
-						const existingDate = new Date(this.state.feature.properties["survey:date"]);
+						const existingDate = new Date(baseTags["survey:date"]);
 						
 						if(existingDate < surveyDateObj) {
 							tags["survey:date"] = surveyDate;
@@ -566,6 +612,7 @@ class MissionReviewComponent extends Component {
 							data={this._hasEditor() && this.props.mission.options.data.options.editors}
 							featureProps={this.state.feature.properties}
 							instructions={this.props.mission.description.full}
+							similarFeatures={this.state.similar}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
 							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
 						/>
