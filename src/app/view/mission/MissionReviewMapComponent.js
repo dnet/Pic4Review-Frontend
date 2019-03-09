@@ -150,7 +150,7 @@ class MissionReviewMapComponent extends Component {
 							const btn = document.createElement("button");
 							btn.innerHTML = I18n.t("Merge with this feature");
 							btn.className = "p4r-smallbtn";
-							btn.onClick = () => PubSub.publish("UI.MAP.SIMILARCLICKED", { feature: feature });
+							btn.onclick = () => PubSub.publish("UI.MAP.SIMILARCLICKED", { feature: feature });
 							content.appendChild(btn);
 						}
 						

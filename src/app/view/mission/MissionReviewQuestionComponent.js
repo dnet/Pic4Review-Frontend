@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import withWidth from 'material-ui/utils/withWidth';
-import { Check, Pencil, RadioboxBlank, RadioboxMarked, MapMarkerMultiple } from 'mdi-material-ui';
+import { Check, Pencil, RadioboxBlank, RadioboxMarked, MapMarkerMultiple, MapMarkerPlus } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { FormControlLabel } from 'material-ui/Form';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import HorizontalScrollGridList from '../HorizontalScrollGridList';
 import IconButton from 'material-ui/IconButton';
 import Markdown from 'react-markdown';
+import Paper from 'material-ui/Paper';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import { SwatchesPicker } from 'react-color';
+import Tags from './MissionReviewTagsComponent';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
@@ -177,14 +179,24 @@ class MissionReviewQuestionComponent extends Component {
 			}
 			else if(this.props.data.type === "importer") {
 				question = I18n.t("Can you see the feature on pictures ?");
+				
+				const tags = Object.assign({}, this.props.feature.properties);
+				delete tags.error_id;
+				delete tags.title;
+				
 				content = <div>
+					<Paper style={{maxHeight: 150, overflowY: "auto", marginBottom: 20}}>
+						<Tags feature={{properties: tags}} />
+					</Paper>
+					
 					{this.props.similarFeatures &&
 						<Typography variant="subheading" style={{marginBottom: 20}}>{I18n.t("There are similar features already existing around in OpenStreetMap (shown in orange on map).")}</Typography>
 					}
 					
 					<Tooltip title={I18n.t("Click here if you can see the concerned feature on pictures")} style={{width:"100%"}}>
 						<Button variant="raised" color="primary" onClick={this._onImportValidated.bind(this)} style={{ width:"100%", height:"100%" }}>
-							<Check /> {I18n.t("I can see the feature")}
+							{this.props.similarFeatures ? <MapMarkerPlus /> : <Check />}
+							{this.props.similarFeatures ? I18n.t("I see it and it's not in OSM") : I18n.t("I can see the feature")}
 						</Button>
 					</Tooltip>
 					
@@ -212,8 +224,8 @@ class MissionReviewQuestionComponent extends Component {
 				
 				{instructions}
 				
-				{(this.props.featureProps.title || this.props.featureProps.details) &&
-					<Typography>{I18n.t("Details")} : {this.props.featureProps.details ? this.props.featureProps.details : this.props.featureProps.title}</Typography>
+				{(this.props.feature.properties.title || this.props.feature.properties.details) &&
+					<Typography>{I18n.t("Details")} : {this.props.feature.properties.details ? this.props.feature.properties.details : this.props.feature.properties.title}</Typography>
 				}
 				
 				<Button variant="raised" onClick={this.props.onOpenEditor} style={{ margin: 20, minWidth: 150 }}>

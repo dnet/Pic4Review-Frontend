@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 ### Added
+- New mission type : importing new feature from open data into OpenStreetMap (using Osmose only for now) !
 - Author of a mission can be contacted (link provided in mission description page)
 - Integrated editors can be partially disabled according to the used datasource
 

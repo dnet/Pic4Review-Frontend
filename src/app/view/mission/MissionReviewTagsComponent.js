@@ -15,7 +15,7 @@ class MissionReviewTagsComponent extends Component {
 		
 		const tags = Object.keys(this.props.feature.properties)
 			.map((k, i) => {
-				return <TableRow key={i}>
+				return <TableRow key={i} style={{height: 30}}>
 					<TableCell>{k}</TableCell>
 					<TableCell>{this.props.feature.properties[k]}</TableCell>
 				</TableRow>;
@@ -23,7 +23,7 @@ class MissionReviewTagsComponent extends Component {
 		
 		return <Paper style={{overflowX: "auto"}}><Table style={style}>
 			<TableHead>
-				<TableRow>
+				<TableRow style={{height: 30}}>
 					<TableCell>{I18n.t("Key")}</TableCell>
 					<TableCell>{I18n.t("Value")}</TableCell>
 				</TableRow>

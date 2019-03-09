@@ -20,7 +20,7 @@ import Statistics from './MissionReviewStatisticsComponent';
 import Tooltip from 'material-ui/Tooltip';
 
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
-const MAP_HEIGHT = { "xs": 180, "sm": 200, "md": 200, "lg": 250, "xl": 250 };
+const MAP_HEIGHT = { "xs": 180, "sm": 300, "md": 300, "lg": 250, "xl": 250 };
 const NOT_FIRST_REVIEW = "no1st";
 const EDITS_COUNT = "edits_count";
 const PICS_PER_PAGE = 10;
@@ -610,7 +610,7 @@ class MissionReviewComponent extends Component {
 					<Grid item xs={12} sm={6} lg={5} xl={4}>
 						<Question
 							data={this._hasEditor() && this.props.mission.options.data.options.editors}
-							featureProps={this.state.feature.properties}
+							feature={this.state.feature}
 							instructions={this.props.mission.description.full}
 							similarFeatures={this.state.similar}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
