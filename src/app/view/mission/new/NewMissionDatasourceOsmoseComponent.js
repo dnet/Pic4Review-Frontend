@@ -43,6 +43,25 @@ const ERROR_TO_EDITORS = {
 	"8__0": [ "importer", "disabled" ]
 };
 
+const ERROR_TO_IMPORTER = {
+	"8020": { mainTags: { amenity: "post_office" }, conflation: 150 },
+	"8040": { mainTags: { highway: "bus_stop" }, conflation: 50 },
+	"8050": { mainTags: { railway: "station" }, conflation: 200 },
+	"8060": { mainTags: { railway: "level_crossing" }, conflation: 150 },
+	"8080": { mainTags: { "addr:housenumber": "*" }, conflation: 20 },
+	"8120": { mainTags: { amenity: "recycling", "recycling_type": "container" }, conflation: 20 },
+	"8130": { mainTags: { amenity: "parking" }, conflation: 50 },
+	"8150": { mainTags: { amenity: "bicycle_parking" }, conflation: 20 },
+	"8180": { mainTags: { amenity: "toilets" }, conflation: 50 },
+	"8190": { mainTags: { amenity: "police" }, conflation: 100 },
+	"8210": { mainTags: { amenity: "pharmacy", dispensing: "yes" }, conflation: 50 },
+	"8230": { mainTags: { amenity: "library" }, conflation: 50 },
+	"8240": { mainTags: { amenity: "restaurant" }, conflation: 30 },
+	"8250": { mainTags: { craft: "winery" }, conflation: 100 },
+	"8280": { mainTags: { power: "substation" }, conflation: 50 },
+	"8290": { mainTags: { power: "tower" }, conflation: 20 }
+};
+
 /**
  * New mission datasource osmose component allows user to input settings for Osmose datasource
  */
@@ -78,7 +97,7 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 	_changed(what, value) {
 		if(what === "item" && value !== this.state.selectedItem) {
 			if(value === "") { value = null; }
-			this.props.onChange({ item: value, allowedEditors: this._getEditorsForError({ id: value }) || this.state.allowedEditors });
+			this.props.onChange({ item: value, allowedEditors: this._getEditorsForError({ id: value }) || this.state.allowedEditors, importer: ERROR_TO_IMPORTER[value] });
 			this.setState({ selectedItem: value });
 		}
 	}

@@ -266,8 +266,8 @@ class NewMissionEditorsComponent extends Component {
 			const fallbacks = [ "singlechoice", "usertext", "importer", "disabled" ];
 			for(const e of fallbacks) {
 				if(this.props.showOnly === "all" || this.props.showOnly.includes(e)) {
-					this.setState(Object.assign({}, newState, { editor: e }));
-					const newState = Object.assign({}, this.state, { editor: e });
+					newState.editor = e;
+					this.setState(newState);
 					this.props.onChange(newState);
 					break;
 				}
