@@ -161,6 +161,14 @@ class MissionReviewMapComponent extends Component {
 		</Map>;
 	}
 	
+	/**
+	 * Is the geometry of the feature being currently edited ?
+	 * @return {boolean} True if user is editing
+	 */
+	isEditingGeometry() {
+		return this.state.editingGeom;
+	}
+	
 	_fitBounds() {
 		if(this.refs.map && this.refs.data) {
 			this.refs.map.leafletElement.setView(this.refs.data.leafletElement.getBounds().getCenter(), this.props.zoom || DEFAULT_ZOOM);

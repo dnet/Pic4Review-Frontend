@@ -311,6 +311,11 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_review(status, externalEditConfirmed) {
+		if(status !== "skipped" && this.refs.map.isEditingGeometry()) {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You started editing this feature geometry, please valid or cancel your edits using map buttons before answering the question."), duration: 5000 });
+			return false;
+		}
+		
 		externalEditConfirmed = externalEditConfirmed || (!this.state.currentAnswer && this.state.hideConfirmEdit);
 		
 		//Update feature in DB
