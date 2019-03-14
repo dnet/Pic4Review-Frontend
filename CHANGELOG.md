@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Allow in integrated editor configuration to apply some tags only on a specific geometry type with `~node:tag=value` syntax
 - If feature geometry is being edited, we show an alert to prevent answer application on old geometry
 
+### Fixed
+- Proper validation of settings for mission datasource, in the past empty strings could pass in some cases
+
 
 ## 0.5.5 - 2019-03-01
 

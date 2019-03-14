@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ChevronDown } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
+import DataDetections from './NewMissionDatasourceDetectionsComponent';
 import DataOsmose from './NewMissionDatasourceOsmoseComponent';
 import DataOverpass from './NewMissionDatasourceOverpassComponent';
 import Grid from 'material-ui/Grid';
@@ -77,6 +78,11 @@ class NewMissionDatasourceComponent extends Component {
 				id: "overpass",
 				name: I18n.t("Overpass"),
 				content: <DataOverpass data={this.state.options_overpass} onChange={d => this._changeOptions(d)} />
+			},
+			{
+				id: "detections",
+				name: I18n.t("Automatic detections from pictures"),
+				content: <DataDetections data={this.state.options_detections} onChange={d => this._changeOptions(d)} />
 			}
 		];
 		

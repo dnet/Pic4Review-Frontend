@@ -96,9 +96,14 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 	 */
 	_changed(what, value) {
 		if(what === "item" && value !== this.state.selectedItem) {
-			if(value === "") { value = null; }
-			this.props.onChange({ item: value, allowedEditors: this._getEditorsForError({ id: value }) || this.state.allowedEditors, importer: ERROR_TO_IMPORTER[value] });
-			this.setState({ selectedItem: value });
+			if(value === "") {
+				this.props.onChange(null);
+				this.setState({ selectedItem: null });
+			}
+			else {
+				this.props.onChange({ item: value, allowedEditors: this._getEditorsForError({ id: value }) || this.state.allowedEditors, importer: ERROR_TO_IMPORTER[value] });
+				this.setState({ selectedItem: value });
+			}
 		}
 	}
 	
