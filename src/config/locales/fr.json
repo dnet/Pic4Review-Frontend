@@ -129,6 +129,7 @@
     "loading_more_pictures_around_f2923924": "Chargement de photos supplémentaires",
     "oops_can_t_get_more_pictures_for_now_e690f85a": "Oups, impossible de récupérer plus de photos pour le moment.",
     "we_don_t_have_more_pictures_available_around_this__dd4f6334": "Nous n'avons pas davantage de photos disponibles autour de cet objet",
+    "you_started_editing_this_feature_geometry_please_v_d959ef": "Vous avez commencé à modifier la géométrie de cet objet, merci de valider ou annuler la modification (en utilisant les boutons de la carte) avant de répondre à la question.",
     "updating_pic4review_mission_d3dd055e": "Mise à jour de la mission Pic4Review",
     "can_t_update_feature_please_retry_504fc983": "Je ne peux pas mettre à jour l'objet, merci de réessayer",
     "updating_feature_in_openstreetmap_786d3a21": "Mise à jour de l'objet sur OpenStreetMap",

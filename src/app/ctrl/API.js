@@ -799,7 +799,7 @@ class API {
 						}
 						
 						//Check tags
-						const tagsToRemove = [ "error_id", "title" ];
+						const tagsToRemove = [ "error_id", "title", "details" ];
 						tagsToRemove.forEach(k => delete tags[k]);
 						
 						//Create new node

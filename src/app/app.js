@@ -9,7 +9,7 @@ import I18n from 'i18nline/lib/i18n';
 import OsmAuth from 'osm-auth';
 import PubSub from 'pubsub-js';
 
-const LOCALES = [ "de", "en", "fr", "hu", "it", "ja", "pt-PT" ];
+const LOCALES = [ "de", "en", "fr", "hu", "it", "ja", "pl", "pt-PT" ];
 
 const readURLParams = str => {
 	const u = str.split('?');

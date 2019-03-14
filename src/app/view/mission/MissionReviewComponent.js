@@ -472,6 +472,7 @@ class MissionReviewComponent extends Component {
 		//Delete Osmose properties
 		delete tags.error_id;
 		delete tags.title;
+		delete tags.details;
 		
 		return this._getTagsToApply(merged.properties, tags);
 	}
