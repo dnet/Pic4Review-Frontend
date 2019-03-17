@@ -185,7 +185,7 @@ class MissionReviewMapComponent extends Component {
 	}
 	
 	_editGeomCancelled() {
-		this.props.onFeatureMove(this.props.feature);
+		this.props.onFeatureMove(null);
 		this.setState({ editingGeom: false, markerEditGeom: null })
 	}
 	

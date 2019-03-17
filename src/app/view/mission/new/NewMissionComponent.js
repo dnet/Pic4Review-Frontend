@@ -131,7 +131,7 @@ class NewMissionComponent extends Component {
 			newState.details = newDetails;
 		}
 		
-		if(d.source === "osmose" && d.options && d.options.importer) {
+		if(d.options && d.options.importer) {
 			newState.editors = Object.assign({}, this.state.editors);
 			if(!newState.editors.data) { newState.editors.data = {}; }
 			if(!newState.editors.data.importer) { newState.editors.data.importer = {}; }

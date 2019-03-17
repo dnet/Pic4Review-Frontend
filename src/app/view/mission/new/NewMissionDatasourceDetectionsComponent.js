@@ -45,10 +45,10 @@ class NewMissionDatasourceDetectionsComponent extends Component {
 				
 				let importer = null;
 				if(P4C.Detection.TYPE_DETAILS[value]) {
-					importer = { mainTags: P4C.Detection.TYPE_DETAILS[value].osmTags, conflation: 10 };
+					importer = { mainTags: P4C.Detection.TYPE_DETAILS[value].osmTags, conflation: 50 };
 				}
 				
-				this.props.onChange({ type: value, importer: importer });
+				this.props.onChange({ type: value, importer: importer, allowedEditors: this.state.allowedEditors });
 				this.setState({ selectedType: value });
 			}
 		}
