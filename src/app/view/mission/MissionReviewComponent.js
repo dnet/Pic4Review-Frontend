@@ -470,6 +470,7 @@ class MissionReviewComponent extends Component {
 		let tags = Object.assign({}, this.state.feature.properties);
 		
 		//Delete Osmose properties
+		delete tags.id;
 		delete tags.error_id;
 		delete tags.title;
 		delete tags.details;
