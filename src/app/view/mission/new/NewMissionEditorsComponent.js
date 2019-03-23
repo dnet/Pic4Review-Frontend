@@ -220,7 +220,7 @@ class NewMissionEditorsComponent extends Component {
 					</Typography>
 					
 					<TagInput
-						tags={this.state.data.importer.mainTags}
+						tags={this.state.data.importer && this.state.data.importer.mainTags}
 						onChange={newTags => this._changeProp("importer", "mainTags", newTags)}
 						onlyAddTags={true}
 						label={I18n.t("Main OSM tags")}
@@ -230,7 +230,7 @@ class NewMissionEditorsComponent extends Component {
 					<TextField
 						id="importer_conflation"
 						label={I18n.t("Conflation distance (in meters)")}
-						value={this.state.data.importer.conflation}
+						value={this.state.data.importer && this.state.data.importer.conflation}
 						onChange={ev => this._changeProp("importer", "conflation", parseInt(ev.target.value))}
 						helperText={I18n.t("Distance to look for similar objects (to merge this one with and avoid duplicates)")}
 						type="number"
