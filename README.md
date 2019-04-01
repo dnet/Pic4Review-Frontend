@@ -23,7 +23,7 @@ Pic4Review is already available online for use (see link on top of this document
 
 ## License
 
-Copyright 2017 Adrien PAVIE
+Copyright 2017-2019 Adrien PAVIE
 
 See [LICENSE](LICENSE.txt) for complete AGPL3 license.
 
