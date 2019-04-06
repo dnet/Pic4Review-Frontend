@@ -61,12 +61,20 @@ class MissionDescriptionComponent extends Component {
 		</Typography>;
 		
 		return <div style={this.props.style}>
+			{this.props.mission.options.illustration &&
+				<Hidden only="xs">
+					<img
+						src={this.props.mission.options.illustration}
+						style={{ float: "right", maxHeight: 150, maxWidth: 150, marginLeft: 10 }}
+					/>
+				</Hidden>
+			}
 			<MissionSummary mission={this.props.mission} />
 			<div className="limited-images">
 				<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />
 			</div>
 			
-			{this.props.synthetic == false && <div>
+			{this.props.synthetic === false && <div>
 				<Hidden only="xs">{missingPics}</Hidden>
 				<Grid container justify="center" alignItems="center" style={{marginBottom: 10}} spacing={16}>
 					<Grid item xs={12} sm={6} md={4} xl={3}>

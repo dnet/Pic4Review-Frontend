@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Added
+- Translations of automatic detections feature types in new mission page
+- New missions based on Osmose or automatic detections have a thumbnail associated in mission list
+- Thumbnail of mission is shown in mission description page
+
 
 ## 0.5.6 - 2019-04-01
 
