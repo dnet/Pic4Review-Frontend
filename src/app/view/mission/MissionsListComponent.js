@@ -32,7 +32,7 @@ class MissionsListComponent extends Component {
 						</div>
 						{showPic &&
 							<div style={{
-								background: "url("+m.options.illustration+")",
+								background: "url('"+m.options.illustration+"')",
 								backgroundSize: "cover",
 								height: 150,
 								minWidth: 150,
