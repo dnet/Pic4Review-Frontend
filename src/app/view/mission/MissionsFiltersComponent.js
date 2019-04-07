@@ -20,7 +20,8 @@ class MissionsFiltersComponent extends Component {
 			type: null,
 			status: null,
 			complete: null,
-			editor: null
+			editor: null,
+			sort: "pertinence"
 		};
 	}
 	
@@ -29,13 +30,29 @@ class MissionsFiltersComponent extends Component {
 	 * @private
 	 */
 	_toFilters(o) {
-		return { type: o.type || "", theme: o.theme || "", status: o.status || "", complete: o.complete || false, editor: o.editor || false };
+		return { type: o.type || "", theme: o.theme || "", status: o.status || "", complete: o.complete || false, editor: o.editor || false, sort: o.sort || "" };
 	}
 	
 	render() {
 		const styleControl = { width: "100%", marginBottom: 20 };
 		
 		return <div>
+			{this.props.sorting &&
+				<FormControl style={styleControl}>
+					<InputLabel htmlFor="missions-sort">{I18n.t("Sort by")}</InputLabel>
+					<Select
+						native
+						value={this.state.sort !== null ? this.state.sort : this.props.values.sort}
+						onChange={e => this.setState({ sort: e.target.value })}
+						input={<Input id="missions-sort" />}
+					>
+						{Object.entries(SORTS).map(e =>
+							<option key={e[0]} value={e[0]}>{e[1].name}</option>
+						)}
+					</Select>
+				</FormControl>
+			}
+			
 			<div style={styleControl}>
 				<Typography variant="body1">{I18n.t("Theme")}</Typography>
 				<IconGridSelect

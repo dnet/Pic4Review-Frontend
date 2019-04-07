@@ -178,6 +178,14 @@ class App {
 			true: { name: I18n.t("Integrated editor available"), icon: <RunFast /> },
 			false: { name: I18n.t("External editor required"), icon: <TimerSand /> }
 		};
+		
+		window.SORTS = {
+			"pertinence": { name: I18n.t("Pertinence") },
+			"newest": { name: I18n.t("New first") },
+			"oldest": { name: I18n.t("Old first") },
+			"least-complete": { name: I18n.t("Least complete first") },
+			"most-complete": { name: I18n.t("Most complete first") }
+		};
 	}
 	
 	/**

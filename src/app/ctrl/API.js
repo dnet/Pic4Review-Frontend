@@ -160,9 +160,10 @@ class API {
 	 * @param {boolean} [hasEditor] True if the mission has a simple editor (false by default)
 	 * @param {boolean} [showComplete] True if API should return completed missions
 	 * @param {string} [userid] If set, only retrieves missions concerning this user
+	 * @param {string} [sort] How results should be sorted
 	 * @return {Promise} A promise resolving on missions
 	 */
-	static GetMissions(page, type, theme, status, hasEditor, showComplete, userid) {
+	static GetMissions(page, type, theme, status, hasEditor, showComplete, userid, sort) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				page: page,
@@ -171,7 +172,8 @@ class API {
 				status: status || "online",
 				editor: hasEditor || false,
 				complete: showComplete || false,
-				user: userid || null
+				user: userid || null,
+				sort: sort || null
 			};
 			
 			request(CONST.P4R_URL + '/missions' + this.ParamsString(p), (err, res, body) => {
