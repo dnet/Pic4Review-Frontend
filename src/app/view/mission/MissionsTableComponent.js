@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { ContentDuplicate, Eye, EyeOff, Information, Pencil, Star, StarOutline } from 'mdi-material-ui';
+import { ContentDuplicate, Delete, Eye, EyeOff, Information, Pencil, Star, StarOutline } from 'mdi-material-ui';
+import Button from 'material-ui/Button';
+import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } from 'material-ui/Dialog';
 import { HorizontalBar } from 'react-chartjs-2';
 import IconButton from 'material-ui/IconButton';
 import { Link } from 'react-router-dom';
@@ -8,6 +10,14 @@ import Table, { TableBody, TableCell, TableFooter, TableHead, TablePagination, T
 import Tooltip from 'material-ui/Tooltip';
 
 class MissionsTableComponent extends Component {
+	constructor() {
+		super();
+		
+		this.state = {
+			confirmDelete: null
+		};
+	}
+	
 	render() {
 		const style = { margin: 0, padding: 0 };
 		const styleCentered = Object.assign({}, style, { textAlign: "center" });
@@ -100,11 +110,45 @@ class MissionsTableComponent extends Component {
 									</IconButton>
 								</Tooltip>
 							}
+							<Tooltip title={I18n.t("Permanently delete this mission")}>
+								<IconButton onClick={() => this.setState({ confirmDelete: m })}>
+									<Delete />
+								</IconButton>
+							</Tooltip>
 						</TableCell>
 					</TableRow>;
 				})}
 				</TableBody>
 			</Table>
+			
+			<Dialog
+				open={this.state.confirmDelete !== null}
+				onClose={() => this.setState({ confirmDelete: null })}
+			>
+				<DialogTitle>{I18n.t("Delete this mission ?")}</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						{I18n.t("Deleting a mission makes it unaccessible for everyone including you. This action cannot be reverted. If you just want to hide the mission to users, use instead the \"Hide\" button (eye symbol).")}
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button
+						onClick={() => this.setState({ confirmDelete: null })}
+						color="primary"
+					>
+						{I18n.t("Cancel")}
+					</Button>
+					<Button
+						onClick={() => {
+							this.props.onChangeMissionStatus(this.state.confirmDelete, "deleted");
+							this.setState({ confirmDelete: null });
+						}}
+						color="secondary"
+					>
+						{I18n.t("Delete the mission")}
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Paper>;
 	}
 }

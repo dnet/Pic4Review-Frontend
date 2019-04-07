@@ -2,7 +2,7 @@ import Hash from 'object-hash';
 import P4C from 'pic4carto';
 
 const TYPES = [ "improve", "fix", "integrate" ];
-const STATUSES = [ "online", "draft", "canceled" ];
+const STATUSES = [ "online", "draft", "canceled", "deleted" ];
 
 /**
  * A mission is a task on which user can work. It concerns a given set of {@link Feature}, over a given area.
@@ -17,7 +17,7 @@ const STATUSES = [ "online", "draft", "canceled" ];
  * @param {Object} description The mission details
  * @param {string} description.short The mission goal in a few words
  * @param {string} [description.full] The mission goal detailled (what to do, how...)
- * @param {string} [status] The mission status (online, draft, canceled), defaults to draft
+ * @param {string} [status] The mission status (online, draft, canceled, deleted), defaults to draft
  * @param {Feature[]} [features] The list of features (can be set later)
  * @param {Object} [options] Mission options
  * 
