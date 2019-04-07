@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Thumbnail of mission is shown in mission description page
 - Missions list can be sorted by pertinence, creation date and completeness
 
+### Changed
+- Home page now offers a better view of Pic4Review and some statistics
+
 
 ## 0.5.6 - 2019-04-01
 

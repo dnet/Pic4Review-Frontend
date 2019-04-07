@@ -38,7 +38,7 @@ class HeaderComponent extends Component {
 					</Link>
 					<div style={{display: "inline-block", verticalAlign: "middle"}}>
 						<Typography variant="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
-						<Typography variant="caption" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Beta release")}</Typography>
+						<Typography variant="caption" style={{marginBottom: 0}} gutterBottom color="inherit" title={I18n.t("Better maps created by people using street pictures")}>🗺️ + 📸 + 🤗 = 💕</Typography>
 					</div>
 				</div>
 				

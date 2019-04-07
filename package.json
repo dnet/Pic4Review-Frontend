@@ -64,7 +64,7 @@
     "osm-auth": "^1.0.2",
     "osm-request": "^1.1.4",
     "osmose-request": "^1.4.1",
-    "pic4carto": "^2.1.0",
+    "pic4carto": "^2.1.5",
     "pubsub-js": "^1.7.0",
     "query-overpass": "^1.5.3",
     "react": "^15.4.2",

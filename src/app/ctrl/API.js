@@ -644,6 +644,35 @@ class API {
 	}
 	
 	/**
+	 * Get statistics for the whole instance
+	 * @return {Promise} A promise resolving on statistics
+	 */
+	static GetInstanceStatistics(uid) {
+		return new Promise((resolve, reject) => {
+			request(CONST.P4R_URL + '/users/dataviz', (err, res, body) => {
+				if(err) {
+					reject(err);
+				}
+				else {
+					try {
+						const data = typeof body === "string" ? JSON.parse(body) : body;
+						
+						if(data.error) {
+							reject(new Error(data.details_for_humans || data.error));
+						}
+						else {
+							resolve(data);
+						}
+					}
+					catch(e) {
+						reject(e);
+					}
+				}
+			});
+		});
+	}
+	
+	/**
 	 * Update a mission
 	 * @param {Mission} mission The updated mission
 	 * @param {string} username The user name
