@@ -40,8 +40,8 @@ class MissionDescriptionComponent extends Component {
 	 * Function to refresh features shown on map.
 	 * @private
 	 */
-	_updateFeatures() {
-		API.GetMissionFeatures(this.props.mission.id)
+	_updateFeatures(props) {
+		API.GetMissionFeatures(props.mission.id, props.user ? props.user.id : null)
 		.then(features => {
 			this.setState({ features: features });
 		})
@@ -156,15 +156,15 @@ class MissionDescriptionComponent extends Component {
 		</div>;
 	}
 	
-	componentWillMount() {
+	componentDidMount() {
 		if(!this.props.synthetic) {
-			this._updateFeatures();
+			this._updateFeatures(this.props);
 		}
 	}
 	
 	componentWillUpdate(nextProps, nextState) {
 		if(!this.props.synthetic && this.props.mission.id !== nextProps.mission.id) {
-			this._updateFeatures();
+			this._updateFeatures(nextProps);
 		}
 	}
 }

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Home page now offers a better view of Pic4Review and some statistics
+- Map of features in mission description page shows the features you skipped in review
 
 
 ## 0.5.6 - 2019-04-01

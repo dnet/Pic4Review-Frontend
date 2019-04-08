@@ -397,11 +397,12 @@ class API {
 	/**
 	 * Get mission features
 	 * @param {int} mid The mission ID
+	 * @param {int} [uid] The user ID
 	 * @return {Promise} A promise resolving on features list
 	 */
-	static GetMissionFeatures(mid) {
+	static GetMissionFeatures(mid, uid) {
 		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/' + mid + '/features', (err, res, body) => {
+			request(CONST.P4R_URL + '/missions/' + mid + '/features' + (uid ? '?userid='+uid : ''), (err, res, body) => {
 				if(err) {
 					reject(err);
 				}

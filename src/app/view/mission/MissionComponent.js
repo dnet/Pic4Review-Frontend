@@ -18,7 +18,8 @@ class MissionComponent extends Component {
 		super();
 		
 		this.state = {
-			mission: null
+			mission: null,
+			user: null
 		};
 		
 		this.psTokens = {};
@@ -32,15 +33,15 @@ class MissionComponent extends Component {
 		if(this.state.mission) {
 			switch(tab) {
 				case 0:
-					content = <MissionDescription mission={this.state.mission} style={contentStyle} synthetic={false} />;
+					content = <MissionDescription mission={this.state.mission} style={contentStyle} synthetic={false} user={this.state.user || this.props.user} />;
 					break;
 				
 				case 1:
-					content = <MissionReview mission={this.state.mission} user={this.props.user} />;
+					content = <MissionReview mission={this.state.mission} user={this.state.user || this.props.user} />;
 					break;
 				
 				case 2:
-					content = <MissionStatistics mission={this.state.mission} style={contentStyle} user={this.props.user} />;
+					content = <MissionStatistics mission={this.state.mission} style={contentStyle} user={this.state.user || this.props.user} />;
 					break;
 			}
 		}
@@ -65,6 +66,7 @@ class MissionComponent extends Component {
 	
 	componentWillMount() {
 		this.psTokens.wantUser = PubSub.subscribe("USER.INFO.READY", (msg, data) => {
+			this.setState({ user: data });
 			API.GetMissionDetails(
 				this.props.match.params.mid,
 				data && data.id !== -1 ? data.id : undefined,
