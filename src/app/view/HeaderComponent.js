@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import withWidth from 'material-ui/utils/withWidth';
-import { ChartPie, LibraryPlus, ViewGrid } from 'mdi-material-ui';
+import { LibraryPlus, ViewGrid } from 'mdi-material-ui';
 import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Hidden from 'material-ui/Hidden';
@@ -38,7 +38,7 @@ class HeaderComponent extends Component {
 					</Link>
 					<div style={{display: "inline-block", verticalAlign: "middle"}}>
 						<Typography variant="title" style={{marginBottom: 0}} gutterBottom color="inherit">{I18n.t("Pic4Review")}</Typography>
-						<Typography variant="caption" style={{marginBottom: 0}} gutterBottom color="inherit" title={I18n.t("Better maps created by people using street pictures")}>🗺️ + 📸 + 🤗 = 💕</Typography>
+						<Typography variant="body1" style={{marginBottom: 0, fontWeight: "bold"}} gutterBottom color="inherit" title={I18n.t("Better maps created by people using street pictures")}>📸 + 🤗 ➜ 🗺️ 💕</Typography>
 					</div>
 				</div>
 				
@@ -66,18 +66,6 @@ class HeaderComponent extends Component {
 								color="inherit"
 							>
 								<LibraryPlus />
-							</IconButton>
-						</Tooltip>
-					</Hidden>
-					
-					<Hidden only="xs">
-						<Tooltip title={I18n.t("Statistics")} placement="bottom">
-							<IconButton
-								component={Link}
-								to='/statistics'
-								color="inherit"
-							>
-								<ChartPie />
 							</IconButton>
 						</Tooltip>
 					</Hidden>

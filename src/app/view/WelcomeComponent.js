@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { AccountGroup, ArrowDownThick, ArrowRightThick, CommentCheck, MapMarkerMultiple, TagMultiple, TagFaces } from 'mdi-material-ui';
+import { AccountGroup, ArrowDownThick, ArrowRightThick, ChartPie, CommentCheck, ImageMultiple, MapMarkerMultiple, TagMultiple, TagFaces } from 'mdi-material-ui';
 import API from '../ctrl/API';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
@@ -28,23 +28,21 @@ class WelcomeComponent extends Component {
 		
 		const howItWorks = [
 			{
-				title: I18n.t("Choose your mission"),
-				subtitle: I18n.t("Between several themes, or create your own mission !"),
-				content: <TagFaces color="primary" style={stylePics} />
-			},
-			"arrow",
-			{
 				title: I18n.t("Check street pictures"),
-				subtitle: I18n.t("Coming from various providers of open-licensed pictures"),
-				content: Object.entries((new P4C.PicturesManager()).getFetcherDetails()).map(e => {
-					return <img key={e[0]} src={e[1].logoUrl} style={{ maxHeight: 64, maxWidth: 64, margin: 10, verticalAlign: "middle" }} />;
-				})
+				subtitle: I18n.t("And find the answer of a simple thematic question"),
+				content: <ImageMultiple color="primary" style={stylePics} />
 			},
 			"arrow",
 			{
 				title: I18n.t("Answer and contribute"),
-				subtitle: I18n.t("Looking at pictures, help improve features in OpenStreetMap"),
+				subtitle: I18n.t("One click and you have contributed to OpenStreetMap !"),
 				content: <CommentCheck color="primary" style={stylePics} />
+			},
+			"arrow",
+			{
+				title: I18n.t("Start again on other missions"),
+				subtitle: I18n.t("Choose between several themes and areas worldwide"),
+				content: <TagFaces color="primary" style={stylePics} />
 			}
 		];
 		
@@ -53,79 +51,88 @@ class WelcomeComponent extends Component {
 				<div style={styleBlock}>
 					<img src="images/logo.512.png" style={{ height: 128 }} />
 					
-					<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("Improving OpenStreetMap has never been easier !")}</Typography>
-					<Typography variant="subheading">{I18n.t("With Pic4Review, you can easily add details to OpenStreetMap by checking pictures and answering simple questions.")}</Typography>
+					<Typography variant="display2" style={{marginBottom: 10}}>{I18n.t("Improving OpenStreetMap has never been easier !")}</Typography>
+					<Typography variant="title">{I18n.t("Contribute to OpenStretMap simply by looking at pictures of your city")}</Typography>
 					
-					<Button variant="raised" size="large" color="primary" style={{marginTop: 20}} component={Link} to='/missions'>
+					<Button variant="raised" size="large" color="secondary" style={{marginTop: 20}} component={Link} to='/missions'>
 						{I18n.t("Start now")}
 					</Button>
 				</div>
 				
-				<Paper style={styleBlock}>
+				<div style={styleBlock}>
 					<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("How does it work ?")}</Typography>
 					
-					<Hidden smUp>
-						<Grid container justify="center" alignItems="center">
-							{howItWorks.map((hiw,i) => {
-								if(hiw === "arrow") {
-									return <Grid item xs={12} key={i}><ArrowDownThick color="primary" style={{width: 64, height: 64}} /></Grid>;
-								}
-								else {
-									return <Grid item xs={12} key={i}>
-										{hiw.content}
-										<Typography variant="title">{hiw.title}</Typography>
-										<Typography variant="body1">{hiw.subtitle}</Typography>
-									</Grid>;
-								}
-							})}
-						</Grid>
-					</Hidden>
-						
-					<Hidden only="xs">
-						<Grid container justify="center" alignItems="center">
-							{howItWorks.map((hiw,i) => {
-								if(hiw === "arrow") {
-									return <Grid item sm={1} key={i}><ArrowRightThick color="primary" style={{width: 64, height: 64}} /></Grid>;
-								}
-								else {
-									return <Grid item sm={3} key={i}>{hiw.content}</Grid>;
-								}
-							})}
-						</Grid>
-					</Hidden>
-					<Hidden only="xs">
-						<Grid container justify="center">
-							{howItWorks.map((hiw,i) => {
-								if(hiw === "arrow") {
-									return <Grid item sm={1} key={i}></Grid>;
-								}
-								else {
-									return <Grid item sm={3} key={i}>
-										<Typography variant="title">{hiw.title}</Typography>
-										<Typography variant="body1">{hiw.subtitle}</Typography>
-									</Grid>;
-								}
-							})}
-						</Grid>
-					</Hidden>
-				</Paper>
+					<Paper style={{padding: 20, marginBottom: 20}}>
+						<Hidden smUp>
+							<Grid container justify="center" alignItems="center">
+								{howItWorks.map((hiw,i) => {
+									if(hiw === "arrow") {
+										return <Grid item xs={12} key={i}><ArrowDownThick color="primary" style={{width: 64, height: 64}} /></Grid>;
+									}
+									else {
+										return <Grid item xs={12} key={i}>
+											{hiw.content}
+											<Typography variant="title">{hiw.title}</Typography>
+											<Typography variant="body1">{hiw.subtitle}</Typography>
+										</Grid>;
+									}
+								})}
+							</Grid>
+						</Hidden>
+							
+						<Hidden only="xs">
+							<Grid container justify="center" alignItems="center">
+								{howItWorks.map((hiw,i) => {
+									if(hiw === "arrow") {
+										return <Grid item sm={1} key={i}><ArrowRightThick color="primary" style={{width: 64, height: 64}} /></Grid>;
+									}
+									else {
+										return <Grid item sm={3} key={i}>{hiw.content}</Grid>;
+									}
+								})}
+							</Grid>
+						</Hidden>
+						<Hidden only="xs">
+							<Grid container justify="center">
+								{howItWorks.map((hiw,i) => {
+									if(hiw === "arrow") {
+										return <Grid item sm={1} key={i}></Grid>;
+									}
+									else {
+										return <Grid item sm={3} key={i}>
+											<Typography variant="title">{hiw.title}</Typography>
+											<Typography variant="body1">{hiw.subtitle}</Typography>
+										</Grid>;
+									}
+								})}
+							</Grid>
+						</Hidden>
+					</Paper>
+					
+					<Typography variant="subheading">{I18n.t("Our free-licensed pictures come from various communities")}</Typography>
+					{Object.entries((new P4C.PicturesManager()).getFetcherDetails()).map(e => (
+						<img key={e[0]} src={e[1].logoUrl} style={{ maxHeight: 48, maxWidth: 48, margin: "10px 20px", verticalAlign: "middle" }} />
+					))}
+				</div>
 				
-				<Grid container justify="center" alignItems="center">
+				<Grid container justify="center" alignItems="flex-start" style={styleBlock}>
 					<Grid item xs={12} lg={6}>
-						<div style={styleBlock}>
-							<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("Quick introduction")}</Typography>
-							<div style={{height: 300, width: 400, color: "white", backgroundColor: "black", lineHeight:"300px", display: "inline-block"}}>
-								Video (soon !)
-							</div>
+						<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("Quick introduction")}</Typography>
+						<div style={{height: 300, width: 400, color: "white", backgroundColor: "black", lineHeight:"300px", display: "inline-block"}}>
+							Video (soon !)
 						</div>
 					</Grid>
 					<Grid item xs={12} lg={6}>
-						<Paper style={styleBlock}>
-							<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("Some statistics")}</Typography>
-							
-							{!this.state.stats && <Wait />}
-							{this.state.stats &&
+						<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("The Pic4Review community")}</Typography>
+						
+						{!this.state.stats && <Wait />}
+						{this.state.stats &&
+							<Paper style={{padding: "20px 10px", marginBottom: 10}}>
 								<Grid container>
+									<Grid item xs={12} sm={4}>
+										<AccountGroup color="primary" style={styleStats} />
+										<Typography variant="headline">{I18n.t("%{val} users", { val: this.state.stats.users })}</Typography>
+									</Grid>
 									<Grid item xs={12} sm={4}>
 										<TagMultiple color="primary" style={styleStats} />
 										<Typography variant="headline">{I18n.t("%{val} missions", { val: this.state.stats.missions })}</Typography>
@@ -134,13 +141,18 @@ class WelcomeComponent extends Component {
 										<MapMarkerMultiple color="primary" style={styleStats} />
 										<Typography variant="headline">{I18n.t("%{val} edits", { val: this.state.stats.edits })}</Typography>
 									</Grid>
-									<Grid item xs={12} sm={4}>
-										<AccountGroup color="primary" style={styleStats} />
-										<Typography variant="headline">{I18n.t("%{val} users", { val: this.state.stats.users })}</Typography>
-									</Grid>
 								</Grid>
-							}
-						</Paper>
+							</Paper>
+						}
+						
+						<Button
+							variant="flat"
+							component={Link}
+							to='/statistics'
+							color="primary"
+						>
+							<ChartPie /> {I18n.t("More statistics")}
+						</Button>
 					</Grid>
 				</Grid>
 				
