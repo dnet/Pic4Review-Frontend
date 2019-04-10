@@ -21,6 +21,18 @@ This project is an open source tool, meaning it is made by volunteers. If you wa
 Pic4Review is already available online for use (see link on top of this document). If you want to run your own, you can grab one of the [recent builds](https://pic4review.pavie.info/builds/). To work on project development, you can read [develop documentation](DEVELOP.md).
 
 
+## Contributors
+
+Pic4Review exists and is everyday improving thanks to the __amazing people__ following :
+
+* Adrien Pavie, the creator and main developer of Pic4Review
+* Jean-Louis Zimmermann, for his ideas and experimenting various use cases
+* Florian Lainez, for his ideas on improving the user experience
+* Christopher Beddow, for testing the tool and providing Mapillary support
+* Nuno Caldeira, for creating documentation ressources
+* And all users, for using the tool and sharing their ideas !
+
+
 ## License
 
 Copyright 2017-2019 Adrien PAVIE
@@ -39,8 +51,3 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with Pic4Review. If not, see http://www.gnu.org/licenses/.
-
-
-### Libraries
-
-* [Material UI Webpack](https://github.com/callemall/material-ui-webpack-example) - MIT License
