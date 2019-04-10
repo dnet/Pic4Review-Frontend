@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { AccountGroup, ArrowDownThick, ArrowRightThick, ChartPie, CommentCheck, ImageMultiple, MapMarkerMultiple, TagMultiple, TagFaces } from 'mdi-material-ui';
+import {
+	AccountGroup, ArrowDownThick, ArrowRightThick, At, BookOpenVariant, ChartPie,
+	CommentCheck, ImageMultiple, MapMarkerMultiple, Play, SourceBranch, TagMultiple, TagFaces
+} from 'mdi-material-ui';
 import API from '../ctrl/API';
 import Button from 'material-ui/Button';
 import Grid from 'material-ui/Grid';
@@ -22,9 +25,10 @@ class WelcomeComponent extends Component {
 	}
 	
 	render() {
-		const styleBlock = { padding: 20, marginBottom: 20 };
+		const styleBlock = { margin: "0 20px 40px 20px" };
 		const stylePics = { height: 128, width: 128 };
 		const styleStats = { height: 64, width: 64 };
+		const styleIconButton = { marginRight: 5, marginBottom: 3 };
 		
 		const howItWorks = [
 			{
@@ -54,8 +58,8 @@ class WelcomeComponent extends Component {
 					<Typography variant="display2" style={{marginBottom: 10}}>{I18n.t("Improving OpenStreetMap has never been easier !")}</Typography>
 					<Typography variant="title">{I18n.t("Contribute to OpenStretMap simply by looking at pictures of your city")}</Typography>
 					
-					<Button variant="raised" size="large" color="secondary" style={{marginTop: 20}} component={Link} to='/missions'>
-						{I18n.t("Start now")}
+					<Button variant="raised" size="large" color="secondary" style={{marginTop: 20, paddingLeft: 15}} component={Link} to='/missions'>
+						<Play style={styleIconButton} /> {I18n.t("Start now")}
 					</Button>
 				</div>
 				
@@ -111,58 +115,84 @@ class WelcomeComponent extends Component {
 					
 					<Typography variant="subheading">{I18n.t("Our free-licensed pictures come from various communities")}</Typography>
 					{Object.entries((new P4C.PicturesManager()).getFetcherDetails()).map(e => (
-						<img key={e[0]} src={e[1].logoUrl} style={{ maxHeight: 48, maxWidth: 48, margin: "10px 20px", verticalAlign: "middle" }} />
+						<a href={e[1].homepageUrl}><img key={e[0]} src={e[1].logoUrl} title={e[1].name} alt={e[1].name} style={{ maxHeight: 48, maxWidth: 48, margin: "10px 20px", verticalAlign: "middle" }} /></a>
 					))}
 				</div>
 				
-				<Grid container justify="center" alignItems="flex-start" style={styleBlock}>
+				<Grid container justify="center">
 					<Grid item xs={12} lg={6}>
-						<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("Quick introduction")}</Typography>
-						<div style={{height: 300, width: 400, color: "white", backgroundColor: "black", lineHeight:"300px", display: "inline-block"}}>
-							Video (soon !)
+						<div style={styleBlock}>
+							<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("Quick introduction")}</Typography>
+							<div style={{height: 300, width: 400, color: "white", backgroundColor: "black", lineHeight:"300px", display: "inline-block"}}>
+								Video (soon !)
+							</div>
 						</div>
 					</Grid>
 					<Grid item xs={12} lg={6}>
-						<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("The Pic4Review community")}</Typography>
-						
-						{!this.state.stats && <Wait />}
-						{this.state.stats &&
-							<Paper style={{padding: "20px 10px", marginBottom: 10}}>
-								<Grid container>
-									<Grid item xs={12} sm={4}>
-										<AccountGroup color="primary" style={styleStats} />
-										<Typography variant="headline">{I18n.t("%{val} users", { val: this.state.stats.users })}</Typography>
+						<div style={styleBlock}>
+							<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("The Pic4Review community")}</Typography>
+							
+							{!this.state.stats && <Wait />}
+							{this.state.stats &&
+								<Paper style={{padding: "20px 10px", marginBottom: 10}}>
+									<Grid container>
+										<Grid item xs={12} sm={4}>
+											<AccountGroup color="primary" style={styleStats} />
+											<Typography variant="subheading">{I18n.t("%{val} users", { val: this.state.stats.users })}</Typography>
+										</Grid>
+										<Grid item xs={12} sm={4}>
+											<TagMultiple color="primary" style={styleStats} />
+											<Typography variant="subheading">{I18n.t("%{val} missions", { val: this.state.stats.missions })}</Typography>
+										</Grid>
+										<Grid item xs={12} sm={4}>
+											<MapMarkerMultiple color="primary" style={styleStats} />
+											<Typography variant="subheading">{I18n.t("%{val} edits", { val: this.state.stats.edits })}</Typography>
+										</Grid>
 									</Grid>
-									<Grid item xs={12} sm={4}>
-										<TagMultiple color="primary" style={styleStats} />
-										<Typography variant="headline">{I18n.t("%{val} missions", { val: this.state.stats.missions })}</Typography>
-									</Grid>
-									<Grid item xs={12} sm={4}>
-										<MapMarkerMultiple color="primary" style={styleStats} />
-										<Typography variant="headline">{I18n.t("%{val} edits", { val: this.state.stats.edits })}</Typography>
-									</Grid>
-								</Grid>
-							</Paper>
-						}
-						
-						<Button
-							variant="flat"
-							component={Link}
-							to='/statistics'
-							color="primary"
-						>
-							<ChartPie /> {I18n.t("More statistics")}
-						</Button>
+								</Paper>
+							}
+							
+							<Button
+								variant="flat"
+								component={Link}
+								to='/statistics'
+								color="primary"
+							>
+								<ChartPie style={styleIconButton} /> {I18n.t("More statistics")}
+							</Button>
+						</div>
 					</Grid>
 				</Grid>
 				
 				<div style={styleBlock}>
 					<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("About")}</Typography>
-					<Typography variant="body1">
-						{I18n.t("Pic4Review is an easy editor for OpenStreetMap. It was created by Adrien Pavie in 2017, and is maintained by a community of contributors. It is free and open source software, everyone is welcome to help us and make it even better !")}
+					<Typography variant="body1" style={{margin: 10}}>
+						{I18n.t("Pic4Review is an easy editor for OpenStreetMap. It was created by Adrien Pavie in 2017, and is maintained by a community of contributors.")}
 						<br />
-						<a href="https://wiki.openstreetmap.org/wiki/Pic4Review">{I18n.t("Documentation")}</a> | <a href="mailto:panieravide@riseup.net">{I18n.t("Contact us !")}</a> | <a href="https://framagit.org/Pic4Carto/Pic4Review">{I18n.t("Code repository")}</a>
+						{I18n.t("It is free and open source software, everyone is welcome to help us and make it even better !")}
 					</Typography>
+					
+					<Button
+						variant="flat"
+						color="primary"
+						href="https://wiki.openstreetmap.org/wiki/Pic4Review"
+					>
+						<BookOpenVariant style={styleIconButton} /> {I18n.t("Documentation")}
+					</Button>
+					<Button
+						variant="flat"
+						color="primary"
+						href="https://pavie.info/contact/"
+					>
+						<At style={styleIconButton} /> {I18n.t("Contact us")}
+					</Button>
+					<Button
+						variant="flat"
+						color="primary"
+						href="https://framagit.org/Pic4Carto/Pic4Review"
+					>
+						<SourceBranch style={styleIconButton} /> {I18n.t("Code repository")}
+					</Button>
 				</div>
 			</Grid>
 		</Grid>;
