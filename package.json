@@ -7,10 +7,10 @@
     "url": "https://framagit.org/Pic4Carto/Pic4Review.git"
   },
   "scripts": {
-    "start": "NODE_ENV=develop webpack-dev-server --progress --inline --colors",
+    "start": "cross-env NODE_ENV=develop webpack-dev-server --progress --inline --colors",
     "build": "npm run build:js && npm run zip",
-    "build:js": "NODE_ENV=production webpack --progress --colors",
-    "test": "NODE_ENV=test mocha-webpack --recursive test/",
+    "build:js": "cross-env NODE_ENV=production webpack --progress --colors",
+    "test": "cross-env NODE_ENV=test mocha-webpack --recursive test/",
     "doc": "npm run doc:js:check && npm run doc:js",
     "doc:js": "documentation build ./src/**/* -f html -o doc/",
     "doc:js:check": "documentation lint ./src/**/*",
@@ -52,6 +52,7 @@
   "dependencies": {
     "browser-request": "^0.3.3",
     "chart.js": "^2.7.2",
+    "cross-env": "^5.2.0",
     "leaflet": "^1.3.4",
     "leaflet-area-select": "^1.0.3",
     "leaflet-control-geocoder": "^1.6.0",
