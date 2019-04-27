@@ -398,7 +398,7 @@ class MissionReviewComponent extends Component {
 						
 						API.CreateOSMFeature(
 							this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : this.state.feature.geometry,
-							this.state.feature.properties,
+							this._getTagsToApply({}, this.state.feature.properties),
 							this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
 							this._getChangesetId()
 						)

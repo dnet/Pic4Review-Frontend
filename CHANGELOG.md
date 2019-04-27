@@ -7,15 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.5.7 - 2019-04-27
+
 ### Added
 - Translations of automatic detections feature types in new mission page
 - New missions based on Osmose or automatic detections have a thumbnail associated in mission list
 - Thumbnail of mission is shown in mission description page
 - Missions list can be sorted by pertinence, creation date and completeness
+- Alert dialog shown when trying to import a new feature when another exists around
 
 ### Changed
 - Home page now offers a better view of Pic4Review and some statistics
 - Map of features in mission description page shows the features you skipped in review
+
+### Fixed
+- New features created in import missions where lacking pictures tags
 
 
 ## 0.5.6 - 2019-04-01

@@ -120,7 +120,7 @@ class WelcomeComponent extends Component {
 				</div>
 				
 				<Grid container justify="center">
-					<Grid item xs={12} lg={6}>
+					<Grid item xs={12} lg={6} style={{display: "none"}}>
 						<div style={styleBlock}>
 							<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("Quick introduction")}</Typography>
 							<div style={{height: 300, width: 400, color: "white", backgroundColor: "black", lineHeight:"300px", display: "inline-block"}}>
