@@ -115,7 +115,7 @@ class WelcomeComponent extends Component {
 					
 					<Typography variant="subheading">{I18n.t("Our free-licensed pictures come from various communities")}</Typography>
 					{Object.entries((new P4C.PicturesManager()).getFetcherDetails()).map(e => (
-						<a href={e[1].homepageUrl}><img key={e[0]} src={e[1].logoUrl} title={e[1].name} alt={e[1].name} style={{ maxHeight: 48, maxWidth: 48, margin: "10px 20px", verticalAlign: "middle" }} /></a>
+						<a href={e[1].homepageUrl} key={e[0]}><img src={e[1].logoUrl} title={e[1].name} alt={e[1].name} style={{ maxHeight: 48, maxWidth: 48, margin: "10px 20px", verticalAlign: "middle" }} /></a>
 					))}
 				</div>
 				

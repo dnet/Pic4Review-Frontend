@@ -4,6 +4,7 @@ import withWidth from 'material-ui/utils/withWidth';
 import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
 import API from '../../ctrl/API';
 import Button from 'material-ui/Button';
+import ConfirmDuplicate from './MissionReviewFeatureDuplicateDialogComponent';
 import ConfirmEdit from './MissionReviewFeatureDialogComponent';
 import Editors from './MissionReviewEditorsComponent';
 import FeatureDetails from './MissionReviewFeatureDetailsComponent';
@@ -48,6 +49,8 @@ class MissionReviewComponent extends Component {
 			currentAnswer: null,
 			openConfirmEdit: false,
 			hideConfirmEdit: false,
+			openConfirmDuplicate: false,
+			hideConfirmDuplicate: false,
 			shownPics: 0,
 			noMorePics: false,
 			stats: {},
@@ -310,13 +313,15 @@ class MissionReviewComponent extends Component {
 	 * Edit the current feature status, and start retrieving next one
 	 * @private
 	 */
-	_review(status, externalEditConfirmed) {
+	_review(status, options) {
+		options = options || {};
+		
 		if(status !== "skipped" && this.refs.map.isEditingGeometry()) {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You started editing this feature geometry, please valid or cancel your edits using map buttons before answering the question."), duration: 5000 });
 			return false;
 		}
 		
-		externalEditConfirmed = externalEditConfirmed || (!this.state.currentAnswer && this.state.hideConfirmEdit);
+		options.externalEditConfirmed = options.externalEditConfirmed || (!this.state.currentAnswer && this.state.hideConfirmEdit);
 		
 		//Update feature in DB
 		const updateDB = (upData) => {
@@ -338,7 +343,7 @@ class MissionReviewComponent extends Component {
 				}
 				
 				if(status === "reviewed") {
-					this.setState({ count: this.state.count+1, openConfirmEdit: false });
+					this.setState({ count: this.state.count+1, openConfirmEdit: false, openConfirmDuplicate: false });
 				}
 				
 				this._next(status === "skipped");
@@ -351,7 +356,8 @@ class MissionReviewComponent extends Component {
 		};
 		
 		//If editor activated
-		if(status === "reviewed" && !externalEditConfirmed) {
+		if(status === "reviewed" && !options.externalEditConfirmed) {
+			// If both answer and feature are valid
 			if(
 				this.state.currentAnswer
 				&& this.props.mission.options && this.props.mission.options.data
@@ -382,23 +388,29 @@ class MissionReviewComponent extends Component {
 				}
 				// Importing new feature in OSM
 				else if(this.props.mission.options.data.options.editors.type === "importer" && this.state.currentAnswer.validated) {
+					// Ask for user confirmation if similar features exist around
+					if(!options.confirmDuplicate && this.state.similar && this.state.similar.features && this.state.similar.features.length > 0) {
+						this.setState({ openConfirmDuplicate: true });
+					}
 					//Create feature
-					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Creating feature in OpenStreetMap") });
-					
-					API.CreateOSMFeature(
-						this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : this.state.feature.geometry,
-						this.state.feature.properties,
-						this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
-						this._getChangesetId()
-					)
-					.then(res => {
-						updateDB(res);
-					})
-					.catch(e => {
-						PubSub.publish("UI.MESSAGE.WAITDONE");
-						console.error(e);
-						PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry"), details: e.message });
-					});
+					else {
+						PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Creating feature in OpenStreetMap") });
+						
+						API.CreateOSMFeature(
+							this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : this.state.feature.geometry,
+							this.state.feature.properties,
+							this.props.mission.description.short + " (" + this.props.mission.area.name + ")",
+							this._getChangesetId()
+						)
+						.then(res => {
+							updateDB(res);
+						})
+						.catch(e => {
+							PubSub.publish("UI.MESSAGE.WAITDONE");
+							console.error(e);
+							PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't upload feature to OSM, please retry"), details: e.message });
+						});
+					}
 				}
 				else if(
 					this.props.mission.options.data.options.editors.type === "importer"
@@ -703,8 +715,14 @@ class MissionReviewComponent extends Component {
 				<ConfirmEdit
 					open={!this.state.hideConfirmEdit && this.state.openConfirmEdit}
 					onClose={() => this.setState({ openConfirmEdit: false })}
-					onValid={nomore => { this.setState({ hideConfirmEdit: nomore }); this._review("reviewed", true); }}
+					onValid={nomore => { this.setState({ hideConfirmEdit: nomore }); this._review("reviewed", { externalEditConfirmed: true }); }}
 					hasEditor={this._hasEditor()}
+				/>
+				
+				<ConfirmDuplicate
+					open={!this.state.hideConfirmDuplicate && this.state.openConfirmDuplicate}
+					onClose={() => this.setState({ openConfirmDuplicate: false })}
+					onValid={nomore => { this.setState({ hideConfirmDuplicate: nomore }); this._review("reviewed", { confirmDuplicate: true }); }}
 				/>
 			</div>;
 		}
