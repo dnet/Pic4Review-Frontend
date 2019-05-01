@@ -25,7 +25,13 @@ class WelcomeComponent extends Component {
 	}
 	
 	render() {
+		const styleMain = Object.assign({}, this.props.style, {textAlign: "center", margin: "-15px -20px", width: "unset"});
 		const styleBlock = { margin: "0 20px 40px 20px" };
+		const styleHeadblock = {
+			height: 600, background: "url('images/background.jpg') no-repeat center center",
+			display: "flex", flexDirection: "row", alignItems: "center", backgroundSize: "cover",
+			marginBottom: 40, padding: 20
+		};
 		const stylePics = { height: 128, width: 128 };
 		const styleStats = { height: 64, width: 64 };
 		const styleIconButton = { marginRight: 5, marginBottom: 3 };
@@ -50,23 +56,25 @@ class WelcomeComponent extends Component {
 			}
 		];
 		
-		return <Grid container justify="center" style={Object.assign({}, this.props.style, {textAlign: "center"})}>
-			<Grid item xs={12} md={10} lg={8} xl={6}>
-				<div style={styleBlock}>
+		return <Grid container justify="center" style={styleMain}>
+			<Grid item xs={12} style={styleHeadblock}>
+				<div style={{width: "100%"}}>
 					<img src="images/logo.512.png" style={{ height: 128 }} />
 					
-					<Typography variant="display2" style={{marginBottom: 10}}>{I18n.t("Improving OpenStreetMap has never been easier !")}</Typography>
-					<Typography variant="title">{I18n.t("Contribute to OpenStretMap simply by looking at pictures of your city")}</Typography>
+					<Typography variant="display2" style={{marginBottom: 10, color: "white", textShadow: "2px 2px 5px black"}}>{I18n.t("Improving OpenStreetMap has never been easier !")}</Typography>
+					<Typography variant="title" style={{color: "white", textShadow: "2px 2px 5px black"}}>{I18n.t("Contribute to OpenStretMap simply by looking at pictures of your city")}</Typography>
 					
 					<Button variant="raised" size="large" color="secondary" style={{marginTop: 20, paddingLeft: 15}} component={Link} to='/missions'>
 						<Play style={styleIconButton} /> {I18n.t("Start now")}
 					</Button>
 				</div>
-				
+			</Grid>
+			
+			<Grid item xs={12} md={10} lg={8} xl={6}>
 				<div style={styleBlock}>
 					<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("How does it work ?")}</Typography>
 					
-					<Paper style={{padding: 20, marginBottom: 20}}>
+					<div style={{padding: 20, marginBottom: 20}}>
 						<Hidden smUp>
 							<Grid container justify="center" alignItems="center">
 								{howItWorks.map((hiw,i) => {
@@ -111,7 +119,7 @@ class WelcomeComponent extends Component {
 								})}
 							</Grid>
 						</Hidden>
-					</Paper>
+					</div>
 					
 					<Typography variant="subheading">{I18n.t("Our free-licensed pictures come from various communities")}</Typography>
 					{Object.entries((new P4C.PicturesManager()).getFetcherDetails()).map(e => (
@@ -134,7 +142,7 @@ class WelcomeComponent extends Component {
 							
 							{!this.state.stats && <Wait />}
 							{this.state.stats &&
-								<Paper style={{padding: "20px 10px", marginBottom: 10}}>
+								<div style={{padding: "20px 10px", marginBottom: 10}}>
 									<Grid container>
 										<Grid item xs={12} sm={4}>
 											<AccountGroup color="primary" style={styleStats} />
@@ -149,7 +157,7 @@ class WelcomeComponent extends Component {
 											<Typography variant="subheading">{I18n.t("%{val} edits", { val: this.state.stats.edits })}</Typography>
 										</Grid>
 									</Grid>
-								</Paper>
+								</div>
 							}
 							
 							<Button
