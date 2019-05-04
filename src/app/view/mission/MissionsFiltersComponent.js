@@ -4,6 +4,7 @@ import { FormControl, FormControlLabel } from 'material-ui/Form';
 import Hash from 'object-hash';
 import IconGridSelect from '../IconGridSelectComponent';
 import Input, { InputLabel } from 'material-ui/Input';
+import Radio, { RadioGroup } from 'material-ui/Radio';
 import Select from 'material-ui/Select';
 import Typography from 'material-ui/Typography';
 
@@ -21,7 +22,8 @@ class MissionsFiltersComponent extends Component {
 			status: null,
 			complete: null,
 			editor: null,
-			sort: "pertinence"
+			sort: "pertinence",
+			usage: "contributed"
 		};
 	}
 	
@@ -30,7 +32,15 @@ class MissionsFiltersComponent extends Component {
 	 * @private
 	 */
 	_toFilters(o) {
-		return { type: o.type || "", theme: o.theme || "", status: o.status || "", complete: o.complete || false, editor: o.editor || false, sort: o.sort || "" };
+		return {
+			type: o.type || "",
+			theme: o.theme || "",
+			status: o.status || "",
+			complete: o.complete || false,
+			editor: o.editor || false,
+			sort: o.sort || "",
+			usage: o.usage || ""
+		};
 	}
 	
 	render() {
@@ -50,6 +60,20 @@ class MissionsFiltersComponent extends Component {
 							<option key={e[0]} value={e[0]}>{e[1].name}</option>
 						)}
 					</Select>
+				</FormControl>
+			}
+			
+			{this.props.usage &&
+				<FormControl style={styleControl}>
+					<Typography variant="body1">{I18n.t("Show missions")}</Typography>
+					<RadioGroup
+						row
+						value={this.state.usage}
+						onChange={e => this.setState({ usage: e.target.value })}
+					>
+						<FormControlLabel value="contributed" control={<Radio />} label={I18n.t("I contributed to")} />
+						<FormControlLabel value="created" control={<Radio />} label={I18n.t("I created")} />
+					</RadioGroup>
 				</FormControl>
 			}
 			

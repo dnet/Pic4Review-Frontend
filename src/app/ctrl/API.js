@@ -161,9 +161,10 @@ class API {
 	 * @param {boolean} [showComplete] True if API should return completed missions
 	 * @param {string} [userid] If set, only retrieves missions concerning this user
 	 * @param {string} [sort] How results should be sorted
+	 * @param {string} [contributorid] If set, only retrieves missions this user contributed to
 	 * @return {Promise} A promise resolving on missions
 	 */
-	static GetMissions(page, type, theme, status, hasEditor, showComplete, userid, sort) {
+	static GetMissions(page, type, theme, status, hasEditor, showComplete, userid, sort, contributorid) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				page: page,
@@ -173,7 +174,8 @@ class API {
 				editor: hasEditor || false,
 				complete: showComplete || false,
 				user: userid || null,
-				sort: sort || null
+				sort: sort || null,
+				contributor: contributorid || null
 			};
 			
 			request(CONST.P4R_URL + '/missions' + this.ParamsString(p), (err, res, body) => {
@@ -209,10 +211,11 @@ class API {
 	 * @param {string} [status] The mission status (online by default)
 	 * @param {boolean} [hasEditor] True if the mission has a simple editor (false by default)
 	 * @param {boolean} [showComplete] True if API should return completed missions
-	 * @param {string} [userid] If set, only retrieves missions concerning this user
+	 * @param {string} [userid] If set, only retrieves missions this user created
+	 * @param {string} [contributorid] If set, only retrieves missions this user contributed to
 	 * @return {Promise} A promise resolving on GeoJSON of missions
 	 */
-	static GetMissionsMap(type, theme, status, hasEditor, showComplete, userid) {
+	static GetMissionsMap(type, theme, status, hasEditor, showComplete, userid, contributorid) {
 		return new Promise((resolve, reject) => {
 			const p = {
 				type: type,
@@ -220,7 +223,8 @@ class API {
 				status: status || "online",
 				editor: hasEditor || false,
 				complete: showComplete || false,
-				user: userid || null
+				user: userid || null,
+				contributor: contributorid || null
 			};
 			
 			request(CONST.P4R_URL + '/missions/map' + this.ParamsString(p), (err, res, body) => {

@@ -209,15 +209,10 @@ class WelcomeComponent extends Component {
 	componentDidMount() {
 		PubSub.publish("UI.TITLE.RESET");
 		
-		const updateStats = () => {
-			API.GetInstanceStatistics()
-			.then(stats => {
-				this.setState({ stats: stats });
-			});
-		};
-		
-		updateStats();
-		this.timer = setInterval(updateStats, 5000);
+		API.GetInstanceStatistics()
+		.then(stats => {
+			this.setState({ stats: stats });
+		});
 	}
 	
 	componentWillUnmount() {

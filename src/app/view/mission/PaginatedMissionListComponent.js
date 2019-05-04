@@ -60,7 +60,8 @@ class PaginatedMissionListComponent extends Component {
 					this.props.width === "xs" || state.currentFilters.editor,
 					state.currentFilters.complete,
 					this.props.user && !this.props.admin ? this.props.user.id : null,
-					state.currentFilters.sort
+					state.currentFilters.sort,
+					(this.props.admin || state.currentFilters.usage === "created") ? null : this.props.user && this.props.user.id
 				)
 				.then(missions => {
 					if(currentToken === this.apiCallToken) {
@@ -82,7 +83,8 @@ class PaginatedMissionListComponent extends Component {
 				this.props.width === "xs" || state.currentFilters.editor,
 				state.currentFilters.complete,
 				this.props.user && !this.props.admin ? this.props.user.id : null,
-				state.currentFilters.sort
+				state.currentFilters.sort,
+				(this.props.admin || state.currentFilters.usage === "created") ? null : this.props.user && this.props.user.id
 			)
 			.then(missions => {
 				if(currentToken === this.apiCallToken) {
@@ -100,7 +102,8 @@ class PaginatedMissionListComponent extends Component {
 				this.props.admin || this.props.user  ? state.currentFilters.status || "all" : null,
 				this.props.width === "xs" || state.currentFilters.editor,
 				state.currentFilters.complete,
-				this.props.user && !this.props.admin ? this.props.user.id : null
+				this.props.user && !this.props.admin ? this.props.user.id : null,
+				(this.props.admin || state.currentFilters.usage === "created") ? null : this.props.user && this.props.user.id
 			)
 			.then(missions => { 
 				if(currentToken === this.apiCallToken) {
@@ -195,7 +198,14 @@ class PaginatedMissionListComponent extends Component {
 			<Grid container spacing={16}>
 				<Grid item hidden={{only: "xs"}} sm={4} md={3} lg={2}>
 					<Typography variant="subheading">{I18n.t("Filters")}</Typography>
-					<MissionsFilters status={this.props.admin || this.props.user} completeness={true} values={this.state.currentFilters} onChange={d => this.setState({ currentFilters: d })} sorting={this.state.tab === 0} />
+					<MissionsFilters
+						status={this.props.admin || this.props.user}
+						completeness={true}
+						values={this.state.currentFilters}
+						onChange={d => this.setState({ currentFilters: d })}
+						sorting={this.state.tab === 0}
+						usage={!this.props.admin && this.props.user}
+					/>
 				</Grid>
 				<Grid item xs={12} hidden={{smUp: true}}>
 					<ExpansionPanel>
@@ -203,7 +213,12 @@ class PaginatedMissionListComponent extends Component {
 							<Typography variant="subheading">{I18n.t("Filters")}</Typography>
 						</ExpansionPanelSummary>
 						<ExpansionPanelDetails>
-							<MissionsFilters values={this.state.currentFilters} sorting={this.state.tab === 0} onChange={d => this.setState({ currentFilters: d })} />
+							<MissionsFilters
+								values={this.state.currentFilters}
+								sorting={this.state.tab === 0}
+								onChange={d => this.setState({ currentFilters: d })}
+								usage={!this.props.admin && this.props.user}
+							/>
 						</ExpansionPanelDetails>
 					</ExpansionPanel>
 				</Grid>

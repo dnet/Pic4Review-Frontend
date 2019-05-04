@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Added
+- My missions page allows user to search missions they contributed to, in addition to the ones they created
+
 
 ## 0.5.7 - 2019-04-27
 
