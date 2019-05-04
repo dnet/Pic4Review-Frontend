@@ -123,6 +123,7 @@ class MissionReviewMapComponent extends Component {
 					:
 					<Button
 						variant="fab"
+						color="secondary"
 						style={{ position: "absolute", left: 5, bottom: 5, zIndex: 1000 }}
 						onClick={() => this._editGeomStart()}
 					>
