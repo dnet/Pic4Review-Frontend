@@ -167,7 +167,7 @@ class PaginatedMissionListComponent extends Component {
 		
 		if(this.state.tab === 0 && this.state.missions) {
 			missionsarea = this.state.missions.length > 0 ? <div>
-				{this.props.synthetic ?
+				{this.props.synthetic || this.state.currentFilters.usage === "created" ?
 					<MissionsTable
 						missions={this.state.missions}
 						admin={this.props.admin}
