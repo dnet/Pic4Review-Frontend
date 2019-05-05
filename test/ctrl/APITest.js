@@ -14,7 +14,7 @@ const AREA = { name: "Rennes, France", bbox: new P4C.LatLngBounds(new P4C.LatLng
 const DESC = { short: "Add those toilets in OSM", full: "Add the toilets from official source into OpenStreetMap. Please create a point following wiki doc." };
 const TIMEOUT = 10000;
 
-describe.only("Ctrl > API", () => {
+describe.skip("Ctrl > API", () => {
 	let pictoken = null;
 	let midNext = null;
 	
