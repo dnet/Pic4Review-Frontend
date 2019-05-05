@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DotsHorizontal } from 'mdi-material-ui';
+import DotsHorizontal from 'mdi-material-ui/DotsHorizontal';
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';

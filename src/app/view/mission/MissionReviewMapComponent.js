@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import CONSTS from '../../constants';
-import { CursorMove, Check, Close } from 'mdi-material-ui';
+import CursorMove from 'mdi-material-ui/CursorMove';
+import Check from 'mdi-material-ui/Check';
+import Close from 'mdi-material-ui/Close';
 import Button from 'material-ui/Button';
 import Leaflet from 'leaflet';
 import LeafletMarker from '../MarkerRotate';

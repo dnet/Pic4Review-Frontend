@@ -1,12 +1,12 @@
 import GridList from 'material-ui/GridList';
-import ReactDOM from 'react-dom';
+import { findDOMNode } from 'react-dom';
 
 class HorizontalScrollGridList extends GridList {
 	componentDidMount() {
 		super.componentDidMount();
 		
 		//Horizontal scroll
-		const that = ReactDOM.findDOMNode(this);
+		const that = findDOMNode(this);
 		const speed = this.props.speed || 1;
 		const scrollHorizontally = e => {
 			e = window.event || e;

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import { withRouter } from 'react-router-dom';
-import { ContentDuplicate } from 'mdi-material-ui';
+import ContentDuplicate from 'mdi-material-ui/ContentDuplicate';
 import API from '../../../ctrl/API';
 import Button from 'material-ui/Button';
 import Geosearch from '../../GeosearchComponent';

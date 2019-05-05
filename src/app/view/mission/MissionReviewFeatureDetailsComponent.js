@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DotsHorizontal } from 'mdi-material-ui';
+import DotsHorizontal from 'mdi-material-ui/DotsHorizontal';
 import Button from 'material-ui/Button';
 import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';

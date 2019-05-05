@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import API from '../ctrl/API';
 import Grid from 'material-ui/Grid';
-import MissingPictures from './MissingPicturesMapComponent';
 import PicProvider from './PictureProviderComponent';
 import UsersScore from './UsersScoreComponent';
 import Themes from './MyStatisticsThemesComponent';

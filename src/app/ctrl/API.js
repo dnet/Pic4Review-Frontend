@@ -4,7 +4,6 @@ import Feature from '../model/Feature';
 import Mission from '../model/Mission';
 import OsmRequest from 'osm-request';
 import queryOverpass from 'query-overpass';
-import request from 'browser-request';
 
 const LONG_TIMEOUT_MS = 300000;
 
@@ -92,61 +91,49 @@ class API {
 			});
 		}
 		else {
-			return new Promise((resolve, reject) => {
-				//Prepare data
-				const data = {
-					type: mission.type,
-					theme: mission.theme,
-					areaname: mission.area.name,
-					shortdesc: mission.description.short,
-					fulldesc: mission.description.full,
-					datatype: source,
-					dataoptions: sourceOptions,
-					minlat: mission.area.bbox.getSouth(),
-					maxlat: mission.area.bbox.getNorth(),
-					minlon: mission.area.bbox.getWest(),
-					maxlon: mission.area.bbox.getEast(),
-					username: username,
-					userid: userid
-				};
-				
-				//Save editors data
-				if(editors) {
-					data.dataoptions.editors = editors;
+			//Prepare data
+			const data = {
+				type: mission.type,
+				theme: mission.theme,
+				areaname: mission.area.name,
+				shortdesc: mission.description.short,
+				fulldesc: mission.description.full,
+				datatype: source,
+				dataoptions: sourceOptions,
+				minlat: mission.area.bbox.getSouth(),
+				maxlat: mission.area.bbox.getNorth(),
+				minlon: mission.area.bbox.getWest(),
+				maxlon: mission.area.bbox.getEast(),
+				username: username,
+				userid: userid
+			};
+			
+			//Save editors data
+			if(editors) {
+				data.dataoptions.editors = editors;
+			}
+			else {
+				data.dataoptions.editors = null;
+			}
+			
+			//Send request
+			return fetch(
+				CONST.P4R_URL + '/missions',
+				{
+					method: "POST",
+					headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+					body: JSON.stringify(data)/*,
+					timeout: LONG_TIMEOUT_MS*/
+				}
+			)
+			.then(res => res.json())
+			.then(data => {
+				if(data.error) {
+					throw new Error(data.details_for_humans || data.error);
 				}
 				else {
-					data.dataoptions.editors = null;
+					return data;
 				}
-				
-				//Send request
-				request(
-					{
-						method: "POST",
-						url: CONST.P4R_URL + '/missions',
-						json: data,
-						timeout: LONG_TIMEOUT_MS
-					},
-					(err, res, body) => {
-						if(err) {
-							reject(err);
-						}
-						else {
-							try {
-								const data = typeof body === "string" ? JSON.parse(body) : body;
-								
-								if(data.error) {
-									reject(new Error(data.details_for_humans || data.error));
-								}
-								else {
-									resolve(data);
-								}
-							}
-							catch(e) {
-								reject(e);
-							}
-						}
-					}
-				);
 			});
 		}
 	}
@@ -165,42 +152,30 @@ class API {
 	 * @return {Promise} A promise resolving on missions
 	 */
 	static GetMissions(page, type, theme, status, hasEditor, showComplete, userid, sort, contributorid) {
-		return new Promise((resolve, reject) => {
-			const p = {
-				page: page,
-				type: type,
-				theme: theme,
-				status: status || "online",
-				editor: hasEditor || false,
-				complete: showComplete || false,
-				user: userid || null,
-				sort: sort || null,
-				contributor: contributorid || null
-			};
+		const p = {
+			page: page,
+			type: type,
+			theme: theme,
+			status: status || "online",
+			editor: hasEditor || false,
+			complete: showComplete || false,
+			user: userid || null,
+			sort: sort || null,
+			contributor: contributorid || null
+		};
+		
+		return fetch(CONST.P4R_URL + '/missions' + this.ParamsString(p))
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				const missions = data.missions
+					.map(m => Mission.CreateFromAPI(m));
 			
-			request(CONST.P4R_URL + '/missions' + this.ParamsString(p), (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							const missions = data.missions
-								.map(m => Mission.CreateFromAPI(m));
-						
-							resolve(missions);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+				return missions;
+			}
 		});
 	}
 	
@@ -216,37 +191,25 @@ class API {
 	 * @return {Promise} A promise resolving on GeoJSON of missions
 	 */
 	static GetMissionsMap(type, theme, status, hasEditor, showComplete, userid, contributorid) {
-		return new Promise((resolve, reject) => {
-			const p = {
-				type: type,
-				theme: theme,
-				status: status || "online",
-				editor: hasEditor || false,
-				complete: showComplete || false,
-				user: userid || null,
-				contributor: contributorid || null
-			};
-			
-			request(CONST.P4R_URL + '/missions/map' + this.ParamsString(p), (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data.geojson);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		const p = {
+			type: type,
+			theme: theme,
+			status: status || "online",
+			editor: hasEditor || false,
+			complete: showComplete || false,
+			user: userid || null,
+			contributor: contributorid || null
+		};
+		
+		return fetch(CONST.P4R_URL + '/missions/map' + this.ParamsString(p))
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data.geojson;
+			}
 		});
 	}
 	
@@ -256,27 +219,15 @@ class API {
 	 * @return {Promise} A promise resolving on loading progress (in percent)
 	 */
 	static GetMissionLoading(pictoken) {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/loading?pictoken=' + pictoken, (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data.loading);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/missions/loading?pictoken=' + pictoken)
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data.loading;
+			}
 		});
 	}
 	
@@ -285,27 +236,15 @@ class API {
 	 * @return {Promise} A promise resolving on missions templates { id: int, theme: string, shortdesc: string, fulldesc: string }
 	 */
 	static GetMissionsTemplates() {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/templates', (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data.templates);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/missions/templates')
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data.templates;
+			}
 		});
 	}
 	
@@ -317,34 +256,22 @@ class API {
 	 * @return {Promise} A promise resolving on mission with its full details
 	 */
 	static GetMissionDetails(mid, userid, synthetic) {
-		return new Promise((resolve, reject) => {
-			const params = {};
-			if(userid) { params.userid = userid; }
-			if(synthetic) { params.synthetic = "1"; }
-			
-			const url = CONST.P4R_URL + '/missions/' + mid + API.ParamsString(params);
-			
-			request(url, (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							if(data.canEdit === true) { data.mission.canEdit = true; }
-							resolve(Mission.CreateFromAPI(data.mission));
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		const params = {};
+		if(userid) { params.userid = userid; }
+		if(synthetic) { params.synthetic = "1"; }
+		
+		const url = CONST.P4R_URL + '/missions/' + mid + API.ParamsString(params);
+		
+		return fetch(url)
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				if(data.canEdit === true) { data.mission.canEdit = true; }
+				return Mission.CreateFromAPI(data.mission);
+			}
 		});
 	}
 	
@@ -356,45 +283,33 @@ class API {
 	 * @return {Promise} A promise resolving on next feature, or null if no more available
 	 */
 	static GetMissionNextFeature(mid, coordinates, userid) {
-		return new Promise((resolve, reject) => {
-			let url = CONST.P4R_URL + '/missions/' + mid + '/features/next';
-			
-			const params = {};
-			
-			if(coordinates) {
-				params.lat = coordinates[0];
-				params.lng = coordinates[1];
+		let url = CONST.P4R_URL + '/missions/' + mid + '/features/next';
+		
+		const params = {};
+		
+		if(coordinates) {
+			params.lat = coordinates[0];
+			params.lng = coordinates[1];
+		}
+		
+		if(userid) {
+			params.userid = userid;
+		}
+		
+		url += this.ParamsString(params);
+		
+		return fetch(url)
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
 			}
-			
-			if(userid) {
-				params.userid = userid;
+			else if(!data.feature) {
+				return null;
 			}
-			
-			url += this.ParamsString(params);
-			
-			request(url, (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else if(!data.feature) {
-							resolve(null);
-						}
-						else {
-							resolve(Feature.CreateFromAPI(data.feature));
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+			else {
+				return Feature.CreateFromAPI(data.feature);
+			}
 		});
 	}
 	
@@ -405,27 +320,15 @@ class API {
 	 * @return {Promise} A promise resolving on features list
 	 */
 	static GetMissionFeatures(mid, uid) {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/' + mid + '/features' + (uid ? '?userid='+uid : ''), (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data.features.map(f => Feature.CreateFromAPI(f)));
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/missions/' + mid + '/features' + (uid ? '?userid='+uid : ''))
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data.features.map(f => Feature.CreateFromAPI(f));
+			}
 		});
 	}
 	
@@ -453,46 +356,34 @@ class API {
 			});
 		}
 		else {
-			return new Promise((resolve, reject) => {
-				const p = {
-					minlat: area.getSouth(),
-					maxlat: area.getNorth(),
-					minlon: area.getWest(),
-					maxlon: area.getEast(),
-					datatype: source,
-					dataoptions: options
-				};
-				
-				const url = CONST.P4R_URL + '/missions/preview';
-				
-				request(
-					{
-						method: "POST",
-						url: url,
-						json: p,
-						timeout: LONG_TIMEOUT_MS
-					},
-					(err, res, body) => {
-						if(err) {
-							reject(err);
-						}
-						else {
-							try {
-								const data = typeof body === "string" ? JSON.parse(body) : body;
-								
-								if(data.error) {
-									reject(new Error(data.details_for_humans || data.error));
-								}
-								else {
-									resolve(data.features);
-								}
-							}
-							catch(e) {
-								reject(e);
-							}
-						}
-					}
-				);
+			const p = {
+				minlat: area.getSouth(),
+				maxlat: area.getNorth(),
+				minlon: area.getWest(),
+				maxlon: area.getEast(),
+				datatype: source,
+				dataoptions: options
+			};
+			
+			const url = CONST.P4R_URL + '/missions/preview';
+			
+			return fetch(
+				url,
+				{
+					method: "POST",
+					headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+					body: JSON.stringify(p)/*,
+					timeout: LONG_TIMEOUT_MS*/
+				}
+			)
+			.then(res => res.json())
+			.then(data => {
+				if(data.error) {
+					throw new Error(data.details_for_humans || data.error);
+				}
+				else {
+					return data.features;
+				}
 			});
 		}
 	}
@@ -504,27 +395,15 @@ class API {
 	 * @return {Promise} A promise resolving on features statistics
 	 */
 	static GetMissionStatistics(mid, uid) {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/' + mid + '/stats' + (uid ? '?user='+uid : ''), (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/missions/' + mid + '/stats' + (uid ? '?user='+uid : ''))
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data;
+			}
 		});
 	}
 	
@@ -535,27 +414,15 @@ class API {
 	 * @return {Promise} A promise resolving on features statistics
 	 */
 	static GetMissionUserStatistics(mid, uid) {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/missions/' + mid + '/stats/' + uid, (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/missions/' + mid + '/stats/' + uid)
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data;
+			}
 		});
 	}
 	
@@ -564,27 +431,15 @@ class API {
 	 * @return {Promise} A promise resolving on pictures list
 	 */
 	static GetPicturesMissing() {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/pictures/missing', (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/pictures/missing')
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data;
+			}
 		});
 	}
 	
@@ -594,27 +449,15 @@ class API {
 	 * @return {Promise} A promise resolving on user statistics
 	 */
 	static GetUserStatistics(uid) {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/users/' + uid + '/stats', (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/users/' + uid + '/stats')
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data;
+			}
 		});
 	}
 	
@@ -624,27 +467,15 @@ class API {
 	 * @return {Promise} A promise resolving on users statistics
 	 */
 	static GetUsersStatistics(uid) {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/users/stats' + (uid ? '?user='+uid : ''), (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/users/stats' + (uid ? '?user='+uid : ''))
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data;
+			}
 		});
 	}
 	
@@ -653,27 +484,15 @@ class API {
 	 * @return {Promise} A promise resolving on statistics
 	 */
 	static GetInstanceStatistics(uid) {
-		return new Promise((resolve, reject) => {
-			request(CONST.P4R_URL + '/users/dataviz', (err, res, body) => {
-				if(err) {
-					reject(err);
-				}
-				else {
-					try {
-						const data = typeof body === "string" ? JSON.parse(body) : body;
-						
-						if(data.error) {
-							reject(new Error(data.details_for_humans || data.error));
-						}
-						else {
-							resolve(data);
-						}
-					}
-					catch(e) {
-						reject(e);
-					}
-				}
-			});
+		return fetch(CONST.P4R_URL + '/users/dataviz')
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return data;
+			}
 		});
 	}
 	
@@ -685,53 +504,41 @@ class API {
 	 * @return {Promise} Resolves if update was successful
 	 */
 	static UpdateMission(mission, username, userid) {
-		return new Promise((resolve, reject) => {
-			const data = {
-				username: username,
-				userid: userid,
-				type: mission.type,
-				theme: mission.theme,
-				areaname: mission.area.name,
-				shortdesc: mission.description.short,
-				fulldesc: mission.description.full,
-				status: mission.status
-			};
-			
-			if(mission.options && mission.options.data && mission.options.data.options) {
-				data.dataoptions = mission.options.data.options;
+		const data = {
+			username: username,
+			userid: userid,
+			type: mission.type,
+			theme: mission.theme,
+			areaname: mission.area.name,
+			shortdesc: mission.description.short,
+			fulldesc: mission.description.full,
+			status: mission.status
+		};
+		
+		if(mission.options && mission.options.data && mission.options.data.options) {
+			data.dataoptions = mission.options.data.options;
+		}
+		
+		if(mission.options && mission.options.template != null) {
+			data.template = mission.options.template;
+		}
+		
+		return fetch(
+			CONST.P4R_URL + '/missions/' + mission.id,
+			{
+				method: 'PUT',
+				headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
 			}
-			
-			if(mission.options && mission.options.template != null) {
-				data.template = mission.options.template;
+		)
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
 			}
-			
-			request(
-				{
-					method: 'PUT',
-					url: CONST.P4R_URL + '/missions/' + mission.id,
-					json: data
-				},
-				(err, res, body) => {
-					if(err) {
-						reject(err);
-					}
-					else {
-						try {
-							const data = typeof body === "string" ? JSON.parse(body) : body;
-							
-							if(data.error) {
-								reject(new Error(data.details_for_humans || data.error));
-							}
-							else {
-								resolve();
-							}
-						}
-						catch(e) {
-							reject(e);
-						}
-					}
-				}
-			);
+			else {
+				return null;
+			}
 		});
 	}
 	
@@ -744,33 +551,21 @@ class API {
 	 * @return {Promise} Resolves if update was successful
 	 */
 	static UpdateMissionFeature(mid, feature, username, userid) {
-		return new Promise((resolve, reject) => {
-			request(
-				{
-					method: "PUT",
-					url: CONST.P4R_URL + '/missions/' + mid + '/features/' + feature.id + '?username='+username+'&userid='+userid+'&status='+feature.status
-				},
-				(err, res, body) => {
-					if(err) {
-						reject(err);
-					}
-					else {
-						try {
-							const data = typeof body === "string" ? JSON.parse(body) : body;
-							
-							if(data.error) {
-								reject(new Error(data.details_for_humans || data.error));
-							}
-							else {
-								resolve();
-							}
-						}
-						catch(e) {
-							reject(e);
-						}
-					}
-				}
-			);
+		return fetch(
+			CONST.P4R_URL + '/missions/' + mid + '/features/' + feature.id + '?username='+username+'&userid='+userid+'&status='+feature.status,
+			{
+				method: "PUT",
+				headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+			}
+		)
+		.then(res => res.json())
+		.then(data => {
+			if(data.error) {
+				throw new Error(data.details_for_humans || data.error);
+			}
+			else {
+				return null;
+			}
 		});
 	}
 	

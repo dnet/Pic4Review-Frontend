@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { LatLngBounds } from 'leaflet';
-import { MapMarker } from 'mdi-material-ui';
+import MapMarker from 'mdi-material-ui/MapMarker';
 import Nominatim from 'nominatim-browser';
 import SelectList from './SelectListComponent';
 import TextField from 'material-ui/TextField';

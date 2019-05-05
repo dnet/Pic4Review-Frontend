@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import withWidth from 'material-ui/utils/withWidth';
-import { LibraryPlus, ViewGrid } from 'mdi-material-ui';
+import LibraryPlus from 'mdi-material-ui/LibraryPlus';
+import ViewGrid from 'mdi-material-ui/ViewGrid';
 import { Link } from 'react-router-dom';
 import AppBar from 'material-ui/AppBar';
 import Hidden from 'material-ui/Hidden';

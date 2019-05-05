@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import CONSTS from '../../constants';
 import { ListItemText } from 'material-ui/List';
 import Menu, { MenuItem } from 'material-ui/Menu';
-import request from 'browser-request';
 
 const RGX_OSMID = /^(node|way|relation)\/\d+$/;
 
@@ -44,18 +43,14 @@ class MissionReviewEditorsComponent extends Component {
 			url += "&select=" + parts[0] + parts[1];
 		}
 		
-		request(
-			url,
-			(error, response, body) => {
-			  if(error) {
-				  console.error(error);
-				  PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't open in JOSM, are you sure remote control is enabled ?") });
-			  }
-			  else {
-				  PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Opened in JOSM") });
-			  }
-		  }
-		);
+		fetch(url)
+		.then(response => {
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("Opened in JOSM") });
+		})
+		.catch(error => {
+			console.error(error);
+			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't open in JOSM, are you sure remote control is enabled ?") });
+		});
 	}
 	
 	/**

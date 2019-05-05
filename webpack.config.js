@@ -17,10 +17,12 @@ if(process.env.NODE_ENV === "production") {
 		}),
 		new webpack.optimize.AggressiveMergingPlugin(),
 		new webpack.optimize.OccurrenceOrderPlugin(),
+		new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+		new webpack.NoEmitOnErrorsPlugin(),
 		// Minify the bundle
 		new UglifyJSPlugin({
 			//sourceMap: true, // For debugging purposes only
-			parallel: 2,
+			parallel: 4,
 			uglifyOptions: {
 				mangle: true,
 				compress: {
@@ -36,7 +38,10 @@ if(process.env.NODE_ENV === "production") {
 					dead_code: true,
 					evaluate: true,
 					if_return: true,
-					join_vars: true
+					join_vars: true,
+					drop_debugger: true,
+					drop_console: true,
+					booleans: true
 				},
 				output: {
 					comments: false,

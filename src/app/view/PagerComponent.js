@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { ChevronLeft, ChevronRight } from 'mdi-material-ui';
+import ChevronLeft from 'mdi-material-ui/ChevronLeft';
+import ChevronRight from 'mdi-material-ui/ChevronRight';
 import Button from 'material-ui/Button';
 import MobileStepper from 'material-ui/MobileStepper';
 

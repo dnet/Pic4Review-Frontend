@@ -7,12 +7,14 @@ import API from '../../src/app/ctrl/API';
 import Feature from '../../src/app/model/Feature';
 import Mission from '../../src/app/model/Mission';
 import P4C from 'pic4carto';
+import fetch from 'node-fetch';
 
+global.fetch = fetch;
 const AREA = { name: "Rennes, France", bbox: new P4C.LatLngBounds(new P4C.LatLng(48.0758, -1.7245), new P4C.LatLng(48.1514, -1.5995)) };
 const DESC = { short: "Add those toilets in OSM", full: "Add the toilets from official source into OpenStreetMap. Please create a point following wiki doc." };
 const TIMEOUT = 10000;
 
-describe.skip("Ctrl > API", () => {
+describe.only("Ctrl > API", () => {
 	let pictoken = null;
 	let midNext = null;
 	
@@ -199,7 +201,7 @@ describe.skip("Ctrl > API", () => {
 		it("works if properly described", done => {
 			const m = new Mission(1, "fix", "amenity", AREA, DESC);
 			
-			API.CreateMission(m, "osmose", { item: 8180, amount: 1 }, null, "user1", 1)
+			API.CreateMission(m, "osmose", { item: 8180, amount: 10 }, null, "user1", 1)
 			.then(d => {
 				const mid = d.id;
 				pictoken = d.pictoken;
@@ -223,7 +225,7 @@ describe.skip("Ctrl > API", () => {
 				done();
 			})
 			.catch(e => {
-				assert.equal(e.message, "Invalid user info");
+				assert.equal(e.message, "I\'m not sure if you\'re logged in, can you retry a bit later ?");
 				done();
 			});
 		}).timeout(TIMEOUT);
@@ -248,9 +250,25 @@ describe.skip("Ctrl > API", () => {
 		it("works", done => {
 			API.GetMissionLoading(pictoken)
 			.then(loading => {
-				assert.equal(loading, 100);
+				assert.ok(!isNaN(parseInt(loading)));
 				
-				done();
+				if(loading === 100) {
+					done();
+				}
+				else {
+					const redo = () => {
+						API.GetMissionLoading(pictoken)
+						.then(l => {
+							if(l === 100) {
+								done();
+							}
+							else {
+								redo();
+							}
+						});
+					};
+					redo();
+				}
 			})
 			.catch(e => {
 				assert.fail(e);
