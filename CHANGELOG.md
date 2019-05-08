@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - My missions page allows user to search missions they contributed to, in addition to the ones they created
+- Mission image is also shown in mission list page on small screen devices (as an avatar)
 
 ### Changed
 - Move feature button on map of review page is more visible
