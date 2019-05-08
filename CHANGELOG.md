@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.5.8 - 2019-05-08
+
 ### Added
 - My missions page allows user to search missions they contributed to, in addition to the ones they created
 - Mission image is also shown in mission list page on small screen devices (as an avatar)
