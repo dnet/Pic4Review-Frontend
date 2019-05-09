@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import withWidth from 'material-ui/utils/withWidth';
-import Avatar from 'material-ui/Avatar';
 import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
 import Grid from 'material-ui/Grid';
 import MissionSummary from './MissionSummaryComponent';
@@ -24,13 +23,11 @@ class MissionsListComponent extends Component {
 					<Card style={{display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: done ? "white": "#e0e0e0"}}>
 						<div style={{width: "100%"}}>
 							<CardContent style={this.props.width === "xs" ? { paddingBottom: 0 } : null}>
-								{this.props.width === "xs" && m.options.illustration &&
-									<Avatar
-										src={m.options.illustration}
-										style={{float: "left", marginRight: 10, height: 60, width: 60}}
-									/>
-								}
-								<MissionSummary mission={m} onClick={() => this.props.history.push('/mission/'+m.id)} />
+								<MissionSummary
+									mission={m}
+									noImage={true}
+									onClick={() => this.props.history.push('/mission/'+m.id)}
+								/>
 							</CardContent>
 							<CardActions>
 								<MissionSummaryButtons mid={m.id} history={this.props.history} />
@@ -44,7 +41,7 @@ class MissionsListComponent extends Component {
 								minWidth: 150,
 								marginRight: 5,
 								position: "relative",
-								opacity: 0.8
+								opacity: 1
 							}}
 							>&nbsp;</div>
 						}

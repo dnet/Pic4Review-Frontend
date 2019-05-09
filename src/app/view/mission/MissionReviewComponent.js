@@ -624,42 +624,47 @@ class MissionReviewComponent extends Component {
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
 			
-			return <div style={this.props.style} ref="container">
-				<Grid container spacing={8}>
-					<Grid item xs={12} sm={6} lg={5} xl={4}>
-						<Question
+			const question = <Question
 							data={this._hasEditor() && this.props.mission.options.data.options.editors}
 							feature={this.state.feature}
 							instructions={this.props.mission.description.full}
 							similarFeatures={this.state.similar}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
 							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
-						/>
+						/>;
+			
+			const gallery = this.state.pictures && <Gallery2
+							pictures={this.state.pictures.slice(0, this.state.shownPics)}
+							height={PICTURE_HEIGHT[this.props.width]}
+							style={{marginBottom: 10}}
+							currentPictureId={this.state.currentPictureId}
+							onPicSelected={id => this.setState({ clickedPictureId: id })}
+							onCenterPicChanged={id => this.setState({ currentPictureId: id })}
+							onPicDetails={id => this.setState({ clickedPictureId: -id })}
+							onShowMore={() => this._loadMorePics()}
+							showThumbs={this.props.width === "xs"}
+							showMore={this.state.shownPics <= this.state.pictures.length && (this.state.feature.geometry.type === "Point" || !this.state.noMorePics)}
+							onPicMarked={id => this.setState({ markedPictureId: id })}
+							onPicUnmarked={id => this.setState({ markedPictureId: -1 })}
+							picMarked={this.state.markedPictureId}
+						/>;
+			
+			return <div style={this.props.style} ref="container">
+				<Grid container spacing={8} hidden={{xsDown: true}}>
+					<Grid item sm={6} lg={5} xl={4}>
+						{question}
 						
 						{this._hasEditor() ?
-							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 20}}>
+							<Grid container spacing={8} style={{marginBottom: 20}}>
 								{createBtn("prev", 4)}
 								{createBtn("edit", 4)}
 								{createBtn("next", 4)}
 							</Grid>
 							:
-							<Grid container hidden={{ smDown: true }} spacing={8} style={{marginBottom: 20}}>
+							<Grid container spacing={8} style={{marginBottom: 20}}>
 								{createBtn("prev", 4)}
 								{createBtn("done", 4)}
 								{createBtn("next", 4)}
-							</Grid>
-						}
-						
-						{this._hasEditor() ?
-							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 20}}>
-								{createBtn("prev", 6)}
-								{createBtn("next", 6)}
-							</Grid>
-							:
-							<Grid container hidden={{ mdUp: true }} spacing={8} style={{marginBottom: 20}}>
-								{createBtn("done", 12)}
-								{createBtn("prev", 6)}
-								{createBtn("next", 6)}
 							</Grid>
 						}
 						
@@ -667,41 +672,33 @@ class MissionReviewComponent extends Component {
 						<Hidden mdDown={true}>{counter}</Hidden>
 					</Grid>
 					
-					<Grid item sm={6} hidden={{ lgUp: true, xsDown: true }}>
+					<Grid item sm={6} hidden={{ lgUp: true }}>
 						{map}
 						{counter}
 					</Grid>
 					
-					<Grid item xs={12} sm={12} lg={7} xl={8}>
+					<Grid item sm={12} lg={7} xl={8}>
 						<FeatureDetails
 							feature={this.state.feature}
 							showPopup={this.state.showFeatureDetails}
 							onShowPopup={show => this.setState({ showFeatureDetails: show })}
 						/>
 						
-						{this.state.pictures &&
-							<Gallery2
-								pictures={this.state.pictures.slice(0, this.state.shownPics)}
-								height={PICTURE_HEIGHT[this.props.width]}
-								style={{marginBottom: 10}}
-								currentPictureId={this.state.currentPictureId}
-								onPicSelected={id => this.setState({ clickedPictureId: id })}
-								onCenterPicChanged={id => this.setState({ currentPictureId: id })}
-								onPicDetails={id => this.setState({ clickedPictureId: -id })}
-								onShowMore={() => this._loadMorePics()}
-								showThumbs={this.props.width === "xs"}
-								showMore={this.state.shownPics <= this.state.pictures.length && (this.state.feature.geometry.type === "Point" || !this.state.noMorePics)}
-								onPicMarked={id => this.setState({ markedPictureId: id })}
-								onPicUnmarked={id => this.setState({ markedPictureId: -1 })}
-								picMarked={this.state.markedPictureId}
-							/>}
-					</Grid>
-					
-					<Grid item xs={12} hidden={{ smUp: true }}>
-						{map}
-						{counter}
+						{gallery}
 					</Grid>
 				</Grid>
+				
+				<Hidden smUp>
+					<div>
+						<div style={{position: "absolute", top: 70, bottom: "40%", right: 0, left: 0}}>
+							{gallery}
+						</div>
+						
+						<div style={{position: "absolute", top: "60%", bottom: 0, right: 0, left: 0}}>
+							{question}
+						</div>
+					</div>
+				</Hidden>
 				
 				<First open={this.state.firstReview} mid={this.props.mission.id} onClose={() => this._closeFirstHelp()} />
 				

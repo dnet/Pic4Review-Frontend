@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { grey } from 'material-ui/colors';
 import withWidth from 'material-ui/utils/withWidth';
+import Avatar from 'material-ui/Avatar';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
@@ -41,6 +42,18 @@ class MissionSummaryComponent extends Component {
 		if(this.props.width !== "xs") { details = " - " + details; }
 		
 		return <div onClick={this.props.onClick ? this.props.onClick : () => {}}>
+			{!this.props.noImage && this.props.width !== "xs" && this.props.mission.options.illustration &&
+				<img
+					src={this.props.mission.options.illustration}
+					style={{ float: "right", maxHeight: 150, maxWidth: 150, marginLeft: 10 }}
+				/>
+			}
+			{!this.props.noImage && this.props.width === "xs" && this.props.mission.options.illustration &&
+				<Avatar
+					src={this.props.mission.options.illustration}
+					style={{float: "left", marginRight: 10, height: 60, width: 60}}
+				/>
+			}
 			<Typography variant={this.props.width === "xs" ? "subheading" : "headline"} style={{verticalAlign: "middle"}}>
 				{this.props.mission.description.short}
 				

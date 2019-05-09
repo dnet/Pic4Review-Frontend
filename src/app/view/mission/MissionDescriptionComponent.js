@@ -61,14 +61,6 @@ class MissionDescriptionComponent extends Component {
 		</Typography>;
 		
 		return <div style={this.props.style}>
-			{this.props.mission.options.illustration &&
-				<Hidden only="xs">
-					<img
-						src={this.props.mission.options.illustration}
-						style={{ float: "right", maxHeight: 150, maxWidth: 150, marginLeft: 10 }}
-					/>
-				</Hidden>
-			}
 			<MissionSummary mission={this.props.mission} />
 			<div className="limited-images">
 				<ReactMarkdown className={this.props.classes.root} source={this.props.mission.description.full} />

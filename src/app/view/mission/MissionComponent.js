@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import withWidth from 'material-ui/utils/withWidth';
 import { CircularProgress } from 'material-ui/Progress';
 import API from '../../ctrl/API';
+import Hidden from 'material-ui/Hidden';
 import MissionDescription from './MissionDescriptionComponent';
 import MissionReview from './MissionReviewComponent';
 import MissionStatistics from './MissionStatisticsComponent';
@@ -27,7 +28,7 @@ class MissionComponent extends Component {
 	
 	render() {
 		const tab = PAGES.indexOf(this.props.match.params.page || "summary");
-		const contentStyle = { marginTop: 10 };
+		const contentStyle = this.props.width === "xs" ? {} : { marginTop: 10 };
 		let content = null;
 		
 		if(this.state.mission) {
@@ -50,16 +51,19 @@ class MissionComponent extends Component {
 		}
 		
 		return <div>
-			<Tabs
-				value={tab}
-				onChange={(e,v) => this.props.history.push('/mission/'+this.props.match.params.mid+'/'+PAGES[v])}
-				indicatorColor="primary"
-				textColor="primary"
-			>
-				<Tab label={I18n.t("Summary")} />
-				<Tab label={I18n.t("Review")} />
-				<Tab label={I18n.t("Statistics")} />
-			</Tabs>
+			<Hidden only="xs">
+				<Tabs
+					value={tab}
+					onChange={(e,v) => this.props.history.push('/mission/'+this.props.match.params.mid+'/'+PAGES[v])}
+					indicatorColor="primary"
+					textColor="primary"
+				>
+					<Tab label={I18n.t("Summary")} />
+					<Tab label={I18n.t("Review")} />
+					<Tab label={I18n.t("Statistics")} />
+				</Tabs>
+			</Hidden>
+			
 			{content}
 		</div>;
 	}

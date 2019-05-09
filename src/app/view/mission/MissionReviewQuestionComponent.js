@@ -212,9 +212,8 @@ class MissionReviewQuestionComponent extends Component {
 			
 			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
 				<Typography variant="headline">{question}</Typography>
-				{this.props.width === "xs" && <Typography variant="subheading">{I18n.t("Use street pictures at the bottom to find the answer !")}</Typography>}
 				
-				{instructions}
+				{this.props.width !== "xs" && instructions}
 				{content}
 			</div>;
 		}
@@ -222,7 +221,7 @@ class MissionReviewQuestionComponent extends Component {
 			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: 20 }}>
 				<Typography variant="headline">{I18n.t("This need an advanced edit !")}</Typography>
 				
-				{instructions}
+				{this.props.width !== "xs" && instructions}
 				
 				{(this.props.feature.properties.title || this.props.feature.properties.details) &&
 					<Typography>{I18n.t("Details")} : {this.props.feature.properties.details ? this.props.feature.properties.details : this.props.feature.properties.title}</Typography>
