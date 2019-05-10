@@ -42,6 +42,35 @@ button.p4r-smallbtn {
 	font-size: 0.9em;
 }
 
+
+/*
+ * Gallery
+ */
+
+div.image-gallery-bullets {
+	height: unset;
+}
+
+.image-gallery-fullscreen-button::before,
+.image-gallery-play-button::before {
+	content: unset !important;
+}
+
+.image-gallery-left-nav[disabled], .image-gallery-right-nav[disabled] {
+	opacity: 0.3 !important;
+}
+
+.image-gallery-fullscreen-button, .image-gallery-play-button {
+	bottom: unset !important;
+	top: 0;
+	background: rgba(0, 0, 0, 0.4) !important;
+}
+
+.image-gallery-description {
+	pointer-events: none;
+}
+
+
 /*
  * xs devices
  */
@@ -57,7 +86,38 @@ button.p4r-smallbtn {
 	span.p4r-legend {
 		line-height: 25px;
 	}
+	
+	.image-gallery,
+	.image-gallery-content,
+	.image-gallery-slide-wrapper,
+	.image-gallery-swipe,
+	.image-gallery-slides,
+	.image-gallery-slide,
+	.image-gallery-image,
+	.image-gallery-image img {
+		height: 100%;
+	}
+
+
 }
+
+
+/*
+ * Not xs devices
+ */
+@media (min-width: 600px) {
+	.image-gallery,
+	.image-gallery-content,
+	.image-gallery-slide-wrapper,
+	.image-gallery-swipe,
+	.image-gallery-slides,
+	.image-gallery-slide,
+	.image-gallery-image,
+	.image-gallery-image img {
+		max-height: 80%;
+	}
+}
+
 
 /* roboto-300 - latin */
 @font-face {

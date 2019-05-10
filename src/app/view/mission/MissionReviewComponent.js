@@ -9,7 +9,7 @@ import ConfirmEdit from './MissionReviewFeatureDialogComponent';
 import Editors from './MissionReviewEditorsComponent';
 import FeatureDetails from './MissionReviewFeatureDetailsComponent';
 import First from './MissionFirstReviewComponent';
-import Gallery2 from './MissionReviewGallery2Component';
+import Gallery from './MissionReviewGallery3Component';
 import Grid from 'material-ui/Grid';
 import Hidden from 'material-ui/Hidden';
 import Leaflet from 'leaflet';
@@ -633,16 +633,13 @@ class MissionReviewComponent extends Component {
 							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
 						/>;
 			
-			const gallery = this.state.pictures && <Gallery2
+			const gallery = this.state.pictures && <Gallery
 							pictures={this.state.pictures.slice(0, this.state.shownPics)}
-							height={PICTURE_HEIGHT[this.props.width]}
-							style={{marginBottom: 10}}
 							currentPictureId={this.state.currentPictureId}
 							onPicSelected={id => this.setState({ clickedPictureId: id })}
 							onCenterPicChanged={id => this.setState({ currentPictureId: id })}
 							onPicDetails={id => this.setState({ clickedPictureId: -id })}
 							onShowMore={() => this._loadMorePics()}
-							showThumbs={this.props.width === "xs"}
 							showMore={this.state.shownPics <= this.state.pictures.length && (this.state.feature.geometry.type === "Point" || !this.state.noMorePics)}
 							onPicMarked={id => this.setState({ markedPictureId: id })}
 							onPicUnmarked={id => this.setState({ markedPictureId: -1 })}
@@ -690,7 +687,7 @@ class MissionReviewComponent extends Component {
 				
 				<Hidden smUp>
 					<div>
-						<div style={{position: "absolute", top: 70, bottom: "40%", right: 0, left: 0}}>
+						<div style={{position: "absolute", top: 57, bottom: "40%", right: 0, left: 0}}>
 							{gallery}
 						</div>
 						
