@@ -686,12 +686,12 @@ class MissionReviewComponent extends Component {
 				</Grid>
 				
 				<Hidden smUp>
-					<div>
-						<div style={{position: "absolute", top: 57, bottom: "40%", right: 0, left: 0}}>
+					<div style={{position: "absolute", display: "flex", flexDirection: "column", top: 57, bottom: 0, right: 0, left: 0}}>
+						<div style={{flex: 2}}>
 							{gallery}
 						</div>
 						
-						<div style={{position: "absolute", top: "60%", bottom: 0, right: 0, left: 0}}>
+						<div style={{flex: 1, overflowY: "auto"}}>
 							{question}
 						</div>
 					</div>
