@@ -135,7 +135,7 @@ class MissionReviewGallery3Component extends Component {
 	
 	componentDidUpdate() {
 		if(this.refs.gallery && this.refs.gallery.getCurrentIndex() !== this.props.currentPictureId) {
-			this.refs.gallery.slideToIndex(this.props.currentPictureId);
+			this.refs.gallery.slideToIndex(parseInt(this.props.currentPictureId));
 			this.centerPic = this.props.currentPictureId;
 		}
 	}

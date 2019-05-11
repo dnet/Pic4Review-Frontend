@@ -185,9 +185,11 @@ class MissionReviewQuestionComponent extends Component {
 				delete tags.title;
 				
 				content = <div>
-					<Paper style={{maxHeight: 150, overflowY: "auto", marginBottom: 20}}>
-						<Tags feature={{properties: tags}} />
-					</Paper>
+					{this.props.width !== "xs" &&
+						<Paper style={{maxHeight: 150, overflowY: "auto", marginBottom: 20}}>
+							<Tags feature={{properties: tags}} />
+						</Paper>
+					}
 					
 					{this.props.similarFeatures &&
 						<Typography variant="subheading" style={{marginBottom: 20}}>{I18n.t("There are similar features already existing around in OpenStreetMap (shown in orange on map).")}</Typography>
@@ -210,7 +212,7 @@ class MissionReviewQuestionComponent extends Component {
 				</div>;
 			}
 			
-			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
+			return <div style={{ textAlign: "center", paddingTop: this.props.width === "xs" ? 0 : 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
 				<Typography variant="headline">{question}</Typography>
 				
 				{this.props.width !== "xs" && instructions}
@@ -218,7 +220,7 @@ class MissionReviewQuestionComponent extends Component {
 			</div>;
 		}
 		else {
-			return <div style={{ textAlign: "center", paddingTop: 20, paddingBottom: 20 }}>
+			return <div style={{ textAlign: "center", paddingTop: this.props.width === "xs" ? 0 : 20, paddingBottom: this.props.width === "xs" ? 0 : 20 }}>
 				<Typography variant="headline">{I18n.t("This need an advanced edit !")}</Typography>
 				
 				{this.props.width !== "xs" && instructions}

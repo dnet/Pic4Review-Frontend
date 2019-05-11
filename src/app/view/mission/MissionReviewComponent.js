@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import withWidth from 'material-ui/utils/withWidth';
-import { Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
+import { withStyles } from 'material-ui/styles';
+import { MapMarkerRadius, ImageMultiple, Information, Pencil, Check, SkipForward, SkipPrevious, EyeOff } from 'mdi-material-ui';
 import API from '../../ctrl/API';
+import BottomNavigation, { BottomNavigationAction } from 'material-ui/BottomNavigation';
 import Button from 'material-ui/Button';
 import ConfirmDuplicate from './MissionReviewFeatureDuplicateDialogComponent';
 import ConfirmEdit from './MissionReviewFeatureDialogComponent';
@@ -14,10 +16,12 @@ import Grid from 'material-ui/Grid';
 import Hidden from 'material-ui/Hidden';
 import Leaflet from 'leaflet';
 import Map from './MissionReviewMapComponent';
+import Markdown from 'react-markdown';
 import P4C from 'pic4carto';
 import Paper from 'material-ui/Paper';
 import Question from './MissionReviewQuestionComponent';
 import Statistics from './MissionReviewStatisticsComponent';
+import Tags from './MissionReviewTagsComponent';
 import Tooltip from 'material-ui/Tooltip';
 
 const PICTURE_HEIGHT = { "xs": 400, "sm": 500, "md": 600, "lg": 700, "xl": 800 };
@@ -60,7 +64,8 @@ class MissionReviewComponent extends Component {
 			markedPictureId: -1,
 			featureCanMove: false,
 			newFeatureGeometry: null,
-			similar: null
+			similar: null,
+			bottomNav: 1
 		};
 		
 		this.psTokens = {};
@@ -124,6 +129,7 @@ class MissionReviewComponent extends Component {
 							feature: f,
 							pictures: f.pictures,
 							currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
+							bottomNav: 1,
 							shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
 							noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
 						});
@@ -237,7 +243,8 @@ class MissionReviewComponent extends Component {
 				showFeatureDetails: false,
 				featureCanMove: false,
 				newFeatureGeometry: null,
-				similar: null
+				similar: null,
+				bottomNav: 1
 			});
 		}
 		else {
@@ -612,7 +619,7 @@ class MissionReviewComponent extends Component {
 							currentPictureId={this.state.currentPictureId}
 							onPicClicked={id => this.setState({ currentPictureId: id })}
 							onFeatureClicked={() => this.setState({ showFeatureDetails: true })}
-							style={{ height: MAP_HEIGHT[this.props.width], marginBottom: 10 }}
+							style={this.props.width === "xs" ? { height: "100%" } : { height: MAP_HEIGHT[this.props.width], marginBottom: 10 }}
 							layers={this.props.mission.options.layers}
 							zoom={this.state.mapZoom}
 							onZoomChange={z => this.setState({ mapZoom: z })}
@@ -687,11 +694,28 @@ class MissionReviewComponent extends Component {
 				
 				<Hidden smUp>
 					<div style={{position: "absolute", display: "flex", flexDirection: "column", top: 57, bottom: 0, right: 0, left: 0}}>
-						<div style={{flex: 2}}>
-							{gallery}
+						<div style={{flex: 2, maxHeight: "80%", overflowY: "auto"}}>
+							{this.state.bottomNav === 0 && map}
+							{this.state.bottomNav === 1 && gallery}
+							{this.state.bottomNav === 2 &&
+								<div style={{margin: 10}}>
+									<Markdown source={this.props.mission.description.full} />
+									<Tags feature={{properties: this.state.feature.properties}} />
+								</div>
+							}
 						</div>
 						
-						<div style={{flex: 1, overflowY: "auto"}}>
+						<BottomNavigation
+							value={this.state.bottomNav}
+							onChange={(ev, val) => this.setState({ bottomNav: val })}
+							showLabels
+						>
+							<BottomNavigationAction label={I18n.t("Map")} icon={<MapMarkerRadius />} />
+							<BottomNavigationAction label={I18n.t("Pictures")} icon={<ImageMultiple />} />
+							<BottomNavigationAction label={I18n.t("Details")} icon={<Information />} />
+						</BottomNavigation>
+						
+						<div style={{overflowY: "auto", padding: 10}}>
 							{question}
 						</div>
 					</div>
@@ -750,4 +774,4 @@ class MissionReviewComponent extends Component {
 	}
 }
 
-export default withWidth()(withRouter(MissionReviewComponent));
+export default withStyles(styles)(withWidth()(withRouter(MissionReviewComponent)));
