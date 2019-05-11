@@ -366,7 +366,7 @@ class NewMissionComponent extends Component {
 				content = <Editors
 							data={this.state.editors}
 							dataSource={this.state.datasource}
-							showOnly={this.state.datasource.options.allowedEditors}
+							showOnly={(this.state.datasource.options && this.state.datasource.options.allowedEditors) || "all"}
 							onChange={d => this.setState({ editors: d })}
 						/>;
 				break;

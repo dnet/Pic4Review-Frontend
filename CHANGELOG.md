@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Fixed
+- Duplicating old missions was causing a bug when showing editors options
+
 
 ## 0.5.8 - 2019-05-08
 
