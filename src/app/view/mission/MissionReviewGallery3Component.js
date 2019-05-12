@@ -37,6 +37,7 @@ class MissionReviewGallery3Component extends Component {
 				useBrowserFullscreen={false}
 				slideDuration={0}
 				useTranslate3D={false}
+				startIndex={parseInt(this.props.currentPictureId)}
 				renderItem={item => {
 					return item.more ?
 					<div
