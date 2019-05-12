@@ -49,25 +49,27 @@ button.p4r-smallbtn {
 
 div.image-gallery-bullets {
 	height: unset;
-}
-
-.image-gallery-fullscreen-button::before,
-.image-gallery-play-button::before {
-	content: unset !important;
+	bottom: 10px;
 }
 
 .image-gallery-left-nav[disabled], .image-gallery-right-nav[disabled] {
 	opacity: 0.3 !important;
 }
 
-.image-gallery-fullscreen-button, .image-gallery-play-button {
-	bottom: unset !important;
+.image-gallery-description {
 	top: 0;
 	background: rgba(0, 0, 0, 0.4) !important;
+	bottom: unset !important;
+	padding: 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	right: 0;
+	padding: 0 !important;
 }
 
-.image-gallery-description {
-	pointer-events: none;
+.image-gallery-description > span {
+	vertical-align: middle;
 }
 
 

@@ -48,6 +48,77 @@ class MissionReviewGallery3Component extends Component {
 						<p>{I18n.t("Click to load more pictures")}</p>
 					</div>
 					: <div className='image-gallery-image'>
+						<span className='image-gallery-description'>
+							<span>
+								<Tooltip title={I18n.t("Go back to mission description")}>
+									<IconButton
+										style={{ color: "white" }}
+										component={Link}
+										to={'/mission/'+this.props.missionId}
+									>
+										<ArrowLeft />
+									</IconButton>
+								</Tooltip>
+								
+								{item.featured &&
+									<Tooltip title={I18n.t("This picture is already associated to this feature")}>
+										<IconButton style={{ color: "white" }}>
+											<TagHeart />
+										</IconButton>
+									</Tooltip>
+								}
+								
+								{allowUpdateAssociation && !item.featured && this.props.picMarked !== item.id &&
+									<Tooltip title={I18n.t("Mark this picture as best one")}>
+										<IconButton
+											style={{ color: "white" }}
+											onClick={() => this.props.onPicMarked(item.id)}
+										>
+											<StarOutline />
+										</IconButton>
+									</Tooltip>
+								}
+								
+								{allowUpdateAssociation && !item.featured && this.props.picMarked === item.id &&
+									<Tooltip title={I18n.t("Unmark this picture")}>
+										<IconButton
+											style={{ color: "white" }}
+											onClick={() => this.props.onPicUnmarked(item.id)}
+										>
+											<Star />
+										</IconButton>
+									</Tooltip>
+								}
+							</span>
+							
+							<span>{(new Date(item.date)).toLocaleDateString() + " - " + item.author + " - " + item.provider}</span>
+							
+							<span>
+								{this.props.width !== "xs" &&
+									<Tooltip title={I18n.t("Picture details (and other pictures around)")}>
+										<IconButton
+											href={item.detailsUrl}
+											target="_blank"
+											style={{ color: "white" }}
+											onClick={() => this.props.onPicDetails(item.id)}
+										>
+											<MapMarkerRadius />
+										</IconButton>
+									</Tooltip>
+								}
+								<Tooltip title={I18n.t("Zoom in (opens in new tab)")}>
+									<IconButton
+										href={item.pictureUrl}
+										target="_blank"
+										style={{ color: "white" }}
+										onClick={() => this.props.onPicSelected(item.id)}
+									>
+										<MagnifyPlusOutline />
+									</IconButton>
+								</Tooltip>
+							</span>
+						</span>
+						
 						{this.props.width === "xs" ?
 							<img
 								src={item.thumbUrl || item.pictureUrl}
@@ -55,77 +126,6 @@ class MissionReviewGallery3Component extends Component {
 							:
 							<Magnifier src={item.pictureUrl} zoomFactor={2.5} mgWidth={200} mgHeight={200} />
 						}
-						
-						<div className="image-gallery-fullscreen-button">
-							{this.props.width !== "xs" &&
-								<Tooltip title={I18n.t("Picture details (and other pictures around)")}>
-									<IconButton
-										href={item.detailsUrl}
-										target="_blank"
-										style={{ color: "white" }}
-										onClick={() => this.props.onPicDetails(item.id)}
-									>
-										<MapMarkerRadius />
-									</IconButton>
-								</Tooltip>
-							}
-							<Tooltip title={I18n.t("Zoom in (opens in new tab)")}>
-								<IconButton
-									href={item.pictureUrl}
-									target="_blank"
-									style={{ color: "white" }}
-									onClick={() => this.props.onPicSelected(item.id)}
-								>
-									<MagnifyPlusOutline />
-								</IconButton>
-							</Tooltip>
-						</div>
-						
-						<div className="image-gallery-play-button">
-							<Tooltip title={I18n.t("Go back to mission description")}>
-								<IconButton
-									style={{ color: "white" }}
-									component={Link}
-									to={'/mission/'+this.props.missionId}
-								>
-									<ArrowLeft />
-								</IconButton>
-							</Tooltip>
-							
-							{item.featured &&
-								<Tooltip title={I18n.t("This picture is already associated to this feature")}>
-									<IconButton style={{ color: "white" }}>
-										<TagHeart />
-									</IconButton>
-								</Tooltip>
-							}
-							
-							{allowUpdateAssociation && !item.featured && this.props.picMarked !== item.id &&
-								<Tooltip title={I18n.t("Mark this picture as best one")}>
-									<IconButton
-										style={{ color: "white" }}
-										onClick={() => this.props.onPicMarked(item.id)}
-									>
-										<StarOutline />
-									</IconButton>
-								</Tooltip>
-							}
-							
-							{allowUpdateAssociation && !item.featured && this.props.picMarked === item.id &&
-								<Tooltip title={I18n.t("Unmark this picture")}>
-									<IconButton
-										style={{ color: "white" }}
-										onClick={() => this.props.onPicUnmarked(item.id)}
-									>
-										<Star />
-									</IconButton>
-								</Tooltip>
-							}
-						</div>
-
-						<span className='image-gallery-description'>
-							{(new Date(item.date)).toLocaleDateString() + " - " + item.author + " - " + item.provider}
-						</span>
 					</div>;
 				}}
 			/>;
