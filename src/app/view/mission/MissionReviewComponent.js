@@ -614,6 +614,7 @@ class MissionReviewComponent extends Component {
 			const map = <Map
 							ref="map"
 							feature={this.state.feature}
+							geometry={this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : this.state.feature.geometry}
 							similarFeatures={this.state.similar}
 							pictures={this.state.pictures ? this.state.pictures.slice(0, this.state.shownPics) : []}
 							currentPictureId={this.state.currentPictureId}

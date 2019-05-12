@@ -59,9 +59,14 @@ class MissionReviewMapComponent extends Component {
 			}
 		}
 		
-		const feature = this.state.markerEditGeom || this.props.feature;
+		const feature = this.state.markerEditGeom || { type: "Feature", geometry: this.props.geometry };
 		
-		return <Map ref="map" center={this.props.feature.coordinates} zoom={this.props.zoom || DEFAULT_ZOOM} style={style}>
+		return <Map
+			ref="map"
+			center={feature.geometry.type === "Point" ? Leaflet.GeoJSON.coordsToLatLng(feature.geometry.coordinates) : this.props.feature.coordinates}
+			zoom={this.props.zoom || DEFAULT_ZOOM}
+			style={style}
+		>
 			{this.props.layers ?
 				<LayersControl position="topright">
 					{this.props.layers.filter(l => l.type === "tms").map((l,i) => {
@@ -174,7 +179,7 @@ class MissionReviewMapComponent extends Component {
 	
 	_fitBounds() {
 		if(this.refs.map && this.refs.data) {
-			if(this.props.feature.geometry.type === "Point") {
+			if(this.props.geometry.type === "Point") {
 				this.refs.map.leafletElement.setView(this.refs.data.leafletElement.getBounds().getCenter(), this.props.zoom || DEFAULT_ZOOM);
 			}
 			else {
