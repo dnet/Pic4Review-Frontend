@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import withWidth from 'material-ui/utils/withWidth';
 import CONSTS from '../../constants';
 import CursorMove from 'mdi-material-ui/CursorMove';
 import Check from 'mdi-material-ui/Check';
@@ -103,7 +104,7 @@ class MissionReviewMapComponent extends Component {
 					fillColor="red"
 					fillOpacity={0.7}
 					onClick={() => this.props.onFeatureClicked()}
-					pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
+					pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: this.props.width === "xs" ? 10 : 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
 				/>
 			}
 			
@@ -148,7 +149,7 @@ class MissionReviewMapComponent extends Component {
 					fillColor="orange"
 					fillOpacity={0.7}
 					pointToLayer={(geojsonPoint, latlng) => {
-						return Leaflet.circleMarker(latlng, { radius: 6, color: "orange", fillColor: "orange", fillOpacity: 0.7 });
+						return Leaflet.circleMarker(latlng, { radius: this.props.width === "xs" ? 8 : 6, color: "orange", fillColor: "orange", fillOpacity: 0.7 });
 					}}
 					onEachFeature={(feature, layer) => {
 						const content = document.createElement("div");
@@ -252,4 +253,4 @@ class MissionReviewMapComponent extends Component {
  */
 
 
-export default MissionReviewMapComponent;
+export default withWidth()(MissionReviewMapComponent);
