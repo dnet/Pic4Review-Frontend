@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from 'material-ui/styles';
 import withWidth from 'material-ui/utils/withWidth';
-import { Check, Pencil, RadioboxBlank, RadioboxMarked, MapMarkerMultiple, MapMarkerPlus } from 'mdi-material-ui';
+import { Check, Pencil, RadioboxBlank, RadioboxMarked, MapMarkerMultiple, MapMarkerPlus, SkipForward } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import { FormControlLabel } from 'material-ui/Form';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
@@ -144,17 +144,17 @@ class MissionReviewQuestionComponent extends Component {
 			}
 			else if(this.props.data.type === "choice") {
 				content = <RadioGroup
-						row
-						aria-label="answer"
-						name="answer"
-						value={this.state.selectedAnswer.toString()}
-						onChange={ev => this._onAnswerChange(ev.target.value)}
-						style={{ justifyContent: "center" }}
-					>
-						{this.props.data.answers.map((answer, i) => {
-							return <FormControlLabel key={i} value={i.toString()} control={<Radio />} label={answer.label} />;
-						})}
-					</RadioGroup>;
+					row
+					aria-label="answer"
+					name="answer"
+					value={this.state.selectedAnswer.toString()}
+					onChange={ev => this._onAnswerChange(ev.target.value)}
+					style={{ justifyContent: "center" }}
+				>
+					{this.props.data.answers.map((answer, i) => {
+						return <FormControlLabel key={i} value={i.toString()} control={<Radio />} label={answer.label} />;
+					})}
+				</RadioGroup>;
 			}
 			else if(this.props.data.type === "usertext") {
 				let select = null;
@@ -243,6 +243,19 @@ class MissionReviewQuestionComponent extends Component {
 				
 				{this.props.width !== "xs" && instructions}
 				{content}
+				
+				{this.props.width === "xs" && this.props.skip &&
+					<Tooltip title={this.props.skip.tip} style={{width: "100%", marginTop: 10}}>
+						<Button
+							variant="raised"
+							size="small"
+							style={{width: "100%"}}
+							onClick={this.props.skip.click}
+						>
+							{this.props.skip.icon} {this.props.skip.label}
+						</Button>
+					</Tooltip>
+				}
 			</div>;
 		}
 		else {

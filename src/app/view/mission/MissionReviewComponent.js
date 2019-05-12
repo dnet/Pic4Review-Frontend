@@ -638,6 +638,7 @@ class MissionReviewComponent extends Component {
 							similarFeatures={this.state.similar}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
 							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
+							skip={buttons.next}
 						/>;
 			
 			const gallery = this.state.pictures && <Gallery
