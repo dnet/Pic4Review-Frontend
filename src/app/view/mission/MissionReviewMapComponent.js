@@ -174,7 +174,12 @@ class MissionReviewMapComponent extends Component {
 	
 	_fitBounds() {
 		if(this.refs.map && this.refs.data) {
-			this.refs.map.leafletElement.setView(this.refs.data.leafletElement.getBounds().getCenter(), this.props.zoom || DEFAULT_ZOOM);
+			if(this.props.feature.geometry.type === "Point") {
+				this.refs.map.leafletElement.setView(this.refs.data.leafletElement.getBounds().getCenter(), this.props.zoom || DEFAULT_ZOOM);
+			}
+			else {
+				this.refs.map.leafletElement.fitBounds(this.refs.data.leafletElement.getBounds());
+			}
 		}
 	}
 	
@@ -215,7 +220,10 @@ class MissionReviewMapComponent extends Component {
 	}
 	
 	componentDidUpdate() {
-		this._fitBounds();
+		if(this.refs.map) {
+			this.refs.map.leafletElement.invalidateSize();
+			this._fitBounds();
+		}
 	}
 	
 	componentWillReceiveProps(nextProps) {

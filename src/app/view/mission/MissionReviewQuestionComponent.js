@@ -75,6 +75,7 @@ class MissionReviewQuestionComponent extends Component {
 	}
 	
 	render() {
+		const btnSize = this.props.width === "xs" ? "small" : "medium";
 		const instructions = <div className="limited-images" style={{overflow: "auto", textAlign: "justify", maxHeight: INSTR_HEIGHT[this.props.width], marginBottom: 10}}>
 			<Markdown className={this.props.classes.root} source={this.props.instructions} />
 		</div>;
@@ -189,7 +190,7 @@ class MissionReviewQuestionComponent extends Component {
 				content = <div>
 					{select}
 					<Tooltip title={I18n.t("Validate your answer")} style={{width:"100%", marginTop: 10}}>
-						<Button variant="raised" color="primary" onClick={this._onUsertextValidated.bind(this)} style={{width:"100%", height:"100%" }}>
+						<Button size={btnSize} variant="raised" color="primary" onClick={this._onUsertextValidated.bind(this)} style={{width:"100%", height:"100%" }}>
 							<Check /> {I18n.t("OK")}
 						</Button>
 					</Tooltip>
@@ -210,11 +211,16 @@ class MissionReviewQuestionComponent extends Component {
 					}
 					
 					{this.props.similarFeatures &&
-						<Typography variant="subheading" style={{marginBottom: 20}}>{I18n.t("There are similar features already existing around in OpenStreetMap (shown in orange on map).")}</Typography>
+						<Typography
+							variant="subheading"
+							style={this.props.width === "xs" ? {fontSize: "0.9rem", marginBottom: 10}: {marginBottom: 20}}
+						>
+							{I18n.t("There are similar features already existing around in OpenStreetMap (shown in orange on map).")}
+						</Typography>
 					}
 					
 					<Tooltip title={I18n.t("Click here if you can see the concerned feature on pictures")} style={{width:"100%"}}>
-						<Button variant="raised" color="primary" onClick={this._onImportValidated.bind(this)} style={{ width:"100%", height:"100%" }}>
+						<Button size={btnSize} variant="raised" color="primary" onClick={this._onImportValidated.bind(this)} style={{ width:"100%", height:"100%" }}>
 							{this.props.similarFeatures ? <MapMarkerPlus /> : <Check />}
 							{this.props.similarFeatures ? I18n.t("I see it and it's not in OSM") : I18n.t("I can see the feature")}
 						</Button>
@@ -222,7 +228,7 @@ class MissionReviewQuestionComponent extends Component {
 					
 					{this.props.similarFeatures &&
 						<Tooltip title={I18n.t("Click here if you can see the concerned feature on pictures, but also as an already existing feature in OSM shown as in orange on map")} style={{width:"100%", marginTop: 10}}>
-							<Button variant="raised" color="secondary" onClick={() => this._handleMerge()} style={{ width:"100%", height:"100%" }}>
+							<Button size={btnSize} variant="raised" color="secondary" onClick={() => this._handleMerge()} style={{ width:"100%", height:"100%" }}>
 								<MapMarkerMultiple /> {I18n.t("I see it but it already exists in OSM")}
 							</Button>
 						</Tooltip>
@@ -231,7 +237,9 @@ class MissionReviewQuestionComponent extends Component {
 			}
 			
 			return <div style={{ textAlign: "center", paddingTop: this.props.width === "xs" ? 0 : 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
-				<Typography variant="headline">{question}</Typography>
+				<Typography variant="headline" style={this.props.width === "xs" ? {fontSize: "1.3rem", marginBottom: 5} : {}}>
+					{question}
+				</Typography>
 				
 				{this.props.width !== "xs" && instructions}
 				{content}
@@ -239,7 +247,9 @@ class MissionReviewQuestionComponent extends Component {
 		}
 		else {
 			return <div style={{ textAlign: "center", paddingTop: this.props.width === "xs" ? 0 : 20, paddingBottom: this.props.width === "xs" ? 0 : 20 }}>
-				<Typography variant="headline">{I18n.t("This need an advanced edit !")}</Typography>
+				<Typography variant="headline">
+					{I18n.t("This need an advanced edit !")}
+				</Typography>
 				
 				{this.props.width !== "xs" && instructions}
 				
@@ -247,7 +257,7 @@ class MissionReviewQuestionComponent extends Component {
 					<Typography>{I18n.t("Details")} : {this.props.feature.properties.details ? this.props.feature.properties.details : this.props.feature.properties.title}</Typography>
 				}
 				
-				<Button variant="raised" onClick={this.props.onOpenEditor} style={{ margin: 20, minWidth: 150 }}>
+				<Button size={btnSize} variant="raised" onClick={this.props.onOpenEditor} style={{ margin: 20, minWidth: 150 }}>
 					<Pencil /> {I18n.t("Edit")}
 				</Button>
 			</div>;

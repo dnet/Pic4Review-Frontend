@@ -36,6 +36,7 @@ class MissionReviewGallery3Component extends Component {
 				showBullets={this.props.width === "xs" && this.props.pictures.length > 1}
 				useBrowserFullscreen={false}
 				slideDuration={0}
+				useTranslate3D={false}
 				renderItem={item => {
 					return item.more ?
 					<div

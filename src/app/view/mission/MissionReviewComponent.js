@@ -65,7 +65,7 @@ class MissionReviewComponent extends Component {
 			featureCanMove: false,
 			newFeatureGeometry: null,
 			similar: null,
-			bottomNav: 1
+			bottomNav: 0
 		};
 		
 		this.psTokens = {};
@@ -129,7 +129,7 @@ class MissionReviewComponent extends Component {
 							feature: f,
 							pictures: f.pictures,
 							currentPictureId: (f.pictures && f.pictures.length > 0 ? 0 : null),
-							bottomNav: 1,
+							bottomNav: 0,
 							shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
 							noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
 						});
@@ -244,7 +244,7 @@ class MissionReviewComponent extends Component {
 				featureCanMove: false,
 				newFeatureGeometry: null,
 				similar: null,
-				bottomNav: 1
+				bottomNav: 0
 			});
 		}
 		else {
@@ -323,7 +323,7 @@ class MissionReviewComponent extends Component {
 	_review(status, options) {
 		options = options || {};
 		
-		if(status !== "skipped" && this.refs.map.isEditingGeometry()) {
+		if(status !== "skipped" && this.refs.map && this.refs.map.isEditingGeometry()) {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You started editing this feature geometry, please valid or cancel your edits using map buttons before answering the question."), duration: 5000 });
 			return false;
 		}
@@ -695,7 +695,7 @@ class MissionReviewComponent extends Component {
 				
 				<Hidden smUp>
 					<div style={{position: "absolute", display: "flex", flexDirection: "column", top: 57, bottom: 0, right: 0, left: 0}}>
-						<div style={{flex: 2, maxHeight: "80%", overflowY: "auto"}}>
+						<div style={{flex: 2, minHeight: "50%", maxHeight: "80%", overflowY: "auto"}}>
 							{this.state.bottomNav === 0 && map}
 							{this.state.bottomNav === 1 && gallery}
 							{this.state.bottomNav === 2 &&
@@ -716,7 +716,7 @@ class MissionReviewComponent extends Component {
 							<BottomNavigationAction label={I18n.t("Details")} icon={<Information />} />
 						</BottomNavigation>
 						
-						<div style={{overflowY: "auto", padding: 10}}>
+						<div style={{overflowY: "auto", padding: 10, paddingTop: 0}}>
 							{question}
 						</div>
 					</div>
