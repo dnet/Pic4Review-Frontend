@@ -26,11 +26,11 @@ class WelcomeComponent extends Component {
 	
 	render() {
 		const styleMain = Object.assign({}, this.props.style, {textAlign: "center", margin: "-15px -20px", width: "unset"});
-		const styleBlock = { margin: "0 20px 40px 20px" };
+		const styleBlock = { margin: 20 };
 		const styleHeadblock = {
 			height: 600, background: "url('images/background.jpg') no-repeat center center",
 			display: "flex", flexDirection: "row", alignItems: "center", backgroundSize: "cover",
-			marginBottom: 40, padding: 20
+			marginBottom: 20, padding: 20
 		};
 		const stylePics = { height: 128, width: 128 };
 		const styleStats = { height: 64, width: 64 };
@@ -136,7 +136,7 @@ class WelcomeComponent extends Component {
 							</div>
 						</div>
 					</Grid>
-					<Grid item xs={12} lg={6}>
+					<Grid item xs={12} lg={6} style={{backgroundColor: "#eee"}}>
 						<div style={styleBlock}>
 							<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("The Pic4Review community")}</Typography>
 							
