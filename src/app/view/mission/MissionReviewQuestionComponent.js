@@ -17,7 +17,7 @@ import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
 const IMG_COLS = { "xs": 1.5, "sm": 1.5, "md": 2.5, "lg": 3.5, "xl": 3.5 };
-const IMG_HEIGHT = { "xs": 100, "sm": 150, "md": 150, "lg": 150, "xl": 150 };
+const IMG_HEIGHT = { "xs": 70, "sm": 150, "md": 150, "lg": 150, "xl": 150 };
 const INSTR_HEIGHT = { "xs": 100, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
 const styles = theme => ({ root: theme.typography.caption });
 
@@ -92,36 +92,54 @@ class MissionReviewQuestionComponent extends Component {
 						<GridListTileBar
 							subtitle={answer.label}
 							actionPosition="left"
-							actionIcon={
+							actionIcon={this.props.width !== "xs" ?
 								<IconButton style={{ color: "white" }} onClick={onClick}>
 									{this.state.selectedAnswer === i ? <RadioboxMarked /> : <RadioboxBlank />}
 								</IconButton>
+								: null
 							}
-							style={{height: 30}}
+							style={this.props.width === "xs" ? {height: 30, fontWeight: "bold", background: "rgba(0,0,0,0.7)"} : {height: 30}}
 						/>
 					</GridListTile>;
 				});
 				
-				content = (this.props.width === "xs" || this.props.width === "sm") ?
-					<HorizontalScrollGridList
-						cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)}
-						cellHeight={IMG_HEIGHT[this.props.width]}
-						style={{ flexWrap: "nowrap", marginTop: 10 }}
-						speed={2}
-					>
-						{tiles}
-					</HorizontalScrollGridList>
-					:
-					<div
-						style={{ maxHeight: IMG_HEIGHT[this.props.width]*2.2, marginTop: 10, overflowX: "hidden", overflowY: "auto" }}
-					>
-						<GridList
-							cols={Math.min((this.props.width === "md" ? 2 : 3), tiles.length)}
+				if(this.props.width === "xs") {
+					const tilesPerRow = (tiles.length === 4) ? 2 : 3;
+					content = <div
+							style={{ maxHeight: (tiles.length / tilesPerRow) > 2 ? IMG_HEIGHT[this.props.width]*2.5 : null, marginTop: 10, overflowX: "hidden", overflowY: "auto" }}
+						>
+							<GridList
+								cols={Math.min(tilesPerRow, tiles.length)}
+								cellHeight={IMG_HEIGHT[this.props.width]}
+								style={{margin: 0}}
+							>
+								{tiles}
+							</GridList>
+						</div>;
+				}
+				else if(this.props.width === "sm") {
+					content = <HorizontalScrollGridList
+							cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)}
 							cellHeight={IMG_HEIGHT[this.props.width]}
+							style={{ flexWrap: "nowrap", marginTop: 10 }}
+							speed={2}
 						>
 							{tiles}
-						</GridList>
-					</div>;
+						</HorizontalScrollGridList>;
+				}
+				else {
+					content = <div
+							style={{ maxHeight: IMG_HEIGHT[this.props.width]*2.2, marginTop: 10, overflowX: "hidden", overflowY: "auto" }}
+						>
+							<GridList
+								cols={Math.min((this.props.width === "md" ? 2 : 3), tiles.length)}
+								cellHeight={IMG_HEIGHT[this.props.width]}
+								style={{margin: 0}}
+							>
+								{tiles}
+							</GridList>
+						</div>;
+				}
 			}
 			else if(this.props.data.type === "choice") {
 				content = <RadioGroup
@@ -162,7 +180,7 @@ class MissionReviewQuestionComponent extends Component {
 				else if(this.props.data.type === "usertext" && this.props.data.valueType === "color") {
 					select = <SwatchesPicker
 								width="100%"
-								height="200px"
+								height={this.props.width === "xs" ? "150px" : "200px"}
 								color={this.state.usertextValue}
 								onChangeComplete={(color, ev) => this._onUsertextAnswerChange(color.hex)}
 							/>;

@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import "react-image-gallery/styles/css/image-gallery.css";
 import withWidth from 'material-ui/utils/withWidth';
 import ImageGallery from 'react-image-gallery';
-import { MapMarkerRadius, MagnifyPlusOutline, PlusCircle, Star, StarOutline, TagHeart } from 'mdi-material-ui';
+import { ArrowLeft, MapMarkerRadius, MagnifyPlusOutline, PlusCircle, Star, StarOutline, TagHeart } from 'mdi-material-ui';
 import IconButton from 'material-ui/IconButton';
+import { Link } from 'react-router-dom';
 import Magnifier from 'react-magnifier';
 import Tooltip from 'material-ui/Tooltip';
 
@@ -79,27 +80,43 @@ class MissionReviewGallery3Component extends Component {
 						</div>
 						
 						<div className="image-gallery-play-button">
+							<Tooltip title={I18n.t("Go back to mission description")}>
+								<IconButton
+									style={{ color: "white" }}
+									component={Link}
+									to={'/mission/'+this.props.missionId}
+								>
+									<ArrowLeft />
+								</IconButton>
+							</Tooltip>
+							
 							{item.featured &&
-								<Tooltip title={I18n.t("This picture is already associated to this feature")} style={{marginRight: 5}}>
-									<TagHeart style={{verticalAlign: "middle"}} />
+								<Tooltip title={I18n.t("This picture is already associated to this feature")}>
+									<IconButton style={{ color: "white" }}>
+										<TagHeart />
+									</IconButton>
 								</Tooltip>
 							}
 							
 							{allowUpdateAssociation && !item.featured && this.props.picMarked !== item.id &&
-								<Tooltip title={I18n.t("Mark this picture as best one")} style={{marginRight: 5}}>
-									<StarOutline
+								<Tooltip title={I18n.t("Mark this picture as best one")}>
+									<IconButton
+										style={{ color: "white" }}
 										onClick={() => this.props.onPicMarked(item.id)}
-										style={{verticalAlign: "middle"}}
-									/>
+									>
+										<StarOutline />
+									</IconButton>
 								</Tooltip>
 							}
 							
 							{allowUpdateAssociation && !item.featured && this.props.picMarked === item.id &&
-								<Tooltip title={I18n.t("Unmark this picture")} style={{marginRight: 5}}>
-									<Star
-										style={{verticalAlign: "middle"}}
+								<Tooltip title={I18n.t("Unmark this picture")}>
+									<IconButton
+										style={{ color: "white" }}
 										onClick={() => this.props.onPicUnmarked(item.id)}
-									/>
+									>
+										<Star />
+									</IconButton>
 								</Tooltip>
 							}
 						</div>

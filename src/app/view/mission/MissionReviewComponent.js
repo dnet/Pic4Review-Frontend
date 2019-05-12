@@ -651,6 +651,7 @@ class MissionReviewComponent extends Component {
 							onPicMarked={id => this.setState({ markedPictureId: id })}
 							onPicUnmarked={id => this.setState({ markedPictureId: -1 })}
 							picMarked={this.state.markedPictureId}
+							missionId={this.props.mission.id}
 						/>;
 			
 			return <div style={this.props.style} ref="container">
