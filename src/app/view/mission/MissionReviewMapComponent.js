@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import withWidth from 'material-ui/utils/withWidth';
 import CONSTS from '../../constants';
 import CursorMove from 'mdi-material-ui/CursorMove';
 import Check from 'mdi-material-ui/Check';
@@ -253,4 +252,4 @@ class MissionReviewMapComponent extends Component {
  */
 
 
-export default withWidth()(MissionReviewMapComponent);
+export default MissionReviewMapComponent;

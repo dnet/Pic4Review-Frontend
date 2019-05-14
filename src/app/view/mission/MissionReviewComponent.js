@@ -628,6 +628,7 @@ class MissionReviewComponent extends Component {
 							onBaseLayerChange={l => this.setState({ mapBaseLayer: l })}
 							featureMove={this.state.featureCanMove}
 							onFeatureMove={g => { this.setState({ newFeatureGeometry: g })}}
+							width={this.props.width}
 						/>;
 			
 			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
