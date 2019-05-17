@@ -731,6 +731,7 @@ class MissionReviewComponent extends Component {
 					open={this.state.openEditors}
 					feature={this.state.feature}
 					anchor={this.state.editorsAnchor}
+					mission={this.props.mission}
 					onClose={() => this.setState({openEditors: false})}
 				/>
 				

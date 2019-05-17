@@ -35,8 +35,10 @@ class MissionReviewEditorsComponent extends Component {
 		const x2 = X + Math.toDegrees(radius / R / Math.cos(Math.toRadians(Y)));
 		const y1 = Y - Math.toDegrees(radius / R);
 		const y2 = Y + Math.toDegrees(radius / R);
-		
-		let url = CONSTS.JOSM_URL+"left="+x1+"&right="+x2+"&top="+y2+"&bottom="+y1;
+		const c = this.props.mission.description.short + " (" + this.props.mission.area.name + ")";
+		const s = "Pic4Review;streetlevel imagery;aerial imagery";
+
+		let url = CONSTS.JOSM_URL+"left="+x1+"&right="+x2+"&top="+y2+"&bottom="+y1+"&changeset_comment="+c+"&changeset_source="+s;
 		
 		if(this.props.feature.properties.id && RGX_OSMID.test(this.props.feature.properties.id)) {
 			const parts = this.props.feature.properties.id.split("/");
