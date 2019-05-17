@@ -45,7 +45,9 @@ class MissionsTableComponent extends Component {
 					
 					return <TableRow key={m.id} style={{backgroundColor: backcolor}}>
 						<TableCell style={styleId}>{m.id}</TableCell>
-						<TableCell style={style}>{m.description.short}<br />{m.area.name}</TableCell>
+						<TableCell style={style}>
+							<Link component={Link} to={'/mission/'+m.id} target="_blank">{m.description.short}<br />{m.area.name}</Link>
+						</TableCell>
 						<TableCell style={styleProgress}>
 							{m.options && m.options.stats && m.options.stats.total && I18n.t("%{count} features", { count: m.options.stats.total })}
 							{m.options && m.options.stats && m.options.stats.total && <br />}
