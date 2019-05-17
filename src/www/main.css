@@ -108,15 +108,34 @@ div.image-gallery-bullets {
  * Not xs devices
  */
 @media (min-width: 600px) {
-	.image-gallery,
-	.image-gallery-content,
-	.image-gallery-slide-wrapper,
+	.image-gallery {
+		flex: 10;
+	}
+	
+	.image-gallery-content {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+	}
+	
+	.image-gallery-slide-wrapper {
+		flex: 9;
+	}
+	
 	.image-gallery-swipe,
 	.image-gallery-slides,
 	.image-gallery-slide,
-	.image-gallery-image,
-	.image-gallery-image img {
-		max-height: 80%;
+	.image-gallery-image {
+		height: 100%;
+	}
+	
+	.image-gallery-description {
+		z-index: 10;
+	}
+	
+	.magnifier {
+		position: absolute !important;
+		height: 100% !important;
 	}
 }
 

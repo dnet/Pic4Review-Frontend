@@ -658,8 +658,13 @@ class MissionReviewComponent extends Component {
 						/>;
 			
 			return <div style={this.props.style} ref="container">
-				<Grid container spacing={8} hidden={{xsDown: true}}>
-					<Grid item sm={6} lg={5} xl={4}>
+				<Grid
+					container
+					spacing={8}
+					hidden={{xsDown: true}}
+					style={{position: "absolute", width: "unset", margin: 0, top: 120, left: 20, right: 20, bottom: 20}}
+				>
+					<Grid item sm={6} lg={5} xl={4} style={{height: "100%"}}>
 						{question}
 						
 						{this._hasEditor() ?
@@ -680,12 +685,12 @@ class MissionReviewComponent extends Component {
 						<Hidden mdDown={true}>{counter}</Hidden>
 					</Grid>
 					
-					<Grid item sm={6} hidden={{ lgUp: true }}>
+					<Grid item sm={6} hidden={{ lgUp: true }} style={{height: "100%"}}>
 						{map}
 						{counter}
 					</Grid>
 					
-					<Grid item sm={12} lg={7} xl={8}>
+					<Grid item sm={12} lg={7} xl={8} style={{height: "100%", display: "flex", flexDirection: "column"}}>
 						<FeatureDetails
 							feature={this.state.feature}
 							showPopup={this.state.showFeatureDetails}
