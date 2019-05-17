@@ -5,7 +5,7 @@ import Menu, { MenuItem } from 'material-ui/Menu';
 /**
  * Mission description export component display selection menu for exporting features.
  */
-class MissionReviewEditorsComponent extends Component {
+class MissionDescriptionExportComponent extends Component {
 	constructor() {
 		super();
 	}
@@ -35,4 +35,4 @@ class MissionReviewEditorsComponent extends Component {
 	}
 }
 
-export default MissionReviewEditorsComponent;
+export default MissionDescriptionExportComponent;
