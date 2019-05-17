@@ -31,6 +31,11 @@ npm run start
 If no errors appears, a web server at `http://localhost:3000` is ready to browse.
 
 
+## Configuration
+
+Depending of your goals, you might be interested in changing some general configurations. This is optional, Pic4Review can run as is directly. These can be found in `src/app/constants.js`, and mainly concerns URL for accessing various third-party websites or data. As Pic4Review also communicates directly with [OpenStreetMap API](https://wiki.openstreetmap.org/wiki/API_v0.6) (in particular for integrated editing), it needs OAuth tokens to have access to push data against OSM servers. So you might need to change the tokens to use yours, [more information here for how to do so](https://wiki.openstreetmap.org/wiki/OAuth).
+
+
 ## Documentation
 
 This project has a maintained documentation for its JS classes and methods. You can [read it online here](https://pic4review.pavie.info/doc/) (for latest stable version), or locally by generating it (for latest develop version):
