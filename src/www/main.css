@@ -42,6 +42,10 @@ button.p4r-smallbtn {
 	font-size: 0.9em;
 }
 
+.missions-table-row:hover {
+	background-color: #eee !important;
+}
+
 
 /*
  * Gallery

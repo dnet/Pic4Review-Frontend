@@ -43,10 +43,12 @@ class MissionsTableComponent extends Component {
 					const statusesKeys = (m.options && m.options.stats) ? Object.keys(m.options.stats).filter(s => STATUSES[s]) : [];
 					statusesKeys.sort((a, b) => STATUSES[b].priority - STATUSES[a].priority);
 					
-					return <TableRow key={m.id} style={{backgroundColor: backcolor}}>
+					return <TableRow key={m.id} className="missions-table-row" style={{backgroundColor: backcolor}}>
 						<TableCell style={styleId}>{m.id}</TableCell>
 						<TableCell style={style}>
-							<Link component={Link} to={'/mission/'+m.id} target="_blank">{m.description.short}<br />{m.area.name}</Link>
+							<Link to={'/mission/'+m.id} title={I18n.t("See mission details")}>
+								{m.description.short}<br />{m.area.name}
+							</Link>
 						</TableCell>
 						<TableCell style={styleProgress}>
 							{m.options && m.options.stats && m.options.stats.total && I18n.t("%{count} features", { count: m.options.stats.total })}
@@ -57,15 +59,6 @@ class MissionsTableComponent extends Component {
 							})}
 						</TableCell>
 						<TableCell style={styleCentered}>
-							<Tooltip title={I18n.t("See mission details")}>
-								<IconButton
-									component={Link}
-									to={'/mission/'+m.id}
-									target="_blank"
-								>
-									<Information />
-								</IconButton>
-							</Tooltip>
 							<Tooltip title={I18n.t("Duplicate mission")}>
 								<IconButton
 									component={Link}
