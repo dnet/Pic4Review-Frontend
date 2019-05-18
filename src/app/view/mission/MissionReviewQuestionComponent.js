@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withStyles } from 'material-ui/styles';
 import withWidth from 'material-ui/utils/withWidth';
 import { Check, Pencil, RadioboxBlank, RadioboxMarked, MapMarkerMultiple, MapMarkerPlus, SkipForward } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
@@ -7,19 +6,14 @@ import { FormControlLabel } from 'material-ui/Form';
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
 import HorizontalScrollGridList from '../HorizontalScrollGridList';
 import IconButton from 'material-ui/IconButton';
-import Markdown from 'react-markdown';
 import Paper from 'material-ui/Paper';
 import Radio, { RadioGroup } from 'material-ui/Radio';
 import { SwatchesPicker } from 'react-color';
-import Tags from './MissionReviewTagsComponent';
 import TextField from 'material-ui/TextField';
 import Tooltip from 'material-ui/Tooltip';
 import Typography from 'material-ui/Typography';
 
-const IMG_COLS = { "xs": 1.5, "sm": 1.5, "md": 2.5, "lg": 3.5, "xl": 3.5 };
-const IMG_HEIGHT = { "xs": 70, "sm": 150, "md": 150, "lg": 150, "xl": 150 };
-const INSTR_HEIGHT = { "xs": 100, "sm": 150, "md": 200, "lg": 200, "xl": 200 };
-const styles = theme => ({ root: theme.typography.caption });
+const IMG_HEIGHT = { "xs": 70, "sm": 100, "md": 100, "lg": 120, "xl": 120};
 
 /**
  * Mission review progress component displays a progress bar for the current review session.
@@ -74,11 +68,12 @@ class MissionReviewQuestionComponent extends Component {
 		}
 	}
 	
+	_isMobile() {
+		return ["xs","sm"].includes(this.props.width);
+	}
+	
 	render() {
-		const btnSize = this.props.width === "xs" ? "small" : "medium";
-		const instructions = <div className="limited-images" style={{overflow: "auto", textAlign: "justify", maxHeight: INSTR_HEIGHT[this.props.width], marginBottom: 10}}>
-			<Markdown className={this.props.classes.root} source={this.props.instructions} />
-		</div>;
+		const btnSize = this._isMobile() ? "small" : "medium";
 		
 		if(this.props.data && this.props.data.type && this.props.data.type !== "disabled") {
 			let content = null;
@@ -88,59 +83,30 @@ class MissionReviewQuestionComponent extends Component {
 				const tiles = this.props.data.answers.map((answer, i) => {
 					const onClick = () => this._onAnswerChange(i);
 					
-					return <GridListTile key={answer.label} onClick={onClick}>
+					return <GridListTile key={i} style={{cursor:"pointer"}} onClick={onClick}>
 						<img src={answer.image} alt={answer.label} />
 						<GridListTileBar
 							subtitle={answer.label}
-							actionPosition="left"
-							actionIcon={this.props.width !== "xs" ?
-								<IconButton style={{ color: "white" }} onClick={onClick}>
-									{this.state.selectedAnswer === i ? <RadioboxMarked /> : <RadioboxBlank />}
-								</IconButton>
-								: null
-							}
-							style={this.props.width === "xs" ? {height: 30, fontWeight: "bold", background: "rgba(0,0,0,0.7)"} : {height: 30}}
+							style={this._isMobile() ? {height: 30, fontWeight: "bold", background: "rgba(0,0,0,0.7)"} : {height: 30}}
 						/>
 					</GridListTile>;
 				});
 				
-				if(this.props.width === "xs") {
-					const tilesPerRow = (tiles.length === 4) ? 2 : 3;
-					content = <div
-							style={{ maxHeight: (tiles.length / tilesPerRow) > 2 ? IMG_HEIGHT[this.props.width]*2.5 : null, marginTop: 10, overflowX: "hidden", overflowY: "auto" }}
-						>
-							<GridList
-								cols={Math.min(tilesPerRow, tiles.length)}
-								cellHeight={IMG_HEIGHT[this.props.width]}
-								style={{margin: 0}}
-							>
-								{tiles}
-							</GridList>
-						</div>;
-				}
-				else if(this.props.width === "sm") {
-					content = <HorizontalScrollGridList
-							cols={Math.min(IMG_COLS[this.props.width], this.props.data.answers.length)}
+				const tilesPerRow = this._isMobile() ? ((tiles.length === 4) ? 2 : 3) : 4;
+				content = <div
+						style={{
+							maxHeight: (tiles.length / tilesPerRow) > 2 && this._isMobile() ? IMG_HEIGHT[this.props.width]*2.5 : null,
+							marginTop: 10, overflowX: "hidden", overflowY: this._isMobile() ? "auto" : null
+						}}
+					>
+						<GridList
+							cols={Math.min(tilesPerRow, tiles.length)}
 							cellHeight={IMG_HEIGHT[this.props.width]}
-							style={{ flexWrap: "nowrap", marginTop: 10 }}
-							speed={2}
+							style={{margin: 0}}
 						>
 							{tiles}
-						</HorizontalScrollGridList>;
-				}
-				else {
-					content = <div
-							style={{ maxHeight: IMG_HEIGHT[this.props.width]*2.2, marginTop: 10, overflowX: "hidden", overflowY: "auto" }}
-						>
-							<GridList
-								cols={Math.min((this.props.width === "md" ? 2 : 3), tiles.length)}
-								cellHeight={IMG_HEIGHT[this.props.width]}
-								style={{margin: 0}}
-							>
-								{tiles}
-							</GridList>
-						</div>;
-				}
+						</GridList>
+					</div>;
 			}
 			else if(this.props.data.type === "choice") {
 				content = <RadioGroup
@@ -181,7 +147,7 @@ class MissionReviewQuestionComponent extends Component {
 				else if(this.props.data.type === "usertext" && this.props.data.valueType === "color") {
 					select = <SwatchesPicker
 								width="100%"
-								height={this.props.width === "xs" ? "150px" : "200px"}
+								height={this._isMobile() ? "150px" : "200px"}
 								color={this.state.usertextValue}
 								onChangeComplete={(color, ev) => this._onUsertextAnswerChange(color.hex)}
 							/>;
@@ -204,16 +170,10 @@ class MissionReviewQuestionComponent extends Component {
 				delete tags.title;
 				
 				content = <div>
-					{this.props.width !== "xs" &&
-						<Paper style={{maxHeight: 150, overflowY: "auto", marginBottom: 20}}>
-							<Tags feature={{properties: tags}} />
-						</Paper>
-					}
-					
 					{this.props.similarFeatures &&
 						<Typography
 							variant="subheading"
-							style={this.props.width === "xs" ? {fontSize: "0.9rem", marginBottom: 10}: {marginBottom: 20}}
+							style={this._isMobile() ? {fontSize: "0.9rem", marginBottom: 10}: {marginBottom: 20}}
 						>
 							{I18n.t("There are similar features already existing around in OpenStreetMap (shown in orange on map).")}
 						</Typography>
@@ -236,15 +196,14 @@ class MissionReviewQuestionComponent extends Component {
 				</div>;
 			}
 			
-			return <div style={{ textAlign: "center", paddingTop: this.props.width === "xs" ? 0 : 20, paddingBottom: this.props.width === "xs" ? 5 : 20 }}>
-				<Typography variant="headline" style={this.props.width === "xs" ? {fontSize: "1.3rem", marginBottom: 5} : {}}>
+			return <div style={{ textAlign: "center", padding: 0, marginTop: (this._isMobile() ? 0 : 10) }}>
+				<Typography variant="headline" style={this._isMobile() ? {fontSize: "1.3rem", marginBottom: 5} : {marginBottom: 5}}>
 					{question}
 				</Typography>
 				
-				{this.props.width !== "xs" && instructions}
 				{content}
 				
-				{this.props.width === "xs" && this.props.skip &&
+				{this._isMobile() && this.props.skip &&
 					<Tooltip title={this.props.skip.tip} style={{width: "100%", marginTop: 10}}>
 						<Button
 							variant="raised"
@@ -259,12 +218,10 @@ class MissionReviewQuestionComponent extends Component {
 			</div>;
 		}
 		else {
-			return <div style={{ textAlign: "center", paddingTop: this.props.width === "xs" ? 0 : 20, paddingBottom: this.props.width === "xs" ? 0 : 20 }}>
+			return <div style={{ textAlign: "center", padding: 0, marginTop: (this._isMobile() ? 0 : 10) }}>
 				<Typography variant="headline">
 					{I18n.t("This need an advanced edit !")}
 				</Typography>
-				
-				{this.props.width !== "xs" && instructions}
 				
 				{(this.props.feature.properties.title || this.props.feature.properties.details) &&
 					<Typography>{I18n.t("Details")} : {this.props.feature.properties.details ? this.props.feature.properties.details : this.props.feature.properties.title}</Typography>
@@ -288,4 +245,4 @@ class MissionReviewQuestionComponent extends Component {
 	}
 }
 
-export default withStyles(styles)(withWidth()(MissionReviewQuestionComponent));
+export default withWidth()(MissionReviewQuestionComponent);

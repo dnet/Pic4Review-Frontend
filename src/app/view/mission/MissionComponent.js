@@ -51,7 +51,7 @@ class MissionComponent extends Component {
 		}
 		
 		return <div>
-			<Hidden only="xs">
+			<Hidden smDown>
 				<Tabs
 					value={tab}
 					onChange={(e,v) => this.props.history.push('/mission/'+this.props.match.params.mid+'/'+PAGES[v])}

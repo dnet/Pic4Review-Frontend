@@ -9,7 +9,6 @@ import Button from 'material-ui/Button';
 import ConfirmDuplicate from './MissionReviewFeatureDuplicateDialogComponent';
 import ConfirmEdit from './MissionReviewFeatureDialogComponent';
 import Editors from './MissionReviewEditorsComponent';
-import FeatureDetails from './MissionReviewFeatureDetailsComponent';
 import First from './MissionFirstReviewComponent';
 import Gallery from './MissionReviewGallery3Component';
 import Grid from 'material-ui/Grid';
@@ -58,7 +57,6 @@ class MissionReviewComponent extends Component {
 			shownPics: 0,
 			noMorePics: false,
 			stats: {},
-			showFeatureDetails: false,
 			mapZoom: 18,
 			mapBaseLayer: null,
 			markedPictureId: -1,
@@ -92,7 +90,6 @@ class MissionReviewComponent extends Component {
 			shownPics: 0,
 			noMorePics: false,
 			count: parseInt(sessionStorage.getItem(EDITS_COUNT+"_"+this.props.mission.id)) || 0,
-			showFeatureDetails: false,
 			featureCanMove: false,
 			newFeatureGeometry: null,
 			similar: null
@@ -240,7 +237,6 @@ class MissionReviewComponent extends Component {
 				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
 				clickedPictureId: null,
 				markedPictureId: -1,
-				showFeatureDetails: false,
 				featureCanMove: false,
 				newFeatureGeometry: null,
 				similar: null,
@@ -619,8 +615,8 @@ class MissionReviewComponent extends Component {
 							pictures={this.state.pictures ? this.state.pictures.slice(0, this.state.shownPics) : []}
 							currentPictureId={this.state.currentPictureId}
 							onPicClicked={id => this.setState({ currentPictureId: id })}
-							onFeatureClicked={() => this.setState({ showFeatureDetails: true })}
-							style={this.props.width === "xs" ? { height: "100%" } : { height: MAP_HEIGHT[this.props.width], marginBottom: 10 }}
+							onFeatureClicked={() => this.setState({ bottomNav: ["xs","sm"].includes(this.props.width) ? 2 : 1 })}
+							style={{height: "100%"}}
 							layers={this.props.mission.options.layers}
 							zoom={this.state.mapZoom}
 							onZoomChange={z => this.setState({ mapZoom: z })}
@@ -631,12 +627,11 @@ class MissionReviewComponent extends Component {
 							width={this.props.width}
 						/>;
 			
-			const counter = <Statistics count={this.state.count} data={this.state.stats} />;
+			const counter = <Statistics count={this.state.count} data={this.state.stats} style={{marginTop: 10}} />;
 			
 			const question = <Question
 							data={this._hasEditor() && this.props.mission.options.data.options.editors}
 							feature={this.state.feature}
-							instructions={this.props.mission.description.full}
 							similarFeatures={this.state.similar}
 							onOpenEditor={e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget })}
 							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
@@ -661,49 +656,48 @@ class MissionReviewComponent extends Component {
 				<Grid
 					container
 					spacing={8}
-					hidden={{xsDown: true}}
-					style={{position: "absolute", width: "unset", margin: 0, top: 120, left: 20, right: 20, bottom: 20}}
+					hidden={{smDown: true}}
+					style={{position: "absolute", width: "unset", margin: 0, top: 127, left: 10, right: 10, bottom: 10}}
 				>
-					<Grid item sm={6} lg={5} xl={4} style={{height: "100%"}}>
-						{question}
+					<Grid item sm={4} xl={4} style={{height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+						<div style={{flex: 2, maxHeight: "45%", overflowY: "auto", display: "flex", flexDirection: "column", justifyContent: "center", overflowX: "hidden"}}>
+							<div style={{minHeight: 0}}>
+								{question}
+								
+								<Grid container spacing={8} style={{marginTop: 10, marginBottom: 20}}>
+									{createBtn("prev", 4)}
+									{createBtn(this._hasEditor() ? "edit" : "done", 4)}
+									{createBtn("next", 4)}
+								</Grid>
+							</div>
+						</div>
 						
-						{this._hasEditor() ?
-							<Grid container spacing={8} style={{marginBottom: 20}}>
-								{createBtn("prev", 4)}
-								{createBtn("edit", 4)}
-								{createBtn("next", 4)}
-							</Grid>
-							:
-							<Grid container spacing={8} style={{marginBottom: 20}}>
-								{createBtn("prev", 4)}
-								{createBtn("done", 4)}
-								{createBtn("next", 4)}
-							</Grid>
-						}
+						<div style={{flex: 3, maxHeight: "45%", overflowY: "auto", padding: (this.state.bottomNav === 0 ? 0: "0 5px")}}>
+							{this.state.bottomNav === 0 && map}
+							
+							{this.state.bottomNav === 1 && <Markdown source={this.props.mission.description.full} />}
+							{this.state.bottomNav === 1 && <Tags feature={{properties: this.state.feature.properties}} />}
+							{this.state.bottomNav === 1 && counter}
+						</div>
 						
-						<Hidden mdDown={true}>{map}</Hidden>
-						<Hidden mdDown={true}>{counter}</Hidden>
+						<BottomNavigation
+							value={this.state.bottomNav}
+							onChange={(ev, val) => this.setState({ bottomNav: val })}
+							showLabels
+						>
+							<BottomNavigationAction label={I18n.t("Map")} icon={<MapMarkerRadius />} />
+							<BottomNavigationAction label={I18n.t("Details")} icon={<Information />} />
+						</BottomNavigation>
 					</Grid>
 					
-					<Grid item sm={6} hidden={{ lgUp: true }} style={{height: "100%"}}>
-						{map}
-						{counter}
-					</Grid>
-					
-					<Grid item sm={12} lg={7} xl={8} style={{height: "100%", display: "flex", flexDirection: "column"}}>
-						<FeatureDetails
-							feature={this.state.feature}
-							showPopup={this.state.showFeatureDetails}
-							onShowPopup={show => this.setState({ showFeatureDetails: show })}
-						/>
-						
+					<Grid item sm={8} xl={8} style={{height: "100%", display: "flex", flexDirection: "column"}}>
 						{gallery}
 					</Grid>
 				</Grid>
 				
-				<Hidden smUp>
-					<div style={{position: "absolute", display: "flex", flexDirection: "column", top: 57, bottom: 0, right: 0, left: 0}}>
-						<div style={{flex: 2, minHeight: "50%", maxHeight: "80%", overflowY: "auto"}}>
+				<Hidden mdUp>
+					<div style={{position: "absolute", display: "flex", flexDirection: "column", top: this.props.width === "xs" ? 57 : 65, bottom: 0, right: 0, left: 0}}>
+						<div style={{flex: 2, minHeight: this.props.width === "xs" ? "50%" : "40%", maxHeight: this.props.width === "xs" ? "80%" : "70%", overflowY: "auto"}}>
 							{this.state.bottomNav === 0 && map}
 							{this.state.bottomNav === 1 && gallery}
 							{this.state.bottomNav === 2 &&

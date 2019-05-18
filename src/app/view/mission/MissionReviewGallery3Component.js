@@ -17,11 +17,15 @@ class MissionReviewGallery3Component extends Component {
 		this.centerPic = 0;
 	}
 	
+	_isMobile() {
+		return ["xs","sm"].includes(this.props.width);
+	}
+	
 	render() {
 		if(this.props.pictures && this.props.pictures.length > 0) {
 			const allowUpdateAssociation = this.props.pictures.filter(p => p.featured).length > 0;
 			const images = this.props.pictures.map((p,i) => Object.assign({}, p, { id: i, original: p.pictureUrl, thumbnail: p.thumbUrl }));
-			if(this.props.showMore) { images.push({ more: true }); }
+			if(this.props.showMore) { images.push({ more: true, thumbnail: "./images/more.png" }); }
 			
 			return <ImageGallery
 				ref="gallery"
@@ -30,9 +34,9 @@ class MissionReviewGallery3Component extends Component {
 				lazyLoad={true}
 				showPlayButton={false}
 				showFullscreenButton={false}
-				showThumbnails={this.props.width !== "xs" && this.props.pictures.length > 1}
+				showThumbnails={!this._isMobile() && (this.props.pictures.length > 1 || this.props.showMore)}
 				thumbnailPosition="top"
-				showBullets={this.props.width === "xs" && this.props.pictures.length > 1}
+				showBullets={this._isMobile() && this.props.pictures.length > 1}
 				useBrowserFullscreen={false}
 				slideDuration={0}
 				useTranslate3D={false}
@@ -49,15 +53,17 @@ class MissionReviewGallery3Component extends Component {
 					: <div className='image-gallery-image'>
 						<span className='image-gallery-description'>
 							<span>
-								<Tooltip title={I18n.t("Go back to mission description")}>
-									<IconButton
-										style={{ color: "white" }}
-										component={Link}
-										to={'/mission/'+this.props.missionId}
-									>
-										<ArrowLeft />
-									</IconButton>
-								</Tooltip>
+								{this._isMobile() &&
+									<Tooltip title={I18n.t("Go back to mission description")}>
+										<IconButton
+											style={{ color: "white" }}
+											component={Link}
+											to={'/mission/'+this.props.missionId}
+										>
+											<ArrowLeft />
+										</IconButton>
+									</Tooltip>
+								}
 								
 								{item.featured &&
 									<Tooltip title={I18n.t("This picture is already associated to this feature")}>
@@ -93,7 +99,7 @@ class MissionReviewGallery3Component extends Component {
 							<span>{(new Date(item.date)).toLocaleDateString() + " - " + item.author + " - " + item.provider}</span>
 							
 							<span>
-								{this.props.width !== "xs" &&
+								{!this._isMobile() &&
 									<Tooltip title={I18n.t("Picture details (and other pictures around)")}>
 										<IconButton
 											href={item.detailsUrl}
@@ -118,7 +124,7 @@ class MissionReviewGallery3Component extends Component {
 							</span>
 						</span>
 						
-						{this.props.width === "xs" ?
+						{this._isMobile() ?
 							<img
 								src={item.thumbUrl || item.pictureUrl}
 							/>

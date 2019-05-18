@@ -9,7 +9,7 @@ import Typography from 'material-ui/Typography';
  */
 class MissionReviewStatisticsComponent extends Component {
 	render() {
-		return <div>
+		return <div style={this.props.style}>
 			<Typography variant="subheading">{I18n.t("Amount of edits")}</Typography>
 			
 			<Grid container direction="column" justify="flex-start" alignItems="flex-start">
