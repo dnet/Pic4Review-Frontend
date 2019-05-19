@@ -22,6 +22,14 @@ class MissionReviewEditorsComponent extends Component {
 	}
 	
 	/**
+	 * Mission comment label
+	 * @private
+	 */
+	_getMissionComment() {
+		return this.props.mission.description.short + " (" + this.props.mission.area.name + ")";
+	}
+	
+	/**
 	 * Opens and zoom in JOSM on current picture area.
 	 * @private
 	 */
@@ -35,7 +43,7 @@ class MissionReviewEditorsComponent extends Component {
 		const x2 = X + Math.toDegrees(radius / R / Math.cos(Math.toRadians(Y)));
 		const y1 = Y - Math.toDegrees(radius / R);
 		const y2 = Y + Math.toDegrees(radius / R);
-		const c = this.props.mission.description.short + " (" + this.props.mission.area.name + ")";
+		const c = this._getMissionComment();
 		const s = "Pic4Review;streetlevel imagery;aerial imagery";
 
 		let url = CONSTS.JOSM_URL+"left="+x1+"&right="+x2+"&top="+y2+"&bottom="+y1+"&changeset_comment="+c+"&changeset_source="+s;
@@ -60,14 +68,20 @@ class MissionReviewEditorsComponent extends Component {
 	 * @private
 	 */
 	_editId() {
-		let url = CONSTS.ID_URL;
+		let url = CONSTS.ID_URL + "#";
+		
+		const params = {
+			map: "21/"+this.props.feature.coordinates.join("/"),
+			hashtags: "#Pic4Review",
+			comment: this._getMissionComment()
+		};
 		
 		if(this.props.feature.properties.id && RGX_OSMID.test(this.props.feature.properties.id)) {
 			const parts = this.props.feature.properties.id.split("/");
-			url += "?" + parts[0] + "=" + parts[1];
+			params.id = parts[0].substring(0, 1) + parts[1];
 		}
 		
-		url += "#map=21/"+this.props.feature.coordinates.join("/");
+		url += Object.entries(params).map(p => p[0] + "=" + encodeURIComponent(p[1])).join("&");
 		
 		window.open(
 			url,
