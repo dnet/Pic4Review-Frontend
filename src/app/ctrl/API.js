@@ -3,9 +3,14 @@ import PACKAGE from '../../../package.json';
 import Feature from '../model/Feature';
 import Mission from '../model/Mission';
 import OsmRequest from 'osm-request';
+import osmtogeojson from 'osmtogeojson';
 import queryOverpass from 'query-overpass';
 
 const LONG_TIMEOUT_MS = 300000;
+const EARTH_RADIUS = 6371000;
+
+const deg2rad = d => { return d * (Math.PI / 180); }
+const rad2deg = r => { return r * (180 / Math.PI); }
 
 /**
  * API controller handles communication with external APIs (mainly Pic4Review and OSM).
@@ -50,22 +55,49 @@ class API {
 	 * @param {int} radius The search radius (in meters)
 	 * @return {Promise} Resolves on GeoJSON entries found
 	 */
-	static FindSimilarInOverpass(tags, geom, radius) {
+	static FindSimilarAround(tags, geom, radius) {
 		if(geom.type !== "Point") {
 			return { type: "FeatureCollection", features: [] };
 		}
 		
-		let request = "[out:json][timeout:10];(";
+		const latRad = deg2rad(geom.coordinates[1]);
+		const radiusOnLat = Math.cos(latRad) * EARTH_RADIUS;
+		const deltaLat = rad2deg(radius / EARTH_RADIUS);
+		const deltaLon = rad2deg(radius / radiusOnLat);
 		
-		const around = "(around:"+radius+","+geom.coordinates[1]+","+geom.coordinates[0]+")";
-		const tagFilter = Object.entries(tags).map(e => "[\""+e[0]+"\"=\""+e[1]+"\"]").join("");
-		
-		const types = [ "node", "way" ];
-		request += types.map(type => type+tagFilter+around+";").join(" ");
-		
-		request += "); out body; >; out skel qt;";
-		
-		return API.QueryOverpass(request);
+		return (new OsmRequest({ endpoint: CONST.OSM_API_URL }))
+		.fetchMapByBbox(
+			geom.coordinates[0] - deltaLon,
+			geom.coordinates[1] - deltaLat,
+			geom.coordinates[0] + deltaLon,
+			geom.coordinates[1] + deltaLat,
+			"both"
+		)
+		.then(result => {
+			const [mapjson, mapxml] = result;
+			
+			const geojson = osmtogeojson(
+				(new window.DOMParser()).parseFromString(mapxml, "text/xml"),
+				{ flatProperties: false }
+			);
+			
+			geojson.features = geojson.features
+			.filter(f => {
+				for(const k in tags) {
+					if(!f.properties.tags[k] || (tags[k] !== "*" && f.properties.tags[k] !== tags[k])) {
+						return false;
+					}
+				}
+				return true;
+			})
+			.map(f => {
+				f.properties = f.properties.tags;
+				f.properties.id = f.id;
+				return f;
+			});
+			
+			return geojson;
+		});
 	}
 	
 	/**

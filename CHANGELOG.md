@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Button for editing using iD/JOSM now embeds changeset comment and sources
 - Clearer documentation for configuring its own Pic4Review instance (`DEVELOP.md` file)
 - On "My missions" page, in table for created missions, link to see the mission is on mission name instead of a separate button
+- In review page, similar features are searched on OSM.org instead of Overpass (to avoid duplicates)
 
 ### Fixed
 - Duplicating old missions was causing a bug when showing editors options

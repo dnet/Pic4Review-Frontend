@@ -179,7 +179,7 @@ class MissionReviewComponent extends Component {
 						&& this.props.mission.options.data.options.editors
 						&& this.props.mission.options.data.options.editors.type === "importer"
 					) {
-						API.FindSimilarInOverpass(
+						API.FindSimilarAround(
 							this.props.mission.options.data.options.editors.mainTags,
 							f.geometry,
 							this.props.mission.options.data.options.editors.conflation
