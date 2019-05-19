@@ -651,7 +651,11 @@ class API {
 						
 						//Create a new changeset if needed
 						if(!changesetOpen) {
-							changesetId = await osm.createChangeset('Pic4Review '+PACKAGE.version, comment);
+							changesetId = await osm.createChangeset(
+								'Pic4Review '+PACKAGE.version,
+								comment,
+								API.GetChangesetTags()
+							);
 						}
 						
 						//Send element
@@ -739,7 +743,11 @@ class API {
 						
 						//Create a new changeset if needed
 						if(!changesetOpen) {
-							changesetId = await osm.createChangeset('Pic4Review '+PACKAGE.version, comment);
+							changesetId = await osm.createChangeset(
+								'Pic4Review '+PACKAGE.version,
+								comment,
+								API.GetChangesetTags()
+							);
 						}
 						
 						//Send element
@@ -757,6 +765,18 @@ class API {
 			
 			PubSub.publish("USER.INFO.WANTS");
 		});
+	}
+	
+	/**
+	 * Get the default changesets tags
+	 * @private
+	 */
+	static GetChangesetTags() {
+		return {
+			website: window.location,
+			locale: window.I18n.locale,
+			hashtags: "#Pic4Review"
+		};
 	}
 }
 
