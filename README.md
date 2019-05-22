@@ -30,6 +30,7 @@ Pic4Review exists and is everyday improving thanks to the __amazing people__ fol
 * Florian Lainez, for his ideas on improving the user experience
 * Christopher Beddow, for testing the tool and providing Mapillary support
 * Nuno Caldeira, for creating documentation ressources
+* Binnette, for offering technical help and improving the user experience
 * And all users, for using the tool and sharing their ideas !
 
 
