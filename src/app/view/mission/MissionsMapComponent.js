@@ -59,7 +59,10 @@ class MissionsMapComponent extends Component {
 				</Tooltip>
 				<Popup>
 					<RouterForwarder style={{textAlign: "center"}} context={this.context}>
-						<MissionSummary mission={m} />
+						<MissionSummary
+							mission={m}
+							noImage={true}
+						/>
 						<MissionSummaryButtons mid={m.id} history={this.props.history} />
 					</RouterForwarder>
 				</Popup>

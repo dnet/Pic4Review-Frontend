@@ -25,7 +25,7 @@ class MissionsListComponent extends Component {
 							<CardContent style={this.props.width === "xs" ? { paddingBottom: 0 } : null}>
 								<MissionSummary
 									mission={m}
-									noImage={true}
+									noImage={this.props.width !== "xs"}
 									onClick={() => this.props.history.push('/mission/'+m.id)}
 								/>
 							</CardContent>
