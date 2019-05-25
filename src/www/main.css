@@ -46,6 +46,10 @@ button.p4r-smallbtn {
 	background-color: #eee !important;
 }
 
+.p4r-review .leaflet-marker-pane {
+	z-index: 300 !important;
+}
+
 /*
  * xs devices
  */

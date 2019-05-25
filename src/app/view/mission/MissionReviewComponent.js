@@ -658,7 +658,7 @@ class MissionReviewComponent extends Component {
 							missionId={this.props.mission.id}
 						/>;
 			
-			return <div style={this.props.style} ref="container">
+			return <div style={this.props.style} ref="container" className="p4r-review">
 				<Grid
 					container
 					spacing={8}

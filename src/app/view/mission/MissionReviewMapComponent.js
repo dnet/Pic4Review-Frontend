@@ -88,6 +88,8 @@ class MissionReviewMapComponent extends Component {
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			}
 			
+			{this.markers}
+			
 			{this.state.editingGeom ?
 				<Marker
 					ref="markerEdit"
@@ -106,8 +108,6 @@ class MissionReviewMapComponent extends Component {
 					pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: this.props.width === "xs" ? 10 : 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
 				/>
 			}
-			
-			{this.markers}
 			
 			{this.props.featureMove ?
 				(this.state.editingGeom ?
