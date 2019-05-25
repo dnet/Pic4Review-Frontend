@@ -17,7 +17,7 @@ class PictureProviderComponent extends Component {
 		};
 		
 		const dataset = {
-			labels: names.map(n => n+" ("+this.props.data[n]+")"),
+			labels: names.map(n => n+" ("+parseInt(this.props.data[n]).toLocaleString()+")"),
 			datasets: [{
 				data: names.map(n => this.props.data[n]),
 				backgroundColor: names.map(n => colors[n] ? colors[n] : colors.default)
