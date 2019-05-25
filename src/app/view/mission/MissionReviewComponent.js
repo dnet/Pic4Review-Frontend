@@ -76,7 +76,7 @@ class MissionReviewComponent extends Component {
 	 */
 	_next(wasSkipped) {
 		wasSkipped = wasSkipped || false;
-		const prevCoords = !wasSkipped && this.state.feature !== null ? this.state.feature.coordinates : null;
+		const prevCoords = !wasSkipped && this.state.feature !== null && !this._isImporter() ? this.state.feature.coordinates : null;
 		const prevId = this.state.feature !== null ? this.state.feature.id : null;
 
 		this.setState({
@@ -172,13 +172,7 @@ class MissionReviewComponent extends Component {
 						});
 					};
 					
-					if(
-						this.props.mission.options
-						&& this.props.mission.options.data
-						&& this.props.mission.options.data.options
-						&& this.props.mission.options.data.options.editors
-						&& this.props.mission.options.data.options.editors.type === "importer"
-					) {
+					if(this._isImporter()) {
 						API.FindSimilarAround(
 							this.props.mission.options.data.options.editors.mainTags,
 							f.geometry,
@@ -246,6 +240,18 @@ class MissionReviewComponent extends Component {
 		else {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("You can't go back anymore") });
 		}
+	}
+	
+	/**
+	 * Is this mission using importer editor ?
+	 * @private
+	 */
+	_isImporter() {
+		return this.props.mission.options
+			&& this.props.mission.options.data
+			&& this.props.mission.options.data.options
+			&& this.props.mission.options.data.options.editors
+			&& this.props.mission.options.data.options.editors.type === "importer";
 	}
 	
 	/**
