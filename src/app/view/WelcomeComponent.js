@@ -130,7 +130,9 @@ class WelcomeComponent extends Component {
 						))
 					}
 				</div>
-				
+			</Grid>
+			
+			<Grid item xs={12} style={{backgroundColor: "#eee"}}>
 				<Grid container justify="center">
 					<Grid item xs={12} lg={6} style={{display: "none"}}>
 						<div style={styleBlock}>
@@ -140,7 +142,7 @@ class WelcomeComponent extends Component {
 							</div>
 						</div>
 					</Grid>
-					<Grid item xs={12} lg={6} style={{backgroundColor: "#eee"}}>
+					<Grid item xs={12} md={10} lg={8} xl={6}>
 						<div style={styleBlock}>
 							<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("The Pic4Review community")}</Typography>
 							
@@ -175,7 +177,9 @@ class WelcomeComponent extends Component {
 						</div>
 					</Grid>
 				</Grid>
-				
+			</Grid>
+			
+			<Grid item xs={12} md={10} lg={8} xl={6}>
 				<div style={styleBlock}>
 					<Typography variant="display1" style={{marginBottom: 10}}>{I18n.t("About")}</Typography>
 					<Typography variant="body1" style={{margin: 10}}>
