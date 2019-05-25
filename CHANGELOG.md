@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Duplicating old missions was causing a bug when showing editors options
 
+### Removed
+- Flickr pictures are not used anymore (most of them not being relevant)
+
 
 ## 0.5.8 - 2019-05-08
 

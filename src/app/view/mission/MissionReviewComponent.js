@@ -67,7 +67,7 @@ class MissionReviewComponent extends Component {
 		};
 		
 		this.psTokens = {};
-		this.picMan = new P4C.PicturesManager();
+		this.picMan = new P4C.PicturesManager({ ignorefetchers: ["flickr"] });
 	}
 	
 	/**
