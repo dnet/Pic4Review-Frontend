@@ -224,7 +224,7 @@ class NewMissionEditorsComponent extends Component {
 						onChange={newTags => this._changeProp("importer", "mainTags", newTags)}
 						onlyAddTags={true}
 						label={I18n.t("Main OSM tags")}
-						helper={I18n.t("Minimal set of tags to select existing features in OpenStreetMap.")}
+						helper={I18n.t("Objects having all these key=value combinations will be retrieved. If any object is found, users will be able to merge external data with existing features.")}
 					/>
 					
 					<TextField

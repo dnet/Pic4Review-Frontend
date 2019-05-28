@@ -71,7 +71,7 @@ class TagInputComponent extends Component {
 				fullWidth multiline required
 				error={this.state.error}
 				label={this.props.label || I18n.t("OSM tags")}
-				helperText={helper+I18n.t("List tags as key=value (one tag per line).")}
+				helperText={I18n.t("List tags as key=value (one tag per line).")+helper}
 				placeholder={"amenity=bench\nbackrest=yes\nmaterial=wood".replace(/\\n/g, '\n')}
 				rows="4"
 				value={this.state.text}
