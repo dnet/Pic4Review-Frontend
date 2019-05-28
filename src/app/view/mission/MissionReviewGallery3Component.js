@@ -40,7 +40,14 @@ class MissionReviewGallery3Component extends Component {
 				useBrowserFullscreen={false}
 				slideDuration={0}
 				useTranslate3D={false}
+				disableThumbnailScroll={true}
 				startIndex={parseInt(this.props.currentPictureId)}
+				onThumbnailClick={(ev, id) => {
+					this._preventScroll = true;
+					if(this.props.showMore && id === images.length - 1) {
+						this.props.onShowMore();
+					}
+				}}
 				renderItem={item => {
 					return item.more ?
 					<div
@@ -141,19 +148,48 @@ class MissionReviewGallery3Component extends Component {
 	}
 	
 	componentDidMount() {
-		//Find currently viewed picture
+		// Find currently viewed picture
 		if(this.props.pictures.length > 1) {
 			this.timer = setInterval(() => {
 				if(this.refs.gallery) {
 					const currentPicId = this.refs.gallery.getCurrentIndex();
 					
-					//Notify parent of change
+					// Notify parent of change
 					if(currentPicId >= 0 && currentPicId < this.props.pictures.length && currentPicId !== this.centerPic) {
 						this.centerPic = currentPicId;
 						this.props.onCenterPicChanged(this.centerPic);
+						
+						// Scroll thumbnails
+						if(!this._preventScroll && !this._isMobile()) {
+							const container = this.refs.gallery._imageGallery.getElementsByClassName("image-gallery-thumbnails-container")[0];
+							const currentThumb = container.children[currentPicId];
+							container.scrollLeft = currentThumb.offsetLeft;
+						}
 					}
+					
+					this._preventScroll = false;
 				}
 			}, 100);
+		}
+		
+		// Horizontal scroll for thumbnails
+		if(!this._isMobile()) {
+			const that = this.refs.gallery._imageGallery.getElementsByClassName("image-gallery-thumbnails-container")[0];
+			const speed = 2;
+			const scrollHorizontally = e => {
+				e = window.event || e;
+				const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+				that.scrollLeft -= (delta*40*speed); // Multiplied by 40
+				e.preventDefault();
+			};
+			
+			if(that.addEventListener) {
+				that.addEventListener("mousewheel", scrollHorizontally, false);
+				that.addEventListener("DOMMouseScroll", scrollHorizontally, false);
+			}
+			else {
+				that.attachEvent("onmousewheel", scrollHorizontally);
+			}
 		}
 	}
 	

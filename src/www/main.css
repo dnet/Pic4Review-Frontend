@@ -97,6 +97,12 @@ div.image-gallery-bullets {
 	vertical-align: middle;
 }
 
+.image-gallery-thumbnails-container {
+	overflow-x: auto !important;
+	position: relative;
+	white-space: nowrap;
+}
+
 @media (max-width: 959px) {
 	.image-gallery,
 	.image-gallery-content,

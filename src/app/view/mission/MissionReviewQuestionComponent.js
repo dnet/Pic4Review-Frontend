@@ -204,7 +204,7 @@ class MissionReviewQuestionComponent extends Component {
 				{content}
 				
 				{this._isMobile() && this.props.skip &&
-					<Tooltip title={this.props.skip.tip} style={{width: "100%", marginTop: 10}}>
+					<Tooltip title={this.props.skip.tip} style={{width: "100%", marginTop: 10, marginBottom: this._isMobile() ? 20 : undefined}}>
 						<Button
 							variant="raised"
 							size="small"
