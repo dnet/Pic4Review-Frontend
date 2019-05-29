@@ -24,7 +24,7 @@ class MissionReviewGallery3Component extends Component {
 	render() {
 		if(this.props.pictures && this.props.pictures.length > 0) {
 			const allowUpdateAssociation = this.props.pictures.filter(p => p.featured).length > 0;
-			const images = this.props.pictures.map((p,i) => Object.assign({}, p, { id: i, original: p.pictureUrl, thumbnail: p.thumbUrl }));
+			const images = this.props.pictures.map((p,i) => Object.assign({}, p, { id: i, original: p.pictureUrl, thumbnail: p.thumbUrl || p.pictureUrl }));
 			if(this.props.showMore) { images.push({ more: true, thumbnail: "./images/more.png" }); }
 			
 			return <ImageGallery

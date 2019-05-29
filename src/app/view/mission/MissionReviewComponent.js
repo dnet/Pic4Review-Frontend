@@ -44,7 +44,7 @@ class MissionReviewComponent extends Component {
 			pictures: null,
 			currentPictureId: null,
 			clickedPictureId: null,
-			prevFeature: null,
+			prevData: null,
 			count: null,
 			firstReview: false,
 			openEditors: false,
@@ -85,7 +85,7 @@ class MissionReviewComponent extends Component {
 			currentPictureId: null,
 			clickedPictureId: null,
 			markedPictureId: -1,
-			prevFeature: this.state.feature,
+			prevData: wasSkipped || !this.state.feature ? null : this.state,
 			currentAnswer: null,
 			shownPics: 0,
 			noMorePics: false,
@@ -221,17 +221,17 @@ class MissionReviewComponent extends Component {
 	 * @private
 	 */
 	_prev() {
-		if(this.state.prevFeature) {
+		if(this.state.prevData) {
 			this.setState({
-				prevFeature: null,
-				feature: this.state.prevFeature,
-				pictures: this.state.prevFeature.pictures,
-				shownPics: this.state.prevFeature.pictures.length > 0 ? Math.min(PICS_PER_PAGE, this.state.prevFeature.pictures.length) : 0,
-				noMorePics: false,
-				currentPictureId: this.state.prevFeature.pictures.length > 0 ? 0 : null,
+				prevData: null,
+				feature: this.state.prevData.feature,
+				pictures: this.state.prevData.pictures,
+				shownPics: this.state.prevData.shownPics,
+				noMorePics: this.state.prevData.noMorePics,
+				currentPictureId: this.state.prevData.pictures && this.state.prevData.pictures.length > 0 ? 0 : null,
 				clickedPictureId: null,
 				markedPictureId: -1,
-				featureCanMove: false,
+				featureCanMove: this.state.prevData.featureCanMove,
 				newFeatureGeometry: null,
 				similar: null,
 				bottomNav: 0

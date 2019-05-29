@@ -224,10 +224,13 @@ class MissionReviewMapComponent extends Component {
 		}
 	}
 	
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
 		if(this.refs.map) {
 			this.refs.map.leafletElement.invalidateSize();
-			this._fitBounds();
+			
+			if(prevProps.feature && this.props.feature && prevProps.feature.id !== this.props.feature.id) {
+				this._fitBounds();
+			}
 		}
 	}
 	
