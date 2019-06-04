@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.5.9 - 2019-06-04
+
 ### Added
 - More information about the editing context is provided in Pic4Review changesets (locale, mission URL)
 - Spanish (es) locale added
