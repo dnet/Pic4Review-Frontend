@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Fixed
+- Error message when feature to review only has one picture
+
 
 ## 0.5.9 - 2019-06-04
 

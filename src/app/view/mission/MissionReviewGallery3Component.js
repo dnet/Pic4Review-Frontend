@@ -173,7 +173,7 @@ class MissionReviewGallery3Component extends Component {
 		}
 		
 		// Horizontal scroll for thumbnails
-		if(!this._isMobile()) {
+		if(!this._isMobile() && this.props.pictures.length > 1) {
 			const that = this.refs.gallery._imageGallery.getElementsByClassName("image-gallery-thumbnails-container")[0];
 			const speed = 2;
 			const scrollHorizontally = e => {
