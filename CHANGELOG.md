@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Changed
+- Update the login icon from [Login](https://materialdesignicons.com/icon/login)
+  to [Account](https://materialdesignicons.com/icon/account); on larger screens,
+  a 'Log In' text button is used
+
 ### Fixed
 - Error message when feature to review only has one picture
+- Typo in the welcome page message in English (see Merge Request !6)
 
 
 ## 0.5.9 - 2019-06-04

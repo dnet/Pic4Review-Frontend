@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import withWidth from 'material-ui/utils/withWidth';
 import { Account, AccountCircle, CameraBurst, ChartPie, LibraryPlus, Login, Logout } from 'mdi-material-ui';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import { Link } from 'react-router-dom';
 import { ListItemIcon, ListItemText } from 'material-ui/List';
 import Menu, { MenuItem } from 'material-ui/Menu';
+import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 
 /**
@@ -42,6 +44,23 @@ class UserButtonComponent extends Component {
 	}
 	
 	render() {
+		const createLoginButton = width => {
+			if(["xs", "sm"].includes(width)) {
+				return <IconButton
+					color="inherit"
+					onClick={() => PubSub.publish("UI.LOGIN.WANTS")}>
+					<Account />
+				</IconButton>;
+			} else {
+				return <Button
+					color="inherit"
+					onClick={() => PubSub.publish("UI.LOGIN.WANTS")}
+				>
+					<Account />
+					{I18n.t("Log In")}
+				</Button>;
+			}
+		};
 		if(this.state.connected) {
 			return <div style={{display: "inline"}}>
 				<Tooltip title={I18n.t("Account")} placement="bottom">
@@ -82,7 +101,7 @@ class UserButtonComponent extends Component {
 						<ListItemIcon>
 							<Logout />
 						</ListItemIcon>
-						<ListItemText inset primary={I18n.t("Logout")} />
+						<ListItemText inset primary={I18n.t("Log Out")} />
 					</MenuItem>
 					
 					{this.props.withLinks && <Divider light />}
@@ -115,13 +134,8 @@ class UserButtonComponent extends Component {
 			</div>;
 		}
 		else {
-			return <Tooltip title={I18n.t("Login")} placement="bottom">
-				<IconButton
-					color="inherit"
-					onClick={() => PubSub.publish("UI.LOGIN.WANTS")}
-				>
-					<Login />
-				</IconButton>
+			return <Tooltip title={I18n.t("Log In")} placement="bottom">
+				{createLoginButton(this.props.width)}
 			</Tooltip>;
 		}
 	}
@@ -139,7 +153,7 @@ class UserButtonComponent extends Component {
 	}
 }
 
-export default UserButtonComponent;
+export default withWidth()(UserButtonComponent);
 
 /**
  * Event when the user wants to login.
