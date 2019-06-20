@@ -62,7 +62,7 @@ class WelcomeComponent extends Component {
 					<img src="images/logo.512.png" style={{ height: 128 }} />
 					
 					<Typography variant="display2" style={{marginBottom: 10, color: "white", textShadow: "2px 2px 5px black"}}>{I18n.t("Improving OpenStreetMap has never been easier !")}</Typography>
-					<Typography variant="title" style={{color: "white", textShadow: "2px 2px 5px black"}}>{I18n.t("Contribute to OpenStretMap simply by looking at pictures of your city")}</Typography>
+					<Typography variant="title" style={{color: "white", textShadow: "2px 2px 5px black"}}>{I18n.t("Contribute to OpenStreetMap simply by looking at pictures of your city")}</Typography>
 					
 					<Button variant="raised" size="large" color="secondary" style={{marginTop: 20, paddingLeft: 15}} component={Link} to='/missions'>
 						<Play style={styleIconButton} /> {I18n.t("Start now")}
