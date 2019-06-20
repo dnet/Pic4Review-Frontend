@@ -44,23 +44,6 @@ class UserButtonComponent extends Component {
 	}
 	
 	render() {
-		const createLoginButton = width => {
-			if(["xs", "sm"].includes(width)) {
-				return <IconButton
-					color="inherit"
-					onClick={() => PubSub.publish("UI.LOGIN.WANTS")}>
-					<Account />
-				</IconButton>;
-			} else {
-				return <Button
-					color="inherit"
-					onClick={() => PubSub.publish("UI.LOGIN.WANTS")}
-				>
-					<Account />
-					{I18n.t("Log In")}
-				</Button>;
-			}
-		};
 		if(this.state.connected) {
 			return <div style={{display: "inline"}}>
 				<Tooltip title={I18n.t("Account")} placement="bottom">
@@ -134,6 +117,24 @@ class UserButtonComponent extends Component {
 			</div>;
 		}
 		else {
+			const createLoginButton = width => {
+				if(["xs", "sm"].includes(width)) {
+					return <IconButton
+						color="inherit"
+						onClick={() => PubSub.publish("UI.LOGIN.WANTS")}>
+						<Account />
+					</IconButton>;
+				} else {
+					return <Button
+						color="inherit"
+						onClick={() => PubSub.publish("UI.LOGIN.WANTS")}
+					>
+						<Account />
+						{I18n.t("Log In")}
+					</Button>;
+				}
+			};
+			
 			return <Tooltip title={I18n.t("Log In")} placement="bottom">
 				{createLoginButton(this.props.width)}
 			</Tooltip>;
