@@ -16,17 +16,17 @@ class MissionReviewGallery3Component extends Component {
 		super();
 		this.centerPic = 0;
 	}
-	
+
 	_isMobile() {
 		return ["xs","sm"].includes(this.props.width);
 	}
-	
+
 	render() {
 		if(this.props.pictures && this.props.pictures.length > 0) {
 			const allowUpdateAssociation = this.props.pictures.filter(p => p.featured).length > 0;
 			const images = this.props.pictures.map((p,i) => Object.assign({}, p, { id: i, original: p.pictureUrl, thumbnail: p.thumbUrl || p.pictureUrl }));
 			if(this.props.showMore) { images.push({ more: true, thumbnail: "./images/more.png" }); }
-			
+
 			return <ImageGallery
 				ref="gallery"
 				items={images}
@@ -71,7 +71,7 @@ class MissionReviewGallery3Component extends Component {
 										</IconButton>
 									</Tooltip>
 								}
-								
+
 								{item.featured &&
 									<Tooltip title={I18n.t("This picture is already associated to this feature")}>
 										<IconButton style={{ color: "white" }}>
@@ -79,7 +79,7 @@ class MissionReviewGallery3Component extends Component {
 										</IconButton>
 									</Tooltip>
 								}
-								
+
 								{allowUpdateAssociation && !item.featured && this.props.picMarked !== item.id &&
 									<Tooltip title={I18n.t("Mark this picture as best one")}>
 										<IconButton
@@ -90,7 +90,7 @@ class MissionReviewGallery3Component extends Component {
 										</IconButton>
 									</Tooltip>
 								}
-								
+
 								{allowUpdateAssociation && !item.featured && this.props.picMarked === item.id &&
 									<Tooltip title={I18n.t("Unmark this picture")}>
 										<IconButton
@@ -102,9 +102,9 @@ class MissionReviewGallery3Component extends Component {
 									</Tooltip>
 								}
 							</span>
-							
+
 							<span>{(new Date(item.date)).toLocaleDateString() + " - " + item.author + " - " + item.provider}</span>
-							
+
 							<span>
 								{!this._isMobile() &&
 									<Tooltip title={I18n.t("Picture details (and other pictures around)")}>
@@ -130,7 +130,7 @@ class MissionReviewGallery3Component extends Component {
 								</Tooltip>
 							</span>
 						</span>
-						
+
 						{this._isMobile() ?
 							<img
 								src={item.thumbUrl || item.pictureUrl}
@@ -146,19 +146,19 @@ class MissionReviewGallery3Component extends Component {
 			return <div></div>;
 		}
 	}
-	
+
 	componentDidMount() {
 		// Find currently viewed picture
 		if(this.props.pictures.length > 1) {
 			this.timer = setInterval(() => {
 				if(this.refs.gallery) {
 					const currentPicId = this.refs.gallery.getCurrentIndex();
-					
+
 					// Notify parent of change
 					if(currentPicId >= 0 && currentPicId < this.props.pictures.length && currentPicId !== this.centerPic) {
 						this.centerPic = currentPicId;
 						this.props.onCenterPicChanged(this.centerPic);
-						
+
 						// Scroll thumbnails
 						if(!this._preventScroll && !this._isMobile()) {
 							const container = this.refs.gallery._imageGallery.getElementsByClassName("image-gallery-thumbnails-container")[0];
@@ -166,12 +166,12 @@ class MissionReviewGallery3Component extends Component {
 							container.scrollLeft = currentThumb.offsetLeft;
 						}
 					}
-					
+
 					this._preventScroll = false;
 				}
 			}, 100);
 		}
-		
+
 		// Horizontal scroll for thumbnails
 		if(!this._isMobile() && this.props.pictures.length > 1) {
 			const that = this.refs.gallery._imageGallery.getElementsByClassName("image-gallery-thumbnails-container")[0];
@@ -182,7 +182,7 @@ class MissionReviewGallery3Component extends Component {
 				that.scrollLeft -= (delta*40*speed); // Multiplied by 40
 				e.preventDefault();
 			};
-			
+
 			if(that.addEventListener) {
 				that.addEventListener("mousewheel", scrollHorizontally, false);
 				that.addEventListener("DOMMouseScroll", scrollHorizontally, false);
@@ -192,14 +192,14 @@ class MissionReviewGallery3Component extends Component {
 			}
 		}
 	}
-	
+
 	componentDidUpdate() {
 		if(this.refs.gallery && this.refs.gallery.getCurrentIndex() !== this.props.currentPictureId) {
 			this.refs.gallery.slideToIndex(parseInt(this.props.currentPictureId));
 			this.centerPic = this.props.currentPictureId;
 		}
 	}
-	
+
 	componentWillUnmount() {
 		clearInterval(this.timer);
 	}

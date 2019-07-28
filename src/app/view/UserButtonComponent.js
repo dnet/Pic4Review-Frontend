@@ -21,10 +21,10 @@ class UserButtonComponent extends Component {
 			menuOpen: false,
 			menuAnchor: null
 		};
-		
+
 		this.psTokens = {};
 	}
-	
+
 	/**
 	 * Closes the menu.
 	 * @private
@@ -32,7 +32,7 @@ class UserButtonComponent extends Component {
 	_closeMenu() {
 		this.setState({ menuOpen: false, menuAnchor: null });
 	}
-	
+
 	/**
 	 * Handler for logout click.
 	 * @private
@@ -42,7 +42,7 @@ class UserButtonComponent extends Component {
 		this._closeMenu();
 		this.setState({ connected: false, user: null });
 	}
-	
+
 	render() {
 		if(this.state.connected) {
 			return <div style={{display: "inline"}}>
@@ -86,9 +86,9 @@ class UserButtonComponent extends Component {
 						</ListItemIcon>
 						<ListItemText inset primary={I18n.t("Log Out")} />
 					</MenuItem>
-					
+
 					{this.props.withLinks && <Divider light />}
-					
+
 					{this.props.withLinks &&
 						<MenuItem
 							onClick={this._closeMenu.bind(this)}
@@ -134,19 +134,21 @@ class UserButtonComponent extends Component {
 					</Button>;
 				}
 			};
-			
+
 			return <Tooltip title={I18n.t("Log In")} placement="bottom">
 				{createLoginButton(this.props.width)}
 			</Tooltip>;
 		}
 	}
-	
+
 	componentWillMount() {
-		this.psTokens.login = PubSub.subscribe("UI.LOGIN.DONE", (msg, data) => {
-			this.setState({ user: data.username, connected: true });
+		this.psTokens.login = PubSub.subscribe("USER.INFO.READY", (msg, data) => {
+			if(data && data.name) {
+				this.setState({ user: data.name, connected: true });
+			}
 		});
 	}
-	
+
 	componentWillUnmount() {
 		if(this.psTokens.login) {
 			PubSub.unsubscribe(this.psTokens.login);
@@ -159,14 +161,6 @@ export default withWidth()(UserButtonComponent);
 /**
  * Event when the user wants to login.
  * @event UI.LOGIN.WANTS
- * @memberof Events
- */
-
-/**
- * Event when user is logged in.
- * @event UI.LOGIN.DONE
- * @type {Object} Event data
- * @property {string} username The user name
  * @memberof Events
  */
 

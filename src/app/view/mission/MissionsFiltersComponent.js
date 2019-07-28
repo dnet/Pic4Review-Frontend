@@ -15,7 +15,7 @@ import Typography from 'material-ui/Typography';
 class MissionsFiltersComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			theme: null,
 			type: null,
@@ -23,10 +23,10 @@ class MissionsFiltersComponent extends Component {
 			complete: null,
 			editor: null,
 			sort: "pertinence",
-			usage: "contributed"
+			usage: null
 		};
 	}
-	
+
 	/**
 	 * Converts a third-party object into a list of filters
 	 * @private
@@ -42,10 +42,10 @@ class MissionsFiltersComponent extends Component {
 			usage: o.usage || ""
 		};
 	}
-	
+
 	render() {
 		const styleControl = { width: "100%", marginBottom: 20 };
-		
+
 		return <div>
 			{this.props.sorting &&
 				<FormControl style={styleControl}>
@@ -62,21 +62,21 @@ class MissionsFiltersComponent extends Component {
 					</Select>
 				</FormControl>
 			}
-			
+
 			{this.props.usage &&
 				<FormControl style={styleControl}>
 					<Typography variant="body1">{I18n.t("Show missions")}</Typography>
 					<RadioGroup
 						row
 						value={this.state.usage}
-						onChange={e => this.setState({ usage: e.target.value })}
+						onChange={e => this.setState({ usage: e.target.value, status: e.target.value === "contributed" ? "online" : "" })}
 					>
 						<FormControlLabel value="contributed" control={<Radio />} label={I18n.t("I contributed to")} />
 						<FormControlLabel value="created" control={<Radio />} label={I18n.t("I created")} />
 					</RadioGroup>
 				</FormControl>
 			}
-			
+
 			<div style={styleControl}>
 				<Typography variant="body1">{I18n.t("Theme")}</Typography>
 				<IconGridSelect
@@ -86,7 +86,7 @@ class MissionsFiltersComponent extends Component {
 					onChange={id => this.setState({ theme: id })}
 				/>
 			</div>
-			
+
 			<div style={styleControl}>
 				<Typography variant="body1">{I18n.t("Type")}</Typography>
 				<IconGridSelect
@@ -96,10 +96,10 @@ class MissionsFiltersComponent extends Component {
 					onChange={id => this.setState({ type: id })}
 				/>
 			</div>
-			
+
 			{(this.props.status || this.props.completeness) && <div style={styleControl}>
 				<Typography variant="body1">{I18n.t("Others")}</Typography>
-				
+
 				{this.props.status && <FormControl style={styleControl}>
 					<InputLabel htmlFor="missions-filters-status">{I18n.t("Status")}</InputLabel>
 					<Select
@@ -114,7 +114,7 @@ class MissionsFiltersComponent extends Component {
 						)}
 					</Select>
 				</FormControl>}
-				
+
 				{this.props.completeness && <div>
 					<FormControlLabel
 						control={
@@ -125,7 +125,7 @@ class MissionsFiltersComponent extends Component {
 						}
 						label={I18n.t("With integrated editor")}
 					/>
-					
+
 					<FormControlLabel
 						control={
 							<Checkbox
@@ -139,17 +139,17 @@ class MissionsFiltersComponent extends Component {
 			</div>}
 		</div>;
 	}
-	
+
 	componentWillMount() {
 		if(this.props.values) {
 			this.setState(this.props.values);
 		}
 	}
-	
+
 	componentWillUpdate(nextProps, nextState) {
 		const prevFilters = this._toFilters(this.state);
 		const newFilters = this._toFilters(nextState);
-		
+
 		if(Hash(newFilters) !== Hash(prevFilters)) {
 			this.props.onChange(newFilters);
 		}

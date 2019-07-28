@@ -38,7 +38,7 @@ const styles = theme => ({ root: theme.typography.caption });
 class MissionReviewComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			feature: null,
 			pictures: null,
@@ -65,11 +65,11 @@ class MissionReviewComponent extends Component {
 			similar: null,
 			bottomNav: 0
 		};
-		
+
 		this.psTokens = {};
 		this.picMan = new P4C.PicturesManager({ ignorefetchers: ["flickr"] });
 	}
-	
+
 	/**
 	 * Start looking for next feature
 	 * @private
@@ -94,9 +94,9 @@ class MissionReviewComponent extends Component {
 			newFeatureGeometry: null,
 			similar: null
 		});
-		
+
 		PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving next feature to review") });
-		
+
 		API.GetMissionNextFeature(this.props.mission.id, prevCoords, this.props.user.id)
 		.then(f => {
 			if(f !== null) {
@@ -104,12 +104,12 @@ class MissionReviewComponent extends Component {
 				if(!prevId || f.id !== prevId) {
 					//Find pictures already associated to feature
 					const picsFromTags = this.picMan.getPicturesFromTags(f.properties);
-					
+
 					f.pictures.map(p => {
 						p.featured = picsFromTags.includes(p.pictureUrl);
 						return p;
 					});
-					
+
 					f.pictures.sort((a, b) => {
 						if(a.featured === b.featured) {
 							return b.date - a.date;
@@ -118,7 +118,7 @@ class MissionReviewComponent extends Component {
 							return a.featured ? -1 : 1;
 						}
 					});
-					
+
 					// Function when everything is ready for display
 					const showFeature = () => {
 						//Change state
@@ -130,11 +130,11 @@ class MissionReviewComponent extends Component {
 							shownPics: (f.pictures && f.pictures.length > 0 ? Math.min(f.pictures.length, PICS_PER_PAGE) : 0),
 							noMorePics: f.geometry.type !== "Point" && f.pictures.length <= PICS_PER_PAGE
 						});
-						
+
 						if(this.refs.container) {
 							this.refs.container.scrollIntoView(false);
 						}
-						
+
 						//Check if we allow feature geometry editing (must have integrated editor + be a node)
 						if(
 							this.props.mission.options && this.props.mission.options.data
@@ -158,20 +158,20 @@ class MissionReviewComponent extends Component {
 								}
 							}
 						}
-						
+
 						PubSub.publish("UI.MESSAGE.WAITDONE");
-						
+
 						if(!f.pictures || f.pictures.length === 0) {
 							PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("No pictures available around this feature") });
 						}
-						
+
 						//Load user statistics for this mission
 						API.GetMissionUserStatistics(this.props.mission.id, this.props.user.id)
 						.then(s => {
 							this.setState({ stats: s });
 						});
 					};
-					
+
 					if(this._isImporter()) {
 						API.FindSimilarAround(
 							this.props.mission.options.data.options.editors.mainTags,
@@ -182,7 +182,7 @@ class MissionReviewComponent extends Component {
 							if(similarFeatures && similarFeatures.features && similarFeatures.features.length > 0) {
 								this.setState({ similar: similarFeatures });
 							}
-							
+
 							showFeature();
 						})
 						.catch(e => {
@@ -215,7 +215,7 @@ class MissionReviewComponent extends Component {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Can't retrieve next feature to review."), details: e.message });
 		});
 	}
-	
+
 	/**
 	 * Go back to previous feature
 	 * @private
@@ -241,7 +241,7 @@ class MissionReviewComponent extends Component {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("You can't go back anymore") });
 		}
 	}
-	
+
 	/**
 	 * Is this mission using importer editor ?
 	 * @private
@@ -253,7 +253,7 @@ class MissionReviewComponent extends Component {
 			&& this.props.mission.options.data.options.editors
 			&& this.props.mission.options.data.options.editors.type === "importer";
 	}
-	
+
 	/**
 	 * Load more pictures around the feature
 	 * @private
@@ -261,25 +261,32 @@ class MissionReviewComponent extends Component {
 	_loadMorePics() {
 		//Pictures left in cache
 		if(this.state.shownPics < this.state.pictures.length) {
+			const newState = {};
 			let newShownPics = Math.min(this.state.shownPics+PICS_PER_PAGE, this.state.pictures.length);
-			
+
 			//Avoid showing no more pics msg
 			if(newShownPics === this.state.pictures.length) {
 				if(this.state.noMorePics) {
 					newShownPics++;
 				}
-				
+
 				if(this.state.feature.geometry.type !== "Point") {
-					this.setState({ noMorePics: true });
+					newState.noMorePics = true;
 				}
 			}
-			
-			this.setState({ shownPics: newShownPics });
+
+			// Go to next image
+			if(newShownPics > this.state.shownPics) {
+				newState.currentPictureId = this.state.shownPics;
+			}
+
+			newState.shownPics = newShownPics;
+			this.setState(newState);
 		}
 		//Load from Pic4Carto
 		else if(!this.state.noMorePics && this.state.feature.geometry.type === "Point") {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Loading more pictures around") });
-			
+
 			this.picMan.startPicsRetrievalAround(
 				new P4C.LatLng(this.state.feature.coordinates[0], this.state.feature.coordinates[1]),
 				30,
@@ -287,7 +294,7 @@ class MissionReviewComponent extends Component {
 			)
 			.then(pics => {
 				const newPics = this.state.pictures ? this.state.pictures.slice(0) : [];
-				
+
 				//Avoid adding pics we already have
 				pics.forEach(p => {
 					let dupe = false;
@@ -298,13 +305,19 @@ class MissionReviewComponent extends Component {
 							break;
 						}
 					}
-					
+
 					if(!dupe) {
 						newPics.push(p);
 					}
 				});
-				
-				this.setState({ pictures: newPics, shownPics: Math.min(this.state.shownPics + PICS_PER_PAGE, newPics.length + 1), noMorePics: true });
+
+				this.setState({
+					pictures: newPics,
+					shownPics: Math.min(this.state.shownPics + PICS_PER_PAGE, newPics.length + 1),
+					noMorePics: true,
+					currentPictureId: newPics.length > this.state.pictures.length ? this.state.shownPics : this.state.currentPictureId
+				});
+
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 			})
 			.catch(e => {
@@ -317,28 +330,28 @@ class MissionReviewComponent extends Component {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: I18n.t("We don't have more pictures available around this feature") });
 		}
 	}
-	
+
 	/**
 	 * Edit the current feature status, and start retrieving next one
 	 * @private
 	 */
 	_review(status, options) {
 		options = options || {};
-		
+
 		if(status !== "skipped" && this.refs.map && this.refs.map.isEditingGeometry()) {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You started editing this feature geometry, please valid or cancel your edits using map buttons before answering the question."), duration: 5000 });
 			return false;
 		}
-		
+
 		options.externalEditConfirmed = options.externalEditConfirmed || (!this.state.currentAnswer && this.state.hideConfirmEdit);
-		
+
 		//Update feature in DB
 		const updateDB = (upData) => {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating Pic4Review mission") });
-			
+
 			upData = upData || {};
 			this.state.feature.status = status;
-			
+
 			API.UpdateMissionFeature(
 				this.props.mission.id,
 				this.state.feature,
@@ -350,11 +363,11 @@ class MissionReviewComponent extends Component {
 				if(upData.changesetId) {
 					this._setChangesetId(upData.changesetId);
 				}
-				
+
 				if(status === "reviewed") {
 					this.setState({ count: this.state.count+1, openConfirmEdit: false, openConfirmDuplicate: false });
 				}
-				
+
 				this._next(status === "skipped");
 			})
 			.catch(e => {
@@ -363,7 +376,7 @@ class MissionReviewComponent extends Component {
 				PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Can't update feature, please retry"), details: e.message });
 			});
 		};
-		
+
 		//If editor activated
 		if(status === "reviewed" && !options.externalEditConfirmed) {
 			// If both answer and feature are valid
@@ -378,7 +391,7 @@ class MissionReviewComponent extends Component {
 				if(this.props.mission.options.data.options.editors.type !== "importer" && this.state.feature.properties.id) {
 					//Update feature
 					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating feature in OpenStreetMap") });
-					
+
 					API.UpdateOSMFeature(
 						this.state.feature.properties.id,
 						this._getTagsToApply(),
@@ -404,7 +417,7 @@ class MissionReviewComponent extends Component {
 					//Create feature
 					else {
 						PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Creating feature in OpenStreetMap") });
-						
+
 						API.CreateOSMFeature(
 							this.state.newFeatureGeometry ? this.state.newFeatureGeometry.geometry : this.state.feature.geometry,
 							this._getTagsToApply({}, this.state.feature.properties),
@@ -429,9 +442,9 @@ class MissionReviewComponent extends Component {
 				) {
 					//Update feature
 					PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Updating feature in OpenStreetMap") });
-					
+
 					const merged = this.state.currentAnswer.mergeWith;
-					
+
 					API.UpdateOSMFeature(
 						merged.properties.id,
 						this._getTagsToApplyForImporter(merged),
@@ -461,12 +474,12 @@ class MissionReviewComponent extends Component {
 			updateDB();
 		}
 	}
-	
+
 	_closeFirstHelp() {
 		sessionStorage.setItem(NOT_FIRST_REVIEW, "1");
 		this.setState({ firstReview: false });
 	}
-	
+
 	/**
 	 * Retrieve last changeset ID for this mission from sessionStorage
 	 * @private
@@ -474,7 +487,7 @@ class MissionReviewComponent extends Component {
 	_getChangesetId() {
 		return sessionStorage.getItem("cid_"+this.props.match.params.mid);
 	}
-	
+
 	/**
 	 * Update changeset ID for this mission
 	 * @private
@@ -482,23 +495,23 @@ class MissionReviewComponent extends Component {
 	_setChangesetId(changesetId) {
 		sessionStorage.setItem("cid_"+this.props.match.params.mid, changesetId);
 	}
-	
+
 	/**
 	 * Get the tags to apply on the feature according to feature to merge with + current picture
 	 * @private
 	 */
 	_getTagsToApplyForImporter(merged) {
 		let tags = Object.assign({}, this.state.feature.properties);
-		
+
 		//Delete Osmose properties
 		delete tags.id;
 		delete tags.error_id;
 		delete tags.title;
 		delete tags.details;
-		
+
 		return this._getTagsToApply(merged.properties, tags);
 	}
-	
+
 	/**
 	 * Get the tags to apply on the feature according to selected answer + current picture
 	 * @private
@@ -507,14 +520,14 @@ class MissionReviewComponent extends Component {
 		baseTags = baseTags || this.state.feature.properties;
 		newTags = newTags || this.state.currentAnswer.tags;
 		let tags = Object.assign({}, newTags);
-		
+
 		/*
 		 * Add tags related to picture
 		 */
-		
+
 		let picId = null;
 		let changePic = false;
-		
+
 		//Explicitly marked picture
 		if(this.state.markedPictureId !== -1) {
 			picId = this.state.markedPictureId;
@@ -536,11 +549,11 @@ class MissionReviewComponent extends Component {
 		else {
 			console.log("Not sure which picture is the best between", this.state.currentPictureId, "and", this.state.clickedPictureId);
 		}
-		
+
 		//Add tags
 		if(picId !== null) {
 			const pic = this.state.pictures[picId];
-			
+
 			if(pic && pic.osmTags) {
 				//If not forcing pic change, only set data if no image is defined
 				if(!changePic) {
@@ -554,14 +567,14 @@ class MissionReviewComponent extends Component {
 				else {
 					tags = Object.assign(tags, pic.osmTags);
 				}
-				
+
 				const surveyDateObj = new Date(pic.date);
 				const surveyDate = surveyDateObj.toISOString().split("T")[0];
-				
+
 				if(baseTags["survey:date"]) {
 					try {
 						const existingDate = new Date(baseTags["survey:date"]);
-						
+
 						if(existingDate < surveyDateObj) {
 							tags["survey:date"] = surveyDate;
 						}
@@ -575,10 +588,10 @@ class MissionReviewComponent extends Component {
 				}
 			}
 		}
-		
+
 		return tags;
 	}
-	
+
 	_hasEditor() {
 		return this.state.feature
 			&& this.state.feature.properties
@@ -586,7 +599,7 @@ class MissionReviewComponent extends Component {
 			&& this.props.mission.options.data.options && this.props.mission.options.data.options.editors
 			&& this.props.mission.options.data.options.editors.type !== "disabled";
 	}
-	
+
 	render() {
 		if(!this.state.feature) {
 			const style = Object.assign({}, this.props.style, { textAlign: "center" });
@@ -599,7 +612,7 @@ class MissionReviewComponent extends Component {
 				edit: { icon: <Pencil />, label: I18n.t("Edit"), tip: I18n.t("Edit this feature with an OpenStreetMap editor"), click: e => this.setState({ openEditors: true, editorsAnchor: e.currentTarget }) },
 				done: { color: "primary", icon: <Check />, label: I18n.t("Validate"), tip: I18n.t("Mark the feature as done when you have edited OpenStreetMap"), click: () => this._review("reviewed") }
 			};
-			
+
 			const createBtn = (btn, s, text) => {
 				const b = buttons[btn];
 				text = text === undefined ? true : text;
@@ -612,7 +625,7 @@ class MissionReviewComponent extends Component {
 					</Tooltip>
 				</Grid>;
 			};
-			
+
 			const map = <Map
 							ref="map"
 							feature={this.state.feature}
@@ -632,9 +645,9 @@ class MissionReviewComponent extends Component {
 							onFeatureMove={g => { this.setState({ newFeatureGeometry: g })}}
 							width={this.props.width}
 						/>;
-			
+
 			const counter = <Statistics count={this.state.count} data={this.state.stats} style={{marginTop: 10}} />;
-			
+
 			const question = <Question
 							data={this._hasEditor() && this.props.mission.options.data.options.editors}
 							feature={this.state.feature}
@@ -643,13 +656,13 @@ class MissionReviewComponent extends Component {
 							onAnswerChange={d => { this.setState({ currentAnswer: d }, () => this._review("reviewed")); }}
 							skip={buttons.next}
 						/>;
-			
+
 			const gallery = this.state.pictures && <Gallery
 							pictures={this.state.pictures.slice(0, this.state.shownPics)}
 							currentPictureId={this.state.currentPictureId}
 							onPicSelected={id => this.setState({ clickedPictureId: id })}
 							onCenterPicChanged={id => this.setState({ currentPictureId: id })}
-							onPicDetails={id => this.setState({ clickedPictureId: -id })}
+							onPicDetails={id => this.setState({ clickedPictureId: -1-id })}
 							onShowMore={() => this._loadMorePics()}
 							showMore={this.state.shownPics <= this.state.pictures.length && (this.state.feature.geometry.type === "Point" || !this.state.noMorePics)}
 							onPicMarked={id => this.setState({ markedPictureId: id })}
@@ -657,7 +670,7 @@ class MissionReviewComponent extends Component {
 							picMarked={this.state.markedPictureId}
 							missionId={this.props.mission.id}
 						/>;
-			
+
 			return <div style={this.props.style} ref="container" className="p4r-review">
 				<Grid
 					container
@@ -669,7 +682,7 @@ class MissionReviewComponent extends Component {
 						<div style={{flex: 2, maxHeight: "45%", overflowY: "auto", display: "flex", flexDirection: "column", justifyContent: "center", overflowX: "hidden"}}>
 							<div style={{minHeight: 0}}>
 								{question}
-								
+
 								<Grid container spacing={8} style={{marginTop: 10, marginBottom: 20}}>
 									{createBtn("prev", 4)}
 									{createBtn(this._hasEditor() ? "edit" : "done", 4)}
@@ -677,15 +690,15 @@ class MissionReviewComponent extends Component {
 								</Grid>
 							</div>
 						</div>
-						
+
 						<div style={{flex: 3, maxHeight: "45%", overflowY: "auto", padding: (this.state.bottomNav === 0 ? 0: "0 5px")}}>
 							{this.state.bottomNav === 0 && map}
-							
+
 							{this.state.bottomNav === 1 && <Markdown source={this.props.mission.description.full} />}
 							{this.state.bottomNav === 1 && <Tags feature={{properties: this.state.feature.properties}} />}
 							{this.state.bottomNav === 1 && counter}
 						</div>
-						
+
 						<BottomNavigation
 							value={this.state.bottomNav}
 							onChange={(ev, val) => this.setState({ bottomNav: val })}
@@ -695,12 +708,12 @@ class MissionReviewComponent extends Component {
 							<BottomNavigationAction label={I18n.t("Details")} icon={<Information />} />
 						</BottomNavigation>
 					</Grid>
-					
+
 					<Grid item sm={8} xl={8} style={{height: "100%", display: "flex", flexDirection: "column"}}>
 						{gallery}
 					</Grid>
 				</Grid>
-				
+
 				<Hidden mdUp>
 					<div style={{position: "absolute", display: "flex", flexDirection: "column", top: this.props.width === "xs" ? 57 : 65, bottom: 0, right: 0, left: 0}}>
 						<div style={{flex: 2, minHeight: this.props.width === "xs" ? "50%" : "40%", maxHeight: this.props.width === "xs" ? "80%" : "70%", overflowY: "auto"}}>
@@ -713,7 +726,7 @@ class MissionReviewComponent extends Component {
 								</div>
 							}
 						</div>
-						
+
 						<BottomNavigation
 							value={this.state.bottomNav}
 							onChange={(ev, val) => this.setState({ bottomNav: val })}
@@ -723,15 +736,15 @@ class MissionReviewComponent extends Component {
 							<BottomNavigationAction label={I18n.t("Pictures")} icon={<ImageMultiple />} />
 							<BottomNavigationAction label={I18n.t("Details")} icon={<Information />} />
 						</BottomNavigation>
-						
+
 						<div style={{overflowY: "auto", padding: 10, paddingTop: 0}}>
 							{question}
 						</div>
 					</div>
 				</Hidden>
-				
+
 				<First open={this.state.firstReview} mid={this.props.mission.id} onClose={() => this._closeFirstHelp()} />
-				
+
 				<Editors
 					open={this.state.openEditors}
 					feature={this.state.feature}
@@ -739,14 +752,14 @@ class MissionReviewComponent extends Component {
 					mission={this.props.mission}
 					onClose={() => this.setState({openEditors: false})}
 				/>
-				
+
 				<ConfirmEdit
 					open={!this.state.hideConfirmEdit && this.state.openConfirmEdit}
 					onClose={() => this.setState({ openConfirmEdit: false })}
 					onValid={nomore => { this.setState({ hideConfirmEdit: nomore }); this._review("reviewed", { externalEditConfirmed: true }); }}
 					hasEditor={this._hasEditor()}
 				/>
-				
+
 				<ConfirmDuplicate
 					open={!this.state.hideConfirmDuplicate && this.state.openConfirmDuplicate}
 					onClose={() => this.setState({ openConfirmDuplicate: false })}
@@ -755,15 +768,15 @@ class MissionReviewComponent extends Component {
 			</div>;
 		}
 	}
-	
+
 	componentWillMount() {
 		this._next();
-		
+
 		if(sessionStorage.getItem(NOT_FIRST_REVIEW) === null) {
 			this.setState({ firstReview: true });
 		}
 	}
-	
+
 	componentWillUpdate(nextProps, nextState) {
 		const goMessages = {
 			1: { msg: I18n.t("You made you first edit, great !"), sml: "😉" },
@@ -775,11 +788,11 @@ class MissionReviewComponent extends Component {
 			100: { msg: I18n.t("You did it, 100 edits ! Thank you"), sml: "😘" },
 			110: { msg: I18n.t("Keep going on ! Now you're a Pic4Review rock star, I will let you alone (for now)"), sml: "😏" }
 		};
-		
+
 		if(this.state.count < nextState.count && goMessages[nextState.count]) {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "info", message: goMessages[nextState.count].msg, smiley: goMessages[nextState.count].sml, duration: 6000 });
 		}
-		
+
 		sessionStorage.setItem(EDITS_COUNT+"_"+this.props.mission.id, nextState.count);
 	}
 }

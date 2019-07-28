@@ -13,10 +13,10 @@ const LOCALES = [ "de", "es", "en", "fr", "hu", "it", "ja", "pl", "pt-PT" ];
 
 const readURLParams = str => {
 	const u = str.split('?');
-	
+
 	if(u.length > 1) {
 		const p = u[1].split('#')[0];
-		
+
 		return p.split('&').filter(function (pair) {
 			return pair !== '';
 		}).reduce(function(obj, pair){
@@ -42,14 +42,14 @@ class App {
 		 * @name Events
 		 */
 		window.PubSub = PubSub;
-		
+
 		//Init various systems
 		this._initI18n();
 		this._initAuth();
 		this._initGlobalVars();
 		this._initDomRendering();
 	}
-	
+
 	/**
 	 * Initializes internationalization system
 	 * @private
@@ -64,18 +64,18 @@ class App {
 				}
 			}
 		}
-		
+
 		I18n.locale = locale || window.navigator.userLanguage || window.navigator.language;
 		I18n.fallbacks = true;
-		
+
 		//Load translation files
 		for(const l of LOCALES) {
 			Object.assign(I18n.translations, require("../config/locales/"+l.replace("-", "_")+".json"));
 		}
-		
+
 		window.I18n = I18n;
 	}
-	
+
 	/**
 	 * Initializes authentication system.
 	 * @private
@@ -89,10 +89,10 @@ class App {
 			singlepage: true
 		};
 		this.auth = OsmAuth(opts);
-		
+
 		const params = readURLParams(window.location.href);
 		const token = params.oauth_token || localStorage.getItem("oauth_token") || null;
-		
+
 		if(token) {
 			this.auth.bootstrapToken(token, () => {
 				this._checkAuth();
@@ -105,11 +105,11 @@ class App {
 			this._checkAuth();
 			this.authWait = setInterval(this._checkAuth.bind(this), 100);
 		}
-		
+
 		PubSub.subscribe("UI.LOGIN.SURE", (msg, data) => {
 			opts.landing = window.location.pathname + window.location.hash;
 			this.auth.options(opts);
-			
+
 			if(!this.auth.authenticated()) {
 				this.auth.authenticate((err, res) => {
 					if(err) {
@@ -121,22 +121,22 @@ class App {
 				});
 			}
 		});
-		
+
 		PubSub.subscribe("UI.LOGOUT.WANTS", (msg, data) => {
 			if(this.auth && this.auth.authenticated()) {
 				this.auth.logout();
 			}
-			
+
 			this.user = null;
 			localStorage.removeItem("oauth_token");
 			PubSub.publish("USER.INFO.READY", this.user);
 		});
-		
+
 		PubSub.subscribe("USER.INFO.WANTS", (msg, data) => {
 			PubSub.publish("USER.INFO.READY", this.user);
 		});
 	}
-	
+
 	/**
 	 * Creates some global variables (needing I18n)
 	 * @private
@@ -147,7 +147,7 @@ class App {
 			fix: { name: I18n.t("Fix existing data"), icon: <Wrench /> },
 			improve: { name: I18n.t("Add details on existing data"), icon: <TagPlus /> }
 		};
-		
+
 		window.THEMES = {
 			accessibility: { name: I18n.t("Accessibility"), color: "#1BA39C", icon: <WheelchairAccessibility /> },
 			amenity: { name: I18n.t("Amenity"), color: "#F5D76E", icon: <CupWater /> },
@@ -159,7 +159,7 @@ class App {
 			culture: { name: I18n.t("Culture"), color: "#9B59B6", icon: <Pillar /> },
 			other: { name: I18n.t("Other"), color: "#6C7A89", icon: <HelpCircle /> }
 		};
-		
+
 		window.STATUSES = {
 			"new": { name: I18n.t("To review"), color: "blue", priority: 1 },
 			reviewed: { name: I18n.t("Reviewed"), color: "green", priority: 4 },
@@ -167,18 +167,18 @@ class App {
 			nopics: { name: I18n.t("No pictures"), color: "grey", priority: 0 },
 			cantsee: { name: I18n.t("Can't see"), color: "red", priority: 3 }
 		};
-		
+
 		window.MISSION_STATUSES = {
 			"online": { name: I18n.t("Online") },
 			"draft": { name: I18n.t("Draft") },
 			"canceled": { name: I18n.t("Hidden") }
 		};
-		
+
 		window.EDITORS = {
 			true: { name: I18n.t("Integrated editor available"), icon: <RunFast /> },
 			false: { name: I18n.t("External editor required"), icon: <TimerSand /> }
 		};
-		
+
 		window.SORTS = {
 			"pertinence": { name: I18n.t("Pertinence") },
 			"newest": { name: I18n.t("New first") },
@@ -187,7 +187,7 @@ class App {
 			"most-complete": { name: I18n.t("Most complete first") }
 		};
 	}
-	
+
 	/**
 	 * Start DOM rendering
 	 * @private
@@ -196,7 +196,7 @@ class App {
 		injectTapEventPlugin();
 		render(<HashRouter><BodyComponent /></HashRouter>, document.getElementById('app'));
 	}
-	
+
 	/**
 	 * Check if authentication happened
 	 * @private
@@ -206,7 +206,7 @@ class App {
 			if(this.authWait) {
 				clearInterval(this.authWait);
 			}
-			
+
 			//Get user details
 			this.auth.xhr({
 				method: 'GET',
@@ -223,8 +223,8 @@ class App {
 							name: details.firstChild.childNodes[1].attributes.display_name.value,
 							auth: this.auth
 						};
-						
-						PubSub.publish("UI.LOGIN.DONE", { username: this.user.name });
+
+						PubSub.publish("USER.INFO.READY", this.user);
 					}
 					catch(e) {
 						console.error(e);

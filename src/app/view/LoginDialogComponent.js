@@ -10,17 +10,22 @@ import Dialog, { DialogActions, DialogContent, DialogContentText, DialogTitle } 
 class LoginDialogComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			open: false
 		};
-		
+	}
+
+	componentDidMount() {
 		PubSub.subscribe("UI.LOGIN.WANTS", (msg, data) => {
-			data = data || {};
 			this.setState({ open: true });
 		});
+
+		PubSub.subscribe("USER.INFO.READY", (msg, data) => {
+			this.setState({ open: false });
+		});
 	}
-	
+
 	/**
 	 * Handler for login button click.
 	 * @private
@@ -29,19 +34,19 @@ class LoginDialogComponent extends Component {
 		PubSub.publish("UI.LOGIN.SURE");
 		this._closeDialog(false);
 	}
-	
+
 	/**
 	 * Handler for closing dialog
 	 * @private
 	 */
 	_closeDialog(backToHome) {
 		this.setState({ open: false });
-		
+
 		if(backToHome && this.props.history) {
 			this.props.history.push('/');
 		}
 	}
-	
+
 	render() {
 		return <Dialog
 			open={this.state.open}

@@ -10,18 +10,19 @@ class MyMissionsComponent extends Component {
 	constructor() {
 		super();
 	}
-	
+
 	render() {
 		if(this.props.user) {
 			return <PaginatedList
 				user={this.props.user}
+				status="depends"
 			/>;
 		}
 		else {
 			return <Wait />;
 		}
 	}
-	
+
 	componentWillMount() {
 		PubSub.publish("UI.TITLE.SET", { title: I18n.t("Your missions") });
 	}
