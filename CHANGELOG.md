@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+### Fixed
+- My mission page was showing missions which are not publicly visible
+- Login dialog is now hidden even when authentication check is long due to network delay
+- In review page, invalid picture was associated to feature sometimes
+
 
 ## 0.5.10 - 2019-06-20
 
