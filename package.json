@@ -19,7 +19,7 @@
     "i18n:add": "tx set --auto-local -r pic4review.ui 'src/config/locales/<lang>.json' --source-lang en --type KEYVALUEJSON",
     "i18n:upload": "tx push -s",
     "i18n:status": "tx status",
-    "i18n:download": "tx pull -a --minimum-perc=75 && node fix_i18n_files.js",
+    "i18n:download": "tx pull -a --minimum-perc=50 && node fix_i18n_files.js",
     "i18n:clean": "find ./src/config/locales -type f -not -name 'en.json' -delete",
     "zip": "cross-zip build/ Pic4Review_latest.zip",
     "clean": "rm -rf build/"
