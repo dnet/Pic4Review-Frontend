@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.14 - 2019-12-24
+
+### Changed
+- Spanish translation updated
+
+
 ## 0.5.13 - 2019-10-10
 
 ### Changed
