@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.15 - 2020-01-01
+
+### Fixed
+- Remove empty tags before sending to OSM API if any
+
+
 ## 0.5.14 - 2019-12-24
 
 ### Changed

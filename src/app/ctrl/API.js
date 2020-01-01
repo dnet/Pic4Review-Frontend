@@ -26,10 +26,10 @@ class API {
 			.filter(e => e.length > 1 && e[1] !== null && e[1] !== undefined)
 			.map(e => e[0]+"="+e[1])
 			.join("&");
-		
+
 		return res.length > 0 ? "?"+res : "";
 	}
-	
+
 	/**
 	 * Runs a query against Overpass API
 	 * @param {string} query The OAPI query
@@ -47,7 +47,7 @@ class API {
 			}, { overpassUrl: CONST.OAPI_URL, flatProperties: true });
 		});
 	}
-	
+
 	/**
 	 * Look for similar objects in Overpass API in an area.
 	 * @param {Object} tags The list of tags to search on
@@ -59,12 +59,12 @@ class API {
 		if(geom.type !== "Point") {
 			return { type: "FeatureCollection", features: [] };
 		}
-		
+
 		const latRad = deg2rad(geom.coordinates[1]);
 		const radiusOnLat = Math.cos(latRad) * EARTH_RADIUS;
 		const deltaLat = rad2deg(radius / EARTH_RADIUS);
 		const deltaLon = rad2deg(radius / radiusOnLat);
-		
+
 		return (new OsmRequest({ endpoint: CONST.OSM_API_URL }))
 		.fetchMapByBbox(
 			geom.coordinates[0] - deltaLon,
@@ -75,12 +75,12 @@ class API {
 		)
 		.then(result => {
 			const [mapjson, mapxml] = result;
-			
+
 			const geojson = osmtogeojson(
 				(new window.DOMParser()).parseFromString(mapxml, "text/xml"),
 				{ flatProperties: false }
 			);
-			
+
 			geojson.features = geojson.features
 			.filter(f => {
 				for(const k in tags) {
@@ -95,11 +95,11 @@ class API {
 				f.properties.id = f.id;
 				return f;
 			});
-			
+
 			return geojson;
 		});
 	}
-	
+
 	/**
 	 * Creates a new mission
 	 * @param {Mission} mission The mission to create on server
@@ -115,7 +115,7 @@ class API {
 			//Replace {{bbox}} using given area
 			const area = mission.area.bbox;
 			const q = sourceOptions.query.replace(/{{bbox}}/g, area.getSouth()+","+area.getWest()+","+area.getNorth()+","+area.getEast());
-			
+
 			return this.QueryOverpass(q)
 			.then(geojson => {
 				const opts = Object.assign({}, sourceOptions, { geojson: geojson });
@@ -139,7 +139,7 @@ class API {
 				username: username,
 				userid: userid
 			};
-			
+
 			//Save editors data
 			if(editors) {
 				data.dataoptions.editors = editors;
@@ -147,7 +147,7 @@ class API {
 			else {
 				data.dataoptions.editors = null;
 			}
-			
+
 			//Send request
 			return fetch(
 				CONST.P4R_URL + '/missions',
@@ -169,7 +169,7 @@ class API {
 			});
 		}
 	}
-	
+
 	/**
 	 * Get missions synthetic list
 	 * @param {int} [page] The page number (starting and defaults to 1)
@@ -195,7 +195,7 @@ class API {
 			sort: sort || null,
 			contributor: contributorid || null
 		};
-		
+
 		return fetch(CONST.P4R_URL + '/missions' + this.ParamsString(p))
 		.then(res => res.json())
 		.then(data => {
@@ -205,12 +205,12 @@ class API {
 			else {
 				const missions = data.missions
 					.map(m => Mission.CreateFromAPI(m));
-			
+
 				return missions;
 			}
 		});
 	}
-	
+
 	/**
 	 * Get missions synthetic list for map rendering
 	 * @param {string} [type] The mission type
@@ -232,7 +232,7 @@ class API {
 			user: userid || null,
 			contributor: contributorid || null
 		};
-		
+
 		return fetch(CONST.P4R_URL + '/missions/map' + this.ParamsString(p))
 		.then(res => res.json())
 		.then(data => {
@@ -244,7 +244,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get mission loading status
 	 * @param {int} [pictoken] The mission temporary token
@@ -262,7 +262,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get missions synthetic list
 	 * @return {Promise} A promise resolving on missions templates { id: int, theme: string, shortdesc: string, fulldesc: string }
@@ -279,7 +279,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get mission details
 	 * @param {int} mid The mission ID
@@ -291,9 +291,9 @@ class API {
 		const params = {};
 		if(userid) { params.userid = userid; }
 		if(synthetic) { params.synthetic = "1"; }
-		
+
 		const url = CONST.P4R_URL + '/missions/' + mid + API.ParamsString(params);
-		
+
 		return fetch(url)
 		.then(res => res.json())
 		.then(data => {
@@ -306,7 +306,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get mission next feature
 	 * @param {int} mid The mission ID
@@ -316,20 +316,20 @@ class API {
 	 */
 	static GetMissionNextFeature(mid, coordinates, userid) {
 		let url = CONST.P4R_URL + '/missions/' + mid + '/features/next';
-		
+
 		const params = {};
-		
+
 		if(coordinates) {
 			params.lat = coordinates[0];
 			params.lng = coordinates[1];
 		}
-		
+
 		if(userid) {
 			params.userid = userid;
 		}
-		
+
 		url += this.ParamsString(params);
-		
+
 		return fetch(url)
 		.then(res => res.json())
 		.then(data => {
@@ -344,7 +344,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get mission features
 	 * @param {int} mid The mission ID
@@ -363,7 +363,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get mission features preview
 	 * @param {LatLngBounds} area The area of the mission
@@ -375,7 +375,7 @@ class API {
 		if(source === "overpass" && !options.geojson) {
 			//Replace {{bbox}} using given area
 			const q = options.query.replace(/{{bbox}}/g, area.getSouth()+","+area.getWest()+","+area.getNorth()+","+area.getEast());
-			
+
 			return this.QueryOverpass(q)
 			.then(geojson => {
 				const opts = Object.assign({}, options, { geojson: geojson });
@@ -396,9 +396,9 @@ class API {
 				datatype: source,
 				dataoptions: options
 			};
-			
+
 			const url = CONST.P4R_URL + '/missions/preview';
-			
+
 			return fetch(
 				url,
 				{
@@ -419,7 +419,7 @@ class API {
 			});
 		}
 	}
-	
+
 	/**
 	 * Get mission statistics
 	 * @param {int} mid The mission ID
@@ -438,7 +438,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get mission statistics for given user
 	 * @param {int} mid The mission ID
@@ -457,7 +457,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get missing pictures
 	 * @return {Promise} A promise resolving on pictures list
@@ -474,7 +474,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get statistics for a particular user
 	 * @param {int} uid The user ID
@@ -492,7 +492,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get statistics for all users
 	 * @param {int} [uid] User ID (for showing this user ranking even if not in top 20)
@@ -510,7 +510,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get statistics for the whole instance
 	 * @return {Promise} A promise resolving on statistics
@@ -527,7 +527,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Update a mission
 	 * @param {Mission} mission The updated mission
@@ -546,15 +546,15 @@ class API {
 			fulldesc: mission.description.full,
 			status: mission.status
 		};
-		
+
 		if(mission.options && mission.options.data && mission.options.data.options) {
 			data.dataoptions = mission.options.data.options;
 		}
-		
+
 		if(mission.options && mission.options.template != null) {
 			data.template = mission.options.template;
 		}
-		
+
 		return fetch(
 			CONST.P4R_URL + '/missions/' + mission.id,
 			{
@@ -573,7 +573,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Update feature of a mission
 	 * @param {int} mid The mission ID
@@ -600,7 +600,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Get the URL for missing pictures export.
 	 * @param {int} mid The mission ID
@@ -610,7 +610,7 @@ class API {
 	static GetExportMissingUrl(mid, format) {
 		return CONST.P4R_URL + '/missions/' + mid + '/export/missing?format=' + format;
 	}
-	
+
 	/**
 	 * Check if given OSM feature can be moved without breaking things
 	 * @param {string} featureId The OSM feature ID (ex: node/1234)
@@ -624,7 +624,7 @@ class API {
 			}
 			else {
 				const osm = new OsmRequest({ endpoint: CONST.OSM_API_URL });
-				
+
 				//Call API
 				try {
 					let ways = await osm.fetchWaysForNode(featureId);
@@ -636,7 +636,7 @@ class API {
 			}
 		});
 	}
-	
+
 	/**
 	 * Create a new OSM feature
 	 * @param {Object} geometry The geometry to use (geometry property of a GeoJSON feature)
@@ -650,27 +650,31 @@ class API {
 			//Check user auth token
 			const wantUser = PubSub.subscribe("USER.INFO.READY", async (msg, user) => {
 				PubSub.unsubscribe(wantUser);
-				
+
 				if(user) {
 					const osm = new OsmRequest({ endpoint: CONST.OSM_API_URL });
 					osm._auth = user.auth;
-					
+
 					try {
 						// Only works for node as now
 						if(geometry.type !== "Point") {
 							throw new Error("Can only create node features on OSM");
 						}
-						
+
 						//Check tags
 						const tagsToRemove = [ "id", "error_id", "title", "details" ];
-						tagsToRemove.forEach(k => delete tags[k]);
-						
+						Object.keys(tags).forEach(k => {
+							if(tagsToRemove.includes(k) || tags[k] === null || tags[k] === undefined || tags[k].trim() === "" ) {
+								delete tags[k];
+							}
+						});
+
 						//Create new node
 						let element = osm.createNodeElement(geometry.coordinates[1], geometry.coordinates[0], tags);
-						
+
 						//Do we have a valid changeset ID ?
 						let changesetOpen = changesetId && !isNaN(parseInt(changesetId));
-						
+
 						//Check against OSM API if it's still open
 						if(changesetOpen) {
 							try {
@@ -680,7 +684,7 @@ class API {
 								changesetOpen = false;
 							}
 						}
-						
+
 						//Create a new changeset if needed
 						if(!changesetOpen) {
 							changesetId = await osm.createChangeset(
@@ -689,7 +693,7 @@ class API {
 								API.GetChangesetTags()
 							);
 						}
-						
+
 						//Send element
 						await osm.sendElement(element, changesetId);
 						resolve({ changesetId: changesetId });
@@ -702,11 +706,11 @@ class API {
 					reject(new Error("Can't verify user credentials"));
 				}
 			});
-			
+
 			PubSub.publish("USER.INFO.WANTS");
 		});
 	}
-	
+
 	/**
 	 * Update an OSM feature by applying some tags.
 	 * @param {string} featureId The OSM feature ID (ex: node/1234)
@@ -721,21 +725,21 @@ class API {
 			//Check user auth token
 			const wantUser = PubSub.subscribe("USER.INFO.READY", async (msg, user) => {
 				PubSub.unsubscribe(wantUser);
-				
+
 				if(user) {
 					const osm = new OsmRequest({ endpoint: CONST.OSM_API_URL });
 					osm._auth = user.auth;
-					
+
 					try {
 						//Get OSM element from API
 						let element = await osm.fetchElement(featureId);
-						
+
 						//Handle tags to remove
 						Object.keys(tagsToApply).filter(k => k.startsWith("-") && k.length >= 2).forEach(k => {
 							delete tagsToApply[k];
 							element = osm.removeProperty(element, k.substring(1));
 						});
-						
+
 						//Handle geometry-specific tags
 						Object.keys(tagsToApply).filter(k => k.startsWith("~") && k.length >= 2 && k.indexOf(":") > 0).forEach(k => {
 							if(
@@ -745,24 +749,24 @@ class API {
 							) {
 								tagsToApply[k.substring(k.indexOf(":")+1)] = tagsToApply[k];
 							}
-							
+
 							delete tagsToApply[k];
 						});
-						
+
 						//Change tags and timestamp
 						element = osm.setProperties(element, tagsToApply);
 						element = osm.setTimestampToNow(element);
-						
+
 						//Edit geometry
 						if(geometry) {
 							if(geometry.type === "Point" && featureId.startsWith("node/")) {
 								element = osm.setCoordinates(element, geometry.coordinates[1], geometry.coordinates[0]);
 							}
 						}
-						
+
 						//Do we have a valid changeset ID ?
 						let changesetOpen = changesetId && !isNaN(parseInt(changesetId));
-						
+
 						//Check against OSM API if it's still open
 						if(changesetOpen) {
 							try {
@@ -772,7 +776,7 @@ class API {
 								changesetOpen = false;
 							}
 						}
-						
+
 						//Create a new changeset if needed
 						if(!changesetOpen) {
 							changesetId = await osm.createChangeset(
@@ -781,7 +785,7 @@ class API {
 								API.GetChangesetTags()
 							);
 						}
-						
+
 						//Send element
 						await osm.sendElement(element, changesetId);
 						resolve({ changesetId: changesetId });
@@ -794,11 +798,11 @@ class API {
 					reject(new Error("Can't verify user credentials"));
 				}
 			});
-			
+
 			PubSub.publish("USER.INFO.WANTS");
 		});
 	}
-	
+
 	/**
 	 * Get the default changesets tags
 	 * @private

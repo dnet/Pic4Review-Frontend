@@ -530,25 +530,31 @@ class MissionReviewComponent extends Component {
 
 		//Explicitly marked picture
 		if(this.state.markedPictureId !== -1) {
+			console.log("1");
 			picId = this.state.markedPictureId;
 			changePic = true;
 		}
 		//Click on picture details
 		else if(this.state.clickedPictureId !== null && this.state.clickedPictureId < 0) {
+			console.log("2");
 			picId = null;
 		}
 		//Single picture
 		else if(this.state.pictures.length === 1) {
+			console.log("3");
 			picId = 0;
 		}
 		//Picture + click is same
 		else if(this.state.currentPictureId === this.state.clickedPictureId || (this.state.currentPictureId !== null && this.state.clickedPictureId === null)) {
+			console.log("4");
 			picId = this.state.currentPictureId;
 		}
 		//Picture centered + clicked is not same
 		else {
+			console.log("5");
 			console.log("Not sure which picture is the best between", this.state.currentPictureId, "and", this.state.clickedPictureId);
 		}
+		console.log("picid", picId, this.state.currentPictureId, this.state.clickedPictureId, this.state.markedPictureId);
 
 		//Add tags
 		if(picId !== null) {
@@ -588,6 +594,13 @@ class MissionReviewComponent extends Component {
 				}
 			}
 		}
+
+		// Remove empty/invalid tags
+		Object.keys(tags).forEach(k => {
+			if(tags[k] === null || tags[k] === undefined || tags[k].trim().length === 0) {
+				delete tags[k];
+			}
+		});
 
 		return tags;
 	}
@@ -756,14 +769,14 @@ class MissionReviewComponent extends Component {
 				<ConfirmEdit
 					open={!this.state.hideConfirmEdit && this.state.openConfirmEdit}
 					onClose={() => this.setState({ openConfirmEdit: false })}
-					onValid={nomore => { this.setState({ hideConfirmEdit: nomore }); this._review("reviewed", { externalEditConfirmed: true }); }}
+					onValid={nomore => { this.setState({ hideConfirmEdit: nomore }, () => this._review("reviewed", { externalEditConfirmed: true })); }}
 					hasEditor={this._hasEditor()}
 				/>
 
 				<ConfirmDuplicate
 					open={!this.state.hideConfirmDuplicate && this.state.openConfirmDuplicate}
 					onClose={() => this.setState({ openConfirmDuplicate: false })}
-					onValid={nomore => { this.setState({ hideConfirmDuplicate: nomore }); this._review("reviewed", { confirmDuplicate: true }); }}
+					onValid={nomore => { this.setState({ hideConfirmDuplicate: nomore }, () => this._review("reviewed", { confirmDuplicate: true })); }}
 				/>
 			</div>;
 		}
