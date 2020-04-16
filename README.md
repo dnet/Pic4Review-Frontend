@@ -36,7 +36,7 @@ Pic4Review exists and is everyday improving thanks to the __amazing people__ fol
 
 ## License
 
-Copyright 2017-2019 Adrien PAVIE
+Copyright 2017-2020 Adrien PAVIE
 
 See [LICENSE](LICENSE.txt) for complete AGPL3 license.
 
