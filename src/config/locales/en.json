@@ -337,6 +337,8 @@
     "kind_of_feature_285ae979": "Kind of feature",
     "kind_of_error_ddeeac34": "Kind of error",
     "documentation_of_osmose_error_types_2240efc4": "Documentation of Osmose error types",
+    "subcategory_of_error_374c705b": "Subcategory of error",
+    "keep_empty_to_select_all_subcategories_e6f4819": "Keep empty to select all subcategories",
     "oops_can_t_get_options_for_this_data_source_90305414": "Oops ! Can't get options for this data source",
     "insert_the_full_overpass_query_below_note_that_you_f05aa33e": "Insert the full Overpass query below. Note that your query must return features as JSON, so consider using \"[out:json]\". \"bbox\" parameter will be replaced by selected area.",
     "full_overpass_api_query_86d9d8c5": "Full Overpass API query",
