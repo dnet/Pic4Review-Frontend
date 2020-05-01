@@ -21,14 +21,14 @@ if(process.env.NODE_ENV === "production") {
 		new webpack.NoEmitOnErrorsPlugin(),
 		// Minify the bundle
 		new UglifyJSPlugin({
-			//sourceMap: true, // For debugging purposes only
+// 			//sourceMap: true, // For debugging purposes only
 			parallel: 4,
 			uglifyOptions: {
 				mangle: true,
 				compress: {
 					warnings: false, // Suppress uglification warnings
 					pure_getters: true,
-					unsafe: true,
+// 					unsafe: true,
 					unsafe_comps: true,
 					ie8: false,
 					conditionals: true,
@@ -53,7 +53,7 @@ if(process.env.NODE_ENV === "production") {
 }
 else {
 	plugins.push(new webpack.HotModuleReplacementPlugin());
-	
+
 	global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 	global.XMLHttpRequest.DONE = 4;
 }
@@ -63,6 +63,7 @@ plugins.push(new TransferWebpackPlugin([ {from: 'www'} ], path.resolve(__dirname
 const config = {
 	entry: {
 		main: [
+			'babel-polyfill',
 			'./src/app/app.js',
 		]
 	},

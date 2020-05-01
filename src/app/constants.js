@@ -17,5 +17,5 @@ export default {
 // 	OSM_API_URL: 'https://master.apis.dev.openstreetmap.org',
 // 	OAUTH_CONSUMER_KEY: 'aledk8wE8vD7VDJlpvKdpDvzUDODKtVNN48ic4OT',
 // 	OAUTH_SECRET: 'UFAit5VW1VdMF1mRfLVohe9ymfYXUpoJvDCqv1ib',
-// 	P4R_URL: 'http://192.168.43.3:28113'
+// 	P4R_URL: 'http://localhost:28113'
 };

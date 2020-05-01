@@ -530,31 +530,25 @@ class MissionReviewComponent extends Component {
 
 		//Explicitly marked picture
 		if(this.state.markedPictureId !== -1) {
-			console.log("1");
 			picId = this.state.markedPictureId;
 			changePic = true;
 		}
 		//Click on picture details
 		else if(this.state.clickedPictureId !== null && this.state.clickedPictureId < 0) {
-			console.log("2");
 			picId = null;
 		}
 		//Single picture
 		else if(this.state.pictures.length === 1) {
-			console.log("3");
 			picId = 0;
 		}
 		//Picture + click is same
 		else if(this.state.currentPictureId === this.state.clickedPictureId || (this.state.currentPictureId !== null && this.state.clickedPictureId === null)) {
-			console.log("4");
 			picId = this.state.currentPictureId;
 		}
 		//Picture centered + clicked is not same
 		else {
-			console.log("5");
 			console.log("Not sure which picture is the best between", this.state.currentPictureId, "and", this.state.clickedPictureId);
 		}
-		console.log("picid", picId, this.state.currentPictureId, this.state.clickedPictureId, this.state.markedPictureId);
 
 		//Add tags
 		if(picId !== null) {
