@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { FormControl, FormHelperText } from 'material-ui/Form';
 import Input, { InputLabel } from 'material-ui/Input';
-import OsmoseRequest from 'osmose-request';
 import Select from 'material-ui/Select';
 import Typography from 'material-ui/Typography';
 import Wait from '../../WaitComponent';
+import CONST from '../../../constants';
 
 /*
  * Definition of editors according to error type
@@ -68,16 +68,15 @@ const ERROR_TO_IMPORTER = {
 class NewMissionDatasourceOsmoseComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			items: null,
 			selectedItem: "",
+			selectedClass: "",
 			allowedEditors: "all"
 		};
-		
-		this.request = new OsmoseRequest();
 	}
-	
+
 	/**
 	 * Restore options from props
 	 * @private
@@ -85,11 +84,12 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 	_restore(props) {
 		if(props.data && props.data.item !== this.state.selectedItem) {
 			this.setState({
-				selectedItem: props.data.item
+				selectedItem: props.data.item,
+				selectedClass: props.data.class
 			});
 		}
 	}
-	
+
 	/**
 	 * Called when a value has changed
 	 * @private
@@ -98,15 +98,25 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 		if(what === "item" && value !== this.state.selectedItem) {
 			if(value === "") {
 				this.props.onChange(null);
-				this.setState({ selectedItem: null });
+				this.setState({ selectedItem: null, selectedClass: null });
 			}
 			else {
-				this.props.onChange({ item: value, allowedEditors: this._getEditorsForError({ id: value }) || this.state.allowedEditors, importer: ERROR_TO_IMPORTER[value] });
-				this.setState({ selectedItem: value });
+				this.props.onChange({ item: value, class: null, allowedEditors: this._getEditorsForError({ id: value }) || this.state.allowedEditors, importer: ERROR_TO_IMPORTER[value] });
+				this.setState({ selectedItem: value, selectedClass: null });
+			}
+		}
+		else if(what === "class" && value !== this.state.selectedClass) {
+			if(value === "") {
+				this.props.onChange(null);
+				this.setState({ selectedClass: null });
+			}
+			else {
+				this.props.onChange({ item: this.state.selectedItem, class: value, allowedEditors: this._getEditorsForError({ id: this.state.selectedItem }) || this.state.allowedEditors, importer: ERROR_TO_IMPORTER[this.state.selectedItem] });
+				this.setState({ selectedClass: value });
 			}
 		}
 	}
-	
+
 	_getEditorsForError(item) {
 		const itemId = item.id.toString();
 		if(ERROR_TO_EDITORS[itemId]) {
@@ -125,11 +135,22 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 			return null;
 		}
 	}
-	
+
+	_getClassesForItem(itemId) {
+		if(!itemId || itemId === "" || !this.state.items) { return null; }
+		else {
+			const item = this.state.items.find(it => it.id == itemId);
+			if(!item) { return null; }
+			return item.classes;
+		}
+	}
+
 	render() {
 		if(this.state.items) {
+			const classes = this._getClassesForItem(this.state.selectedItem);
+
 			return <div>
-				<FormControl>
+				<FormControl style={{ width: "100%" }}>
 					<InputLabel htmlFor="osmose-item">{I18n.t("Kind of error")}</InputLabel>
 					<Select
 						native
@@ -144,35 +165,63 @@ class NewMissionDatasourceOsmoseComponent extends Component {
 					</Select>
 					<FormHelperText><a href="https://wiki.openstreetmap.org/wiki/Osmose/issues" target="_blank">{I18n.t("Documentation of Osmose error types")}</a></FormHelperText>
 				</FormControl>
+				<FormControl style={{ width: "100%" }}>
+					<InputLabel htmlFor="osmose-class">{I18n.t("Subcategory of error")}</InputLabel>
+					<Select
+						native
+						disabled={this.state.selectedItem === "" || !classes}
+						value={this.state.selectedClass || ""}
+						onChange={e => this._changed("class", e.target.value)}
+						input={<Input id="osmose-class" />}
+					>
+						<option value="" />
+						{classes && classes.map(c => {
+							return <option value={c.class} key={c.class}>{c.class} - {c.title[I18n.locale] ? c.title[I18n.locale] : c.title.auto}</option>;
+						})}
+					</Select>
+					<FormHelperText>{I18n.t("Keep empty to select all subcategories")}</FormHelperText>
+				</FormControl>
 			</div>;
 		}
 		else {
 			return <Wait />;
 		}
 	}
-	
+
 	componentWillReceiveProps(nextProps) {
 		this._restore(nextProps);
 	}
-	
+
 	componentWillMount() {
 		this._restore(this.props);
 	}
-	
+
 	componentDidMount() {
 		//Fetch item list from Osmose
 		if(!this.state.items) {
-			this.request
-			.fetchItems()
-			.then(items => {
-				items = items.filter(i => {
-					if(i.name && i.id && i.name.en) {
-						return this._getEditorsForError(i) !== null;
-					}
-					else {
-						return false;
-					}
+			fetch(CONST.OSMOSE_API+'/items')
+			.then(result => result.json())
+			.then(result => {
+				// Merge items from various categories
+				const items = [];
+				result.categories.forEach(category => {
+					category.items.forEach(item => {
+						if(item && item.item && item.title && item.title.auto) {
+							const myItem = {
+								id: item.item,
+								name: {
+									en: `${category.title.auto} - ${item.title.auto}`
+								},
+								classes: item.class
+							};
+
+							if(this._getEditorsForError(myItem) !== null) {
+								items.push(myItem);
+							}
+						}
+					});
 				});
+
 				this.setState({ items: items });
 			})
 			.catch(e => {

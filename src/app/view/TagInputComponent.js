@@ -10,14 +10,14 @@ import Typography from 'material-ui/Typography';
 class TagInputComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			text: "",
 			error: false,
 			showHelp: false
 		};
 	}
-	
+
 	/**
 	 * Transform JS object into string representation
 	 * @private
@@ -25,7 +25,7 @@ class TagInputComponent extends Component {
 	_tagsToText(tags) {
 		return tags ? Object.entries(tags).map(e => e[0] + "=" + e[1]).join("\n") : "";
 	}
-	
+
 	/**
 	 * Convert tags text into JS object
 	 * @private
@@ -37,7 +37,7 @@ class TagInputComponent extends Component {
 		});
 		return tags;
 	}
-	
+
 	/**
 	 * Event handler for text change in textfield
 	 * @private
@@ -52,7 +52,7 @@ class TagInputComponent extends Component {
 			this.props.onChange(null);
 		}
 	}
-	
+
 	render() {
 		const helper = this.props.helper ? this.props.helper + " " : "";
 		return <div style={{ position: "relative" }}>
@@ -65,7 +65,7 @@ class TagInputComponent extends Component {
 					<DotsHorizontal />
 				</Button>
 			}
-			
+
 			<TextField
 				margin="normal"
 				fullWidth multiline required
@@ -77,7 +77,7 @@ class TagInputComponent extends Component {
 				value={this.state.text}
 				onChange={ev => this._textChanged(ev.target.value)}
 			/>
-			
+
 			{this.state.showHelp &&
 				<Typography variant="body1">
 					{I18n.t("You can use advanced syntax for more precise editing of features:")}
@@ -87,7 +87,7 @@ class TagInputComponent extends Component {
 			}
 		</div>;
 	}
-	
+
 	componentWillMount() {
 		this.setState({ text: this._tagsToText(this.props.tags) });
 	}

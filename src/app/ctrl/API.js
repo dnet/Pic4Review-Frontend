@@ -84,7 +84,11 @@ class API {
 			geojson.features = geojson.features
 			.filter(f => {
 				for(const k in tags) {
-					if(!f.properties.tags[k] || (tags[k] !== "*" && f.properties.tags[k] !== tags[k])) {
+					if(
+						!f.properties.tags[k]
+						|| (tags[k] !== "*" && !tags[k].includes("|") && f.properties.tags[k] !== tags[k])
+						|| (tags[k].includes("|") && !tags[k].split("|").includes(f.properties.tags[k]))
+					) {
 						return false;
 					}
 				}

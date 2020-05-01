@@ -9,10 +9,10 @@ class MissionReviewTagsComponent extends Component {
 	constructor() {
 		super();
 	}
-	
+
 	render() {
 		const style = Object.assign({}, this.props.style);
-		
+
 		const tags = Object.keys(this.props.feature.properties)
 			.map((k, i) => {
 				return <TableRow key={i} style={{height: 30}}>
@@ -20,7 +20,7 @@ class MissionReviewTagsComponent extends Component {
 					<TableCell>{this.props.feature.properties[k]}</TableCell>
 				</TableRow>;
 			});
-		
+
 		return <Paper style={{overflowX: "auto"}}><Table style={style}>
 			<TableHead>
 				<TableRow style={{height: 30}}>

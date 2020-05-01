@@ -24,7 +24,7 @@ const RGX_KEY = /^([A-Za-z\xAA\xB5\xBA\xC0-\xD6\xD8-\xF6\xF8-\u02C1\u02C6-\u02D1
 class NewMissionComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			step: STEPS.datasource,
 			datasource: null,
@@ -34,7 +34,7 @@ class NewMissionComponent extends Component {
 			editors: null
 		};
 	}
-	
+
 	/**
 	 * Go to next step
 	 * @private
@@ -56,7 +56,7 @@ class NewMissionComponent extends Component {
 						{ name: this.state.details.areaname, bbox: this.state.datasource.area },
 						{ full: this.state.details.fulldesc, short: this.state.details.shortdesc }
 					);
-					
+
 					this.setState({ mission: m, step: STEPS.editors });
 				}
 				catch(e) {
@@ -72,7 +72,7 @@ class NewMissionComponent extends Component {
 		}
 		else if(this.state.step === STEPS.publish) {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Please wait while the mission is created, it can take a few minutes.") });
-			
+
 			API.CreateMission(
 				this.state.mission,
 				this.state.datasource.source,
@@ -92,7 +92,7 @@ class NewMissionComponent extends Component {
 			});
 		}
 	}
-	
+
 	/**
 	 * Go to previous step
 	 * @private
@@ -100,7 +100,7 @@ class NewMissionComponent extends Component {
 	_prev() {
 		this.setState({ step: Math.max(0, this.state.step-1) });
 	}
-	
+
 	/**
 	 * Preview some source
 	 * @private
@@ -110,14 +110,14 @@ class NewMissionComponent extends Component {
 			this.setState({ previewOpen: true });
 		}
 	}
-	
+
 	/**
 	 * Handler for datasource changes
 	 * @private
 	 */
 	_sourceChanged(d) {
 		const newState = { datasource: d };
-		
+
 		if(
 			this.state.datasource
 			&& this.state.datasource.area
@@ -130,7 +130,7 @@ class NewMissionComponent extends Component {
 			newDetails.areaname = "";
 			newState.details = newDetails;
 		}
-		
+
 		if(d.options && d.options.importer) {
 			newState.editors = Object.assign({}, this.state.editors);
 			if(!newState.editors.data) { newState.editors.data = {}; }
@@ -138,10 +138,10 @@ class NewMissionComponent extends Component {
 			newState.editors.data.importer = d.options.importer;
 			delete d.options.importer;
 		}
-		
+
 		this.setState(newState);
 	}
-	
+
 	/**
 	 * Check data source parameters
 	 * @private
@@ -169,10 +169,10 @@ class NewMissionComponent extends Component {
 		else {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must choose an area and a datasource before going further") });
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Check details parameters
 	 * @param {Object} state The component state containing details parameters
@@ -210,10 +210,10 @@ class NewMissionComponent extends Component {
 		else {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must give details about the mission before continuing") });
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Check editors parameters
 	 * @param {Object} state The component state containing editors parameters
@@ -233,7 +233,7 @@ class NewMissionComponent extends Component {
 							return false;
 						}
 					}
-					
+
 					return true;
 				}
 				else {
@@ -297,10 +297,10 @@ class NewMissionComponent extends Component {
 		else {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "alert", message: I18n.t("You must set up the editor before continuing") });
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Convert UI editors data into DB data
 	 * @param {Object} state The component state
@@ -308,11 +308,11 @@ class NewMissionComponent extends Component {
 	 */
 	static UIEditorsToDb(state) {
 		let e = null;
-		
+
 		if(state.editors.editor === "singlechoice") {
 			e = state.editors.data.singlechoice;
 			e.type = "choice";
-			
+
 			if(state.editors.data.singlechoice.answers.filter(a => a.image).length === state.editors.data.singlechoice.answers.length) {
 				e.type = "images";
 			}
@@ -321,10 +321,10 @@ class NewMissionComponent extends Component {
 			e = state.editors.data[state.editors.editor];
 			e.type = state.editors.editor;
 		}
-		
+
 		return e;
 	}
-	
+
 	/**
 	 * Update loading status after creating a mission.
 	 * @private
@@ -349,19 +349,19 @@ class NewMissionComponent extends Component {
 			PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when creating the mission"), details: e.message });
 		});
 	}
-	
+
 	render() {
 		let content = null;
-		
+
 		switch(this.state.step) {
 			case STEPS.datasource:
 				content = <Datasource data={this.state.datasource} onChange={d => this._sourceChanged(d)} onPreview={this._preview.bind(this)} />;
 				break;
-			
+
 			case STEPS.details:
 				content = <Details data={this.state.details} datasource={this.state.datasource} onChange={d => this.setState({ details: d })} />;
 				break;
-			
+
 			case STEPS.editors:
 				content = <Editors
 							data={this.state.editors}
@@ -370,7 +370,7 @@ class NewMissionComponent extends Component {
 							onChange={d => this.setState({ editors: d })}
 						/>;
 				break;
-			
+
 			case STEPS.publish:
 				content = <div>
 					<Typography variant="subheading">{I18n.t("Summary")}</Typography>
@@ -383,8 +383,8 @@ class NewMissionComponent extends Component {
 				</div>;
 				break;
 		}
-		
-		
+
+
 		return <div>
 			<Stepper activeStep={this.state.step}>
 				<Step>
@@ -400,9 +400,9 @@ class NewMissionComponent extends Component {
 					<StepLabel>{I18n.t("Publishing")}</StepLabel>
 				</Step>
 			</Stepper>
-			
+
 			{content}
-			
+
 			<Grid container alignItems="center" direction="row" justify="flex-end" spacing={16}>
 				<Grid item>
 					<Button variant="raised" disabled={this.state.step === STEPS.datasource} onClick={() => this._prev()}>
@@ -415,7 +415,7 @@ class NewMissionComponent extends Component {
 					</Button>
 				</Grid>
 			</Grid>
-			
+
 			<Preview
 				open={this.state.previewOpen}
 				data={this.state.datasource}
@@ -423,23 +423,23 @@ class NewMissionComponent extends Component {
 			/>
 		</div>;
 	}
-	
+
 	componentWillMount() {
 		PubSub.publish("UI.TITLE.SET", { title: I18n.t("New mission") });
-		
+
 		//Load parameters from other mission
 		if(this.props.match.params.mid) {
 			PubSub.publish("UI.MESSAGE.WAIT", { message: I18n.t("Retrieving information from source mission") });
-			
+
 			API.GetMissionDetails(this.props.match.params.mid)
 			.then(m => {
 				//Remove previously retrieved GeoJSON data
 				if(m.options && m.options.data && m.options.data.options && m.options.data.options.geojson) {
 					delete m.options.data.options.geojson;
 				}
-				
+
 				this.setState(NewMissionComponent.MissionToState(m));
-				
+
 				PubSub.publish("UI.MESSAGE.WAITDONE");
 			})
 			.catch(e => {
@@ -449,7 +449,7 @@ class NewMissionComponent extends Component {
 			});
 		}
 	}
-	
+
 	static MissionToState(m) {
 		return Object.assign({}, NewMissionComponent.RestoreEditors(m), {
 			details: {
@@ -467,12 +467,12 @@ class NewMissionComponent extends Component {
 			mission: m
 		});
 	}
-	
+
 	static RestoreEditors(m) {
 		//Restore editors data
 		if(m.options.data.options.editors) {
 			const editors = { data: {} };
-			
+
 			if(m.options.data.options.editors.type === "choice" || m.options.data.options.editors.type === "images") {
 				editors.editor = "singlechoice";
 				editors.data.singlechoice = m.options.data.options.editors;
@@ -484,7 +484,7 @@ class NewMissionComponent extends Component {
 			else {
 				editors.editor = "disabled";
 			}
-			
+
 			return { editors: editors };
 		}
 		else {
