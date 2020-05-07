@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.5.17 - 2020-05-07
+
 ### Added
 - Mission creation allows to select item + class for Osmose datasets
 
