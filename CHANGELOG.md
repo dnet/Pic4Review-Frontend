@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.18 - 2020-05-07
+
+### Fixed
+- Updated osm-request to fix bug of changeset always re-created
+
+
 ## 0.5.17 - 2020-05-07
 
 ### Added
