@@ -67,7 +67,7 @@
     "nominatim-browser": "^2.0.2",
     "object-hash": "^1.3.0",
     "osm-auth": "^1.0.2",
-    "osm-request": "^1.2.0",
+    "osm-request": "^1.2.8",
     "osmtogeojson": "^3.0.0-beta.3",
     "pic4carto": "^2.1.7",
     "pubsub-js": "^1.7.0",
