@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.19 - 2020-05-26
+
+### Changed
+- Use tag `source:position` for Mapillary detections instead of `source:geometry` on nodes
+
+
 ## 0.5.18 - 2020-05-07
 
 ### Fixed

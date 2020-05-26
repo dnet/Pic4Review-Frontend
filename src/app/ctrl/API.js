@@ -673,6 +673,12 @@ class API {
 							}
 						});
 
+						// Source:geometry -> position for node
+						if(tags["source:geometry"]) {
+							tags["source:position"] = tags["source:geometry"];
+							delete tags["source:geometry"];
+						}
+
 						//Create new node
 						let element = osm.createNodeElement(geometry.coordinates[1], geometry.coordinates[0], tags);
 
