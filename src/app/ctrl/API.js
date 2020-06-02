@@ -750,6 +750,12 @@ class API {
 							element = osm.removeProperty(element, k.substring(1));
 						});
 
+						// Source:geometry -> position for node
+						if(tagsToApply["source:geometry"] && featureId.startsWith("node/")) {
+							tagsToApply["source:position"] = tagsToApply["source:geometry"];
+							delete tagsToApply["source:geometry"];
+						}
+
 						//Handle geometry-specific tags
 						Object.keys(tagsToApply).filter(k => k.startsWith("~") && k.length >= 2 && k.indexOf(":") > 0).forEach(k => {
 							if(
