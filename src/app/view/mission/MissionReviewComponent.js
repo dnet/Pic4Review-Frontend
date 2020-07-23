@@ -591,6 +591,9 @@ class MissionReviewComponent extends Component {
 
 		// Remove empty/invalid tags
 		Object.keys(tags).forEach(k => {
+			if(typeof tags[k] === "number") {
+				tags[k] = tags[k].toString();
+			}
 			if(tags[k] === null || tags[k] === undefined || typeof tags[k] !== "string" || tags[k].trim().length === 0) {
 				delete tags[k];
 			}

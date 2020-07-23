@@ -84,6 +84,10 @@ class API {
 			geojson.features = geojson.features
 			.filter(f => {
 				for(const k in tags) {
+					if(typeof tags[k] === "number") {
+						tags[k] = tags[k].toString();
+					}
+
 					if(
 						!f.properties.tags[k]
 						|| (tags[k] !== "*" && !tags[k].includes("|") && f.properties.tags[k] !== tags[k])
