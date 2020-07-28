@@ -5,7 +5,7 @@ export default {
 	ID_URL: 'https://www.openstreetmap.org/edit',
 	JOSM_URL: 'http://127.0.0.1:8111/load_and_zoom?',
 	OAPI_URL: 'https://overpass-api.de/api/interpreter',
-	OSMOSE_API: 'https://osmose.openstreetmap.fr/api/0.3beta',
+	OSMOSE_API: 'https://osmose.openstreetmap.fr/api/0.3',
 
 	// Production config
 	OSM_API_URL: 'https://www.openstreetmap.org',

@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.21 - 2020-07-28
+
+### Fixed
+- Changed URL for Osmose API v0.3
+
+
 ## 0.5.20 - 2020-07-23
 
 ### Fixed

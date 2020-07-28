@@ -59,7 +59,8 @@ const ERROR_TO_IMPORTER = {
 	"8240": { mainTags: { amenity: "restaurant" }, conflation: 30 },
 	"8250": { mainTags: { craft: "winery" }, conflation: 100 },
 	"8280": { mainTags: { power: "substation" }, conflation: 50 },
-	"8290": { mainTags: { power: "tower" }, conflation: 20 }
+	"8290": { mainTags: { power: "tower" }, conflation: 20 },
+	"8370": { mainTags: { emergency: "defibrillator" }, conflation: 30 }
 };
 
 /**
