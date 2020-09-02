@@ -69,7 +69,7 @@
     "osm-auth": "^1.0.2",
     "osm-request": "^1.2.8",
     "osmtogeojson": "^3.0.0-beta.3",
-    "pic4carto": "^2.1.7",
+    "pic4carto": "^2.1.11",
     "pubsub-js": "^1.7.0",
     "query-overpass": "^1.5.3",
     "react": "^15.4.2",

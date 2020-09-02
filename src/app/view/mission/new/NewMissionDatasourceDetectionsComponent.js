@@ -11,12 +11,12 @@ import Typography from 'material-ui/Typography';
 class NewMissionDatasourceDetectionsComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			selectedType: "",
 			allowedEditors: [ "importer" ]
 		};
-		
+
 		this.typeNames = {
 			[P4C.Detection.OBJECT_BENCH]: I18n.t("Bench"),
 			[P4C.Detection.SIGN_STOP]: I18n.t("Stop sign"),
@@ -33,12 +33,13 @@ class NewMissionDatasourceDetectionsComponent extends Component {
 			[P4C.Detection.SIGN_STORE]: I18n.t("Store sign"),
 			[P4C.Detection.OBJECT_STREET_LIGHT]: I18n.t("Street light"),
 			[P4C.Detection.OBJECT_POLE]: I18n.t("Pole"),
+			[P4C.Detection.OBJECT_UTILITY_POLE]: I18n.t("Utility pole"),
 			[P4C.Detection.SIGN_RESERVED_PARKING]: I18n.t("Reserved parking"),
 			[P4C.Detection.SIGN_ANIMAL_CROSSING]: I18n.t("Animal crossing sign"),
 			[P4C.Detection.SIGN_RAILWAY_CROSSING]: I18n.t("Railway crossing sign")
 		};
 	}
-	
+
 	/**
 	 * Restore options from props
 	 * @private
@@ -50,7 +51,7 @@ class NewMissionDatasourceDetectionsComponent extends Component {
 			});
 		}
 	}
-	
+
 	/**
 	 * Called when a value has changed
 	 * @private
@@ -63,18 +64,18 @@ class NewMissionDatasourceDetectionsComponent extends Component {
 			}
 			else {
 				value = parseInt(value);
-				
+
 				let importer = null;
 				if(P4C.Detection.TYPE_DETAILS[value]) {
 					importer = { mainTags: P4C.Detection.TYPE_DETAILS[value].osmTags, conflation: 50 };
 				}
-				
+
 				this.props.onChange({ type: value, importer: importer, allowedEditors: this.state.allowedEditors });
 				this.setState({ selectedType: value });
 			}
 		}
 	}
-	
+
 	render() {
 		return <FormControl style={{ width: "100%" }}>
 			<InputLabel htmlFor="detection-type">{I18n.t("Kind of feature")}</InputLabel>
@@ -91,11 +92,11 @@ class NewMissionDatasourceDetectionsComponent extends Component {
 			</Select>
 		</FormControl>;
 	}
-	
+
 	componentWillReceiveProps(nextProps) {
 		this._restore(nextProps);
 	}
-	
+
 	componentWillMount() {
 		this._restore(this.props);
 	}
