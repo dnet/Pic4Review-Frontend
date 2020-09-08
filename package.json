@@ -1,6 +1,6 @@
 {
   "name": "pic4review",
-  "version": "0.5.22",
+  "version": "0.5.23",
   "description": "Tool for reviewing geo-dataset using open-licensed pictures around your features.",
   "repository": {
     "type": "git",
