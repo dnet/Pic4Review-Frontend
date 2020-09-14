@@ -12,40 +12,40 @@ import Wait from './WaitComponent';
 class GeosearchComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			waitForResult: false,
 			results: null,
 			text: null
 		};
-		
+
 		this.delaySearch = null;
 	}
-	
+
 	_onTextChange(t) {
 		if(t.trim() !== this.state.text) {
 			this.setState({ text: t.trim(), waitForResult: true, results: null });
-			
+
 			//Delay start of search request
 			if(this.delaySearch) {
 				clearTimeout(this.delaySearch);
 				this.delaySearch = null;
 			}
-			
+
 			this.delaySearch = setTimeout(() => this._search(), 1500);
 		}
 	}
-	
+
 	_search() {
 		if(this.state.text && this.state.text.length > 3) {
 			Nominatim.geocode({
 				q: this.state.text
 			})
 			.then(results => {
-				const filteredResults = results && results.length > 0 ? results.filter(r => r.importance > 0.6) : [];
-				
+				const filteredResults = results || [];
+
 				if(filteredResults.length > 0) {
-					const entries = filteredResults.map(r => {
+					let entries = filteredResults.map(r => {
 						const names = r.display_name.split(', ');
 						const coords = r.boundingbox.map(parseFloat); //Format : minlat, maxlat, minlon, maxlon
 						return {
@@ -56,7 +56,8 @@ class GeosearchComponent extends Component {
 							bbox: new LatLngBounds([ coords[0], coords[2] ], [ coords[1], coords[3] ])
 						};
 					});
-					
+					entries = entries.filter((e,i) => i === 0 || !(e.title === entries[i-1].title && e.subtitle === entries[i-1].subtitle));
+
 					this.setState({ waitForResult: false, results: entries });
 				}
 				else {
@@ -70,7 +71,7 @@ class GeosearchComponent extends Component {
 			});
 		}
 	}
-	
+
 	render() {
 		return <div>
 			<TextField
@@ -80,9 +81,9 @@ class GeosearchComponent extends Component {
 				style={{width: "100%", marginBottom: 10}}
 				onChange={e => this._onTextChange(e.target.value)}
 			/>
-			
+
 			{this.state.waitForResult && <Wait />}
-			
+
 			{this.state.results && <SelectList
 				entries={this.state.results}
 				onSelect={this.props.onSelect}
