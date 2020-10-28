@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.24 - 2020-10-28
+
+### Fixed
+- Bug when adding new answers on existing missions
+
+
 ## 0.5.21 - 2020-07-28
 
 ### Fixed

@@ -80,6 +80,13 @@ class NewMissionEditorsComponent extends Component {
 	_addSingleChoiceAnswer(d) {
 		const newData = Object.assign({}, this.state.data);
 
+		if(!newData.singlechoice) {
+			newData.singlechoice = { question: "", answers: [] };
+		}
+		if(!newData.singlechoice.answers) {
+			newData.singlechoice.answers = [];
+		}
+
 		if(this.state.singleChoiceAnswerDialogEdit !== null) {
 			newData.singlechoice.answers[this.state.singleChoiceAnswerDialogEdit] = d;
 		}
