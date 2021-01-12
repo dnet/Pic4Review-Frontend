@@ -32,20 +32,20 @@ const picSelectedIcon = Leaflet.icon({
 class MissionReviewMapComponent extends Component {
 	constructor() {
 		super();
-		
+
 		this.state = {
 			editingGeom: false,
 			markEditGeom: null
 		};
 	}
-	
+
 	render() {
 		const style = Object.assign({}, this.props.style, { width: "100%" });
 		this.markers = null;
-		
+
 		if(this.props.pictures !== null && this.props.pictures.length > 0) {
 			this.markers = [];
-			
+
 			for(let i in this.props.pictures) {
 				const p = this.props.pictures[i];
 				this.markers.push(<Marker
@@ -58,9 +58,9 @@ class MissionReviewMapComponent extends Component {
 				/>);
 			}
 		}
-		
+
 		const feature = this.state.markerEditGeom || { type: "Feature", geometry: this.props.geometry };
-		
+
 		return <Map
 			ref="map"
 			center={feature.geometry.type === "Point" ? Leaflet.GeoJSON.coordsToLatLng(feature.geometry.coordinates) : this.props.feature.coordinates}
@@ -73,13 +73,14 @@ class MissionReviewMapComponent extends Component {
 						const url = l.url
 							.replace(/\{zoom\}/g, "{z}")
 							.replace(/\{switch:.+?\}/g, "{s}");
-						
+
 						return <LayersControl.BaseLayer name={l.name || l.id} key={l.id} checked={(!this.props.baseLayer && i===0) || (this.props.baseLayer === (l.name || l.id))}>
 							<TileLayer
 								attribution={l.attribution ? '<a href="'+l.attribution.url+'" target="_blank">'+l.attribution.text+'</a>' : ''}
 								url={url}
 								minZoom={l.min_zoom || 1}
-								maxZoom={l.max_zoom || DEFAULT_ZOOM}
+								maxNativeZoom={l.max_zoom || DEFAULT_ZOOM}
+								maxZoom={Math.max(25, l.max_zoom || DEFAULT_ZOOM)}
 							/>
 						</LayersControl.BaseLayer>;
 					})}
@@ -87,9 +88,9 @@ class MissionReviewMapComponent extends Component {
 				:
 				<TileLayer url={CONSTS.TILE_URL} attribution={CONSTS.TILE_ATTRIBUTION} />
 			}
-			
+
 			{this.markers}
-			
+
 			{this.state.editingGeom ?
 				<Marker
 					ref="markerEdit"
@@ -108,7 +109,7 @@ class MissionReviewMapComponent extends Component {
 					pointToLayer={(geojsonPoint, latlng) => { return Leaflet.circleMarker(latlng, { radius: this.props.width === "xs" ? 10 : 8, color: "red", fillColor: "red", fillOpacity: 0.7 }); }}
 				/>
 			}
-			
+
 			{this.props.featureMove ?
 				(this.state.editingGeom ?
 					<div style={{ position: "absolute", left: 5, bottom: 5, zIndex: 1000 }}>
@@ -139,7 +140,7 @@ class MissionReviewMapComponent extends Component {
 				)
 				: null
 			}
-			
+
 			{this.props.similarFeatures &&
 				<GeoJSON
 					ref="data-similar"
@@ -153,7 +154,7 @@ class MissionReviewMapComponent extends Component {
 					onEachFeature={(feature, layer) => {
 						const content = document.createElement("div");
 						content.innerHTML = Object.entries(feature.properties).map(e => e[0]+" = "+e[1]).join("<br />");
-						
+
 						if(this.props.similarFeatures.features.length > 1) {
 							const btn = document.createElement("button");
 							btn.innerHTML = I18n.t("Merge with this feature");
@@ -161,14 +162,14 @@ class MissionReviewMapComponent extends Component {
 							btn.onclick = () => PubSub.publish("UI.MAP.SIMILARCLICKED", { feature: feature });
 							content.appendChild(btn);
 						}
-						
+
 						layer.bindPopup(content);
 					}}
 				/>
 			}
 		</Map>;
 	}
-	
+
 	/**
 	 * Is the geometry of the feature being currently edited ?
 	 * @return {boolean} True if user is editing
@@ -176,7 +177,7 @@ class MissionReviewMapComponent extends Component {
 	isEditingGeometry() {
 		return this.state.editingGeom;
 	}
-	
+
 	_fitBounds() {
 		if(this.refs.map && this.refs.data) {
 			if(this.props.geometry.type === "Point") {
@@ -187,34 +188,34 @@ class MissionReviewMapComponent extends Component {
 			}
 		}
 	}
-	
+
 	_editGeomStart() {
 		this.setState({ editingGeom: true })
 	}
-	
+
 	_editGeomDone() {
 		this.props.onFeatureMove(this.state.markerEditGeom);
 		this.setState({ editingGeom: false });
 	}
-	
+
 	_editGeomCancelled() {
 		this.props.onFeatureMove(null);
 		this.setState({ editingGeom: false, markerEditGeom: null })
 	}
-	
+
 	componentDidMount() {
 		this._fitBounds();
-		
+
 		if(this.refs.map) {
 			//Zoom
 			this.refs.map.leafletElement.on("zoomend", () => {
 				const newzoom = this.refs.map.leafletElement.getZoom();
-				
+
 				if(this.props.onZoomChange && newzoom !== this.props.zoom) {
 					this.props.onZoomChange(newzoom);
 				}
 			});
-			
+
 			//Base layer
 			this.refs.map.leafletElement.on("baselayerchange", e => {
 				if(this.props.onBaseLayerChange && e.name !== this.props.baseLayer) {
@@ -223,23 +224,23 @@ class MissionReviewMapComponent extends Component {
 			});
 		}
 	}
-	
+
 	componentDidUpdate(prevProps) {
 		if(this.refs.map) {
 			this.refs.map.leafletElement.invalidateSize();
-			
+
 			if(prevProps.feature && this.props.feature && prevProps.feature.id !== this.props.feature.id) {
 				this._fitBounds();
 			}
 		}
 	}
-	
+
 	componentWillReceiveProps(nextProps) {
 		this.markers.forEach((m, i) => {
 			this.refs["marker-"+i].leafletElement.setIcon(nextProps.currentPictureId == i ? picSelectedIcon : picIcon);
 		});
 	}
-	
+
 	componentWillUnmount() {
 		this.refs.map.leafletElement.off("zoomend");
 		this.refs.map.leafletElement.off("baselayerchange");

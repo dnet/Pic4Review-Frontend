@@ -8,7 +8,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
-## 0.5.24 - 2020-10-28
+## 0.5.26 - 2021-01-12
+
+### Changed
+- Allow map in review page to go to higher zoom levels
+
+
+## 0.5.25 - 2020-10-28
 
 ### Fixed
 - Bug when adding new answers on existing missions
