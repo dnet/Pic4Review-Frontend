@@ -73,6 +73,12 @@ class MissionReviewMapComponent extends Component {
 						const url = l.url
 							.replace(/\{zoom\}/g, "{z}")
 							.replace(/\{switch:.+?\}/g, "{s}");
+						let subdomains = [];
+						if(l.url.includes("{switch:")) {
+							subdomains = l.url.substring(l.url.indexOf("{switch:")+8);
+							subdomains = subdomains.substring(0, subdomains.indexOf("}"));
+							subdomains = subdomains.split(",");
+						}
 
 						return <LayersControl.BaseLayer name={l.name || l.id} key={l.id} checked={(!this.props.baseLayer && i===0) || (this.props.baseLayer === (l.name || l.id))}>
 							<TileLayer
@@ -81,6 +87,7 @@ class MissionReviewMapComponent extends Component {
 								minZoom={l.min_zoom || 1}
 								maxNativeZoom={l.max_zoom || DEFAULT_ZOOM}
 								maxZoom={Math.max(25, l.max_zoom || DEFAULT_ZOOM)}
+								subdomains={subdomains}
 							/>
 						</LayersControl.BaseLayer>;
 					})}

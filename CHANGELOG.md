@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.27 - 2021-04-06
+
+### Fixed
+- In map from review page, better handling of tiles subdomains
+
+
 ## 0.5.26 - 2021-01-12
 
 ### Changed
