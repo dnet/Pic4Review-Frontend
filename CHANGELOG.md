@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.28 - 2021-06-14
+
+### Added
+- Serbian language support
+
+### Changed
+- Locales updated
+
+
 ## 0.5.27 - 2021-04-06
 
 ### Fixed

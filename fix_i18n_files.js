@@ -5,7 +5,7 @@
 const fs = require('fs');
 
 const I18N_DIR = "./src/config/locales";
-const JSON_RGX = /^[A-Za-z0-9_\-]+\.json$/;
+const JSON_RGX = /^[A-Za-z0-9_\-@]+\.json$/;
 
 //Read translation files
 fs.readdirSync(I18N_DIR).forEach((file) => {
@@ -14,7 +14,7 @@ fs.readdirSync(I18N_DIR).forEach((file) => {
 		try {
 			//Read file
 			const lngData = JSON.parse(fs.readFileSync(I18N_DIR+"/"+file, 'utf8'));
-			
+
 			//If not already fixed
 			if(lngData[lng] === undefined) {
 				//Check if en available
@@ -22,7 +22,7 @@ fs.readdirSync(I18N_DIR).forEach((file) => {
 					//Edit object, put en into lng locale
 					const outData = {};
 					outData[lng] = lngData.en;
-					
+
 					//Overwrite file
 					fs.writeFile(I18N_DIR+"/"+file, JSON.stringify(outData, null, 2), function(err) {
 						if(err) {
