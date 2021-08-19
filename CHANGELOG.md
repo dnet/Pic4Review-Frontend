@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Next version (to be released)
 
 
+## 0.5.29 - 2021-08-19
+
+### Changed
+- Support of Mapillary API v4
+
+
 ## 0.5.28 - 2021-06-14
 
 ### Added
