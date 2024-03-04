@@ -31,8 +31,7 @@ deploy:client:tags:
     - tags
   script:
     - sed -i "s#https://pic4review.pavie.info/devapi#https://api.pic4review.pavie.info#" src/app/constants.js
-    - sed -i "s#KHkPq0Llu63IWjdchiKALkAcDfJUwqi6GHKM9IY6#${OAUTH_CONSUMER_KEY}#" src/app/constants.js
-    - sed -i "s#PWXMH1Ko6vOFFI69wvwv2p9yH8y5Af2cJ8nMkXf0#${OAUTH_SECRET}#" src/app/constants.js
+    - sed -i "s#WofjNAUxebyuS40aRy5nxXQot1GEMDVy85-MfuP_wxk#${OAUTH_CONSUMER_KEY}#" src/app/constants.js
     - sed -i "s#</head>#<script type='text/javascript'>var _paq = window._paq || []; _paq.push(['setDocumentTitle', document.domain + '/' + document.title]); _paq.push(['setCookieDomain', '*.pic4review.pavie.info']); _paq.push(['setDoNotTrack', true]); _paq.push(['disableCookies']); _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u='//stats.pavie.info/'; _paq.push(['setTrackerUrl', u+'matomo.php']); _paq.push(['setSiteId', '11']); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s); })(); </script></head>#" src/www/index.html
     - npm run build
     - ncftpput -u $FTP_USER -p $FTP_PASS -R $FTP_HOST $FTP_FOLDER/ ./build/*

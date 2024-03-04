@@ -9,13 +9,6 @@ export default {
 
 	// Production config
 	OSM_API_URL: 'https://www.openstreetmap.org',
-	OAUTH_CONSUMER_KEY: 'KHkPq0Llu63IWjdchiKALkAcDfJUwqi6GHKM9IY6',
-	OAUTH_SECRET: 'PWXMH1Ko6vOFFI69wvwv2p9yH8y5Af2cJ8nMkXf0',
+	OAUTH_CONSUMER_KEY: 'WofjNAUxebyuS40aRy5nxXQot1GEMDVy85-MfuP_wxk',
 	P4R_URL: 'http://localhost:28113',
-
-	// Dev config
-// 	OSM_API_URL: 'https://master.apis.dev.openstreetmap.org',
-// 	OAUTH_CONSUMER_KEY: 'aledk8wE8vD7VDJlpvKdpDvzUDODKtVNN48ic4OT',
-// 	OAUTH_SECRET: 'UFAit5VW1VdMF1mRfLVohe9ymfYXUpoJvDCqv1ib',
-// 	P4R_URL: 'http://localhost:28113'
 };

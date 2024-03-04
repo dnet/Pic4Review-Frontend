@@ -6,7 +6,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import BodyComponent from './view/BodyComponent';
 import CONSTS from './constants';
 import I18n from 'i18nline/lib/i18n';
-import OsmAuth from 'osm-auth';
+import { osmAuth } from 'osm-auth';
 import PubSub from 'pubsub-js';
 
 const LOCALES = [ "de", "en", "es", "fr", "hu", "it", "ja", "pl", "pt-PT", "sr", "sr@latin" ];
@@ -81,23 +81,28 @@ class App {
 	 * @private
 	 */
 	_initAuth() {
+		const redirectUri = (window.location+"").split("#")[0];
 		const opts = {
-			url: CONSTS.OSM_API_URL,
-			oauth_consumer_key: CONSTS.OAUTH_CONSUMER_KEY,
-			oauth_secret: CONSTS.OAUTH_SECRET,
-			landing: window.location.pathname + window.location.hash,
+			apiUrl: CONSTS.OSM_API_URL,
+			client_id: CONSTS.OAUTH_CONSUMER_KEY,
+			redirect_uri: redirectUri,
+			scope: "read_prefs write_api",
 			singlepage: true
 		};
-		this.auth = OsmAuth(opts);
+		this.auth = osmAuth(opts);
 
 		const params = readURLParams(window.location.href);
-		const token = params.oauth_token || localStorage.getItem("oauth_token") || null;
 
-		if(token) {
-			this.auth.bootstrapToken(token, () => {
+		if(params.code) {
+			this.auth.authenticate(() => {
 				this._checkAuth();
-				window.history.pushState({}, "", window.location.href.replace("?oauth_token="+token, ""));
-				localStorage.setItem("oauth_token", token);
+				localStorage.setItem("oauth_token", params.code);
+				window.history.replaceState({}, "", window.location.href.replace(/\?.*/, ""));
+			});
+		}
+		else if(localStorage.getItem("oauth_token")) {
+			this.auth.bootstrapToken(localStorage.getItem("oauth_token"), () => {
+				this._checkAuth();
 			});
 		}
 		else {
@@ -107,12 +112,13 @@ class App {
 		}
 
 		PubSub.subscribe("UI.LOGIN.SURE", (msg, data) => {
-			opts.landing = window.location.pathname + window.location.hash;
+			opts.redirect_uri = redirectUri;
 			this.auth.options(opts);
 
 			if(!this.auth.authenticated()) {
 				this.auth.authenticate((err, res) => {
 					if(err) {
+						console.error(err);
 						PubSub.publish("UI.MESSAGE.BASIC", { type: "error", message: I18n.t("Oops ! Something went wrong when trying to log you in") });
 					}
 					else {
