@@ -5,6 +5,8 @@ before_script:
   - npm --version
   - npm install
   - sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list
+  - sed -i s/security.debian.org/archive.debian.org/g /etc/apt/sources.list
+  - sed -i s/stretch-updates/stretch/g /etc/apt/sources.list
   - apt-get update -qq && apt-get install -y -qq ncftp zip sed
   - sed -i 's#http://localhost:28113#https://pic4review.pavie.info/devapi#' src/app/constants.js
 
