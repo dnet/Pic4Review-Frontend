@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Next version (to be released)
 
+
+## 0.5.30 - 2024-03-04
+
 ### Changed
 - Support of OAuth 2 in place of OAuth 1 to restore login against OSM API.
 
