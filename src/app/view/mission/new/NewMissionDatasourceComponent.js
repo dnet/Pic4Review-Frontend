@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ChevronDown } from 'mdi-material-ui';
 import Button from 'material-ui/Button';
 import DataDetections from './NewMissionDatasourceDetectionsComponent';
+import DataGeoJSON from './NewMissionDatasourceGeoJSONComponent';
 import DataOsmose from './NewMissionDatasourceOsmoseComponent';
 import DataOverpass from './NewMissionDatasourceOverpassComponent';
 import Grid from 'material-ui/Grid';
@@ -68,6 +69,8 @@ class NewMissionDatasourceComponent extends Component {
 	}
 	
 	render() {
+		const isGeoJSON = this.state.source === "geojson";
+
 		const sources = [
 			{
 				id: "osmose",
@@ -83,14 +86,25 @@ class NewMissionDatasourceComponent extends Component {
 				id: "detections",
 				name: I18n.t("Automatic detections from pictures"),
 				content: <DataDetections data={this.state.options_detections} onChange={d => this._changeOptions(d)} />
+			},
+			{
+				id: "geojson",
+				name: I18n.t("GeoJSON file (clean-room import)"),
+				content: <DataGeoJSON
+					data={this.state.options_geojson}
+					onChange={d => this._changeOptions(d)}
+					onAreaChange={a => this._changeArea(a)}
+				/>
 			}
 		];
-		
+
 		return <Grid container spacing={16}>
-			<Grid item xs={12} sm={6} lg={4}>
-				<MapSelection style={{height: 300}} area={this.state.area} onChange={e => this._changeArea(e)} />
-			</Grid>
-			<Grid item xs={12} sm={6} lg={8}>
+			{!isGeoJSON &&
+				<Grid item xs={12} sm={6} lg={4}>
+					<MapSelection style={{height: 300}} area={this.state.area} onChange={e => this._changeArea(e)} />
+				</Grid>
+			}
+			<Grid item xs={12} sm={isGeoJSON ? 12 : 6} lg={isGeoJSON ? 12 : 8}>
 				<Typography variant="subheading">{I18n.t("Data source")}</Typography>
 				<Typography variant="caption" style={{marginBottom: 10}}>{I18n.t("Select one source of data below for your mission")}</Typography>
 				{sources.map(s => {
