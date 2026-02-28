@@ -1,0 +1,8 @@
+node_modules/
+build/
+doc/
+test/
+.git/
+*.md
+.gitignore
+*.zip
