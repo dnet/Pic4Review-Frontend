@@ -9,7 +9,7 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 # Native addons in the dep tree (e.g. libxmljs via pic4carto) need build tools
-RUN apk add --no-cache python3 make g++ && npm ci
+RUN apk add --no-cache python3 make g++ && npm ci --legacy-peer-deps
 
 # Configurable values baked into the bundle at build time.
 # P4R_URL: URL the browser uses to reach the backend.

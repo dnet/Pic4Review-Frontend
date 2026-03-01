@@ -21,6 +21,15 @@ class MissionReviewGallery3Component extends Component {
 		return ["xs","sm"].includes(this.props.width);
 	}
 
+	_mapillaryEmbedUrl(detailsUrl) {
+		try {
+			const pKey = new URL(detailsUrl).searchParams.get("pKey");
+			return pKey ? "https://www.mapillary.com/embed?image_key=" + pKey : null;
+		} catch(e) {
+			return null;
+		}
+	}
+
 	render() {
 		if(this.props.pictures && this.props.pictures.length > 0) {
 			const allowUpdateAssociation = this.props.pictures.filter(p => p.featured).length > 0;
@@ -131,7 +140,13 @@ class MissionReviewGallery3Component extends Component {
 							</span>
 						</span>
 
-						{this._isMobile() ?
+						{item.provider === "Mapillary" && this._mapillaryEmbedUrl(item.detailsUrl) ?
+							<iframe
+								src={this._mapillaryEmbedUrl(item.detailsUrl)}
+								style={{width: "100%", height: "100%", minHeight: 400, border: "none"}}
+								allowFullScreen
+							/>
+							: this._isMobile() ?
 							<img
 								src={item.thumbUrl || item.pictureUrl}
 							/>
