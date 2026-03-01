@@ -79,7 +79,8 @@ class NewMissionComponent extends Component {
 				this.state.datasource.options,
 				NewMissionComponent.UIEditorsToDb(this.state),
 				this.props.user.name,
-				this.props.user.id
+				this.props.user.id,
+				this.state.details && this.state.details.picbuffer || 20
 			)
 			.then(d => {
 				this._updateCreation(d.id, d.pictoken);

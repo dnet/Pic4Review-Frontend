@@ -116,9 +116,10 @@ class API {
 	 * @param {Object} [editors] The editors options
 	 * @param {string} username The user name
 	 * @param {string} userid The user ID
+	 * @param {number} [picbuffer] Photo search radius in metres (default: 20)
 	 * @return {Promise} A promise resolving on mission ID
 	 */
-	static CreateMission(mission, source, sourceOptions, editors, username, userid) {
+	static CreateMission(mission, source, sourceOptions, editors, username, userid, picbuffer) {
 		if(source === "overpass" && !sourceOptions.geojson) {
 			//Replace {{bbox}} using given area
 			const area = mission.area.bbox;
@@ -127,7 +128,7 @@ class API {
 			return this.QueryOverpass(q)
 			.then(geojson => {
 				const opts = Object.assign({}, sourceOptions, { geojson: geojson });
-				return this.CreateMission(mission, source, opts, editors, username, userid);
+				return this.CreateMission(mission, source, opts, editors, username, userid, picbuffer);
 			});
 		}
 		else {
@@ -145,7 +146,8 @@ class API {
 				minlon: mission.area.bbox.getWest(),
 				maxlon: mission.area.bbox.getEast(),
 				username: username,
-				userid: userid
+				userid: userid,
+				picbuffer: picbuffer || 20
 			};
 
 			//Save editors data

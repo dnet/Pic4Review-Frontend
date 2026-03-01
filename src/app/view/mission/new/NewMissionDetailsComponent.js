@@ -23,6 +23,7 @@ class NewMissionDetailsComponent extends Component {
 			shortdesc: "",
 			areaname: "",
 			fulldesc: "",
+			picbuffer: 20,
 			previewOpen: false
 		};
 	}
@@ -87,6 +88,19 @@ class NewMissionDetailsComponent extends Component {
 					</FormControl>
 				</Grid>
 				
+				<Grid item xs={12} sm={6} md={3}>
+					<TextField
+						id="mission-new-picbuffer"
+						label={I18n.t("Photo search radius (m)")}
+						type="number"
+						style={fieldStyle}
+						value={this.state.picbuffer}
+						helperText={I18n.t("Distance in metres around each feature (default: 20)")}
+						inputProps={{ min: 5, max: 500 }}
+						onChange={e => this._changeVal("picbuffer", Math.min(500, Math.max(5, parseInt(e.target.value) || 20)))}
+					/>
+				</Grid>
+
 				<Grid item xs={12} sm={6} md={3}>
 					<FormControl style={fieldStyle}>
 						<InputLabel htmlFor="mission-new-type">{I18n.t("Type")}</InputLabel>
