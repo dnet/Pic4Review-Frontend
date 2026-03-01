@@ -30,6 +30,17 @@ class MissionReviewGallery3Component extends Component {
 		}
 	}
 
+	_panoramaxIds(detailsUrl) {
+		try {
+			const url = new URL(detailsUrl);
+			const pictureId = url.searchParams.get("pic");
+			const sequenceId = url.searchParams.get("seq");
+			return sequenceId && pictureId ? { sequenceId, pictureId } : null;
+		} catch(e) {
+			return null;
+		}
+	}
+
 	render() {
 		if(this.props.pictures && this.props.pictures.length > 0) {
 			const allowUpdateAssociation = this.props.pictures.filter(p => p.featured).length > 0;
@@ -145,6 +156,13 @@ class MissionReviewGallery3Component extends Component {
 								src={this._mapillaryEmbedUrl(item.detailsUrl)}
 								style={{width: "100%", height: "100%", minHeight: 400, border: "none"}}
 								allowFullScreen
+							/>
+							: item.provider === "Panoramax" && this._panoramaxIds(item.detailsUrl) ?
+							<pnx-photo-viewer
+								endpoint="https://api.panoramax.xyz/api"
+								sequence={this._panoramaxIds(item.detailsUrl).sequenceId}
+								picture={this._panoramaxIds(item.detailsUrl).pictureId}
+								style={{width: "100%", height: "100%", minHeight: 400, display: "block"}}
 							/>
 							: this._isMobile() ?
 							<img
