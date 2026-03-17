@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { LinearProgress } from 'material-ui/Progress';
 import API from '../../../ctrl/API';
 import Dialog, { DialogContent } from 'material-ui/Dialog';
-import Hash from 'object-hash';
 import Map from '../MissionMapComponent';
 import Typography from 'material-ui/Typography';
 import withWidth from 'material-ui/utils/withWidth';
@@ -64,7 +63,7 @@ class NewMissionPreviewComponent extends Component {
 				nextProps.onClose();
 			});
 		}
-		else if(Hash(nextProps.data) !== Hash(this.props.data)) {
+		else if(nextProps.data !== this.props.data) {
 			this.setState({ features: null });
 		}
 	}
